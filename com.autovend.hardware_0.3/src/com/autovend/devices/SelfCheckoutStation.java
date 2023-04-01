@@ -89,6 +89,7 @@ import com.autovend.Coin;
  */
 public class SelfCheckoutStation {
 	private BidirectionalChannel<Bill> validatorSource;
+	private SupervisionStation supervisor = null;
 
 	/**
 	 * The electronic scale in the scanning area.
@@ -99,6 +100,11 @@ public class SelfCheckoutStation {
 	 * The electronic scale in the bagging area.
 	 */
 	public final ElectronicScale baggingArea;
+
+	/**
+	 * The touch screen.
+	 */
+	public final TouchScreen screen;
 
 	/**
 	 * The printer.
@@ -247,6 +253,7 @@ public class SelfCheckoutStation {
 		// Create the devices.
 		scale = new ElectronicScale(scaleMaximumWeight, scaleSensitivity);
 		baggingArea = new ElectronicScale(scaleMaximumWeight, scaleSensitivity);
+		screen = new TouchScreen();
 		printer = new ReceiptPrinter();
 		cardReader = new CardReader();
 		mainScanner = new BarcodeScanner();
@@ -286,6 +293,14 @@ public class SelfCheckoutStation {
 
 		for(CoinDispenser coinDispenser : coinDispensers.values())
 			interconnect(coinDispenser, coinTray);
+	}
+
+	boolean isSupervised() {
+		return supervisor != null;
+	}
+
+	void setSupervisor(SupervisionStation supervisor) {
+		this.supervisor = supervisor;
 	}
 
 	private void interconnect(BillSlot slot, BillValidator validator) {

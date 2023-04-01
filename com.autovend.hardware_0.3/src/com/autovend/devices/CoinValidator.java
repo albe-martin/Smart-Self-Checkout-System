@@ -167,18 +167,20 @@ public final class CoinValidator extends AbstractDevice<CoinValidatorObserver> i
 	 * sink channel corresponding to the denomination of the coin.
 	 * </p>
 	 * <p>
-	 * If there is no space in the machine to store it or the coin is invalid, the
-	 * coin is ejected to the source.
+	 * If the coin is valid, it should be passed to the rejection sink channel. If
+	 * there is no space in the machine to store it, the coin is ejected to the
+	 * overflow sink channel. If the channel representing the correct routing fails
+	 * to accept the coin, an exception will result.
 	 * </p>
 	 * 
 	 * @param coin
 	 *            The coin to be added. Cannot be null.
 	 * @throws DisabledException
-	 *             if the coin validator is currently disabled.
+	 *             If the coin validator is currently disabled.
 	 * @throws SimulationException
 	 *             If the coin is null.
 	 * @throws SimulationException
-	 *             If the coin cannot be delivered.
+	 *             If the coin cannot be delivered to the correct sink channel.
 	 */
 	public boolean accept(Coin coin) throws DisabledException {
 		if(isDisabled())
@@ -205,12 +207,23 @@ public final class CoinValidator extends AbstractDevice<CoinValidatorObserver> i
 				return true;
 			}
 			else {
-				try {
-					rejectionSink.deliver(coin);
+				if(rejectionSink.hasSpace()) {
+					try {
+						rejectionSink.deliver(coin);
+					}
+					catch(OverloadException e) {
+						// Should never happen
+						throw new SimulationException(e);
+					}
 				}
-				catch(OverloadException e) {
-					// Should never happen
-					throw new SimulationException(e);
+				else {
+					try {
+						overflowSink.deliver(coin);
+					}
+					catch(OverloadException e) {
+						// Last option failed: something is broken
+						throw new SimulationException(e);
+					}
 				}
 
 				return false;
