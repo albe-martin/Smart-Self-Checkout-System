@@ -1,0 +1,36 @@
+Below are the initial team groupings as of the end of Friday, March 31st:
+
+Design/Implementation:
+Bartu Okan
+Artemy Gavrilov
+James Hayward
+Hada Rahadhi Hafiyyan
+Omar Ragab
+Colton Gowans
+Braedon Haensel
+Grant Tkachyk
+Albe Martin
+Tashi Labowka-Poulin
+Arie Goud
+Hamza Khan
+
+Management:
+Christian Salvador
+Umar Ahmed
+Sankalp Bartwal
+Omar Khan
+
+Quality Assurance:
+Alex Chen
+Samantha Liu
+Jacob Braun
+
+Documentation:
+Avani Sharma
+Amandeep Kaur
+Auric Adubofour-Poku (AJay)
+Fatema chowdhury
+
+Demonstration:
+Abdul Biderkab
+Daniel Chang
