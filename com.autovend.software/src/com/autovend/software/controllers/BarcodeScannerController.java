@@ -29,10 +29,15 @@ import com.autovend.products.BarcodedProduct;
  */
 public class BarcodeScannerController extends ItemAdderController<BarcodeScanner, BarcodeScannerObserver>
 		implements BarcodeScannerObserver {
+	private boolean isScanningItems;
+
+	void setScanningItems(boolean val){isScanningItems=val;}
+	boolean getScanningItems(){return isScanningItems;}
+
 	public BarcodeScannerController(BarcodeScanner scanner) {
 		super(scanner);
+		isScanningItems=true;
 	}
-
 	public void reactToBarcodeScannedEvent(BarcodeScanner barcodeScanner, Barcode barcode) {
 		// if barcode is for a valid object, then add the product found to the order on
 		// the main controller.
@@ -40,10 +45,13 @@ public class BarcodeScannerController extends ItemAdderController<BarcodeScanner
 		if (barcodeScanner != this.getDevice()) {
 			return;
 		}
-
-		BarcodedProduct scannedItem = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-		if (scannedItem != null) {
-			this.getMainController().addItem(this, scannedItem);
+		if (isScanningItems) {
+			BarcodedProduct scannedItem = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+			if (scannedItem != null) {
+				this.getMainController().addItem(this, scannedItem);
+			}
+		} else {
+			//todo: main controller handling memberships
 		}
 	}
 }

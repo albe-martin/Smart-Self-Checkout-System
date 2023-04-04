@@ -154,9 +154,9 @@ public class AddItemTest {
 		assertNotSame("New checkout controller should be set in BarcodeScannerController field", checkoutController,
 				scannerController.getMainController());
 		assertTrue("BarcodeScannerController should be in the new checkout controller's item adder list",
-				newMainController.getAllItemAdders().contains(scannerController));
+				newMainController.getAllDeviceControllers().contains(scannerController));
 		assertTrue("BarcodeScannerController should not be in the old checkout controller's item adder list",
-				checkoutController.getAllItemAdders().isEmpty());
+				checkoutController.getAllDeviceControllers().isEmpty());
 	}
 
 //	Testing DeviceController methods
@@ -294,9 +294,9 @@ public class AddItemTest {
 		assertNotSame("New checkout controller should be set in BaggingScaleController field", checkoutController,
 				scaleController.getMainController());
 		assertTrue("BaggingScaleController should be in the new checkout controller's bagging controller list",
-				newMainController.getAllBaggingControllers().contains(scaleController));
+				newMainController.getAllDeviceControllers().contains(scaleController));
 		assertTrue("BaggingScaleController should not be in the old checkout controller's bagging controller list",
-				checkoutController.getAllBaggingControllers().isEmpty());
+				checkoutController.getAllDeviceControllers().isEmpty());
 	}
 
 	/**
@@ -356,8 +356,14 @@ public class AddItemTest {
 	 */
 	@Test
 	public void testAddItemWithInvalidParameters() {
+		BarcodedProduct databaseItem3 = new BarcodedProduct(new Barcode(Numeral.four, Numeral.five, Numeral.six), "test item 2",
+				BigDecimal.valueOf(42), -1.0);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem3.getBarcode(), databaseItem3);
+
+
+
 		// Scan item with negative weight
-		checkoutController.addItem(scannerController, databaseItem1);
+		checkoutController.addItem(scannerController, databaseItem3);
 
 		// Item should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -373,6 +379,9 @@ public class AddItemTest {
 
 		// Item should not be added, and the cost should be 0
 		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
+
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.remove(databaseItem3.getBarcode());
+		databaseItem3 = null;
 	}
 
 	/**

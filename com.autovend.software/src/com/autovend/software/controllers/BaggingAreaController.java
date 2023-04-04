@@ -30,28 +30,16 @@ import com.autovend.products.Product;
 public abstract class BaggingAreaController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver>
 		extends DeviceController<D, O> {
 
-	private CheckoutController mainController;
 	private boolean orderValidated;
+
+	String getTypeName(){
+		return "BaggingAreaController";
+	}
 
 	public BaggingAreaController(D newDevice) {
 		super(newDevice);
 	}
 
-	public final CheckoutController getMainController() {
-		return this.mainController;
-	};
-
-	public final void setMainController(CheckoutController newMainController) {
-		if (this.mainController != null) {
-			this.mainController.deregisterBaggingAreaController(this);
-		}
-		;
-		this.mainController = newMainController;
-		if (this.mainController != null) {
-			this.mainController.registerBaggingAreaController(this);
-		}
-		;
-	}
 
 	/**
 	 * A method used to inform the bagging area controller to update the expected

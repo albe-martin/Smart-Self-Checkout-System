@@ -14,6 +14,9 @@ import com.autovend.devices.observers.AbstractDeviceObserver;
 abstract class HumanGUIController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver>
         extends DeviceController<D, O> {
 
+    final String getTypeName(){
+        return "HumanGUIController";
+    }
     public HumanGUIController(D newDevice) {
         super(newDevice);
     }
