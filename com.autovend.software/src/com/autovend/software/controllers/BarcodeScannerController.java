@@ -43,7 +43,7 @@ public class BarcodeScannerController extends ItemAdderController<BarcodeScanner
 
 		BarcodedProduct scannedItem = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
 		if (scannedItem != null) {
-			this.getMainController().addItem(this, scannedItem, scannedItem.getExpectedWeight());
+			this.getMainController().addItem(this, scannedItem);
 		}
 	}
 }

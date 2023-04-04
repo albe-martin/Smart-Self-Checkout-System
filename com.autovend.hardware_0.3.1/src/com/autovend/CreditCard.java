@@ -37,6 +37,6 @@ public final class CreditCard extends Card {
 	 */
 	public CreditCard(String type, String number, String cardholder, String cvv, String pin, boolean isTapEnabled,
 		boolean hasChip) {
-		super(type, number, cardholder, cvv, pin, isTapEnabled, hasChip);
+		super(type, number, cardholder, cvv, pin, isTapEnabled, hasChip, false);
 	}
 }

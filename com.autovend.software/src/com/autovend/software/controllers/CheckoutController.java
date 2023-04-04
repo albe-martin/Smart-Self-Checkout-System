@@ -30,11 +30,17 @@ import java.util.TreeMap;
 
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.external.CardIssuer;
+import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
 
 @SuppressWarnings("rawtypes")
 
 public class CheckoutController {
+
+	//todo:
+	//comb through classes fields to update modifiers for them, getters and setters
+	//will be provided for testing purposes for fields where those are necessary.
+
 	private static int IDcounter = 1;
 	private int stationID = IDcounter++;
 
@@ -48,7 +54,20 @@ public class CheckoutController {
 	private HashSet<PaymentController> validPaymentControllers;
 	private ReceiptPrinterController receiptPrinter;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
+
+	//TreeMap is used so that we can reduce the number of bills and coins we need to
+	//dispense to give change by checking the largest possible denomination
+	//first to see if it could dispense the required change, and then decreasing.
+	//The ordering of keys is very useful here.
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
+
+	private HashSet<HumanGUIController> validGUIControllers;
+	//TODO: add methods to register/deregister GUI controllers and whatnot.
+
+
+	//Controller used to get weight information from the scale in the scanning area
+	//TODO: Finish the body of this class
+	private ScanningScaleController scanningScaleController;
 
 	// Flag to prevent further addition of items if waiting to bag item or an
 	// invalid item was found in the bagging area.
@@ -90,7 +109,7 @@ public class CheckoutController {
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
 		this.validItemAdderControllers = new HashSet<>(Arrays.asList(mainScannerController, handheldScannerController));
 
-		ElectronicScaleController scaleController = new ElectronicScaleController(checkout.baggingArea);
+		BaggingScaleController scaleController = new BaggingScaleController(checkout.baggingArea);
 		this.validBaggingControllers = new HashSet<>(List.of(scaleController));
 
 		this.receiptPrinter = new ReceiptPrinterController(checkout.printer);
@@ -105,11 +124,8 @@ public class CheckoutController {
 		BillChangeSlotController billChangeSlotController = new BillChangeSlotController(checkout.billOutput);
 		CoinTrayController coinChangeSlotController = new CoinTrayController(checkout.coinTray);
 
-		// TODO: Finish Coin Tray Controller and add to controllers set
 		this.changeSlotControllers = new LinkedHashSet<>(List.of(billChangeSlotController, coinChangeSlotController));
 		this.changeDispenserControllers = new TreeMap<>();
-
-		// TODO: Also add coin dispensers to changeDispenserControllers (once done)
 
 		for (int denom : checkout.billDispensers.keySet()) {
 			changeDispenserControllers.put(BigDecimal.valueOf(denom),
@@ -117,8 +133,7 @@ public class CheckoutController {
 		}
 		for (BigDecimal denom : checkout.coinDispensers.keySet()) {
 			changeDispenserControllers.put(denom,
-					new CoinDispenserController(checkout.coinDispensers.get(denom), denom) {
-					});
+					new CoinDispenserController(checkout.coinDispensers.get(denom), denom) {});
 		}
 
 		// Add additional device peripherals for Customer I/O and Attendant I/O here
@@ -162,6 +177,7 @@ public class CheckoutController {
 	/**
 	 * Methods to register and deregister peripherals for controlling the bagging
 	 * area and scanning and printer and methods of payment.
+	 * TODO: add getters/setters for remaining methods.
 	 */
 
 	void registerBaggingAreaController(BaggingAreaController controller) {
@@ -377,19 +393,18 @@ public class CheckoutController {
 	 */
 
 	/**
-	 * Method to add items to the order TODO: Make this general to handle objects
-	 * priced by weight instead of just by unit
+	 * Method to add items to the order
 	 */
-	public void addItem(ItemAdderController adder, Product newItem, double weight) {
-		if ((!this.validItemAdderControllers.contains(adder)) || newItem == null) {
-			return;
-		}
-		if (weight <= 0) {
-			return;
-		}
-		if (baggingItemLock || systemProtectionLock) {
-			return;
-		}
+	public void addItem(DeviceController source, Product newItem) {
+		if ((!validItemAdderControllers.contains(source) && validItemAdderControllers.contains(source))) {return;}
+		if (baggingItemLock || systemProtectionLock) { return; }
+		if (newItem == null) {return;}
+		//If the source isn't a GUI controller or scanner registered, or the system is locked
+		//then just stop here.
+
+		//then go through the item and get its weight, either expected weight if it exists, or
+		//get the scale controller in the checkout to give us the weight for the PLU code based
+		//item.
 
 		Number[] currentItemInfo = new Number[] { BigDecimal.ZERO, BigDecimal.ZERO };
 
@@ -401,8 +416,24 @@ public class CheckoutController {
 		// Add the cost of the new item to the current cost.
 		this.cost = this.cost.add(newItem.getPrice());
 
-		currentItemInfo[0] = (currentItemInfo[0].intValue()) + 1;
-		currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice());
+
+		double weight;
+		if (newItem.isPerUnit()) {
+			weight = ((BarcodedProduct) newItem).getExpectedWeight();
+			//only items priced per unit weight are barcoded products, so this is fine.
+			currentItemInfo[0] = (currentItemInfo[0].intValue()) + 1;
+			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice());
+		} else {
+			weight = scanningScaleController.getCurrentWeight();
+			//adding the recorded weight on the current scale to the current item information
+			//todo: handle case where no items are on scale, also add rounding
+			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).add(BigDecimal.valueOf(weight));
+			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(
+					newItem.getPrice().multiply(BigDecimal.valueOf(weight))
+			);
+		}
+		//first number is amount (either kg or number of units), second is cumulative price.
+		//TODO: Make changes to printer code to display kg for decimal values.
 
 		this.order.put(newItem, currentItemInfo);
 
@@ -572,6 +603,8 @@ public class CheckoutController {
 	}
 
 	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
+		//todo: have it notify attendant and then try dispensing lower decrements (if possible),
+		//it should
 		if (!this.changeDispenserControllers.containsValue(controller)) {
 			return;
 		}
@@ -584,9 +617,8 @@ public class CheckoutController {
 		this.amountPaid = this.amountPaid.add(denom);
 	}
 
-	// since both methods of paying by credit and debit cards are simulated the same
-	// way
-	// only one method is needed. - Arie
+	// since methods of paying by credit, debit, and gift cards are simulated the same way
+	// only one method is needed which works for all of them. - Arie
 	public void payByCard(CardIssuer source, BigDecimal amount) {
 		if (baggingItemLock || systemProtectionLock || payingChangeLock || source == null) {
 			return;
@@ -602,7 +634,6 @@ public class CheckoutController {
 				((CardReaderController) controller).enablePayment(source, amount);
 			}
 		}
-		// TODO: If this fails then do stuff idk
 	}
 
 	/*
@@ -611,7 +642,7 @@ public class CheckoutController {
 	public void addOwnBags() {
 		// store the current weight of items in the bagging controller
 		for (BaggingAreaController baggingController : validBaggingControllers) {
-			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
+			BaggingScaleController scale = (BaggingScaleController) baggingController;
 			double current = scale.getCurrentWeight();
 			weight.put(baggingController, current);
 			// let the scale know the customer is adding bags to prevent a weight
@@ -625,10 +656,11 @@ public class CheckoutController {
 		// at this point, the customer IO must have signalled they are done adding bags
 		// to proceed
 		// GUI will implement this part to continue to next lines of code
+		//todo: GUI responses.
 
 		// store the new weight in bagging area with bags added
 		for (BaggingAreaController baggingController : validBaggingControllers) {
-			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
+			BaggingScaleController scale = (BaggingScaleController) baggingController;
 			// let the scale know the customer is done adding bags
 			scale.setAddingBags(false);
 			double current = scale.getCurrentWeight();
@@ -642,7 +674,7 @@ public class CheckoutController {
 			// to account for them
 			for (BaggingAreaController baggingController : validBaggingControllers) {
 				double bagWeight = weightWithBags.get(baggingController) - weight.get(baggingController);
-				ElectronicScaleController scale = (ElectronicScaleController) baggingController;
+				BaggingScaleController scale = (BaggingScaleController) baggingController;
 				scale.updateWithBagWeight(bagWeight);
 			}
 			systemProtectionLock = false;

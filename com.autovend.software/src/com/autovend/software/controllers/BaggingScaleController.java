@@ -21,7 +21,7 @@ import com.autovend.devices.ElectronicScale;
 import com.autovend.devices.observers.ElectronicScaleObserver;
 import com.autovend.products.Product;
 
-public class ElectronicScaleController extends BaggingAreaController<ElectronicScale, ElectronicScaleObserver>
+public class BaggingScaleController extends BaggingAreaController<ElectronicScale, ElectronicScaleObserver>
 		implements ElectronicScaleObserver {
 	private double currentWeight;
 	private double expectedWeight;
@@ -29,7 +29,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 
 	private boolean AttendantApproval;
 
-	public ElectronicScaleController(ElectronicScale newDevice) {
+	public BaggingScaleController(ElectronicScale newDevice) {
 		super(newDevice);
 	}
 

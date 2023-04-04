@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.autovend.devices.SimulationException;
 
 /**
- * Represents membership cards.
+ * Represents membership cards. Membership cards possess a barcode.
  */
 public final class MembershipCard extends Card {
 	private static final long serialVersionUID = -7052033200582973083L;
@@ -26,6 +26,6 @@ public final class MembershipCard extends Card {
 	 *             If type, number, or cardholder is null.
 	 */
 	public MembershipCard(String type, String number, String cardholder, boolean isTapEnabled) {
-		super(type, number, cardholder, null, null, isTapEnabled, false);
+		super(type, number, cardholder, null, null, isTapEnabled, false, true);
 	}
 }

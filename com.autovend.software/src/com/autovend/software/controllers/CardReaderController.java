@@ -24,6 +24,14 @@ import com.autovend.external.CardIssuer;
 
 import java.math.BigDecimal;
 
+
+/**
+ * A class used to describe a controller for the card reader for this station.
+ * Since all cards behave the same way in this simulation, we only need one
+ * class which handles every card instance the same way.
+ */
+
+//todo: card lock use cases need to be handled.
 public class CardReaderController extends PaymentController<CardReader, CardReaderObserver>
 		implements CardReaderObserver {
 	public boolean isPaying;
@@ -35,7 +43,7 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 	public CardIssuer bank;
 	private BigDecimal amount;
 
-	// TODO: Add Messages And Stuff
+	// TODO: Add Messages for the GUI to reactToCardInserted/Removed/Tapped/Swiped
 	@Override
 	public void reactToCardInsertedEvent(CardReader reader) {
 		this.isPaying = true;
@@ -44,15 +52,19 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 	@Override
 	public void reactToCardRemovedEvent(CardReader reader) {
 		this.isPaying = false;
+		//technically not required since the data read method does this, but
+		//better safe than sorry.
 	}
 
 	// Don't need to implement below yet (use case only asks for insertion so far)
 	@Override
 	public void reactToCardTappedEvent(CardReader reader) {
+		this.isPaying=true;
 	}
 
 	@Override
 	public void reactToCardSwipedEvent(CardReader reader) {
+		this.isPaying=true;
 	}
 
 	@Override
@@ -70,6 +82,8 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 
 		this.amount = BigDecimal.ZERO;
 		this.bank = null;
+
+		this.isPaying=false;
 		// Clear bank and such if it fails to hold or not (might change this, I am tired
 		// rn so might be dumb here)
 	}

@@ -6,7 +6,7 @@ import com.autovend.products.Product;
 /**
  * Represents units for sale, each with a particular barcode and weight.
  */
-public class BarcodedUnit extends SellableUnit {
+public class BarcodedUnit extends SellableUnit implements IBarcoded {
 	private static final long serialVersionUID = 3769652085437296243L;
 	private Barcode barcode;
 
@@ -31,12 +31,13 @@ public class BarcodedUnit extends SellableUnit {
 		this.barcode = barcode;
 	}
 
-	/**
-	 * Gets the barcode of this unit.
-	 * 
-	 * @return The barcode.
-	 */
+	@Override
 	public Barcode getBarcode() {
 		return barcode;
+	}
+	
+	@Override
+	public boolean hasBarcode() {
+		return true;
 	}
 }

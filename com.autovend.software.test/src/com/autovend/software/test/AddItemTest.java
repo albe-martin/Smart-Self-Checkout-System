@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.autovend.software.controllers.BaggingScaleController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,6 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.DeviceController;
-import com.autovend.software.controllers.ElectronicScaleController;
 
 @SuppressWarnings("deprecation")
 /**
@@ -53,7 +53,7 @@ public class AddItemTest {
 
 	private CheckoutController checkoutController;
 	private BarcodeScannerController scannerController;
-	private ElectronicScaleController scaleController;
+	private BaggingScaleController scaleController;
 	private BarcodedProduct databaseItem1;
 	private BarcodedProduct databaseItem2;
 	private BarcodedUnit validUnit1;
@@ -69,7 +69,7 @@ public class AddItemTest {
 	public void setup() {
 		checkoutController = new CheckoutController();
 		scannerController = new BarcodeScannerController(new BarcodeScanner());
-		scaleController = new ElectronicScaleController(new ElectronicScale(1000, 1));
+		scaleController = new BaggingScaleController(new ElectronicScale(1000, 1));
 
 		// First item to be scanned
 		databaseItem1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1",
@@ -90,7 +90,7 @@ public class AddItemTest {
 
 		scannerController = new BarcodeScannerController(stubScanner);
 		scannerController.setMainController(checkoutController);
-		scaleController = new ElectronicScaleController(stubScale);
+		scaleController = new BaggingScaleController(stubScale);
 		scaleController.setMainController(checkoutController);
 
 		stubScanner.register(scannerController);
@@ -197,10 +197,10 @@ public class AddItemTest {
 		assertNotSame("New barcode scanner should be ..", stubScanner, scannerController.getDevice());
 	}
 
-// Testing ElectronicScaleController
+// Testing BaggingScaleController
 
 	/**
-	 * Tests that the ElectronicScaleController reacts correctly to adding items to
+	 * Tests that the BaggingScaleController reacts correctly to adding items to
 	 * order.
 	 */
 	@Test
@@ -279,10 +279,10 @@ public class AddItemTest {
 		validUnit2 = null;
 	}
 
-//	Testing ElectronicScaleController methods
+//	Testing BaggingScaleController methods
 
 	/**
-	 * Tests that the setMainController method of ElectronicScaleController
+	 * Tests that the setMainController method of BaggingScaleController
 	 * correctly replaces the controller's main controller and deregisters the
 	 * controller from the old CheckoutController
 	 */
@@ -291,11 +291,11 @@ public class AddItemTest {
 		CheckoutController newMainController = new CheckoutController();
 		scaleController.setMainController(newMainController);
 
-		assertNotSame("New checkout controller should be set in ElectronicScaleController field", checkoutController,
+		assertNotSame("New checkout controller should be set in BaggingScaleController field", checkoutController,
 				scaleController.getMainController());
-		assertTrue("ElectronicScaleController should be in the new checkout controller's bagging controller list",
+		assertTrue("BaggingScaleController should be in the new checkout controller's bagging controller list",
 				newMainController.getAllBaggingControllers().contains(scaleController));
-		assertTrue("ElectronicScaleController should not be in the old checkout controller's bagging controller list",
+		assertTrue("BaggingScaleController should not be in the old checkout controller's bagging controller list",
 				checkoutController.getAllBaggingControllers().isEmpty());
 	}
 
@@ -320,7 +320,7 @@ public class AddItemTest {
 	public void testAddItem() {
 
 		// Adds item
-		checkoutController.addItem(scannerController, databaseItem1, validUnit1.getWeight());
+		checkoutController.addItem(scannerController, databaseItem1);
 
 		// Adds the cost of the first item to the total
 		BigDecimal total = databaseItem1.getPrice();
@@ -335,7 +335,7 @@ public class AddItemTest {
 		checkoutController.baggedItemsValid(scaleController);
 
 		// Adds a second item
-		checkoutController.addItem(scannerController, databaseItem2, validUnit2.getWeight());
+		checkoutController.addItem(scannerController, databaseItem2);
 
 		// Adds the cost of the second item to the total
 		total = total.add(databaseItem2.getPrice());
@@ -357,7 +357,7 @@ public class AddItemTest {
 	@Test
 	public void testAddItemWithInvalidParameters() {
 		// Scan item with negative weight
-		checkoutController.addItem(scannerController, databaseItem1, -1);
+		checkoutController.addItem(scannerController, databaseItem1);
 
 		// Item should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -366,7 +366,7 @@ public class AddItemTest {
 		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
 
 		// Scan null item
-		checkoutController.addItem(scannerController, null, validUnit1.getWeight());
+		checkoutController.addItem(scannerController, null);
 
 		// Item should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -382,7 +382,7 @@ public class AddItemTest {
 	public void testGetRemainingAmount() {
 
 		// First Item is scanned
-		checkoutController.addItem(scannerController, databaseItem1, validUnit1.getWeight());
+		checkoutController.addItem(scannerController, databaseItem1);
 
 		// Adds the cost of the first item to the total
 		BigDecimal total = databaseItem1.getPrice();
@@ -392,7 +392,7 @@ public class AddItemTest {
 		checkoutController.baggedItemsValid(scaleController);
 
 		// First item is added
-		checkoutController.addItem(scannerController, databaseItem2, validUnit2.getWeight());
+		checkoutController.addItem(scannerController, databaseItem2);
 
 		// Adds the cost of the second item to the total
 		total = total.add(databaseItem2.getPrice());
@@ -444,7 +444,7 @@ public class AddItemTest {
 		checkoutController.baggingItemLock = true;
 
 		// Adds item
-		checkoutController.addItem(scannerController, databaseItem1, validUnit1.getWeight());
+		checkoutController.addItem(scannerController, databaseItem1);
 
 		// Item should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -459,7 +459,7 @@ public class AddItemTest {
 		checkoutController.systemProtectionLock = true;
 
 		// Adds item
-		checkoutController.addItem(scannerController, databaseItem1, validUnit1.getWeight());
+		checkoutController.addItem(scannerController, databaseItem1);
 
 		// Item should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -477,7 +477,7 @@ public class AddItemTest {
 	public void testInvalidItemControllerAdder() {
 
 		// addItem is called with an invalid ItemControllerAdder
-		checkoutController.addItem(null, databaseItem1, validUnit1.getWeight());
+		checkoutController.addItem(null, databaseItem1);
 
 		// Item should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -497,7 +497,7 @@ public class AddItemTest {
 		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Add the same bag to the order
-		checkoutController.addItem(scannerController, databaseItem1, validUnit1.getWeight());
+		checkoutController.addItem(scannerController, databaseItem1);
 
 		// Adds the cost of the first item to the total
 		BigDecimal total = databaseItem1.getPrice();
@@ -510,7 +510,7 @@ public class AddItemTest {
 		checkoutController.baggedItemsValid(scaleController);
 
 		// Add another of the same item to the order
-		checkoutController.addItem(scannerController, databaseItem1, validUnit1.getWeight());
+		checkoutController.addItem(scannerController, databaseItem1);
 
 		// Adds the cost of the second item to the total
 		total = total.add(databaseItem1.getPrice());

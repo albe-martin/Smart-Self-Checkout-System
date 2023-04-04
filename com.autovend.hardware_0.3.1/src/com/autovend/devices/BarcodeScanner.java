@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.autovend.Barcode;
 import com.autovend.BarcodedUnit;
+import com.autovend.IBarcoded;
 import com.autovend.SellableUnit;
 import com.autovend.devices.observers.BarcodeScannerObserver;
 
@@ -28,26 +29,28 @@ public class BarcodeScanner extends AbstractDevice<BarcodeScannerObserver> {
 	 * receive a "barcodeScanned" event; otherwise, this method returns false and no
 	 * event is announced.
 	 * 
-	 * @param item
+	 * @param object
 	 *            The item to scan. Of course, it will only work if the item has a
 	 *            barcode, and maybe not even then.
 	 * @return true if the scan is successful; otherwise false.
 	 * @throws SimulationException
 	 *             If item is null.
 	 */
-	public boolean scan(SellableUnit item) {
+	public boolean scan(IBarcoded object) {
 		if(isDisabled())
 			throw new DisabledException();
 
-		if(item == null)
+		if(object == null)
 			throw new SimulationException(new NullPointerException("item is null"));
 
-		if(item instanceof BarcodedUnit && random.nextInt(100) >= PROBABILITY_OF_FAILED_SCAN) {
-			for(BarcodeScannerObserver observer : observers)
-				// the barcode is immutable, no need to copy
-				observer.reactToBarcodeScannedEvent(this, ((BarcodedUnit)item).getBarcode());
+		if(object.hasBarcode()) {
+			if(random.nextInt(100) >= PROBABILITY_OF_FAILED_SCAN) {
+				for(BarcodeScannerObserver observer : observers)
+					// the barcode is immutable, no need to copy
+					observer.reactToBarcodeScannedEvent(this, object.getBarcode());
 
-			return true;
+				return true;
+			}
 		}
 
 		return false;

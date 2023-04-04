@@ -9,7 +9,7 @@ import com.autovend.devices.SimulationException;
 /**
  * Represents plastic cards (e.g., credit cards, debit cards, membership cards).
  */
-public abstract class Card  implements Serializable{
+public abstract class Card implements Serializable, IBarcoded {
 	private static final long serialVersionUID = -5007632679422484609L;
 	private final String type;
 	private final String number;
@@ -18,6 +18,7 @@ public abstract class Card  implements Serializable{
 	private final String pin;
 	private int failedTrials = 0;
 	private boolean isBlocked;
+	private Barcode barcode = null; // immutable once set
 
 	/**
 	 * If this card supports taps.
@@ -28,6 +29,11 @@ public abstract class Card  implements Serializable{
 	 * If this card possesses a chip.
 	 */
 	public final boolean hasChip;
+
+	/**
+	 * If this card possesses a barcode.
+	 */
+	public final boolean hasBarcode;
 
 	/**
 	 * Create a card instance.
@@ -48,13 +54,18 @@ public abstract class Card  implements Serializable{
 	 *            Whether this card is capable of being tapped.
 	 * @param hasChip
 	 *            Whether this card has a chip.
+	 * @param hasBarcode
+	 *            Whether this card has a barcode.
 	 * @throws SimulationException
 	 *             If type, number, or cardholder is null.
 	 * @throws SimulationException
 	 *             If hasChip is true but pin is null.
+	 * @throws SimulationException
+	 *             If hasBarcode is true, but any character in number is not a valid
+	 *             digit (0-9).
 	 */
 	public Card(String type, String number, String cardholder, String cvv, String pin, boolean isTapEnabled,
-		boolean hasChip) {
+		boolean hasChip, boolean hasBarcode) {
 		if(type == null)
 			throw new SimulationException(new NullPointerException("type is null"));
 
@@ -74,6 +85,20 @@ public abstract class Card  implements Serializable{
 		this.pin = pin;
 		this.isTapEnabled = isTapEnabled;
 		this.hasChip = hasChip;
+		this.hasBarcode = hasBarcode;
+
+		if(hasBarcode) {
+			int count = number.length();
+			Numeral[] numerals = new Numeral[count];
+
+			for(int i = 0; i < count; i++) {
+				char digit = number.charAt(i);
+				// Subtract one because the array is 0-indexed
+				numerals[i] = Numeral.valueOf((byte)Character.getNumericValue(digit));
+			}
+
+			barcode = new Barcode(numerals);
+		}
 	}
 
 	private static final ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -82,6 +107,19 @@ public abstract class Card  implements Serializable{
 	private static final double PROBABILITY_OF_INSERT_FAILURE = 0.001;
 	private static final double PROBABILITY_OF_MAGNETIC_STRIPE_CORRUPTION = 0.001;
 	private static final double PROBABILITY_OF_CHIP_CORRUPTION = 0.00001;
+
+	@Override
+	public final Barcode getBarcode() throws UnsupportedOperationException {
+		if(!hasBarcode)
+			throw new UnsupportedOperationException("This card does not possess a barcode");
+
+		return barcode;
+	}
+
+	@Override
+	public boolean hasBarcode() {
+		return hasBarcode;
+	}
 
 	/**
 	 * Simulates the action of swiping the card.

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import com.autovend.software.controllers.BaggingScaleController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,13 +39,12 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
-import com.autovend.software.controllers.ElectronicScaleController;
 
 public class PurchaseBagsTest {
 
 	BarcodeScannerController scannerController;
 	BarcodeScanner stubScanner;
-	ElectronicScaleController scaleController;
+	BaggingScaleController scaleController;
 	ElectronicScale stubScale;
 	BarcodedProduct newBag;
 
@@ -68,7 +68,7 @@ public class PurchaseBagsTest {
 		scannerController = new BarcodeScannerController(stubScanner);
 		scannerController.setMainController(checkoutController);
 
-		scaleController = new ElectronicScaleController(stubScale);
+		scaleController = new BaggingScaleController(stubScale);
 		scaleController.setMainController(checkoutController);
 
 		scan = new Scanner(System.in);
