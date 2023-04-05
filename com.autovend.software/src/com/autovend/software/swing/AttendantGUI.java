@@ -18,18 +18,19 @@ import java.awt.event.ActionEvent;
 public class AttendantGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTextField usernameTextField;
-	private JTextField passwordTextField;
+	
+	private String language;
 
 	/**
-	 * Launch the AttendantGUI application.
+	 * TODO: Delete this method for final product.
+	 * 
+	 * Used to launch GUI when run.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AttendantGUI frame = new AttendantGUI();
+					AttendantGUI frame = new AttendantGUI("English");
 					// Center it
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
@@ -39,67 +40,121 @@ public class AttendantGUI extends JFrame {
 			}
 		});
 	}
-
+	
 	/**
-	 * Create the AttendantGUI frame.
+	 * Create the attendant GUI frame.
 	 */
-	public AttendantGUI() {
-		// TODO: Have way to select language.
-		String language = "English";
+	public AttendantGUI(String language) {
+		super("Attendant GUI");
 		
+		// Set language.
+		this.language = language;
 		
-		// Frame properties
+		// Set frame properties.
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 800);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		// Content frame
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		// Start on the login screen.
+		showLoginScreen();
+	}
+	
+	/**
+	 * Switches to the login screen.
+	 */
+	public void showLoginScreen() {
+		// TODO: Language selector.
 		
-		// Username label
+		// Create login screen pane.
+		JPanel loginContentPane = new JPanel();
+		loginContentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		loginContentPane.setLayout(null);
+		
+		// Create username label.
 		JLabel usernameLabel = new JLabel(Language.translate(language, "Username:"));
 		usernameLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		usernameLabel.setBounds(218, 296, 102, 47);
-		contentPane.add(usernameLabel);
+		loginContentPane.add(usernameLabel);
 		
-		// Username text field
-		usernameTextField = new JTextField();
+		// Create username text field.
+		JTextField usernameTextField = new JTextField();
 		usernameTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		usernameTextField.setBounds(330, 301, 192, 38);
-		contentPane.add(usernameTextField);
+		loginContentPane.add(usernameTextField);
 		usernameTextField.setColumns(10);
 		
-		// Password label
+		// Create password label.
 		JLabel passwordLabel = new JLabel(Language.translate(language, "Password:"));
 		passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		passwordLabel.setBounds(218, 345, 102, 47);
-		contentPane.add(passwordLabel);
+		loginContentPane.add(passwordLabel);
 		
-		// Password text field
-		passwordTextField = new JTextField();
+		// Create password text field.
+		JTextField passwordTextField = new JTextField();
 		passwordTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		passwordTextField.setColumns(10);
 		passwordTextField.setBounds(330, 350, 192, 38);
-		contentPane.add(passwordTextField);
+		loginContentPane.add(passwordTextField);
 		
-		// Login button
+		// Create login button.
 		JButton loginButton = new JButton(Language.translate(language, "Log In"));
 		loginButton.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Login button pressed
+				// Login button pressed.
 				
-				// Clear text fields
+				// Clear text fields.
 				usernameTextField.setText("");
 				passwordTextField.setText("");
 				
-				// TODO: Verify login information and move to logged in screen
+				// TODO: Verify login information 
+				
+				// Switch to regular operation screen (login successful).
+				showOperationScreen();
 			}
 		});
 		loginButton.setBounds(324, 424, 120, 63);
-		contentPane.add(loginButton);
+		loginContentPane.add(loginButton);
+		
+		// Change frame pane to login.
+		setContentPane(loginContentPane);
+		
+		// Refresh frame.
+		revalidate();
+		repaint();
 	}
+	
+	/**
+	 * Switches to the regular operation screen.
+	 */
+	public void showOperationScreen() {
+		// Create login screen pane.
+		JPanel operationContentPane = new JPanel();
+		operationContentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		operationContentPane.setLayout(null);
+		
+		// Create logout button.
+		JButton logoutButton = new JButton(Language.translate(language, "Log Out"));
+		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		logoutButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Logout button pressed.
+				
+				// TODO: Confirmation message.
+				
+				// Switch to login screen.
+				showLoginScreen();
+			}
+		});
+		logoutButton.setBounds(324, 455, 120, 63);
+		operationContentPane.add(logoutButton);
+		
+		// Change frame pane to regular operation.
+		setContentPane(operationContentPane);
+		
+		// Refresh frame.
+		revalidate();
+		repaint();
+	}
+	
 }
