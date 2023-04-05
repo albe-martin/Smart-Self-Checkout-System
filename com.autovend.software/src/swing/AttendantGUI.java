@@ -19,8 +19,8 @@ public class AttendantGUI extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField txtUsername;
-	private JTextField textField;
+	private JTextField usernameTextField;
+	private JTextField passwordTextField;
 
 	/**
 	 * Launch the application.
@@ -51,35 +51,44 @@ public class AttendantGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Username:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel.setBounds(218, 296, 102, 47);
-		contentPane.add(lblNewLabel);
+		// Username label
+		JLabel usernameLabel = new JLabel("Username:");
+		usernameLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		usernameLabel.setBounds(218, 296, 102, 47);
+		contentPane.add(usernameLabel);
 		
-		txtUsername = new JTextField();
-		txtUsername.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		txtUsername.setBounds(330, 301, 192, 38);
-		contentPane.add(txtUsername);
-		txtUsername.setColumns(10);
+		// Username text field
+		usernameTextField = new JTextField();
+		usernameTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		usernameTextField.setBounds(330, 301, 192, 38);
+		contentPane.add(usernameTextField);
+		usernameTextField.setColumns(10);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		textField.setColumns(10);
-		textField.setBounds(330, 350, 192, 38);
-		contentPane.add(textField);
+		// Password label
+		JLabel passwordLabel = new JLabel("Password:");
+		passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		passwordLabel.setBounds(218, 345, 102, 47);
+		contentPane.add(passwordLabel);
 		
-		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblPassword.setBounds(218, 345, 102, 47);
-		contentPane.add(lblPassword);
+		// Password text field
+		passwordTextField = new JTextField();
+		passwordTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		passwordTextField.setColumns(10);
+		passwordTextField.setBounds(330, 350, 192, 38);
+		contentPane.add(passwordTextField);
 		
-		JButton btnNewButton = new JButton("Log In");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 25));
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton loginButton = new JButton("Log In");
+		loginButton.setFont(new Font("Tahoma", Font.PLAIN, 25));
+		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Login button pressed
+				
+				// Clear text fields
+				usernameTextField.setText("");
+				passwordTextField.setText("");
 			}
 		});
-		btnNewButton.setBounds(324, 424, 120, 63);
-		contentPane.add(btnNewButton);
+		loginButton.setBounds(324, 424, 120, 63);
+		contentPane.add(loginButton);
 	}
 }
