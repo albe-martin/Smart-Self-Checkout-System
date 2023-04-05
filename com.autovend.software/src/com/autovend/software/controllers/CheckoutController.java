@@ -120,13 +120,13 @@ public class CheckoutController {
 		// garbage collection will throw away the old objects, so implementing this way
 		// lets us re-use this for
 		// our constructor as well.
-		this.order = new LinkedHashMap<>();
-		this.cost = BigDecimal.ZERO;
-		this.amountPaid = BigDecimal.ZERO;
-		this.baggingItemLock = false;
+		order = new LinkedHashMap<>();
+		cost = BigDecimal.ZERO;
+		amountPaid = BigDecimal.ZERO;
+		baggingItemLock = false;
 		systemProtectionLock = false; // If the order is cleared, then nothing is at risk of damaging the station.
 		payingChangeLock = false;
-		HashSet<DeviceController> controllers = (HashSet<DeviceController>)this.registeredControllers.get("BaggingAreaController");
+		HashSet<DeviceController> controllers = (HashSet<DeviceController>)registeredControllers.get("BaggingAreaController");
 		for (DeviceController controller : controllers) {
 			((BaggingAreaController)controller).resetOrder();
 		}
@@ -163,7 +163,6 @@ public class CheckoutController {
 			}
 		}
 	}
-
 	public HashSet<DeviceController> getAllDeviceControllers() {
 		HashSet<DeviceController> out = new HashSet<>();
 		for (String key : this.registeredControllers.keySet()){
@@ -205,14 +204,7 @@ public class CheckoutController {
 	 * @param numBags The number of bags getting added
 	 */
 	public void purchaseBags(Product newBag, double weight, int numBags) {
-
-		if (newBag == null) {
-			return;
-		}
-		if (weight <= 0) {
-			return;
-		}
-		if (baggingItemLock || systemProtectionLock) {
+		if (newBag == null || weight <= 0 || baggingItemLock || systemProtectionLock) {
 			return;
 		}
 		// If customer gives 0 then return
@@ -220,11 +212,9 @@ public class CheckoutController {
 			System.out.println("No bags added!");
 			return;
 		}
-
 		// Add the cost of the new bag to the current cost.
 		BigDecimal bagCost = newBag.getPrice().multiply(BigDecimal.valueOf(numBags));
 		this.cost = this.cost.add(bagCost);
-
 		// Putting the bag information to the order
 		Number[] currentBagInfo = new Number[] { numBags, bagCost };
 		if (this.order.containsKey(newBag)) {
@@ -234,16 +224,11 @@ public class CheckoutController {
 			currentBagInfo = new Number[] { totalNumBags, totalBagCost };
 		}
 		this.order.put(newBag, currentBagInfo);
-
 		for (DeviceController baggingController : this.registeredControllers.get("BaggingAreaController")) {
-
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newBag, weight, true);
 		}
-
 		baggingItemLock = true;
-
 		System.out.println("Reusable bag has been added, you may continue.");
-
 	}
 
 	/*
@@ -254,11 +239,7 @@ public class CheckoutController {
 	 * Method to add items to the order
 	 */
 	public void addItem(Product newItem) {
-		if (baggingItemLock || systemProtectionLock) { return; }
-		if (newItem == null) {return;}
-		//If the source isn't a GUI controller or scanner registered, or the system is locked
-		//then just stop here.
-
+		if (baggingItemLock || systemProtectionLock || newItem == null) {return;}
 		//then go through the item and get its weight, either expected weight if it exists, or
 		//get the scale controller in the checkout to give us the weight for the PLU code based
 		//item.
@@ -288,7 +269,6 @@ public class CheckoutController {
 			Set<DeviceController> scaleController = registeredControllers.get("ScanningScaleController");
 			weight = ((ScanningScaleController) scaleController.stream().toList().get(0)).getCurrentWeight();
 			//adding the recorded weight on the current scale to the current item information
-			//todo: handle case where no items are on scale, also add rounding
 			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).add(BigDecimal.valueOf(weight));
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(
 					newItem.getPrice().multiply(BigDecimal.valueOf(weight))
@@ -309,14 +289,12 @@ public class CheckoutController {
 	public void addToAmountPaid(BigDecimal val) {
 		amountPaid = amountPaid.add(val);
 	}
-
 	public BigDecimal getRemainingAmount() {
 		return getCost().subtract(amountPaid);
 	}
 	/*
 	 * Methods used by BaggingAreaControllers
 	 */
-
 	/**
 	 * Method called by bagging area controllers which says to remove the lock on
 	 * the station if all controllers for that area agree the items in it are valid.
@@ -365,27 +343,19 @@ public class CheckoutController {
 		if (!registeredControllers.get("ReceiptPrinterController").isEmpty()) {
 			// call print receipt method in the ReceiptPrinterController class with the
 			// order details and cost
-
-			(
-					(ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()
-			).printReceipt(this.order, this.cost);
+			((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).printReceipt(this.order, this.cost);
 		}
 		clearOrder();
 	}
-
 	public boolean needPrinterRefill = false;
-
 	void printerOutOfResources() {
 		this.needPrinterRefill = true;
 	}
-
 	void printerRefilled() {
 		this.needPrinterRefill = false;
 	}
-
 	public void setOrder(LinkedHashMap<Product, Number[]> newOrd) {
 		this.order = newOrd;
-		
 		for (Map.Entry<Product, Number[]> entry: this.order.entrySet()) {
 			   Product product = entry.getKey();
 			   this.cost = this.cost.add(product.getPrice());
@@ -441,10 +411,8 @@ public class CheckoutController {
 			}
 		}
 	}
-
 	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
 		//todo: have it notify attendant and then try dispensing lower decrements (if possible),
-
 		if (controller instanceof BillDispenserController) {
 			System.out.println(String.format("Bill dispenser with denomination %s out of bills.", denom.toString()));
 		} else {
@@ -489,7 +457,6 @@ public class CheckoutController {
 
 		// let the customer know they can add their bags now
 		System.out.print("Add bags now\n");
-
 		// at this point, the customer IO must have signalled they are done adding bags
 		// to proceed
 		// GUI will implement this part to continue to next lines of code
@@ -556,7 +523,6 @@ public class CheckoutController {
 			if (item.isPerUnit()){
 				weight*=amount.doubleValue();
 			}
-
 			for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 				((BaggingAreaController) baggingController).updateExpectedBaggingArea(item, weight, false);
 			}
