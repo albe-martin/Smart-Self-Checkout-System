@@ -11,13 +11,13 @@ import com.autovend.devices.observers.AbstractDeviceObserver;
  * @param <O>
  */
 
-abstract class HumanGUIController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver>
+abstract class HumanIOController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver>
         extends DeviceController<D, O> {
 
     final String getTypeName(){
-        return "HumanGUIController";
+        return "HumanIOController";
     }
-    public HumanGUIController(D newDevice) {
+    public HumanIOController(D newDevice) {
         super(newDevice);
     }
 
