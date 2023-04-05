@@ -57,12 +57,10 @@ public abstract class DeviceController<D extends AbstractDevice<O>, O extends Ab
 		if (this.mainController != null) {
 			this.mainController.deregisterController(getTypeName(),this);
 		}
-		;
 		this.mainController = newMainController;
 		if (this.mainController != null) {
 			this.mainController.registerController(this.getTypeName(),this);
 		}
-		;
 	}
 
 	public void enableDevice() {

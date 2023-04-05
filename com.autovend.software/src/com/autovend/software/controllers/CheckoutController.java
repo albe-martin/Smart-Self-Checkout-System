@@ -28,12 +28,12 @@ import com.autovend.products.Product;
 @SuppressWarnings("rawtypes")
 
 public class CheckoutController {
-	//todo:
-	//comb through classes fields to update modifiers for them, getters and setters
+	//todo: comb through classes fields to update modifiers for them, getters and setters
 	//will be provided for testing purposes for fields where those are necessary.
 	private static int IDcounter = 1;
 	private int stationID = IDcounter++;
 	private LinkedHashMap<Product, Number[]> order;
+	private double latestWeight;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
 	private HashMap<String, Set<DeviceController>> registeredControllers;
@@ -43,11 +43,12 @@ public class CheckoutController {
 	public boolean baggingItemLock;
 	public boolean systemProtectionLock;
 	private boolean payingChangeLock;
-
-	/*
-	 * Boolean that indicates if an attendant has approved a certain action
-	 */
 	public boolean AttendantApproved = false;
+	private boolean isDisabled = false;
+	private boolean isDoingMaintenance = false;
+	private boolean isShutdown = false;
+
+	private SelfCheckoutStation checkoutStation;
 
 	// create map to store current weight in bagging area
 	private Map<BaggingAreaController, Double> weight = new HashMap<>();
@@ -73,6 +74,9 @@ public class CheckoutController {
 		registeredControllers.put("ChangeDispenserController", new HashSet<DeviceController>());
 	}
 	public CheckoutController(SelfCheckoutStation checkout) {
+		checkoutStation=checkout;
+		//todo: getters and setters for checkout
+
 		initControllers();
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
@@ -278,7 +282,7 @@ public class CheckoutController {
 		//TODO: Make changes to printer code to display kg for decimal values.
 
 		this.order.put(newItem, currentItemInfo);
-
+		this.latestWeight= (double) currentItemInfo[1];
 		for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newItem, weight, true);
 		}
@@ -502,11 +506,6 @@ public class CheckoutController {
 		return (HashSet) this.registeredControllers.get("BaggingAreaController");
 	}//todo: yeet this method
 
-	//todo:
-	//memberships and stuff, if valid, tell scanners and card reader that membership has been validated
-	//so they go back to normal function.
-	public void validateMembership(String number){
-	}
 
 	public void removeItemFromOrder(Product item, BigDecimal amount){
 		if (order.containsKey(item)){
@@ -527,5 +526,27 @@ public class CheckoutController {
 				((BaggingAreaController) baggingController).updateExpectedBaggingArea(item, weight, false);
 			}
 		}
+	}
+
+	public void signingInAsMember() {
+	}
+	//todo:
+	//memberships and stuff, if valid, tell scanners and card reader that membership has been validated
+	//so they go back to normal function.
+	public void validateMembership(String number){
+	}
+
+	public void enableAllDevices() {
+		//note: change behaviour depending on whether it was shut down or not for this
+		//and below method, also change how it starts up depending on those flags;
+	}
+
+	public void disableAllDevices() {
+	}
+
+	public void setMaintenence(boolean b) {
+	}
+
+	public void setShutdown(boolean b) {
 	}
 }

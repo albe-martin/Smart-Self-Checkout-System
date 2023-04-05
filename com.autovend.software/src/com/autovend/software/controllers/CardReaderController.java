@@ -91,8 +91,6 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 				this.bank = null;
 
 				this.isPaying = false;
-				// Clear bank and such if it fails to hold or not (might change this, I am tired
-				// rn so might be dumb here)
 			}
 		} else {
 			this.getMainController().validateMembership(data.getNumber());

@@ -104,14 +104,15 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 		for (Product product : order.keySet()) {
 			Number[] productInfo = order.get(product);
 
-			// We only need to focus on per-unit costs currently, weight-based will be
-			// handled later.
-			// if (product.isPerUnit()){
-			// going through the string and splitting to avoid writing too much
-			// on one line
 			String productName = product.getClass().getSimpleName();
-			String productString = String.format("%d $%.2f %dx %s\n", i, productInfo[1], productInfo[0].intValue(),
-					productName);
+			String productString;
+			if (product.isPerUnit()) {
+				productString = String.format("%d $%.2f %dx %s\n", i, productInfo[1], productInfo[0],
+						productName);
+			} else {
+				productString = String.format("%d $%.2f %dkg %s\n", i, productInfo[1], productInfo[0],
+						productName);
+			}
 			int splitPos = 59;
 			String splitterSubString = "-\n    -";
 			while (splitPos < productString.length() - 1) {// -1 to not worry about the \n at the end.
@@ -119,7 +120,7 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 						+ productString.substring(splitPos);
 				splitPos += 61;// 1 extra to account for \n being 1 character (prevents double-spacing of text)
 			}
-			// }
+
 			receipt.append(productString);
 			i++;
 		}
