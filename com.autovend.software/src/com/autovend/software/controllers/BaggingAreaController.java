@@ -51,7 +51,7 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	// that it works with
 	// more than just weight based bagging area devices (so it can implement more
 	// types of validation)
-	abstract void updateExpectedBaggingArea(Product nextProduct, double weightInGrams);
+	abstract void updateExpectedBaggingArea(Product nextProduct, double weightInGrams, boolean isAdding);
 
 	abstract public void resetOrder();
 

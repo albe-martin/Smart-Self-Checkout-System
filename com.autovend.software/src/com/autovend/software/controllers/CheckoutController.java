@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.autovend.devices.SelfCheckoutStation;
-import com.autovend.devices.observers.AbstractDeviceObserver;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
@@ -29,35 +28,20 @@ import com.autovend.products.Product;
 @SuppressWarnings("rawtypes")
 
 public class CheckoutController {
-
 	//todo:
 	//comb through classes fields to update modifiers for them, getters and setters
 	//will be provided for testing purposes for fields where those are necessary.
-
 	private static int IDcounter = 1;
 	private int stationID = IDcounter++;
-
 	private LinkedHashMap<Product, Number[]> order;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
-
-
 	private HashMap<String, Set<DeviceController>> registeredControllers;
 	//A hashmap which maps the simple names of controller classes to sets of
 	//that type of controller, this is just simpler and less tedious to program with.
 
-	//Controller used to get weight information from the scale in the scanning area
-	//TODO: Finish the body of this class
-
-	// Flag to prevent further addition of items if waiting to bag item or an
-	// invalid item was found in the bagging area.
 	public boolean baggingItemLock;
-
-	// Flag to lock processing in case of damage to station
-	// Specifically bagging area for this case, but could be used elsewhere if
-	// needed.
 	public boolean systemProtectionLock;
-
 	private boolean payingChangeLock;
 
 	/*
@@ -88,42 +72,35 @@ public class CheckoutController {
 		registeredControllers.put("ChangeSlotController", new HashSet<DeviceController>());
 		registeredControllers.put("ChangeDispenserController", new HashSet<DeviceController>());
 	}
-
-
 	public CheckoutController(SelfCheckoutStation checkout) {
 		initControllers();
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
-
 		this.registeredControllers.get("ItemAdderController").addAll(List.of(mainScannerController, handheldScannerController));
 
 		BaggingScaleController scaleController = new BaggingScaleController(checkout.baggingArea);
 		this.registeredControllers.get("BaggingAreaController").add(scaleController);
+
 		this.registeredControllers.get("ReceiptPrinterController").add(new ReceiptPrinterController(checkout.printer));
 
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
 		CardReaderController cardReaderController = new CardReaderController(checkout.cardReader);
-		this.registeredControllers.get("ValidPaymentControllers").addAll(
-				List.of(billPayController, coinPaymentController, cardReaderController)
-		);
+		this.registeredControllers.get("ValidPaymentControllers").addAll(List.of(billPayController, coinPaymentController, cardReaderController));
 
 		BillChangeSlotController billChangeSlotController = new BillChangeSlotController(checkout.billOutput);
 		CoinTrayController coinChangeSlotController = new CoinTrayController(checkout.coinTray);
+		this.registeredControllers.get("ChangeSlotController").addAll(List.of(billChangeSlotController, coinChangeSlotController));
 
-		this.registeredControllers.get("ChangeSlotController").addAll(
-				List.of(billChangeSlotController, coinChangeSlotController)
-		);
 		HashSet<ChangeDispenserController> changeDispenserControllers = new HashSet<>();
-
 		for (int denom : checkout.billDispensers.keySet()) {
 			changeDispenserControllers.add(new BillDispenserController(checkout.billDispensers.get(denom), BigDecimal.valueOf(denom)));
 		}
+
 		for (BigDecimal denom : checkout.coinDispensers.keySet()) {
 			changeDispenserControllers.add(new CoinDispenserController(checkout.coinDispensers.get(denom), denom) {});
 		}
 		registeredControllers.get("ChangeDispenserController").addAll(changeDispenserControllers);
-
 
 		// Add additional device peripherals for Customer I/O and Attendant I/O here
 		registerAll();
@@ -168,19 +145,16 @@ public class CheckoutController {
 	/**
 	 * Methods to register and deregister peripherals
 	 */
-
 	public void deregisterController(String typeName, DeviceController controller) {
 		Set<DeviceController> controllerSet = this.registeredControllers.get(typeName);
 		if (controllerSet==null){return;}
 		if (controllerSet.contains(controller)){controllerSet.remove(controller);}
 	}
-
 	public void registerController(String typeName, DeviceController controller) {
 		Set<DeviceController> controllerSet = this.registeredControllers.get(typeName);
 		if (controllerSet==null){return;}
 		if (!controllerSet.contains(controller)){controllerSet.add(controller);}
 	}
-
 	void registerAll() {
 		for (String key : this.registeredControllers.keySet()){
 			Set<DeviceController> controllerSet = this.registeredControllers.get(key);
@@ -219,22 +193,20 @@ public class CheckoutController {
 			int bagNumber = Integer.parseInt(response);
 			return bagNumber;
 		}
-
 	}
 
 	/**
 	 * Method to add reusable bags to the order after the customer signals to buy
 	 * bags TODO: Implement the bags being dispensed by the bag dispenser
 	 * 
-	 * @param adder   The ItemAdderController used to add the bag to the order
 	 * @param newBag  The product to be added to the current order
 	 * @param weight  The weight of the product to update the weight in the bagging
 	 *                area
 	 * @param numBags The number of bags getting added
 	 */
-	public void purchaseBags(ItemAdderController adder, Product newBag, double weight, int numBags) {
+	public void purchaseBags(Product newBag, double weight, int numBags) {
 
-		if ((!this.registeredControllers.get("ItemAdderController").contains(adder)) || newBag == null) {
+		if (newBag == null) {
 			return;
 		}
 		if (weight <= 0) {
@@ -265,7 +237,7 @@ public class CheckoutController {
 
 		for (DeviceController baggingController : this.registeredControllers.get("BaggingAreaController")) {
 
-			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newBag, weight);
+			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newBag, weight, true);
 		}
 
 		baggingItemLock = true;
@@ -281,11 +253,7 @@ public class CheckoutController {
 	/**
 	 * Method to add items to the order
 	 */
-	public void addItem(DeviceController source, Product newItem) {
-		Set<DeviceController> addControllers = this.registeredControllers.get("ItemAdderController");
-		Set<DeviceController> guiControllers = this.registeredControllers.get("GUIController");
-
-		if ((!addControllers.contains(source) && guiControllers.contains(source))) {return;}
+	public void addItem(Product newItem) {
 		if (baggingItemLock || systemProtectionLock) { return; }
 		if (newItem == null) {return;}
 		//If the source isn't a GUI controller or scanner registered, or the system is locked
@@ -332,7 +300,7 @@ public class CheckoutController {
 		this.order.put(newItem, currentItemInfo);
 
 		for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
-			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newItem, weight);
+			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newItem, weight, true);
 		}
 
 		baggingItemLock = true;
@@ -353,11 +321,7 @@ public class CheckoutController {
 	 * Method called by bagging area controllers which says to remove the lock on
 	 * the station if all controllers for that area agree the items in it are valid.
 	 */
-	public void baggedItemsValid(BaggingAreaController controller) {
-
-		if (!(this.registeredControllers.get("BaggingAreaController").contains(controller))) {
-			return;
-		}
+	public void baggedItemsValid() {
 		// looping over all bagging area controllers and checking if all of them say the
 		// contents are valid
 		// then we unlock the station.
@@ -371,20 +335,14 @@ public class CheckoutController {
 		baggingItemLock = unlockStation;
 	}
 
-	void baggedItemsInvalid(BaggingAreaController controller, String ErrorMessage) {
-		if (!(this.registeredControllers.get("BaggingAreaController").contains(controller))) {
-			return;
-		}
+	void baggedItemsInvalid(String ErrorMessage) {
 		// inform the I/O for both customer and attendant from the error message, this
 		// is a placeholder currently.
 		System.out.println(ErrorMessage);
 		// TODO: Lock system out of processing payments if error in bagging area occurs
 	}
 
-	void baggingAreaError(BaggingAreaController controller, String ErrorMessage) {
-		if (!(this.registeredControllers.get("BaggingAreaController").contains(controller))) {
-			return;
-		}
+	void baggingAreaError(String ErrorMessage) {
 		// inform the I/O for both customer and attendant from the error message
 		System.out.println(ErrorMessage);
 		this.systemProtectionLock = true;
@@ -395,10 +353,7 @@ public class CheckoutController {
 	// (eg: if the weight was reduced to below the threshold so its no longer at
 	// risk of damaging the system)
 	// then the error will be cleared.
-	void baggingAreaErrorEnded(BaggingAreaController controller, String OutOfErrorMessage) {
-		if (!(this.registeredControllers.get("BaggingAreaController").contains(controller))) {
-			return;
-		}
+	void baggingAreaErrorEnded(String OutOfErrorMessage) {
 		this.systemProtectionLock = false;
 	}
 
@@ -420,17 +375,11 @@ public class CheckoutController {
 
 	public boolean needPrinterRefill = false;
 
-	void printerOutOfResources(ReceiptPrinterController controller) {
-		if (!registeredControllers.get("ReceiptPrinterController").contains(controller)) {
-			return;
-		}
+	void printerOutOfResources() {
 		this.needPrinterRefill = true;
 	}
 
-	void printerRefilled(ReceiptPrinterController controller) {
-		if (!registeredControllers.get("ReceiptPrinterController").contains(controller)) {
-			return;
-		}
+	void printerRefilled() {
 		this.needPrinterRefill = false;
 	}
 
@@ -446,7 +395,6 @@ public class CheckoutController {
 	/**
 	 * Methods to control the PaymentController
 	 */
-
 	void completePayment() {
 		if (this.baggingItemLock || this.systemProtectionLock) {
 			return;
@@ -462,16 +410,13 @@ public class CheckoutController {
 		if (this.cost.compareTo(this.amountPaid) < 0) {
 			this.payingChangeLock = true;
 			// This code is inefficient and could be better, too bad!
-			dispenseChange((ChangeSlotController) this.registeredControllers.get("ChangeSlotController").iterator().next());
+			dispenseChange();
 		} else {
 			printReceipt();
 		}
 	}
 
-	void dispenseChange(ChangeSlotController controller) {
-		if (!registeredControllers.get("ChangeSlotController").contains(controller)) {
-			return;
-		}
+	void dispenseChange() {
 		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
 			ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next();
 			printerController.printReceipt(this.order, this.cost);
@@ -499,9 +444,6 @@ public class CheckoutController {
 
 	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
 		//todo: have it notify attendant and then try dispensing lower decrements (if possible),
-		if (!registeredControllers.get("ChangeDispenserControllers").contains(controller)) {
-			return;
-		}
 
 		if (controller instanceof BillDispenserController) {
 			System.out.println(String.format("Bill dispenser with denomination %s out of bills.", denom.toString()));
@@ -561,6 +503,7 @@ public class CheckoutController {
 			double current = scale.getCurrentWeight();
 			weightWithBags.put(((BaggingAreaController) baggingController), current);
 		}
+
 		// at this point the system signals to the attendant IO and locks
 		systemProtectionLock = true;
 		// if the attendant approves adding bags, the system is unblocked
@@ -590,5 +533,33 @@ public class CheckoutController {
 	}
 	public HashSet<BaggingAreaController> getValidBaggingControllers() {
 		return (HashSet) this.registeredControllers.get("BaggingAreaController");
+	}//todo: yeet this method
+
+	//todo:
+	//memberships and stuff, if valid, tell scanners and card reader that membership has been validated
+	//so they go back to normal function.
+	public void validateMembership(String number){
+	}
+
+	public void removeItemFromOrder(Product item, BigDecimal amount){
+		if (order.containsKey(item)){
+			Number[] currentItemInfo = order.get(item);
+			amount = amount.min((BigDecimal) currentItemInfo[0]);
+			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).subtract(amount);
+			if (((BigDecimal)currentItemInfo[0]).compareTo(BigDecimal.ZERO)==1) {
+				currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).subtract(item.getPrice().multiply(amount));
+				order.put(item, currentItemInfo);
+			} else {
+				order.remove(item);
+			}
+			double weight = amount.doubleValue();
+			if (item.isPerUnit()){
+				weight*=amount.doubleValue();
+			}
+
+			for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
+				((BaggingAreaController) baggingController).updateExpectedBaggingArea(item, weight, false);
+			}
+		}
 	}
 }

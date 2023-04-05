@@ -23,6 +23,8 @@ import com.autovend.devices.observers.BarcodeScannerObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 
+import java.util.stream.Collectors;
+
 /**
  * Controller for the barcode scanner, communicates with main checkout
  * controller to add items to order.
@@ -48,10 +50,10 @@ public class BarcodeScannerController extends ItemAdderController<BarcodeScanner
 		if (isScanningItems) {
 			BarcodedProduct scannedItem = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
 			if (scannedItem != null) {
-				this.getMainController().addItem(this, scannedItem);
+				this.getMainController().addItem(scannedItem);
 			}
 		} else {
-			//todo: main controller handling memberships
+			this.getMainController().validateMembership(String.join("",barcode.digits().stream().map(i->i.toString()).collect(Collectors.toList())));
 		}
 	}
 }

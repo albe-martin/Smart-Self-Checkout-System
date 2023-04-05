@@ -20,4 +20,5 @@ abstract class HumanGUIController<D extends AbstractDevice<O>, O extends Abstrac
     public HumanGUIController(D newDevice) {
         super(newDevice);
     }
+
 }

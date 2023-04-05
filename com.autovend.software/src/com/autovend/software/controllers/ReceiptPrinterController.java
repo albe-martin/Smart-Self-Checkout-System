@@ -141,7 +141,7 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 			System.out.println("The receipt is too long.");
 		} catch (EmptyException e) {
 			System.out.println("The printer is out of paper or ink.");
-			this.getMainController().printerOutOfResources(this);
+			this.getMainController().printerOutOfResources();
 		}
 
 		if (estimatedInk <= 500) {
@@ -163,13 +163,13 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	@Override
 	public void reactToOutOfPaperEvent(ReceiptPrinter printer) {
 		estimatedPaper = 0;
-		this.getMainController().printerOutOfResources(this);
+		this.getMainController().printerOutOfResources();
 	}
 
 	@Override
 	public void reactToOutOfInkEvent(ReceiptPrinter printer) {
 		estimatedInk = 0;
-		this.getMainController().printerOutOfResources(this);
+		this.getMainController().printerOutOfResources();
 	}
 	final String getTypeName(){
 		return "ReceiptPrinterController";
@@ -177,12 +177,12 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 
 	@Override
 	public void reactToPaperAddedEvent(ReceiptPrinter printer) {
-		this.getMainController().printerRefilled(this);
+		this.getMainController().printerRefilled();
 	}
 
 	@Override
 	public void reactToInkAddedEvent(ReceiptPrinter printer) {
-		this.getMainController().printerRefilled(this);
+		this.getMainController().printerRefilled();
 	}
 
 }
