@@ -57,11 +57,11 @@ public class AttendantGUI extends JFrame implements ActionListener {
 			public void run() {
 				try {
 					// French language demo (to be removed for final project).
-					HashMap<String, String> french = new HashMap<>();
-					french.put("Username:", "Baguette:");
-					french.put("Password:", "Bonjour:");
-					french.put("Log In", "Paris");
-					Language.addLanguage("French", french);
+//					HashMap<String, String> french = new HashMap<>();
+//					french.put("Username:", "Baguette:");
+//					french.put("Password:", "Bonjour:");
+//					french.put("Log In", "Paris");
+//					Language.addLanguage("French", french);
 					
 					// Create attendant GUI
 					AttendantGUI frame = new AttendantGUI("English", new String[] {"English", "French"});
