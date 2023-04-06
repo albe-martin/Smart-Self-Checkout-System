@@ -176,6 +176,13 @@ public class CheckoutController {
 	}
 
 	/**
+	 * A different variant of getAllDeviceControllers
+	 */
+	public HashMap<String, Set<DeviceController>> getAllDeviceControllersRevised(){
+		return this.registeredControllers;
+	}
+
+	/**
 	 * A method to get the number of bags from the customer response
 	 * 
 	 * @return number of bags
@@ -505,22 +512,11 @@ public class CheckoutController {
 		for (DeviceController baggingController : baggingControllers) {
 			BaggingScaleController scale = (BaggingScaleController) baggingController;
 			scale.setAddingBags(true);
-			// Idea: In the setAddingBags method in BaggingScaleController:
-			// 		 If 'value' is true, store the current weight 'W' on the scale.
-			//  	 If 'value' is false, set the expected weight to 'W'.
-			// 		 In the (currently nonexistent) setExpectedWeight method:
-			//  	 If currentWeight != expectedWeight: lock the system and signal the attendant.
+			scale.saveCurrentWeight();
 		}
 
 		// GUI: Signal to customer to add bags, and simultaneously give the customer an option to signal that they are done adding bags.
 
-		for (DeviceController baggingController : baggingControllers) {
-			BaggingScaleController scale = (BaggingScaleController) baggingController;
-			scale.setAddingBags(false); // If the above idea is implemented, this will automatically signal the attendant.
-		}
-
-		// At this point, the system is locked and the customer is waiting for an attendant to come resolve the discrepancy.
-		// Anything past this point is unrelated to adding bags and should be handled in other methods (probably in an AttendantIO class).
 	}
 
 	public Map<BaggingAreaController, Double> getWeight() {
