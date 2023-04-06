@@ -32,6 +32,9 @@ public class Language {
 		put("Exit", new HashMap<>(){{
 			put("English", "Exit");
 		}});
+		put("Select Language", new HashMap<>(){{
+			put("English", "Select Language");
+		}});
 	}};
 
 	/**

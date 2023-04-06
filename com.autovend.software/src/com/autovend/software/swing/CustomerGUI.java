@@ -65,10 +65,13 @@ public class CustomerGUI extends JFrame {
 		
 		// Create start screen pane.
 		JPanel startContentPane = new JPanel();
-		startContentPane.setLayout(new GridLayout());
+		startContentPane.setLayout(null);
+		startContentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		ImageIcon startImage = new ImageIcon(getClass().getResource("resources/start.png"));
 		
 		// Create login button.
-		JButton startButton = new JButton(new ImageIcon(getClass().getResource("resources/start.png")));
+		JButton startButton = new JButton(startImage);
 		startButton.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -78,8 +81,26 @@ public class CustomerGUI extends JFrame {
 				showOperationScreen();
 			}
 		});
+
+		startButton.setBounds(200, 200, startImage.getIconWidth(), startImage.getIconHeight());
 //		startButton.setIcon(new ImageIcon("~/Desktop/start.png"));
 		startContentPane.add(startButton);
+
+		JButton languageSelectButton = new JButton(Language.translate(language, "Select Language"));
+		languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		languageSelectButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// set users language
+				// pop up to give different languages to select from?
+				String newLanguage = "English";
+
+				language = newLanguage;
+				// will have to update select language button and start button text's with new language text after switching
+			}
+		});
+		languageSelectButton.setBounds(this.getWidth()/2 - 75, 500, 150, 50);
+
+		startContentPane.add(languageSelectButton);
 		
 		// Change frame pane to login.
 		setContentPane(startContentPane);
