@@ -320,7 +320,7 @@ public class AddItemTest {
 	public void testAddItem() {
 
 		// Adds item
-		checkoutController.addItem(scannerController, databaseItem1);
+		checkoutController.addItem(databaseItem1);
 
 		// Adds the cost of the first item to the total
 		BigDecimal total = databaseItem1.getPrice();
@@ -332,10 +332,10 @@ public class AddItemTest {
 		assertEquals(total, checkoutController.getCost());
 
 		// Unblocks the station and lets a new item be scanned
-		checkoutController.baggedItemsValid(scaleController);
+		checkoutController.baggedItemsValid();
 
 		// Adds a second item
-		checkoutController.addItem(scannerController, databaseItem2);
+		checkoutController.addItem(databaseItem2);
 
 		// Adds the cost of the second item to the total
 		total = total.add(databaseItem2.getPrice());
@@ -363,7 +363,7 @@ public class AddItemTest {
 
 
 		// Scan item with negative weight
-		checkoutController.addItem(scannerController, databaseItem3);
+		checkoutController.addItem(databaseItem3);
 
 		// Item should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -372,7 +372,7 @@ public class AddItemTest {
 		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
 
 		// Scan null item
-		checkoutController.addItem(scannerController, null);
+		checkoutController.addItem(null);
 
 		// Item should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -391,17 +391,17 @@ public class AddItemTest {
 	public void testGetRemainingAmount() {
 
 		// First Item is scanned
-		checkoutController.addItem(scannerController, databaseItem1);
+		checkoutController.addItem(databaseItem1);
 
 		// Adds the cost of the first item to the total
 		BigDecimal total = databaseItem1.getPrice();
 
 		// Simulates the item being put on the bagging area and lets us scan another
 		// item.
-		checkoutController.baggedItemsValid(scaleController);
+		checkoutController.baggedItemsValid();
 
 		// First item is added
-		checkoutController.addItem(scannerController, databaseItem2);
+		checkoutController.addItem(databaseItem2);
 
 		// Adds the cost of the second item to the total
 		total = total.add(databaseItem2.getPrice());
@@ -453,7 +453,7 @@ public class AddItemTest {
 		checkoutController.baggingItemLock = true;
 
 		// Adds item
-		checkoutController.addItem(scannerController, databaseItem1);
+		checkoutController.addItem(databaseItem1);
 
 		// Item should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -468,7 +468,7 @@ public class AddItemTest {
 		checkoutController.systemProtectionLock = true;
 
 		// Adds item
-		checkoutController.addItem(scannerController, databaseItem1);
+		checkoutController.addItem(databaseItem1);
 
 		// Item should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -486,7 +486,7 @@ public class AddItemTest {
 	public void testInvalidItemControllerAdder() {
 
 		// addItem is called with an invalid ItemControllerAdder
-		checkoutController.addItem(null, databaseItem1);
+		checkoutController.addItem(null);
 
 		// Item should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -506,7 +506,7 @@ public class AddItemTest {
 		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Add the same bag to the order
-		checkoutController.addItem(scannerController, databaseItem1);
+		checkoutController.addItem(databaseItem1);
 
 		// Adds the cost of the first item to the total
 		BigDecimal total = databaseItem1.getPrice();
@@ -516,10 +516,10 @@ public class AddItemTest {
 		assertEquals(total, checkoutController.getCost());
 
 		// Unblocks the station and lets a new item be scanned
-		checkoutController.baggedItemsValid(scaleController);
+		checkoutController.baggedItemsValid();
 
 		// Add another of the same item to the order
-		checkoutController.addItem(scannerController, databaseItem1);
+		checkoutController.addItem(databaseItem1);
 
 		// Adds the cost of the second item to the total
 		total = total.add(databaseItem1.getPrice());
