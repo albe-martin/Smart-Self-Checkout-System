@@ -6,48 +6,31 @@ import java.util.HashMap;
  * Class used for translating the programmers (english) text to the customer's desired language
  */
 public class Language {
-	public static String[] languages = new String[] {"English", "French"};
+	// public static String[] languages = new String[] {"English", "French"};
 
 	// Map looks like {
-	//   	programmer's text: {
-	//   		language: that language's text,
-	//   		language2: another language's text
+	//   	language: {
+	//   		text1: translation,
+	//   		text2: translation
 	// 		}
-	// 	 	another text for another component: {
-	// 	 		language: that language's text,
-	// 	 		language2: another language's text
+	// 	 	language2: {
+	// 	 		text1: translation,
+	// 	 		text2: translation
 	// 		}
 	// 	 }
-	public static HashMap<String, HashMap<String, String>> languageBank = new HashMap<>() {{
-		put("Log In", new HashMap<>(){{
-			put("English", "Log In");
-			put("French", "Paris");
+	private static final HashMap<String, HashMap<String, String>> languageBank = new HashMap<>() {{
+			put("English", new HashMap<>(){{
+				put("Log In", "Log In");
+				put("Log Out", "Log Out");
+				put("Username:", "Username:");
+				put("Password:", "Password:");
+				put("Exit", "Exit");
+				put("Select Language", "Select Language");
 		}});
-		put("Log Out", new HashMap<>(){{
-			put("English", "Log Out");
-		}});
-		put("Username:", new HashMap<>(){{
-			put("English", "Username:");
-			put("French", "Baguette");
-		}});
-		put("Password:", new HashMap<>(){{
-			put("English", "Password:");
-			put("French:", "Bonjour:");
-		}});
-		put("Exit", new HashMap<>(){{
-			put("English", "Exit");
-		}});
-		put("Select Language", new HashMap<>(){{
-			put("English", "Select Language");
-		}});
-
-
-
 	}};
 
 	/**
-	 * Translates the text to the desired language.
-	 * 
+	 * Translates the programmers (english) text to the translation of said language, if it exists.
 	 * @param language
 	 * 			The language to translate to.
 	 * @param text
@@ -56,23 +39,21 @@ public class Language {
 	 * 			The translated text.
 	 */
 	public static String translate(String language, String text) {
-		if (language == null || text == null) throw new NullPointerException("Language and text cannot be null!");
-		// that text has no translations! return original text (can change depending on what should happen)
-		if (!languageBank.containsKey(text)) return text;
-		// that translation for that text doesn't exist! return original text (can change depending on what should happen)
-		if (!languageBank.get(text).containsKey(language)) return text;
-		return languageBank.get(text).get(language);
+		if (language == null || text == null) throw new NullPointerException("Language and text params cannot be null!");
+		// that language has no translations! return original text (can change depending on what should happen)
+		if (!languageBank.containsKey(language)) return text;
+		// that translation for that language doesn't exist! return original text (can change depending on what should happen)
+		if (!languageBank.get(language).containsKey(text)) return text;
+		return languageBank.get(language).get(text);
 	}
-	
+
 	/**
-	 * Add a new language to the translator HashMap.
-	 * 
-	 * @param language
-	 * 			Name of the new language.
-	 * @param translations
-	 * 			HashMap of direct translations from English to the given language.
+	 * Adds a new language to the languageBank, with all of its translations
+	 * @param language the language the translations are in
+	 * @param translations the HashMap of all the translations
 	 */
-//	public static void addLanguage(String language, HashMap<String, String> translations) {
-//		languageBank.put(language.toLowerCase(), translations);
-//	}
+	public static void addLanguage(String language, HashMap<String, String> translations) {
+		if (language == null || translations == null) throw new NullPointerException("language and translations params cannot be null!");
+		languageBank.put(language, translations);
+	}
 }
