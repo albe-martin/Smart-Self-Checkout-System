@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -90,10 +91,11 @@ public class AttendantGUI extends JFrame {
 		loginContentPane.add(passwordLabel);
 		
 		// Create password text field.
-		JTextField passwordTextField = new JTextField();
+		JPasswordField passwordTextField = new JPasswordField();
 		passwordTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		passwordTextField.setColumns(10);
 		passwordTextField.setBounds(330, 350, 192, 38);
+		passwordTextField.setEchoChar('*');
 		loginContentPane.add(passwordTextField);
 		
 		// Create login button.
