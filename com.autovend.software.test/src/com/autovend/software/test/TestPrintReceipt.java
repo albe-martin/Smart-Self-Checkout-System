@@ -60,7 +60,7 @@ public class TestPrintReceipt {
 		testPrinter = new ReceiptPrinter();
 		testReceiptPrinterController = new ReceiptPrinterController(testPrinter);
 		checkoutController = new CheckoutController();
-		checkoutController.registerReceiptPrinter(testReceiptPrinterController);
+		checkoutController.registerController("ReceiptPrinterController", testReceiptPrinterController);
 		testReceiptPrinterController.setMainController(checkoutController);
 
 		// Create 3 test items

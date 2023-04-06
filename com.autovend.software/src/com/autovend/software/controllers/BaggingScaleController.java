@@ -21,7 +21,7 @@ import com.autovend.devices.ElectronicScale;
 import com.autovend.devices.observers.ElectronicScaleObserver;
 import com.autovend.products.Product;
 
-public class ElectronicScaleController extends BaggingAreaController<ElectronicScale, ElectronicScaleObserver>
+public class BaggingScaleController extends BaggingAreaController<ElectronicScale, ElectronicScaleObserver>
 		implements ElectronicScaleObserver {
 	private double currentWeight;
 	private double expectedWeight;
@@ -29,7 +29,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 
 	private boolean AttendantApproval;
 
-	public ElectronicScaleController(ElectronicScale newDevice) {
+	public BaggingScaleController(ElectronicScale newDevice) {
 		super(newDevice);
 	}
 
@@ -40,8 +40,12 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 	 * @param weightInGrams
 	 */
 	@Override
-	void updateExpectedBaggingArea(Product nextProduct, double weightInGrams) {
-		this.expectedWeight += weightInGrams;
+	void updateExpectedBaggingArea(Product nextProduct, double weightInGrams, boolean isAdding) {
+		if (isAdding) {
+			this.expectedWeight += weightInGrams;
+		} else {
+			this.expectedWeight -= weightInGrams;
+		}
 		this.setBaggingValid(false);
 		// TODO: Figure out how changes smaller than sensitivity would be handled
 		// TODO: Also figure out how items which would cause the scale to be overloaded
@@ -73,7 +77,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 			return;
 		}
 		if (this.currentWeight == this.expectedWeight) {
-			this.getMainController().baggedItemsValid(this);
+			this.getMainController().baggedItemsValid();
 		}
 		// case of weight discrepancy
 		else {
@@ -94,12 +98,11 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 
 			// validates bagging if the discrepancy was resolved
 			if (resolveDiscrepancy) {
-				this.getMainController().baggedItemsValid(this);
+				this.getMainController().baggedItemsValid();
 				this.getMainController().baggingItemLock = false;
 			}
 			else {
-			this.getMainController().baggedItemsInvalid(this,
-					"The items in the bagging area don't have the correct weight.");
+			this.getMainController().baggedItemsInvalid("The items in the bagging area don't have the correct weight.");
 			}
 
 		}
@@ -111,8 +114,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 			return;
 		}
 		;
-		this.getMainController().baggingAreaError(this,
-				"The scale is currently overloaded, please take items off it to avoid damaging the system.");
+		this.getMainController().baggingAreaError("The scale is currently overloaded, please take items off it to avoid damaging the system.");
 	}
 
 	@Override
@@ -121,7 +123,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 			return;
 		}
 		;
-		this.getMainController().baggingAreaErrorEnded(this, "The scale is no longer overloaded.");
+		this.getMainController().baggingAreaErrorEnded("The scale is no longer overloaded.");
 	}
 
 	public double getCurrentWeight() {

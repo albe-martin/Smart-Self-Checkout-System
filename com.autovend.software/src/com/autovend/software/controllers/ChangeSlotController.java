@@ -26,21 +26,7 @@ abstract public class ChangeSlotController<D extends AbstractDevice<O>, O extend
 		super(newDevice);
 	}
 
-	private CheckoutController mainController;
-
-	final CheckoutController getMainController() {
-		return this.mainController;
-	};
-
-	final void setMainController(CheckoutController newMainController) {
-		if (this.mainController != null) {
-			this.mainController.deregisterChangeSlotController(this);
-		}
-		;
-		this.mainController = newMainController;
-		if (this.mainController != null) {
-			this.mainController.registerChangeSlotController(this);
-		}
-		;
+	final String getTypeName(){
+		return "ChangeSlotController";
 	}
 }

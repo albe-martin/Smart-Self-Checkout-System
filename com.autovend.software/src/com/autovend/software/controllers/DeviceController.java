@@ -24,7 +24,7 @@ import com.autovend.devices.observers.AbstractDeviceObserver;
 
 public abstract class DeviceController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver> {
 	private D device;
-
+	private CheckoutController mainController;
 	public D getDevice() {
 		return this.device;
 	}
@@ -32,6 +32,7 @@ public abstract class DeviceController<D extends AbstractDevice<O>, O extends Ab
 	public DeviceController(D newDevice) {
 		this.device = newDevice;
 		this.device.register((O) this);
+		mainController=null;
 	}
 
 	public void setDevice(D newDevice) {
@@ -41,6 +42,24 @@ public abstract class DeviceController<D extends AbstractDevice<O>, O extends Ab
 		this.device = newDevice;
 		if (device != null) {
 			this.device.register((O) this);
+		}
+	}
+
+	abstract String getTypeName();
+	//This is used as an identifier for the type of controller, for a single unified controller
+	//hashset in the checkout controller, which cuts down its length but
+	//around half.
+
+	public final CheckoutController getMainController() {
+		return this.mainController;
+	};
+	public final void setMainController(CheckoutController newMainController) {
+		if (this.mainController != null) {
+			this.mainController.deregisterController(getTypeName(),this);
+		}
+		this.mainController = newMainController;
+		if (this.mainController != null) {
+			this.mainController.registerController(this.getTypeName(),this);
 		}
 	}
 
