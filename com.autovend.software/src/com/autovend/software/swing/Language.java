@@ -3,7 +3,7 @@ package com.autovend.software.swing;
 import java.util.HashMap;
 
 /**
- * Class used for translating the programmers (english) text to the customer's desired language.
+ * Class used for translating the programmers (english) text to the customer's desired language
  */
 public class Language {
 	// Map looks like: {language: "English text", "translation"}
