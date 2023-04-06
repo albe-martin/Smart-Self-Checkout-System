@@ -1,6 +1,7 @@
 package com.autovend.software.swing;
 
 import java.awt.EventQueue;
+//github.com/KittenInAMitten/SENG300-iteration-3
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -42,7 +44,7 @@ public class AttendantGUI extends JFrame implements ActionListener {
 	
 	// Components
 	private JTextField usernameTextField;
-	private JTextField passwordTextField;
+	private JPasswordField passwordTextField;
 	private LanguageSelectorPopup languageSelector;
 
 	/**
@@ -96,8 +98,6 @@ public class AttendantGUI extends JFrame implements ActionListener {
 	 * Switches to the login screen.
 	 */
 	public void showLoginScreen() {
-		// TODO: Language selector.
-		
 		// Create login screen pane.
 		JPanel loginContentPane = new JPanel();
 		loginContentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -123,10 +123,11 @@ public class AttendantGUI extends JFrame implements ActionListener {
 		loginContentPane.add(passwordLabel);
 		
 		// Create password text field.
-		passwordTextField = new JTextField();
+		passwordTextField = new JPasswordField();
 		passwordTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		passwordTextField.setColumns(10);
 		passwordTextField.setBounds(330, 350, 192, 38);
+		passwordTextField.setEchoChar('*');
 		loginContentPane.add(passwordTextField);
 		
 		// Create login button.
@@ -151,6 +152,9 @@ public class AttendantGUI extends JFrame implements ActionListener {
 		// Refresh frame.
 		revalidate();
 		repaint();
+		
+		// Set mode
+		mode = Modes.LOGIN_SCREEN;
 	}
 	
 	/**
@@ -176,6 +180,9 @@ public class AttendantGUI extends JFrame implements ActionListener {
 		// Refresh frame.
 		revalidate();
 		repaint();
+		
+		// Set mode
+		mode = Modes.OPERATION_SCREEN;
 	}
 	
 	/**
