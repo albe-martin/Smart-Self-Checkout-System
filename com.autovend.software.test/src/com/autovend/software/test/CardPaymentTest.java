@@ -87,7 +87,7 @@ public class CardPaymentTest {
         controllerStub = new CheckoutController();
         cardReaderStub = new CardReader();
         readerControllerStub = new CardReaderController(cardReaderStub);
-        controllerStub.registerPaymentController(readerControllerStub);
+        controllerStub.registerController("PaymentController", readerControllerStub);
         readerControllerStub.disableDevice();
         readerControllerStub.setMainController(controllerStub);
     }

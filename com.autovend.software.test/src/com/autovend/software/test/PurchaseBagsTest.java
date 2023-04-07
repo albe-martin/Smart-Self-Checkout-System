@@ -134,10 +134,10 @@ public class PurchaseBagsTest {
 	@Test
 	public void testPurchaseBags_0Bags() {
 
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), 0);
+		checkoutController.purchaseBags(newBag, validUnit.getWeight(), 0);
 
 		// Unblocks the station and lets a new item be scanned
-		checkoutController.baggedItemsValid(scaleController);
+		checkoutController.baggedItemsValid();
 
 		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
 	}
@@ -157,11 +157,11 @@ public class PurchaseBagsTest {
 		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Add the bag to the order
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(newBag, validUnit.getWeight(), numBags);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(numBags)));
 
 		// Unblocks the station and lets a new item be scanned
-		checkoutController.baggedItemsValid(scaleController);
+		checkoutController.baggedItemsValid();
 
 		// Check that the bag number and cost in the order were updated correctly
 		assertEquals(numBags, order.get(newBag)[0]);
@@ -184,25 +184,25 @@ public class PurchaseBagsTest {
 		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Purchase 2 bags
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), 2);
+		checkoutController.purchaseBags(newBag, validUnit.getWeight(), 2);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(2)));
 
 		// Unblocks the station and lets a new bag be scanned
-		checkoutController.baggedItemsValid(scaleController);
+		checkoutController.baggedItemsValid();
 
 		// Purchase 1 bag
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), 1);
+		checkoutController.purchaseBags(newBag, validUnit.getWeight(), 1);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(1)));
 
 		// Unblocks the station and lets a new bag be scanned
-		checkoutController.baggedItemsValid(scaleController);
+		checkoutController.baggedItemsValid();
 
 		// Purchase 1 bag
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), 1);
+		checkoutController.purchaseBags(newBag, validUnit.getWeight(), 1);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(1)));
 
 		// Unblocks the station and lets a new bag be scanned
-		checkoutController.baggedItemsValid(scaleController);
+		checkoutController.baggedItemsValid();
 
 		// Checking that the bags were added to the order with correct bag numbers and
 		// cost
@@ -222,7 +222,7 @@ public class PurchaseBagsTest {
 		checkoutController.baggingItemLock = true;
 
 		// Adds Bag
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(newBag, validUnit.getWeight(), numBags);
 
 		// Bag should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -237,7 +237,7 @@ public class PurchaseBagsTest {
 		checkoutController.systemProtectionLock = true;
 
 		// Adds the bag
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(newBag, validUnit.getWeight(), numBags);
 
 		// Bag should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -255,7 +255,7 @@ public class PurchaseBagsTest {
 		int numBags = 2;
 
 		// purchaseBags is called with an invalid ItemControllerAdder
-		checkoutController.purchaseBags(null, newBag, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(null, validUnit.getWeight(), numBags);
 
 		// Bag should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -274,7 +274,7 @@ public class PurchaseBagsTest {
 		int numBags = 2;
 
 		// Scan bag with negative weight
-		checkoutController.purchaseBags(scannerController, newBag, -1, numBags);
+		checkoutController.purchaseBags(newBag, -1, numBags);
 
 		// Bag should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -283,7 +283,7 @@ public class PurchaseBagsTest {
 		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
 
 		// Scan null bag
-		checkoutController.purchaseBags(scannerController, null, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(null, validUnit.getWeight(), numBags);
 
 		// Bag should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -301,7 +301,7 @@ public class PurchaseBagsTest {
 		int numBags = 2;
 
 		// purchaseBags is called with an invalid ItemControllerAdder and null bag
-		checkoutController.purchaseBags(null, null, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(null, validUnit.getWeight(), numBags);
 
 		// Bag should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());

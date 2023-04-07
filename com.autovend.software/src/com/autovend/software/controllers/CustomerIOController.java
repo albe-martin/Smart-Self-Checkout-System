@@ -88,6 +88,59 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
         // tell main controller to not bag a certain product, need to modify checkout controller
         // for this
     }
+    
+    /**
+     * Registers an Attendant's IO Controller into CustomerIO Controller if not already assigned one.
+     * @param IOController
+     * 		The Attendant Station's IO Controller to add.
+     * @throws IllegalStateException
+     * 		When a Checkout station is already assigned to an attendant station.
+     */
+    void registerAttendant(AttendantIOController IOController) throws IllegalStateException{
+    	if(this.getMainController().getSupervisor() == 0) {
+    		this.getMainController().registerController("AttendantIOController", IOController);
+    		this.getMainController().setSupervisor(IOController.getID());
+    	} else {
+    		throw new IllegalStateException("Checkout Station is already assigned to an Attendant Station.");
+    	}
+    }
+    
+    /**
+     * Deregisters an Attendant's IO Controller into CustomerIO Controller.
+     * @param IOController
+     * 		The attendant station's IO controller
+     * @throws IllegalStateException
+     * 		If the attendant station is not supervising this checkout station OR
+     * 		if this checkout station is not being supervised.
+     * 
+     */
+    void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
+    	if(this.getMainController().getSupervisor() != 0) {
+    		if(this.getMainController().getControllersByType("AttendantIOControllers").contains(IOController)) {
+    	    	this.getMainController().deregisterController("AttendantIOController", IOController);
+        		this.getMainController().setSupervisor(0);
+    		}
+    		else {
+    			throw new IllegalStateException("This Checkout Station is not assigned to this Attendant Station");
+    		}
+    	} else {
+    		throw new IllegalStateException("Checkout Station is not assigned to an Attendant Station."); 
+    	}
+    }
+    
+    /**
+     * Signals GUI to terminate (since it is turning off).
+     */
+    void notifyShutdown() {
+    	
+    }
+    
+    /**
+     * Signals GUI to start GUI.
+     */
+    void notifyStartup() {
+    	
+    }
 
 
     //this method is used to display that there is a bagging discrepancy
