@@ -78,6 +78,7 @@ public class CheckoutController {
 		registeredControllers.put("ReceiptPrinterController", new HashSet<DeviceController>());
 		registeredControllers.put("ChangeSlotController", new HashSet<DeviceController>());
 		registeredControllers.put("ChangeDispenserController", new HashSet<DeviceController>());
+		registeredControllers.put("ValidPaymentControllers", new HashSet<DeviceController>());
 		registeredControllers.put("AttendantIOController", new HashSet<DeviceController>());
 		registeredControllers.put("CustomerIOController", new HashSet<DeviceController>());
 	}
@@ -292,9 +293,6 @@ public class CheckoutController {
 			currentItemInfo = this.order.get(newItem);
 		}
 
-		// Add the cost of the new item to the current cost.
-		this.cost = this.cost.add(newItem.getPrice());
-
 
 		double weight;
 		if (newItem.isPerUnit()) {
@@ -306,6 +304,9 @@ public class CheckoutController {
 			//only items priced per unit weight are barcoded products, so this is fine.
 			currentItemInfo[0] = (currentItemInfo[0].intValue()) + 1;
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice());
+			
+			// Add the cost of the new item to the current cost.
+			this.cost = this.cost.add(newItem.getPrice());
 		} else {
 			Set<DeviceController> scaleController = registeredControllers.get("ScanningScaleController");
 			weight = ((ScanningScaleController) scaleController.stream().toList().get(0)).getCurrentWeight();
@@ -314,12 +315,16 @@ public class CheckoutController {
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(
 					newItem.getPrice().multiply(BigDecimal.valueOf(weight))
 			);
+
+			// Add the cost of the new item to the current cost.
+			this.cost = this.cost.add(newItem.getPrice().multiply(BigDecimal.valueOf(weight)));
 		}
 		//first number is amount (either kg or number of units), second is cumulative price.
 		//TODO: Make changes to printer code to display kg for decimal values.
 
+
 		this.order.put(newItem, currentItemInfo);
-		this.latestWeight= (double) currentItemInfo[1];
+		this.latestWeight= currentItemInfo[1].doubleValue();
 		for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newItem, weight, true);
 		}
