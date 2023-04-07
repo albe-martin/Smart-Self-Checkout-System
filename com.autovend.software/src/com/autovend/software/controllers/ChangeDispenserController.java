@@ -23,29 +23,24 @@ import com.autovend.devices.AbstractDevice;
 import com.autovend.devices.observers.AbstractDeviceObserver;
 
 abstract public class ChangeDispenserController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver>
-		extends DeviceController<D, O> {
+		extends DeviceController<D, O> implements Comparable<ChangeDispenserController>{
 
 	private BigDecimal denom;
-	private CheckoutController mainController;
+
+	@Override
+	public int compareTo(ChangeDispenserController o) {
+		return (this.getDenom().compareTo(o.getDenom()));
+	}
+
+	final String getTypeName(){
+		return "ChangeDispenserController";
+	}
 
 	public ChangeDispenserController(D newDevice, BigDecimal denom) {
 		super(newDevice);
 		this.denom = denom;
 	}
 
-	final CheckoutController getMainController() {
-		return this.mainController;
-	}
-
-	public final void setMainController(CheckoutController newMainController) {
-		if (this.mainController != null) {
-			this.mainController.deregisterChangeDispenserController(this.denom, this);
-		}
-		this.mainController = newMainController;
-		if (this.mainController != null) {
-			this.mainController.registerChangeDispenserController(this.denom, this);
-		}
-	}
 
 	void setDenom(BigDecimal denom) {
 		this.denom = denom;

@@ -26,6 +26,7 @@ import java.util.Currency;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.autovend.software.controllers.BaggingScaleController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +42,6 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.software.controllers.BaggingAreaController;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
-import com.autovend.software.controllers.ElectronicScaleController;
 
 @SuppressWarnings("rawtypes")
 
@@ -49,7 +49,7 @@ public class AddOwnBagsTest {
 	BarcodeScannerController scannerController;
 	BarcodeScanner stubScanner;
 
-	ElectronicScaleController scaleController;
+	BaggingScaleController scaleController;
 	ElectronicScale stubScale;
 	BarcodedProduct databaseItem;
 
@@ -80,7 +80,7 @@ public class AddOwnBagsTest {
 		scannerController.setMainController(checkoutController);
 		scannerController.enableDevice();
 
-		scaleController = new ElectronicScaleController(stubScale);
+		scaleController = new BaggingScaleController(stubScale);
 		scaleController.setMainController(checkoutController);
 		scaleController.enableDevice();
 
@@ -169,10 +169,10 @@ public class AddOwnBagsTest {
 		Map<BaggingAreaController, Double> weightWithBags = checkoutController.getWeightWithBags();
 
 		for (BaggingAreaController controller : weightWithBags.keySet()) {
-			ElectronicScaleController scaleController1 = (ElectronicScaleController) controller;
+			BaggingScaleController scaleController1 = (BaggingScaleController) controller;
 			scaleController1.setAddingBags(true);
 			boolean value1 = scaleController1.getAddingBags();
-			ElectronicScaleController scaleController2 = (ElectronicScaleController) controller;
+			BaggingScaleController scaleController2 = (BaggingScaleController) controller;
 			scaleController1.setAddingBags(false);
 			boolean value2 = scaleController2.getAddingBags();
 
@@ -196,7 +196,7 @@ public class AddOwnBagsTest {
 
 		Map<BaggingAreaController, Double> weight = checkoutController.getWeight();
 		for (BaggingAreaController controller : weight.keySet()) {
-			ElectronicScaleController scaleController = (ElectronicScaleController) controller;
+			BaggingScaleController scaleController = (BaggingScaleController) controller;
 			scaleController.setAddingBags(true);
 			value = scaleController.getAddingBags();
 		}
@@ -217,7 +217,7 @@ public class AddOwnBagsTest {
 
 		Map<BaggingAreaController, Double> weightWithBags = checkoutController.getWeightWithBags();
 		for (BaggingAreaController controller : weightWithBags.keySet()) {
-			ElectronicScaleController scaleController = (ElectronicScaleController) controller;
+			BaggingScaleController scaleController = (BaggingScaleController) controller;
 			value = scaleController.getAddingBags();
 		}
 
@@ -236,7 +236,7 @@ public class AddOwnBagsTest {
 		double expectedWeightBeforeBags = 0.0;
 
 		for (BaggingAreaController baggingController : validBaggingControllersBefore) {
-			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
+			BaggingScaleController scale = (BaggingScaleController) baggingController;
 			expectedWeightBeforeBags += scale.getExpectedWeight();
 		}
 
@@ -246,7 +246,7 @@ public class AddOwnBagsTest {
 		HashSet<BaggingAreaController> validBaggingControllersAfter = checkoutController.getValidBaggingControllers();
 
 		for (BaggingAreaController baggingController : validBaggingControllersBefore) {
-			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
+			BaggingScaleController scale = (BaggingScaleController) baggingController;
 			scale.updateWithBagWeight(0.1);
 			expectedWeightAfterBags += scale.getExpectedWeight();
 		}

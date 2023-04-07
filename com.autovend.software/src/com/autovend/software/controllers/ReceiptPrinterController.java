@@ -28,7 +28,6 @@ import com.autovend.products.Product;
 
 public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, ReceiptPrinterObserver>
 		implements ReceiptPrinterObserver {
-	private CheckoutController mainController;
 	private ReceiptPrinter printer;
 
 	// Flags/indicators that ink or paper levels are low
@@ -42,20 +41,6 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 
 	public ReceiptPrinterController(ReceiptPrinter newDevice) {
 		super(newDevice);
-	}
-
-	public final CheckoutController getMainController() {
-		return this.mainController;
-	}
-
-	public final void setMainController(CheckoutController newMainController) {
-		if (this.mainController != null) {
-			this.mainController.deregisterReceiptPrinter(this);
-		}
-		this.mainController = newMainController;
-		if (this.mainController != null) {
-			this.mainController.registerReceiptPrinter(this);
-		}
 	}
 
 	/**
@@ -119,14 +104,15 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 		for (Product product : order.keySet()) {
 			Number[] productInfo = order.get(product);
 
-			// We only need to focus on per-unit costs currently, weight-based will be
-			// handled later.
-			// if (product.isPerUnit()){
-			// going through the string and splitting to avoid writing too much
-			// on one line
 			String productName = product.getClass().getSimpleName();
-			String productString = String.format("%d $%.2f %dx %s\n", i, productInfo[1], productInfo[0].intValue(),
-					productName);
+			String productString;
+			if (product.isPerUnit()) {
+				productString = String.format("%d $%.2f %dx %s\n", i, productInfo[1], productInfo[0],
+						productName);
+			} else {
+				productString = String.format("%d $%.2f %dkg %s\n", i, productInfo[1], productInfo[0],
+						productName);
+			}
 			int splitPos = 59;
 			String splitterSubString = "-\n    -";
 			while (splitPos < productString.length() - 1) {// -1 to not worry about the \n at the end.
@@ -134,7 +120,7 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 						+ productString.substring(splitPos);
 				splitPos += 61;// 1 extra to account for \n being 1 character (prevents double-spacing of text)
 			}
-			// }
+
 			receipt.append(productString);
 			i++;
 		}
@@ -156,20 +142,20 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 			System.out.println("The receipt is too long.");
 		} catch (EmptyException e) {
 			System.out.println("The printer is out of paper or ink.");
-			this.mainController.printerOutOfResources(this);
+			this.getMainController().printerOutOfResources();
 		}
 
 		if (estimatedInk <= 500) {
 			// Inform the I/O for attendant from the error message about low ink
 			// this is a placeholder currently.
-			System.out.println("Ink Low for Station: " + mainController.getID());
+			System.out.println("Ink Low for Station: " + this.getMainController().getID());
 			inkLow = true;
 		} else
 			inkLow = false;
 		if (estimatedPaper <= 200) {
 			// Inform the I/O for attendant from the error message about low ink
 			// this is a placeholder currently.
-			System.out.println("Paper Low for Station: " + mainController.getID());
+			System.out.println("Paper Low for Station: " + this.getMainController().getID());
 			paperLow = true;
 		} else
 			paperLow = false;
@@ -178,23 +164,26 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	@Override
 	public void reactToOutOfPaperEvent(ReceiptPrinter printer) {
 		estimatedPaper = 0;
-		this.mainController.printerOutOfResources(this);
+		this.getMainController().printerOutOfResources();
 	}
 
 	@Override
 	public void reactToOutOfInkEvent(ReceiptPrinter printer) {
 		estimatedInk = 0;
-		this.mainController.printerOutOfResources(this);
+		this.getMainController().printerOutOfResources();
+	}
+	final String getTypeName(){
+		return "ReceiptPrinterController";
 	}
 
 	@Override
 	public void reactToPaperAddedEvent(ReceiptPrinter printer) {
-		this.mainController.printerRefilled(this);
+		this.getMainController().printerRefilled();
 	}
 
 	@Override
 	public void reactToInkAddedEvent(ReceiptPrinter printer) {
-		this.mainController.printerRefilled(this);
+		this.getMainController().printerRefilled();
 	}
 
 }

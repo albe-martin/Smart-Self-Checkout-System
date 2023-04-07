@@ -76,7 +76,7 @@ public class LowInkPaperTest {
 		receiptPrinter = station.printer;
 		receiptPrinterController = new ReceiptPrinterController(receiptPrinter);
 
-		checkoutController.registerReceiptPrinter(receiptPrinterController);
+		checkoutController.registerController("ReceiptPrinterController",receiptPrinterController);
 		receiptPrinterController.setMainController(checkoutController);
 
 		firstTestItem = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "first item",

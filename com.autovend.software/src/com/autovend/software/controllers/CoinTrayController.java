@@ -35,7 +35,7 @@ public class CoinTrayController extends ChangeSlotController<CoinTray, CoinTrayO
 		}
 		;
 		if (tray.hasSpace()) {
-			this.getMainController().dispenseChange(this);
+			this.getMainController().dispenseChange();
 		}
 	}
 }

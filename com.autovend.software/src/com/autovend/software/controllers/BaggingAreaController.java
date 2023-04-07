@@ -30,28 +30,16 @@ import com.autovend.products.Product;
 public abstract class BaggingAreaController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver>
 		extends DeviceController<D, O> {
 
-	private CheckoutController mainController;
 	private boolean orderValidated;
+
+	String getTypeName(){
+		return "BaggingAreaController";
+	}
 
 	public BaggingAreaController(D newDevice) {
 		super(newDevice);
 	}
 
-	public final CheckoutController getMainController() {
-		return this.mainController;
-	};
-
-	public final void setMainController(CheckoutController newMainController) {
-		if (this.mainController != null) {
-			this.mainController.deregisterBaggingAreaController(this);
-		}
-		;
-		this.mainController = newMainController;
-		if (this.mainController != null) {
-			this.mainController.registerBaggingAreaController(this);
-		}
-		;
-	}
 
 	/**
 	 * A method used to inform the bagging area controller to update the expected
@@ -63,7 +51,7 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	// that it works with
 	// more than just weight based bagging area devices (so it can implement more
 	// types of validation)
-	abstract void updateExpectedBaggingArea(Product nextProduct, double weightInGrams);
+	abstract void updateExpectedBaggingArea(Product nextProduct, double weightInGrams, boolean isAdding);
 
 	abstract public void resetOrder();
 

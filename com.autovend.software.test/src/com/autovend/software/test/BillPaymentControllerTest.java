@@ -62,7 +62,7 @@ public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> 
 		checkoutControllerStub = new CheckoutController();
 		billPaymentControllerStub = new BillPaymentController(selfCheckoutStation.billValidator);
 		billPaymentControllerStub.setMainController(checkoutControllerStub);
-		checkoutControllerStub.registerPaymentController(billPaymentControllerStub);
+		checkoutControllerStub.registerController("PaymentController", billPaymentControllerStub);
 
 		BarcodedProduct barcodedProduct;
 		barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.one), "test item 1",

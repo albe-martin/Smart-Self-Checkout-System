@@ -36,6 +36,6 @@ public class BillChangeSlotController extends ChangeSlotController<BillSlot, Bil
 
 	@Override
 	public void reactToBillRemovedEvent(BillSlot slot) {
-		this.getMainController().dispenseChange(this);
+		this.getMainController().dispenseChange();
 	}
 }

@@ -23,16 +23,23 @@ import com.autovend.devices.observers.BarcodeScannerObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 
+import java.util.stream.Collectors;
+
 /**
  * Controller for the barcode scanner, communicates with main checkout
  * controller to add items to order.
  */
 public class BarcodeScannerController extends ItemAdderController<BarcodeScanner, BarcodeScannerObserver>
 		implements BarcodeScannerObserver {
+	private boolean isScanningItems;
+
+	void setScanningItems(boolean val){isScanningItems=val;}
+	boolean getScanningItems(){return isScanningItems;}
+
 	public BarcodeScannerController(BarcodeScanner scanner) {
 		super(scanner);
+		isScanningItems=true;
 	}
-
 	public void reactToBarcodeScannedEvent(BarcodeScanner barcodeScanner, Barcode barcode) {
 		// if barcode is for a valid object, then add the product found to the order on
 		// the main controller.
@@ -40,10 +47,13 @@ public class BarcodeScannerController extends ItemAdderController<BarcodeScanner
 		if (barcodeScanner != this.getDevice()) {
 			return;
 		}
-
-		BarcodedProduct scannedItem = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-		if (scannedItem != null) {
-			this.getMainController().addItem(this, scannedItem, scannedItem.getExpectedWeight());
+		if (isScanningItems) {
+			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+			if (product != null) {
+				this.getMainController().addItem(product);
+			}
+		} else {
+			this.getMainController().validateMembership(String.join("",barcode.digits().stream().map(i->i.toString()).collect(Collectors.toList())));
 		}
 	}
 }
