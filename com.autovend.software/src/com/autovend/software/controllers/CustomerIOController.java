@@ -9,6 +9,8 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -83,6 +85,30 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
         //todo: self explanatory
     }
 
+    /**
+     * Called in response to the customer selecting the 'purchase reusable bags' option.
+     * Should trigger a prompt asking the customer how many bags they want to buy.
+     */
+    void selectPurchaseBags(){
+
+    }
+
+    /**
+     * Called in response to the customer selecting the 'finished adding bags' option.
+     */
+    void selectBagsAdded(){
+        Set<DeviceController> baggingControllers = this.getMainController().getAllDeviceControllersRevised().get("BaggingAreaController");
+        for (DeviceController baggingController : baggingControllers) {
+            BaggingScaleController scale = (BaggingScaleController) baggingController;
+            scale.setAddingBags(false);
+            scale.setExpectedWeight(scale.getSavedWeight());
+            if(scale.getExpectedWeight() != scale.getCurrentWeight()){
+                this.getMainController().systemProtectionLock = true; // Lock the system
+                this.getMainController().AttendantApproved = false; // Signal the attendant
+            }
+        }
+    }
+
     void selectDoNotBag(Product product){
         // todo:
         // tell main controller to not bag a certain product, need to modify checkout controller
@@ -141,7 +167,6 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
     void notifyStartup() {
     	
     }
-
 
     //this method is used to display that there is a bagging discrepancy
     void displayWeightDiscrepancyMessage() {}

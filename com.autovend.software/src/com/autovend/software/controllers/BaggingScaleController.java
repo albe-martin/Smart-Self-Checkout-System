@@ -21,10 +21,13 @@ import com.autovend.devices.ElectronicScale;
 import com.autovend.devices.observers.ElectronicScaleObserver;
 import com.autovend.products.Product;
 
+import java.util.ArrayList;
+
 public class BaggingScaleController extends BaggingAreaController<ElectronicScale, ElectronicScaleObserver>
 		implements ElectronicScaleObserver {
 	private double currentWeight;
 	private double expectedWeight;
+	private double savedWeight;
 	private boolean addingBags;
 
 	private boolean AttendantApproval;
@@ -134,6 +137,13 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		this.expectedWeight += weight;
 	}
 
+	/**
+	 * Saves the current weight on the scale in the savedWeights ArrayList.
+	 */
+	public void saveCurrentWeight(){
+		savedWeight = this.currentWeight;
+	}
+
 	public void setAddingBags(boolean value) {
 		this.addingBags = value;
 	}
@@ -142,8 +152,16 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		return this.expectedWeight;
 	}
 
+	public void setExpectedWeight (double weight){
+		this.expectedWeight = weight;
+	}
+
 	public boolean getAddingBags() {
 		return this.addingBags;
+	}
+
+	public double getSavedWeight(){
+		return this.savedWeight;
 	}
 
 }
