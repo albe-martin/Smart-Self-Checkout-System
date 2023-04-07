@@ -37,7 +37,7 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
         }
         PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(code);
         if (product!=null){
-            this.getMainController().addItem(product);
+            this.getMainController().addItem(product, BigDecimal.ZERO);
         } else {
             System.out.println("Product not in database");
             //todo: print stuff related to this on GUI, also make sure to notify customer to add
@@ -51,7 +51,7 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
         //since products have to be displayed for the catalogue already
         //it just adds the item here.
         if (product!=null) {
-            this.getMainController().addItem(product);
+            this.getMainController().addItem(product, BigDecimal.ONE);
         }
     }
     void beginSignInAsMember(){
@@ -71,8 +71,8 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
 
     //since all card payment methods work the same here (basically), then this can just
     //be generically used by the I/O
-    void choosePayByCard(CardIssuer bank, BigDecimal amount) {
-        this.getMainController().payByCard(bank, amount);
+    void choosePayByCard(CardReaderControllerState state, CardIssuer bank, BigDecimal amount) {
+        this.getMainController().payByBankCard(state, bank, amount);
     }
     void finalizeOrder(){
         this.getMainController().completePayment();
@@ -97,16 +97,6 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
     void selectBagsAdded(){
-        Set<DeviceController> baggingControllers = this.getMainController().getAllDeviceControllersRevised().get("BaggingAreaController");
-        for (DeviceController baggingController : baggingControllers) {
-            BaggingScaleController scale = (BaggingScaleController) baggingController;
-            scale.setAddingBags(false);
-            scale.setExpectedWeight(scale.getSavedWeight());
-            if(scale.getExpectedWeight() != scale.getCurrentWeight()){
-                this.getMainController().systemProtectionLock = true; // Lock the system
-                this.getMainController().AttendantApproved = false; // Signal the attendant
-            }
-        }
     }
 
     void selectDoNotBag(Product product){
@@ -114,7 +104,7 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
         // tell main controller to not bag a certain product, need to modify checkout controller
         // for this
     }
-    
+
     /**
      * Registers an Attendant's IO Controller into CustomerIO Controller if not already assigned one.
      * @param IOController
@@ -123,14 +113,14 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
      * 		When a Checkout station is already assigned to an attendant station.
      */
     void registerAttendant(AttendantIOController IOController) throws IllegalStateException{
-    	if(this.getMainController().getSupervisor() == 0) {
-    		this.getMainController().registerController("AttendantIOController", IOController);
-    		this.getMainController().setSupervisor(IOController.getID());
-    	} else {
-    		throw new IllegalStateException("Checkout Station is already assigned to an Attendant Station.");
-    	}
+        if(this.getMainController().getSupervisor() == 0) {
+            this.getMainController().registerController("AttendantIOController", IOController);
+            this.getMainController().setSupervisor(IOController.getID());
+        } else {
+            throw new IllegalStateException("Checkout Station is already assigned to an Attendant Station.");
+        }
     }
-    
+
     /**
      * Deregisters an Attendant's IO Controller into CustomerIO Controller.
      * @param IOController
@@ -138,34 +128,34 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
      * @throws IllegalStateException
      * 		If the attendant station is not supervising this checkout station OR
      * 		if this checkout station is not being supervised.
-     * 
+     *
      */
     void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
-    	if(this.getMainController().getSupervisor() != 0) {
-    		if(this.getMainController().getControllersByType("AttendantIOControllers").contains(IOController)) {
-    	    	this.getMainController().deregisterController("AttendantIOController", IOController);
-        		this.getMainController().setSupervisor(0);
-    		}
-    		else {
-    			throw new IllegalStateException("This Checkout Station is not assigned to this Attendant Station");
-    		}
-    	} else {
-    		throw new IllegalStateException("Checkout Station is not assigned to an Attendant Station."); 
-    	}
+        if(this.getMainController().getSupervisor() != 0) {
+            if(this.getMainController().getControllersByType("AttendantIOControllers").contains(IOController)) {
+                this.getMainController().deregisterController("AttendantIOController", IOController);
+                this.getMainController().setSupervisor(0);
+            }
+            else {
+                throw new IllegalStateException("This Checkout Station is not assigned to this Attendant Station");
+            }
+        } else {
+            throw new IllegalStateException("Checkout Station is not assigned to an Attendant Station.");
+        }
     }
-    
+
     /**
      * Signals GUI to terminate (since it is turning off).
      */
     void notifyShutdown() {
-    	
+
     }
-    
+
     /**
      * Signals GUI to start GUI.
      */
     void notifyStartup() {
-    	
+
     }
 
     //this method is used to display that there is a bagging discrepancy
@@ -174,6 +164,4 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
     //method used to display there is a danger to the station due to weight
     //potentially damaging the bagging area
     void displayBaggingProtectionLock() {}
-
-
 }

@@ -22,6 +22,7 @@ import java.util.*;
 
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.external.CardIssuer;
+import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
 
@@ -43,14 +44,13 @@ public class CheckoutController {
 	public boolean baggingItemLock;
 	public boolean systemProtectionLock;
 	private boolean payingChangeLock;
-	public boolean AttendantApproved = false;
+	public boolean addingBagsLock;
 	private boolean isDisabled = false;
-	private boolean isDoingMaintenance = false;
 	private boolean isShutdown = false;
-	
+
 	//need this variable to know if this station is being used or not.
 	private boolean inUse = false;
-	
+
 	//Supervisor Station ID. 0 = not supervised
 	private int supervisorID = 0;
 
@@ -118,10 +118,10 @@ public class CheckoutController {
 		// Added CustomerIOController initialization
 		//NOTE: AttendantIOController should be added when and only when a checkout station
 		// is added to an attendant station as a checkout station can only be monitored by at most one attendant station.
-		
+
 		CustomerIOController customerIOController = new CustomerIOController(checkout.screen);
 		this.registeredControllers.get("CustomerIOController").add(customerIOController);
-		
+
 		registerAll();
 		clearOrder();
 	}
@@ -129,7 +129,7 @@ public class CheckoutController {
 	public int getID() {
 		return stationID;
 	}
-	
+
 	/**
 	 * Returns supervisor ID
 	 * @return
@@ -139,7 +139,7 @@ public class CheckoutController {
 	public int getSupervisor() {
 		return supervisorID;
 	}
-	
+
 	/**
 	 * set supervisor ID
 	 * @param id
@@ -148,7 +148,7 @@ public class CheckoutController {
 	public void setSupervisor(int id) {
 		this.supervisorID = id;
 	}
-	
+
 	public Set<DeviceController> getControllersByType(String type) {
 		return this.registeredControllers.get(type);
 	}
@@ -221,67 +221,59 @@ public class CheckoutController {
 	}
 
 	/**
-	 * A method to get the number of bags from the customer response
-	 * 
-	 * @return number of bags
-	 */
-	public int getBagNumber() {
-		// Asking the customer to give the number of bags
-		@SuppressWarnings("resource")
-		Scanner scan = new Scanner(System.in);
-		System.out.println("Number of bags to purchase?");
-		String response = scan.nextLine();
-
-		// If customer gives 0 then return
-		if (response.equals("0")) {
-			System.out.println("No bags added!");
-			return 0;
-		} else {
-			// Otherwise record the customer response
-			int bagNumber = Integer.parseInt(response);
-			return bagNumber;
-		}
-	}
-
-	/**
 	 * Method to add reusable bags to the order after the customer signals to buy
-	 * bags TODO: Implement the bags being dispensed by the bag dispenser
-	 * 
-	 * @param newBag  The product to be added to the current order
-	 * @param weight  The weight of the product to update the weight in the bagging
-	 *                area
+	 * bags
 	 * @param numBags The number of bags getting added
 	 */
-	public void purchaseBags(Product newBag, double weight, int numBags) {
-		if (newBag == null || weight <= 0 || baggingItemLock || systemProtectionLock) {
-			return;
-		}
-		// If customer gives 0 then return
-		if (numBags == 0) {
-			System.out.println("No bags added!");
-			return;
-		}
-		// Add the cost of the new bag to the current cost.
-		BigDecimal bagCost = newBag.getPrice().multiply(BigDecimal.valueOf(numBags));
-		this.cost = this.cost.add(bagCost);
-		// Putting the bag information to the order
-		Number[] currentBagInfo = new Number[] { numBags, bagCost };
-		if (this.order.containsKey(newBag)) {
-			Number[] existingBagInfo = this.order.get(newBag);
-			int totalNumBags = existingBagInfo[0].intValue() + numBags;
-			BigDecimal totalBagCost = ((BigDecimal) existingBagInfo[1]).add(bagCost);
-			currentBagInfo = new Number[] { totalNumBags, totalBagCost };
-		}
-		this.order.put(newBag, currentBagInfo);
-		for (DeviceController baggingController : this.registeredControllers.get("BaggingAreaController")) {
-			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newBag, weight, true);
-		}
-		for(int i = 0; i <= numBags; i++){ // dispense the bags and add them to the order
-			// addItem(checkoutStation.ReusableBagDispenser.dispense); (there is currently no ReusableBagDispenser in SelfCheckoutStation)
-		}
-		baggingItemLock = true;
-		System.out.println("Reusable bag has been added, you may continue.");
+	public void purchaseBags(int numBags) {
+		if (baggingItemLock || systemProtectionLock) {return;}
+		//TODO: Update how Add Bags works to use the right database, right now this is temporary!!!!
+		BigDecimal bagCost = ProductDatabases.PLU_PRODUCT_DATABASE.get("BagNumb").getPrice();
+		Set<DeviceController> bagDispenserController = registeredControllers.get("ReusableBagDispenserController");
+		this.addItem(ProductDatabases.PLU_PRODUCT_DATABASE.get("BagNumb"), BigDecimal.valueOf(numBags));
+		((ReusableBagDispenserController) bagDispenserController.iterator().next()).dispenseBags(numBags);
 	}
+
+	//if the user wants to cancel adding bags, this will do so.
+	public void cancelAddingBagsLock(){
+		addingBagsLock = false;
+		boolean unlock=true;
+		Set<DeviceController> baggingControllers = this.registeredControllers.get("BaggingAreaController");
+		for (DeviceController baggingController : baggingControllers) {
+			BaggingScaleController scale = (BaggingScaleController) baggingController;
+			if (!scale.getBaggingValid()) {
+				unlock=false;
+				break;
+			}
+		}
+		baggingItemLock=unlock;
+	}
+
+	public void setAddingBagsLock(){
+		this.addingBagsLock=true;
+		this.baggingItemLock=true;
+		//using this just do I don't need to make a bunch of changes to if-statements because i'm lazy.
+		//todo: stuff with GUIs
+	}
+
+	//TODO: COMPLETE THIS METHOD!!!!!!
+	public void alertAttendant(String message){}
+
+	/**
+	 * A method called by attendant I/O when they have approved adding bags
+	 */
+	public void approveAddingBags() {
+		if (addingBagsLock) {
+			Set<DeviceController> baggingControllers = this.registeredControllers.get("BaggingAreaController");
+			for (DeviceController baggingController : baggingControllers) {
+				BaggingScaleController scale = (BaggingScaleController) baggingController;
+				scale.setExpectedWeight(scale.getCurrentWeight());
+			}
+			addingBagsLock=false;
+			baggingItemLock=false;
+		}
+	}
+
 
 	/*
 	 * Methods used by ItemAdderControllers
@@ -290,7 +282,7 @@ public class CheckoutController {
 	/**
 	 * Method to add items to the order
 	 */
-	public void addItem(Product newItem) {
+	public void addItem(Product newItem, BigDecimal count) {
 		if (baggingItemLock || systemProtectionLock || newItem == null) {return;}
 		//then go through the item and get its weight, either expected weight if it exists, or
 		//get the scale controller in the checkout to give us the weight for the PLU code based
@@ -312,9 +304,9 @@ public class CheckoutController {
 			//since such an item couldn't exist.
 
 			//only items priced per unit weight are barcoded products, so this is fine.
-			currentItemInfo[0] = (currentItemInfo[0].intValue()) + 1;
-			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice());
-			
+			currentItemInfo[0] = (currentItemInfo[0].intValue())+(count.intValue());
+			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice().multiply(count));
+
 			// Add the cost of the new item to the current cost.
 			this.cost = this.cost.add(newItem.getPrice());
 		} else {
@@ -329,9 +321,6 @@ public class CheckoutController {
 			// Add the cost of the new item to the current cost.
 			this.cost = this.cost.add(newItem.getPrice().multiply(BigDecimal.valueOf(weight)));
 		}
-		//first number is amount (either kg or number of units), second is cumulative price.
-		//TODO: Make changes to printer code to display kg for decimal values.
-
 
 		this.order.put(newItem, currentItemInfo);
 		this.latestWeight= currentItemInfo[1].doubleValue();
@@ -372,7 +361,10 @@ public class CheckoutController {
 	void baggedItemsInvalid(String ErrorMessage) {
 		// inform the I/O for both customer and attendant from the error message, this
 		// is a placeholder currently.
-		System.out.println(ErrorMessage);
+		if (!addingBagsLock) {
+			this.baggingItemLock = true;
+			System.out.println(ErrorMessage);
+		}
 		// TODO: Lock system out of processing payments if error in bagging area occurs
 	}
 
@@ -413,9 +405,9 @@ public class CheckoutController {
 	public void setOrder(LinkedHashMap<Product, Number[]> newOrd) {
 		this.order = newOrd;
 		for (Map.Entry<Product, Number[]> entry: this.order.entrySet()) {
-			   Product product = entry.getKey();
-			   this.cost = this.cost.add(product.getPrice());
-			}
+			Product product = entry.getKey();
+			this.cost = this.cost.add(product.getPrice());
+		}
 	}
 
 	/**
@@ -477,13 +469,12 @@ public class CheckoutController {
 		this.amountPaid = this.amountPaid.add(denom);
 	}
 
-	// since methods of paying by credit, debit, and gift cards are simulated the same way
-	// only one method is needed which works for all of them. - Arie
-	public void payByCard(CardIssuer source, BigDecimal amount) {
+	// generic method used to control how payment by credit/debit card is handled.
+	public void payByBankCard(CardReaderControllerState state, CardIssuer source, BigDecimal payAmount) {
 		if (baggingItemLock || systemProtectionLock || payingChangeLock || source == null) {
 			return;
 		}
-		if (amount.compareTo(getRemainingAmount()) > 0) {
+		if (payAmount.compareTo(getRemainingAmount()) > 0) {
 			return;
 			// only reason to pay more than the order with card is to mess with the amount
 			// of change the system has for some reason
@@ -492,91 +483,32 @@ public class CheckoutController {
 		Set<DeviceController> controllers = this.registeredControllers.get("PaymentController");
 		for (DeviceController controller : controllers) {
 			if (controller instanceof CardReaderController) {
-				((CardReaderController) controller).enablePayment(source, amount);
+				((CardReaderController) controller).setState(state, source, payAmount);
 			}
 		}
 	}
-	/*
-	 * This method is called when the user indicates they want to add their own bags
-	 */
-	public void addOwnBags() {
-		Set<DeviceController> baggingControllers = this.registeredControllers.get("BaggingAreaController");
-		// store the current weight of items in the bagging controller
-		for (DeviceController baggingController : baggingControllers) {
-			BaggingScaleController scale = (BaggingScaleController) baggingController;
-			double current = scale.getCurrentWeight();
-			weight.put(((BaggingAreaController) baggingController), current);
-			// let the scale know the customer is adding bags to prevent a weight
-			// discrepancy
-			scale.setAddingBags(true);
-		}
 
-		// let the customer know they can add their bags now
-		System.out.print("Add bags now\n");
-		// at this point, the customer IO must have signalled they are done adding bags
-		// to proceed
-		// GUI will implement this part to continue to next lines of code
-		//todo: GUI responses.
-
-		// store the new weight in bagging area with bags added
-		for (DeviceController baggingController : baggingControllers) {
-			BaggingScaleController scale = (BaggingScaleController) baggingController;
-			// let the scale know the customer is done adding bags
-			scale.setAddingBags(false);
-			double current = scale.getCurrentWeight();
-			weightWithBags.put(((BaggingAreaController) baggingController), current);
-		}
-
-		// at this point the system signals to the attendant IO and locks
-		systemProtectionLock = true;
-		// if the attendant approves adding bags, the system is unblocked
-		if (AttendantApproved) {
-			// get the weight of the bags and update the expected weight of the bagging area
-			// to account for them
-			for (DeviceController baggingController : baggingControllers) {
-				double bagWeight = weightWithBags.get(baggingController) - weight.get(baggingController);
-				BaggingScaleController scale = (BaggingScaleController) baggingController;
-				scale.updateWithBagWeight(bagWeight);
-			}
-			systemProtectionLock = false;
-		} else {
+	public void payByGiftCard() {
+		if (baggingItemLock || systemProtectionLock || payingChangeLock) {
 			return;
 		}
-		// if the attendant has not approved, the request is cancelled
-		// thus the current weight of the scale returns to what it was before
-
-		// placeholder for system to tell customer to continue
-		System.out.print("You may now continue\n");
-	}
-
-	/**
-	 * Idea for the addOwnBags revision.
-	 */
-	public void addOwnBagsRevised() {
-		Set<DeviceController> baggingControllers = this.registeredControllers.get("BaggingAreaController");
-		for (DeviceController baggingController : baggingControllers) {
-			BaggingScaleController scale = (BaggingScaleController) baggingController;
-			scale.setAddingBags(true);
-			scale.saveCurrentWeight();
+		Set<DeviceController> controllers = this.registeredControllers.get("PaymentController");
+		for (DeviceController controller : controllers) {
+			if (controller instanceof CardReaderController) {
+				((CardReaderController) controller).setState(CardReaderControllerState.PAYINGBYGIFTCARD, null, this.getRemainingAmount());
+			}
 		}
-
-		// GUI: Signal to customer to add bags, and simultaneously give the customer an option to signal that they are done adding bags.
-
 	}
 
 	public Map<BaggingAreaController, Double> getWeight() {
 		return this.weight;
 	}
-	public Map<BaggingAreaController, Double> getWeightWithBags() {
-		return this.weightWithBags;
-	}
-	
-	
-	public HashSet<BaggingAreaController> getValidBaggingControllers() {
-		return (HashSet) this.registeredControllers.get("BaggingAreaController");
-	}//todo: yeet this method
-	 	
 
+	/**
+	 * A method used to remove an item from a customers order of some given quantity.
+	 * @param item
+	 * @param amount
+	 */
 	public void removeItemFromOrder(Product item, BigDecimal amount){
 		if (order.containsKey(item)){
 			Number[] currentItemInfo = order.get(item);
@@ -590,7 +522,7 @@ public class CheckoutController {
 			}
 			double weight = amount.doubleValue();
 			if (item.isPerUnit()){
-				weight*=amount.doubleValue();
+				weight*=((BarcodedProduct) item).getExpectedWeight();
 			}
 			for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 				((BaggingAreaController) baggingController).updateExpectedBaggingArea(item, weight, false);
@@ -612,7 +544,7 @@ public class CheckoutController {
 	public void enableAllDevices() {
 		//note: change behaviour depending on whether it was shut down or not for this
 		//and below method, also change how it starts up depending on those flags;
-		
+
 		//Temp solution
 		for(String controllerType : registeredControllers.keySet()) {
 			for(DeviceController device : registeredControllers.get(controllerType)) {
@@ -633,7 +565,7 @@ public class CheckoutController {
 		}
 		isDisabled = true;
 	}
-	
+
 	/**
 	 * Inititiates shut down.
 	 * Sets shutdown flag to true.
@@ -650,7 +582,7 @@ public class CheckoutController {
 			((CustomerIOController) io).notifyShutdown();
 		}
 	}
-	
+
 	/**
 	 * Initiates Startup.
 	 * Sets shutdown flag to false.
@@ -660,8 +592,10 @@ public class CheckoutController {
 	 */
 	public void startUp() {
 		setShutdown(false);
-		disableAllDevices();
-		clearOrder();
+		if (!isDisabled) {
+			enableAllDevices();
+		}
+
 		for (DeviceController io : registeredControllers.get("CustomerIOController")) {
 			((CustomerIOController) io).notifyStartup();
 		}
@@ -669,11 +603,29 @@ public class CheckoutController {
 			((AttendantIOController) io).notifyStartup();
 		}
 	}
-	
+
+	public void disableStation(){
+		if (!isShutdown && !inUse) {
+			disableAllDevices();
+			clearOrder();
+			this.isDisabled = true;
+			inUse=false;
+		}
+	}
+
+	public void enableStation(){
+		if (!isShutdown) {
+			enableAllDevices();
+			clearOrder();
+			this.isDisabled = false;
+		}
+	}
+
+
 	public boolean isInUse() {
 		return inUse;
 	}
-	
+
 	public void setInUse(boolean set) {
 		inUse = set;
 	}
@@ -681,11 +633,6 @@ public class CheckoutController {
 	public boolean isDisabled() {
 		return isDisabled;
 	}
-
-	public void setMaintenence(boolean b) {
-		this.isDoingMaintenance = b;
-	}
-
 
 	public void setShutdown(boolean b) {
 		this.isShutdown = b;
