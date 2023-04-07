@@ -47,6 +47,12 @@ public class CheckoutController {
 	private boolean isDisabled = false;
 	private boolean isDoingMaintenance = false;
 	private boolean isShutdown = false;
+	
+	//need this variable to know if this station is being used or not.
+	private boolean inUse = false;
+	
+	//Supervisor Station ID. 0 = not supervised
+	private int supervisorID = 0;
 
 	private SelfCheckoutStation checkoutStation;
 
@@ -72,6 +78,9 @@ public class CheckoutController {
 		registeredControllers.put("ReceiptPrinterController", new HashSet<DeviceController>());
 		registeredControllers.put("ChangeSlotController", new HashSet<DeviceController>());
 		registeredControllers.put("ChangeDispenserController", new HashSet<DeviceController>());
+		registeredControllers.put("ValidPaymentControllers", new HashSet<DeviceController>());
+		registeredControllers.put("AttendantIOController", new HashSet<DeviceController>());
+		registeredControllers.put("CustomerIOController", new HashSet<DeviceController>());
 	}
 	public CheckoutController(SelfCheckoutStation checkout) {
 		checkoutStation=checkout;
@@ -106,13 +115,42 @@ public class CheckoutController {
 		}
 		registeredControllers.get("ChangeDispenserController").addAll(changeDispenserControllers);
 
-		// Add additional device peripherals for Customer I/O and Attendant I/O here
+		// Added CustomerIOController initialization
+		//NOTE: AttendantIOController should be added when and only when a checkout station
+		// is added to an attendant station as a checkout station can only be monitored by at most one attendant station.
+		
+		CustomerIOController customerIOController = new CustomerIOController(checkout.screen);
+		this.registeredControllers.get("CustomerIOController").add(customerIOController);
+		
 		registerAll();
 		clearOrder();
 	}
 
 	public int getID() {
 		return stationID;
+	}
+	
+	/**
+	 * Returns supervisor ID
+	 * @return
+	 * 		The ID of the supervisor/attendant station
+	 * 		0 = No supervisor
+	 */
+	public int getSupervisor() {
+		return supervisorID;
+	}
+	
+	/**
+	 * set supervisor ID
+	 * @param id
+	 * 		The ID of the supervisor/attendant station
+	 */
+	public void setSupervisor(int id) {
+		this.supervisorID = id;
+	}
+	
+	public Set<DeviceController> getControllersByType(String type) {
+		return this.registeredControllers.get(type);
 	}
 
 	/**
@@ -255,9 +293,6 @@ public class CheckoutController {
 			currentItemInfo = this.order.get(newItem);
 		}
 
-		// Add the cost of the new item to the current cost.
-		this.cost = this.cost.add(newItem.getPrice());
-
 
 		double weight;
 		if (newItem.isPerUnit()) {
@@ -269,6 +304,9 @@ public class CheckoutController {
 			//only items priced per unit weight are barcoded products, so this is fine.
 			currentItemInfo[0] = (currentItemInfo[0].intValue()) + 1;
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice());
+			
+			// Add the cost of the new item to the current cost.
+			this.cost = this.cost.add(newItem.getPrice());
 		} else {
 			Set<DeviceController> scaleController = registeredControllers.get("ScanningScaleController");
 			weight = ((ScanningScaleController) scaleController.stream().toList().get(0)).getCurrentWeight();
@@ -277,12 +315,16 @@ public class CheckoutController {
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(
 					newItem.getPrice().multiply(BigDecimal.valueOf(weight))
 			);
+
+			// Add the cost of the new item to the current cost.
+			this.cost = this.cost.add(newItem.getPrice().multiply(BigDecimal.valueOf(weight)));
 		}
 		//first number is amount (either kg or number of units), second is cumulative price.
 		//TODO: Make changes to printer code to display kg for decimal values.
 
+
 		this.order.put(newItem, currentItemInfo);
-		this.latestWeight= (double) currentItemInfo[1];
+		this.latestWeight= currentItemInfo[1].doubleValue();
 		for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newItem, weight, true);
 		}
@@ -529,10 +571,12 @@ public class CheckoutController {
 	public Map<BaggingAreaController, Double> getWeightWithBags() {
 		return this.weightWithBags;
 	}
+	
+	
 	public HashSet<BaggingAreaController> getValidBaggingControllers() {
 		return (HashSet) this.registeredControllers.get("BaggingAreaController");
 	}//todo: yeet this method
-
+	 	
 
 	public void removeItemFromOrder(Product item, BigDecimal amount){
 		if (order.containsKey(item)){
@@ -563,17 +607,88 @@ public class CheckoutController {
 	public void validateMembership(String number){
 	}
 
+	/**
+	 * A method that enables all devices registered. It also sets disabled flag to false
+	 */
 	public void enableAllDevices() {
 		//note: change behaviour depending on whether it was shut down or not for this
 		//and below method, also change how it starts up depending on those flags;
+		
+		//Temp solution
+		for(String controllerType : registeredControllers.keySet()) {
+			for(DeviceController device : registeredControllers.get(controllerType)) {
+				device.enableDevice();
+			}
+		}
+		isDisabled = false;
 	}
 
+	/**
+	 * A method that disabled all devices registered. It also sets disabled flag to true;
+	 */
 	public void disableAllDevices() {
+		for(String controllerType : registeredControllers.keySet()) {
+			for(DeviceController device : registeredControllers.get(controllerType)) {
+				device.disableDevice();
+			}
+		}
+		isDisabled = true;
+	}
+	
+	/**
+	 * Inititiates shut down.
+	 * Sets shutdown flag to true.
+	 * Clears order.
+	 * Disables devices
+	 * Notifies all customer IO of shut down
+	 */
+	public void shutDown() {
+		setShutdown(true);
+		clearOrder();
+		disableAllDevices();
+
+		for (DeviceController io : registeredControllers.get("CustomerIOController")) {
+			((CustomerIOController) io).notifyShutdown();
+		}
+	}
+	
+	/**
+	 * Initiates Startup.
+	 * Sets shutdown flag to false.
+	 * Ensures devices are STILL disabled. Must be re-enabled
+	 * Clears order.
+	 * Notifies both Customer IO controller and Attendant Controller of startup.
+	 */
+	public void startUp() {
+		setShutdown(false);
+		disableAllDevices();
+		clearOrder();
+		for (DeviceController io : registeredControllers.get("CustomerIOController")) {
+			((CustomerIOController) io).notifyStartup();
+		}
+		for (DeviceController io : registeredControllers.get("AttendantIOController")) {
+			((AttendantIOController) io).notifyStartup();
+		}
+	}
+	
+	public boolean isInUse() {
+		return inUse;
+	}
+	
+	public void setInUse(boolean set) {
+		inUse = set;
+	}
+
+	public boolean isDisabled() {
+		return isDisabled;
 	}
 
 	public void setMaintenence(boolean b) {
+		this.isDoingMaintenance = b;
 	}
 
+
 	public void setShutdown(boolean b) {
+		this.isShutdown = b;
 	}
 }
