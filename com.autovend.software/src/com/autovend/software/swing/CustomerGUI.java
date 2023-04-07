@@ -22,7 +22,8 @@ public class CustomerGUI extends JFrame {
 	/**
 	 * TODO: Delete this method for final product.
 	 * 
-	 * Used to launch GUI when run.
+	 * Used to launch GUI when run
+
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
