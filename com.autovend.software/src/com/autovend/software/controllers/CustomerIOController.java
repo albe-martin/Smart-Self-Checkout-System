@@ -86,6 +86,14 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
     }
 
     /**
+     * Called in response to the customer selecting the 'purchase reusable bags' option.
+     * Should trigger a prompt asking the customer how many bags they want to buy.
+     */
+    void selectPurchaseBags(){
+
+    }
+
+    /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
     void selectBagsAdded(){

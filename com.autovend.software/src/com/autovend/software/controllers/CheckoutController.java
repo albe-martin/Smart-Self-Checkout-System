@@ -238,6 +238,9 @@ public class CheckoutController {
 		for (DeviceController baggingController : this.registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newBag, weight, true);
 		}
+		for(int i = 0; i <= numBags; i++){ // dispense the bags and add them to the order
+			// addItem(checkoutStation.ReusableBagDispenser.dispense); (there is currently no ReusableBagDispenser in SelfCheckoutStation)
+		}
 		baggingItemLock = true;
 		System.out.println("Reusable bag has been added, you may continue.");
 	}
