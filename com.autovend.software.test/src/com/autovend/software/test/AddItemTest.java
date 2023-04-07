@@ -24,6 +24,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -525,7 +526,7 @@ public class AddItemTest {
 		total = total.add(databaseItem1.getPrice());
 
 		// Rounds the value to 2 decimal places
-		total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
+		total = total.setScale(2, RoundingMode.HALF_UP);
 
 		// Check that the item number and cost in the order were updated correctly
 		assertEquals(2, order.get(databaseItem1)[0]);
