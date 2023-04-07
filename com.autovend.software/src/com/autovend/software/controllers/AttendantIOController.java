@@ -6,6 +6,7 @@ import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.KeyboardObserver;
 import com.autovend.devices.observers.TouchScreenObserver;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 //need to decide whether the keyboard should get its own controller or not,
@@ -43,6 +44,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     void shutdownStation(CheckoutController checkout) {
         checkout.setShutdown(false);
         checkout.enableAllDevices();
+    }
+
+    void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
+        //TODO
+    }
+
+    void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
+        //TODO
     }
 
     //todo: add methods which let this controller modify the GUI on the screen
