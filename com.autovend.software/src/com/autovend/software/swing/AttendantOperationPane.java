@@ -1,5 +1,8 @@
 package com.autovend.software.swing;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,22 +15,17 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 
 import com.autovend.devices.SupervisionStation;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CustomerIOController;
-import javax.swing.JScrollPane;
-import java.awt.FlowLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.MatteBorder;
-import java.awt.Color;
-import java.awt.Component;
 
 /**
  * A class for the attendant operation pane.
@@ -156,20 +154,20 @@ public class AttendantOperationPane extends JPanel {
 		// Create panel for managing enabled stations.
 		manageEnabledPane = new JPanel();
 		manageEnabledPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		manageEnabledPane.setBounds(21, 562, 181, 201);
+		manageEnabledPane.setBounds(21, 562, 226, 179);
 		this.add(manageEnabledPane);
 		manageEnabledPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		// Create label for panel with all inactive stations.
 		JLabel manageDisabledLabel = new JLabel("Manage Disabled Stations:");
 		manageDisabledLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		manageDisabledLabel.setBounds(215, 536, 181, 23);
+		manageDisabledLabel.setBounds(257, 536, 181, 23);
 		this.add(manageDisabledLabel);
 		
 		// Create panel for managing disabled stations.
 		manageDisabledPane = new JPanel();
 		manageDisabledPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		manageDisabledPane.setBounds(215, 562, 181, 201);
+		manageDisabledPane.setBounds(257, 562, 226, 179);
 		this.add(manageDisabledPane);
 		manageDisabledPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
@@ -181,6 +179,10 @@ public class AttendantOperationPane extends JPanel {
 	 * Populates the enabled and disabled station management panes.
 	 */
 	public void populateManagementPanes() {
+		// Clear panes.
+		manageEnabledPane.removeAll();
+		manageDisabledPane.removeAll();
+		
 		// Add each station to enabled/disabled pane.
 		for (CustomerIOController cioc : aioc.getAllStationsIOControllers()) {
 			if (cioc.getMainController().isDisabled()) {
@@ -191,19 +193,14 @@ public class AttendantOperationPane extends JPanel {
 			} else {
 				// Add enabled station to enabled pane.
 				JButton btn = new JButton("Station #" + cioc.getMainController().getID());
-				btn.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						// Active station button pressed.
-						System.out.println("Enabled Station pressed!");
-					}
-				});
+				addEnabledActionPopup(btn, cioc);
 				manageEnabledPane.add(btn);
 			}
 		}
 	}
 	
 	/**
-	 * Adds the action pop-up menu for an enabled station.
+	 * Adds the action pop-up menu for a disabled station.
 	 * 
 	 * @param btn
 	 * 			Button that causes the pop-up.
@@ -217,13 +214,66 @@ public class AttendantOperationPane extends JPanel {
                 JPanel panel = new JPanel();
                 panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
                 panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                
                 // Create a label for the action selection.
                 JLabel label = new JLabel("Select an action:");
                 label.setAlignmentX(Component.CENTER_ALIGNMENT);
                 panel.add(label);
+                
                 // Create a group of radio buttons for the available actions.
                 ButtonGroup group = new ButtonGroup();
                 for (String action : new String[] {"Enable Station"}) {
+                    JRadioButton radioButton = new JRadioButton(action);
+                    radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    group.add(radioButton);
+                    panel.add(radioButton);
+                }
+
+                // Show the action pop-up and get the selected action.
+                int result = JOptionPane.showOptionDialog(null, panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                if (result == JOptionPane.OK_OPTION) {
+                    String chosenAction = null;
+                    // Determine selected action's text.
+                    for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                        AbstractButton button = buttons.nextElement();
+                        if (button.isSelected()) {
+                            chosenAction = button.getText();
+                            break;
+                        }
+                    }
+                    
+                    // Process the selected action.
+                    processAction(chosenAction, cioc);
+                }
+            }
+        });
+		
+	}
+	
+	/**
+	 * Adds the action pop-up menu for an enabled station.
+	 * 
+	 * @param btn
+	 * 			Button that causes the pop-up.
+	 * @param cioc
+	 * 			CustomerIOController performing the action on.
+	 */
+	public void addEnabledActionPopup(JButton btn, CustomerIOController cioc) {
+		btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Create a panel to hold the actions pop-up.
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                
+                // Create a label for the action selection.
+                JLabel label = new JLabel("Select an action:");
+                label.setAlignmentX(Component.CENTER_ALIGNMENT);
+                panel.add(label);
+                
+                // Create a group of radio buttons for the available actions.
+                ButtonGroup group = new ButtonGroup();
+                for (String action : new String[] {"Disable Station"}) {
                     JRadioButton radioButton = new JRadioButton(action);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                     group.add(radioButton);
@@ -261,20 +311,19 @@ public class AttendantOperationPane extends JPanel {
 	 */
 	public void processAction(String action, CustomerIOController cioc ) {
 		if (action.equalsIgnoreCase("Enable Station")) {
+			// Enable station.
+			aioc.enableStation(cioc.getMainController());
+			// Repopulate management panes.
+			populateManagementPanes();
+		} else if (action.equalsIgnoreCase("Disable Station")) {
+			// Disable station.
 			aioc.disableStation(cioc.getMainController());
-			// Reinitialize management panes.
-			initializeManagementPanes();
-			
-			// fixing bugs.
-			
-			System.out.println(cioc.getMainController().isDisabled());
-			
-//			System.out.println("logged in:" + aioc.getMainAttendantController().isLoggedIn());
+			// Repopulate management panes.
+			populateManagementPanes();
 		}
 		
 		// Refresh screen.
 		this.revalidate();
 		this.repaint();
-		
 	}
 }

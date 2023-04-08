@@ -107,7 +107,6 @@ public class AttendantLoginPane extends JPanel {
 		
 		// Initialize language select button
 		initializeLanguageSelectButton();
-		
 	}
 	
 	/**
@@ -219,11 +218,19 @@ public class AttendantLoginPane extends JPanel {
 	 * Display a login error message.
 	 */
 	public void showLoginError() {
+		
+		System.out.println("Called");
+		
+		
 		// Create error label.
 		JLabel errorLabel = new JLabel(Language.translate(language, "Invalid username or password, try again."));
-		errorLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		errorLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		errorLabel.setForeground(Color.RED);
-		errorLabel.setBounds(218, 375, 200, 47);
+		errorLabel.setBounds(293, 393, 209, 20);
 		this.add(errorLabel);
+		
+		// Refresh screen
+		this.revalidate();
+		this.repaint();
 	}
 }
