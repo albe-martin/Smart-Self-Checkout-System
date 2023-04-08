@@ -102,6 +102,18 @@ public class AttendantLoginPane extends JPanel {
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setLayout(null);
 		
+		// Initialize login controls.
+		initializeLoginControls();
+		
+		// Initialize language select button
+		initializeLanguageSelectButton();
+		
+	}
+	
+	/**
+	 * Initialize login controls.
+	 */
+	private void initializeLoginControls() {
 		// Create username label.
 		usernameLabel = new JLabel(Language.translate(language, "Username:"));
 		usernameLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -145,7 +157,12 @@ public class AttendantLoginPane extends JPanel {
             }
         });
 		this.add(loginButton);	
-		
+	}
+	
+	/**
+	 * Initialize language select button.
+	 */
+	public void initializeLanguageSelectButton() {
 		// Create language select button.
 		languageSelectButton = new JButton(Language.translate(language, "Change Language"));
         languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -196,7 +213,6 @@ public class AttendantLoginPane extends JPanel {
         });
         languageSelectButton.setBounds(291, 642, 200, 50);
         this.add(languageSelectButton);
-
 	}
 	
 	/**
