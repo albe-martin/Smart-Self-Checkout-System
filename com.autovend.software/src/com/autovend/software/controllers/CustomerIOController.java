@@ -9,6 +9,8 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -42,6 +44,15 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
             //stuff to the scale first before they do stuff for the PLU code
         }
     }
+    
+    void addItemByBrowsing(Product selectedProduct) {
+    	//product to add will already be selected from the catalogue here
+    	//so it just adds the selected item, gets the product from UI
+    	if (selectedProduct!=null) {
+            this.getMainController().addItem(selectedProduct);
+        }
+    }
+    
 
 
 
@@ -83,12 +94,88 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
         //todo: self explanatory
     }
 
+    /**
+     * Called in response to the customer selecting the 'purchase reusable bags' option.
+     * Should trigger a prompt asking the customer how many bags they want to buy.
+     */
+    void selectPurchaseBags(){
+
+    }
+
+    /**
+     * Called in response to the customer selecting the 'finished adding bags' option.
+     */
+    void selectBagsAdded(){
+        Set<DeviceController> baggingControllers = this.getMainController().getAllDeviceControllersRevised().get("BaggingAreaController");
+        for (DeviceController baggingController : baggingControllers) {
+            BaggingScaleController scale = (BaggingScaleController) baggingController;
+            scale.setAddingBags(false);
+            scale.setExpectedWeight(scale.getSavedWeight());
+            if(scale.getExpectedWeight() != scale.getCurrentWeight()){
+                this.getMainController().systemProtectionLock = true; // Lock the system
+                this.getMainController().AttendantApproved = false; // Signal the attendant
+            }
+        }
+    }
+
     void selectDoNotBag(Product product){
         // todo:
         // tell main controller to not bag a certain product, need to modify checkout controller
         // for this
     }
-
+    
+    /**
+     * Registers an Attendant's IO Controller into CustomerIO Controller if not already assigned one.
+     * @param IOController
+     * 		The Attendant Station's IO Controller to add.
+     * @throws IllegalStateException
+     * 		When a Checkout station is already assigned to an attendant station.
+     */
+    void registerAttendant(AttendantIOController IOController) throws IllegalStateException{
+    	if(this.getMainController().getSupervisor() == 0) {
+    		this.getMainController().registerController("AttendantIOController", IOController);
+    		this.getMainController().setSupervisor(IOController.getID());
+    	} else {
+    		throw new IllegalStateException("Checkout Station is already assigned to an Attendant Station.");
+    	}
+    }
+    
+    /**
+     * Deregisters an Attendant's IO Controller into CustomerIO Controller.
+     * @param IOController
+     * 		The attendant station's IO controller
+     * @throws IllegalStateException
+     * 		If the attendant station is not supervising this checkout station OR
+     * 		if this checkout station is not being supervised.
+     * 
+     */
+    void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
+    	if(this.getMainController().getSupervisor() != 0) {
+    		if(this.getMainController().getControllersByType("AttendantIOControllers").contains(IOController)) {
+    	    	this.getMainController().deregisterController("AttendantIOController", IOController);
+        		this.getMainController().setSupervisor(0);
+    		}
+    		else {
+    			throw new IllegalStateException("This Checkout Station is not assigned to this Attendant Station");
+    		}
+    	} else {
+    		throw new IllegalStateException("Checkout Station is not assigned to an Attendant Station."); 
+    	}
+    }
+    
+    /**
+     * Signals GUI to terminate (since it is turning off).
+     */
+    void notifyShutdown() {
+    	
+    }
+    
+    /**
+     * Signals GUI to start GUI.
+     */
+    void notifyStartup() {
+    	
+    }
 
     //this method is used to display that there is a bagging discrepancy
     void displayWeightDiscrepancyMessage() {}
