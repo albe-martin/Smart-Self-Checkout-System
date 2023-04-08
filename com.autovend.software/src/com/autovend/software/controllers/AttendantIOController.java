@@ -10,6 +10,7 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -223,6 +224,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         this.getMainController().systemProtectionLock = false;
         this.getMainController().AttendantApproved = true;
         controller.setExpectedWeight(controller.getCurrentWeight());
+    }
+
+    void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
+        //TODO: Signal GUI
+    }
+
+    void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
+        //TODO: Signal GUI
     }
 
     //todo: add methods which let this controller modify the GUI on the screen

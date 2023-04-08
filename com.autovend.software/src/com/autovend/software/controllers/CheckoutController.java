@@ -20,7 +20,11 @@ package com.autovend.software.controllers;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.autovend.Bill;
+import com.autovend.Coin;
+import com.autovend.devices.OverloadException;
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
@@ -47,12 +51,16 @@ public class CheckoutController {
 	private boolean isDisabled = false;
 	private boolean isDoingMaintenance = false;
 	private boolean isShutdown = false;
+
+	private boolean requireAdjustment = false;
+
 	
 	//need this variable to know if this station is being used or not.
 	private boolean inUse = false;
 	
 	//Supervisor Station ID. 0 = not supervised
 	private int supervisorID = 0;
+
 
 	private SelfCheckoutStation checkoutStation;
 
@@ -440,6 +448,12 @@ public class CheckoutController {
 		} else {
 			printReceipt();
 		}
+		if (this.requireAdjustment == true) {
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).disableStation(this);
+			}
+		}
+		this.requireAdjustment = false;
 	}
 
 	void dispenseChange() {
@@ -467,6 +481,46 @@ public class CheckoutController {
 			}
 		}
 	}
+
+	// when bill/coin dispenser signals that a certain denomination is low (for now low is defined as <= 5)
+	public void changeDenomLow(ChangeDispenserController controller, BigDecimal denom) {
+		if (controller instanceof BillDispenserController) {
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).notifyLowBillDenomination(this, controller, denom);
+			}
+		} else {
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).notifyLowCoinDenomination(this, controller, denom);
+			}
+		}
+		this.requireAdjustment = true;
+	}
+
+	// load bills into dispenser (done by attendant) after they're notified that the bill dispenser is low
+	public void loadBillDenomination(BillDispenserController controller, Bill[] bills) {
+		try {
+			controller.getDevice().load(bills);
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).enableStation(this);
+			}
+		} catch (SimulationException | OverloadException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	// load coins into dispenser (done by attendant) after they're notified that the coin dispenser is low
+	public void loadCoinDenomination(CoinDispenserController controller, Coin[] coins) {
+		try {
+			controller.getDevice().load(coins);
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).enableStation(this);
+			}
+		} catch (SimulationException | OverloadException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
 		//todo: have it notify attendant and then try dispensing lower decrements (if possible),
 		if (controller instanceof BillDispenserController) {
