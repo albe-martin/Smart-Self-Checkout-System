@@ -1,6 +1,7 @@
 package com.autovend.software.swing;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.Locale;
@@ -11,6 +12,7 @@ import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 
 public class GUILauncher {
@@ -43,22 +45,34 @@ public class GUILauncher {
 		// Add valid username and password.
 		asc.registerUser("abc", "123");
 		
-		attendantScreen.setVisible(true);	
+		attendantScreen.setVisible(true);
 		
-		// Create checkout station.
-		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
-				new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
-		
-		// Get and set up screen
-		JFrame customerScreen = customerStation.screen.getFrame();
-		customerScreen.setExtendedState(0);
-		customerScreen.setSize(800, 800);
-		customerScreen.setUndecorated(false);
-		customerScreen.setResizable(false);
-		
-		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
-		customerScreen.setContentPane(new CustomerStartPane(cioc));
-		
-		customerScreen.setVisible(true);
+		// Create list of checkout stations
+		int num_stations = 2;
+		ArrayList<CustomerIOController> ciocs = new ArrayList<>();
+		for (int i = 0; i < num_stations; i++) {
+			SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
+					new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+			
+			// Get and set up screen
+			JFrame customerScreen = customerStation.screen.getFrame();
+			customerScreen.setExtendedState(0);
+			customerScreen.setSize(800, 800);
+			customerScreen.setUndecorated(false);
+			customerScreen.setResizable(false);
+			
+			// Create controller
+			CustomerIOController cioc = new CustomerIOController(customerStation.screen);
+			cioc.setMainController(new CheckoutController());
+			
+			// Add to array
+			ciocs.add(cioc);
+			
+			customerScreen.setContentPane(new CustomerStartPane(cioc));
+			customerScreen.setVisible(true);
+			
+			// Register customer to attendant
+			asc.registerController(cioc);
+		}
 	}
 }

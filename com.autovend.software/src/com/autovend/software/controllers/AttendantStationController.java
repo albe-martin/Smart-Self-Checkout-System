@@ -108,7 +108,7 @@ public class AttendantStationController {
 			if(!attendantIOControllers.contains(controller))
 				attendantIOControllers.add(controller);
 		} 
-		else if(!controller.getTypeName().equals("CustomerIOController")) {
+		else if(controller.getTypeName().equals("CustomerIOController")) {
 			Set<DeviceController> customerIoControllers = registeredIOControllers.get("CustomerIOController");
 			if(!customerIoControllers.contains(controller))
 				customerIoControllers.add(controller);

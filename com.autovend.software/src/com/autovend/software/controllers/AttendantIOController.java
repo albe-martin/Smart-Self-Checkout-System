@@ -178,7 +178,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * Simple method that will return the checkout station list from this IO's main attendant station in the form of IO controllers
      * 
      */
-    List<CustomerIOController> getAllStationsIOControllers() {
+    public List<CustomerIOController> getAllStationsIOControllers() {
     	return mainController.getAllStationsIOControllers();
     }
     
@@ -187,7 +187,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @return
      * 		List of disabled station IO controllers
      */
-    List<CustomerIOController> getDisabledStationsIOControllers() {
+    public List<CustomerIOController> getDisabledStationsIOControllers() {
     	return mainController.getDisabledStationsIOControllers();
     }
 

@@ -13,6 +13,10 @@ import javax.swing.border.EmptyBorder;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
+import com.autovend.software.controllers.CustomerIOController;
+import javax.swing.JScrollPane;
+import java.awt.FlowLayout;
+import javax.swing.JLabel;
 
 /**
  * A class for the attendant operation pane.
@@ -93,5 +97,27 @@ public class AttendantOperationPane extends JPanel {
             }
         });
 		this.add(logoutButton);
+		
+		// Create label for panel with all active stations.
+		JLabel lblNewLabel = new JLabel("Manage Stations:");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel.setBounds(50, 536, 166, 23);
+		add(lblNewLabel);
+		
+		// Create panel for all active stations.
+		JPanel panel = new JPanel();
+		panel.setBounds(50, 562, 230, 201);
+		add(panel);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		for (CustomerIOController cioc : aioc.getAllStationsIOControllers()) {
+			JButton btn = new JButton("Station #" + cioc.getMainController().getID());
+			btn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					// Active station button pressed.
+					System.out.println("Station pressed!");
+				}
+			});
+			panel.add(btn);
+		}
 	}
 }
