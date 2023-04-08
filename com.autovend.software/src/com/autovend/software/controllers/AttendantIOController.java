@@ -42,7 +42,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to enable
      */
-    void enableStation(CheckoutController checkout) {
+    public void enableStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
             checkout.setMaintenence(false);
             checkout.enableAllDevices();
@@ -54,7 +54,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to disable
      */
-    void disableStation(CheckoutController checkout) {
+    public void disableStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
 	        checkout.setMaintenence(true);
 	        checkout.disableAllDevices();

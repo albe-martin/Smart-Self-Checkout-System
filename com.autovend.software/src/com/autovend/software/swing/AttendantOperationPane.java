@@ -3,11 +3,17 @@ package com.autovend.software.swing;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.HashMap;
 
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 import com.autovend.devices.SupervisionStation;
@@ -17,9 +23,11 @@ import com.autovend.software.controllers.CustomerIOController;
 import javax.swing.JScrollPane;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.Color;
+import java.awt.Component;
 
 /**
  * A class for the attendant operation pane.
@@ -178,12 +186,7 @@ public class AttendantOperationPane extends JPanel {
 			if (cioc.getMainController().isDisabled()) {
 				// Add disabled station to disabled pane.
 				JButton btn = new JButton("Station #" + cioc.getMainController().getID());
-				btn.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						// Active station button pressed.
-						System.out.println("Disabled Station pressed!");
-					}
-				});
+				addDisabledActionPopup(btn, cioc);
 				manageDisabledPane.add(btn);
 			} else {
 				// Add enabled station to enabled pane.
@@ -197,5 +200,81 @@ public class AttendantOperationPane extends JPanel {
 				manageEnabledPane.add(btn);
 			}
 		}
+	}
+	
+	/**
+	 * Adds the action pop-up menu for an enabled station.
+	 * 
+	 * @param btn
+	 * 			Button that causes the pop-up.
+	 * @param cioc
+	 * 			CustomerIOController performing the action on.
+	 */
+	public void addDisabledActionPopup(JButton btn, CustomerIOController cioc) {
+		btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Create a panel to hold the actions pop-up.
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                // Create a label for the action selection.
+                JLabel label = new JLabel("Select an action:");
+                label.setAlignmentX(Component.CENTER_ALIGNMENT);
+                panel.add(label);
+                // Create a group of radio buttons for the available actions.
+                ButtonGroup group = new ButtonGroup();
+                for (String action : new String[] {"Enable Station"}) {
+                    JRadioButton radioButton = new JRadioButton(action);
+                    radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    group.add(radioButton);
+                    panel.add(radioButton);
+                }
+
+                // Show the action pop-up and get the selected action.
+                int result = JOptionPane.showOptionDialog(null, panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                if (result == JOptionPane.OK_OPTION) {
+                    String chosenAction = null;
+                    // Determine selected action's text.
+                    for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                        AbstractButton button = buttons.nextElement();
+                        if (button.isSelected()) {
+                            chosenAction = button.getText();
+                            break;
+                        }
+                    }
+                    
+                    // Process the selected action.
+                    processAction(chosenAction, cioc);
+                }
+            }
+        });
+		
+	}
+	
+	/**
+	 * Process an action on a customer station.
+	 * 
+	 * @param action
+	 * 			Action to be performed.
+	 * @param cioc
+	 * 			CustomerIOController to perform the action on.
+	 */
+	public void processAction(String action, CustomerIOController cioc ) {
+		if (action.equalsIgnoreCase("Enable Station")) {
+			aioc.disableStation(cioc.getMainController());
+			// Reinitialize management panes.
+			initializeManagementPanes();
+			
+			// fixing bugs.
+			
+			System.out.println(cioc.getMainController().isDisabled());
+			
+//			System.out.println("logged in:" + aioc.getMainAttendantController().isLoggedIn());
+		}
+		
+		// Refresh screen.
+		this.revalidate();
+		this.repaint();
+		
 	}
 }
