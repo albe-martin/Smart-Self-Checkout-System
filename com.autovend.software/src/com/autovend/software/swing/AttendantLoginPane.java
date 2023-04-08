@@ -1,15 +1,24 @@
 package com.autovend.software.swing;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.autovend.software.controllers.AttendantIOController;
@@ -21,6 +30,13 @@ public class AttendantLoginPane extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
+	private String language = "English";
+	private String[] languages = new String[] {"English", "French"};
+	private JLabel usernameLabel;
+	private JLabel passwordLabel;
+	private JButton loginButton;
+	private JButton languageSelectButton;
+	private JLabel errorLabel;
 	
 	/**
 	 * Basic constructor.
@@ -43,9 +59,10 @@ public class AttendantLoginPane extends JPanel {
 		this.setLayout(null);
 		
 		// Create username label.
-		JLabel usernameLabel = new JLabel("Username");
+		usernameLabel = new JLabel(Language.translate(language, "Username:"));
 		usernameLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		usernameLabel.setBounds(218, 296, 102, 47);
+		usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		usernameLabel.setBounds(118, 296, 202, 47);
 		this.add(usernameLabel);
 		
 		// Create username text field.
@@ -56,9 +73,10 @@ public class AttendantLoginPane extends JPanel {
 		usernameTextField.setColumns(10);
 		
 		// Create password label.
-		JLabel passwordLabel = new JLabel("Password:");
+		passwordLabel = new JLabel(Language.translate(language, "Password:"));
 		passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		passwordLabel.setBounds(218, 345, 102, 47);
+		passwordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		passwordLabel.setBounds(118, 345, 202, 47);
 		this.add(passwordLabel);
 		
 		// Create password text field.
@@ -70,7 +88,7 @@ public class AttendantLoginPane extends JPanel {
 		this.add(passwordTextField);
 		
 		// Create login button.
-		JButton loginButton = new JButton("Log In");
+		loginButton = new JButton(Language.translate(language, "Log In"));
 		loginButton.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		loginButton.setBounds(311, 424, 146, 63);
 		loginButton.setActionCommand("login");
@@ -82,7 +100,59 @@ public class AttendantLoginPane extends JPanel {
             	aioc.login(usernameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
             }
         });
-		this.add(loginButton);		
+		this.add(loginButton);	
+		
+		// Create language select button.
+		languageSelectButton = new JButton(Language.translate(language, "Change Language"));
+        languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        languageSelectButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Create a panel to hold the language select pop-up
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                // Create a label for the language selection
+                JLabel label = new JLabel("Select a language:");
+                label.setAlignmentX(Component.CENTER_ALIGNMENT);
+                panel.add(label);
+                // Create a group of radio buttons for the available languages
+                ButtonGroup group = new ButtonGroup();
+                for (String language : languages) {
+                    JRadioButton radioButton = new JRadioButton(language);
+                    radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    group.add(radioButton);
+                    panel.add(radioButton);
+                }
+
+                // Show the language selection dialog and get the selected language
+                int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                if (result == JOptionPane.OK_OPTION) {
+                    String newLanguage = null;
+                    // Determine selected button's text
+                    for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                        AbstractButton button = buttons.nextElement();
+                        if (button.isSelected()) {
+                            newLanguage = button.getText();
+                            break;
+                        }
+                    }
+
+                    if (newLanguage != null) {
+                        // Update the language variable
+                        language = newLanguage;
+
+                        // Update texts to new language
+                        usernameLabel.setText(Language.translate(language, "Username:"));
+                        passwordLabel.setText(Language.translate(language, "Password:"));
+                        loginButton.setText(Language.translate(language, "Log In"));
+                        languageSelectButton.setText(Language.translate(language, "Change Language"));
+                    }
+                }
+            }
+        });
+        languageSelectButton.setBounds(700, 700, 200, 50);
+        this.add(languageSelectButton);
+
 	}
 	
 	/**
@@ -90,10 +160,10 @@ public class AttendantLoginPane extends JPanel {
 	 */
 	public void showLoginError() {
 		// Create error label.
-		JLabel passwordLabel = new JLabel("Invalid username or password, try again.");
-		passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		passwordLabel.setForeground(Color.RED);
-		passwordLabel.setBounds(218, 375, 200, 47);
-		this.add(passwordLabel);
+		JLabel errorLabel = new JLabel(Language.translate(language, "Invalid username or password, try again."));
+		errorLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		errorLabel.setForeground(Color.RED);
+		errorLabel.setBounds(218, 375, 200, 47);
+		this.add(errorLabel);
 	}
 }

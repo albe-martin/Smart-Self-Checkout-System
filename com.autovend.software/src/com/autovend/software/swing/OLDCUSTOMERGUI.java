@@ -56,8 +56,6 @@
 //     * Switches to the start screen.
 //     */
 //    public void showStartScreen() {
-//        // TODO: Language selector.
-//
 //        // Create start screen pane.
 //        JPanel startContentPane = new JPanel();
 //        startContentPane.setLayout(null);

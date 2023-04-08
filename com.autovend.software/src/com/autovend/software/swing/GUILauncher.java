@@ -2,6 +2,7 @@ package com.autovend.software.swing;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.swing.JFrame;
@@ -29,6 +30,15 @@ public class GUILauncher {
 		asc.registerUser("abc", "123");
 		
 		attendantScreen.setVisible(true);
+		
+		// Add French language.
+		HashMap<String, String> french = new HashMap<>();
+		french.put("Username:", "Le username:");
+		french.put("Password:", "Le password:");
+		french.put("Log In", "Le log in");
+		french.put("Change Language", "Le Change Language");
+		french.put("START", "LE START");
+		Language.addLanguage("French", french);
 	
 		
 		// Set up customer screen
