@@ -47,11 +47,11 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
 
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
-        //TODO
+        //TODO: Signal GUI
     }
 
     void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
-        //TODO
+        //TODO: Signal GUI
     }
 
     //todo: add methods which let this controller modify the GUI on the screen
