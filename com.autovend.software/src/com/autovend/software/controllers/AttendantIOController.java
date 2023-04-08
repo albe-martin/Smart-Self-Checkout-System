@@ -5,6 +5,7 @@ import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.KeyboardObserver;
 import com.autovend.devices.observers.TouchScreenObserver;
+import com.autovend.software.swing.AttendantGUIUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,7 +30,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         return "AttendantIOController";
     }
     
-    void setMainAttendantController(AttendantStationController controller) {
+    public void setMainAttendantController(AttendantStationController controller) {
     	this.mainController = controller;
     }
     
@@ -125,14 +126,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param password
      * 		The password
      */
-    void login(String username, String password) {
+   public void login(String username, String password) {
     	this.mainController.login(username, password);
     }
     
     /**
      * Signals Attendant station controller ot log out if the attendant is logged in
      */
-    void logout() {
+    public void logout() {
     	if(this.mainController.isLoggedIn()) {
     		this.mainController.logout();
     	}
@@ -149,7 +150,15 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 		Will be blank "" if fail
      */
     void loginValidity(boolean success, String username) {
-    	//TODO: signal GUI
+    	// Check validity
+    	if (success) {
+    		// Switch GUI to operation screen.
+    		getDevice().getFrame().setContentPane(AttendantGUIUtils.getOperationPane(this));
+    		getDevice().getFrame().revalidate();
+        	getDevice().getFrame().repaint();
+    	} else {
+    		// TODO: Handle bad login.
+    	}
     }
     
     /**
@@ -159,7 +168,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 		The username of the logged in user who wishes to log out.
      */
     void loggedOut(String username) {
-    	//TODO: signal GUI
+    	// Switch GUI to login screen.
+    	getDevice().getFrame().setContentPane(AttendantGUIUtils.getLoginPane(this));
+    	getDevice().getFrame().revalidate();
+    	getDevice().getFrame().repaint();
     }
     
     /**

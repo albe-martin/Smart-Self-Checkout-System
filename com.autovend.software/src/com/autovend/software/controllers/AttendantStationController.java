@@ -223,6 +223,12 @@ public class AttendantStationController {
 	public void logout() {
 		loggedIn = false;
 		currentUser = "";
+		
+		// Signal AttendantIOController of successful logout
+		for (DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
+			((AttendantIOController) io).loggedOut(currentUser);
+		}
+		
 		return;
 	}
 	
