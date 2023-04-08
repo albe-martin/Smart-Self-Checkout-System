@@ -7,6 +7,7 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.swing.CustomerGUIUtils;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ import java.util.Set;
 /**
  *
  */
-class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
+public class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
@@ -166,6 +167,26 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
      */
     void notifyStartup() {
     	
+    }
+    
+    /**
+     * Signals start button was pressed.
+     */
+    public void startPressed() {
+    	// Switch to operation screen.
+    	getDevice().getFrame().setContentPane(CustomerGUIUtils.getOperationPane(this));
+    	getDevice().getFrame().revalidate();
+    	getDevice().getFrame().repaint();
+    }
+    
+    /**
+     * Signals logout button was pressed.
+     */
+    public void logoutPressed() {
+    	// Switch to start screen.
+    	getDevice().getFrame().setContentPane(CustomerGUIUtils.getStartPane(this));
+    	getDevice().getFrame().revalidate();
+    	getDevice().getFrame().repaint();
     }
 
     //this method is used to display that there is a bagging discrepancy

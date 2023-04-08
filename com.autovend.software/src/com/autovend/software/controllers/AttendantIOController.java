@@ -1,15 +1,11 @@
 package com.autovend.software.controllers;
 
-import com.autovend.devices.AbstractDevice;
-import com.autovend.devices.SelfCheckoutStation;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.autovend.devices.TouchScreen;
-import com.autovend.devices.observers.KeyboardObserver;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.software.swing.AttendantGUIUtils;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 //need to decide whether the keyboard should get its own controller or not,
 //might be excessive to be honest, but it would be consistent....
