@@ -25,6 +25,7 @@ public class GUILauncher {
 		aioc.setMainAttendantController(asc);
 		asc.registerController(aioc);
 		
+		// Add valid username and password.
 		asc.registerUser("abc", "123");
 		
 		attendantScreen.setVisible(true);

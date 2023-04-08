@@ -154,7 +154,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     		getDevice().getFrame().revalidate();
         	getDevice().getFrame().repaint();
     	} else {
-    		// TODO: Handle bad login.
+    		// Handle bad login
+    		AttendantLoginPane pane = (AttendantLoginPane) getDevice().getFrame().getContentPane();
+    		pane.showLoginError();
+    		
     	}
     }
     
