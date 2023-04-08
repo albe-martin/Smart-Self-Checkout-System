@@ -1,7 +1,21 @@
 package com.autovend.software.controllers;
 
+
+import com.autovend.devices.AbstractDevice;
+import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.devices.TouchScreen;
+import com.autovend.devices.observers.KeyboardObserver;
+import com.autovend.devices.observers.TouchScreenObserver;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
+
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
@@ -176,6 +190,37 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	getDevice().getFrame().repaint();
     }
     
+    
+    /**
+     * Method to add items by text search for attendants
+     * 
+     * @param input
+     * 		The string to search with
+     * @return
+     * 		Set<Product>: its a set of products that are collected after the search is done.
+     */
+    Set<Product> addItemByTextSearch(String input){
+    	String[] filteredInput = input.split(" ");
+    	Set<Product> productsToReturn = new HashSet<Product>();
+    	
+    	for(int b = 0; b < filteredInput.length; b++){
+    		for(PLUCodedProduct p : ProductDatabases.PLU_PRODUCT_DATABASE.values()) {
+    			if(p.getClass().getSimpleName().contains(filteredInput[b]) || p.getDescription().contains(filteredInput[b])) {
+    				productsToReturn.add((Product) p);
+    			}
+    		}
+    		for(BarcodedProduct p : ProductDatabases.BARCODED_PRODUCT_DATABASE.values()) {
+    			if(p.getClass().getSimpleName().contains(filteredInput[b]) || p.getDescription().contains(filteredInput[b])) {
+    				productsToReturn.add((Product) p);
+    			}
+    		}
+    		
+    	}
+    	
+    	return productsToReturn;
+    	
+    }
+    
     /**
      * Simple method that will return the checkout station list from this IO's main attendant station in the form of IO controllers
      * 
@@ -203,7 +248,16 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         controller.setExpectedWeight(controller.getCurrentWeight());
     }
 
+    void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
+        //TODO: Signal GUI
+    }
+
+    void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
+        //TODO: Signal GUI
+    }
+
     //todo: add methods which let this controller modify the GUI on the screen
+    
     
 
 

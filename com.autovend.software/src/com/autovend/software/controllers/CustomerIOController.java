@@ -45,6 +45,15 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
             //stuff to the scale first before they do stuff for the PLU code
         }
     }
+    
+    void addItemByBrowsing(Product selectedProduct) {
+    	//product to add will already be selected from the catalogue here
+    	//so it just adds the selected item, gets the product from UI
+    	if (selectedProduct!=null) {
+            this.getMainController().addItem(selectedProduct);
+        }
+    }
+    
 
 
 
