@@ -72,6 +72,7 @@ public class CustomerGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Start button pressed.
 
+
                 // Switch to regular operation screen.
                 showOperationScreen();
             }
@@ -83,6 +84,12 @@ public class CustomerGUI extends JFrame {
 
         JButton languageSelectButton = new JButton(Language.translate(language, "Select Language"));
         languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        if (language == "English"){
+            languageSelectButton.setText("Select a language:");
+        }
+        else if (language == "French"){
+            languageSelectButton.setText("Choisir la langue");
+        }
         languageSelectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //create a panel to hold the language select popup
@@ -121,7 +128,9 @@ public class CustomerGUI extends JFrame {
 
                         // Update the text on the buttons
                         if (language == languages[0]){
-                        languageSelectButton.setText(Language.translate(language, "Select Language"));}
+                            languageSelectButton.setText(Language.translate(language, "Select Language"));
+
+                        }
                         else if (language == languages[1]){
                             languageSelectButton.setText(Language.translate(language, "Choisir la langue"));
                         }
@@ -154,6 +163,12 @@ public class CustomerGUI extends JFrame {
         // Create exit button. TODO: Replace with cart functionalities
         JButton logoutButton = new JButton(Language.translate(language, "Exit"));
         logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        if (language == "English"){
+            logoutButton.setText("Exit");
+        }
+        else if (language == "French"){
+            logoutButton.setText("Sortie");
+        }
         logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Logout button pressed.
