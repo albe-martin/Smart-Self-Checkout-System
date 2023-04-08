@@ -78,6 +78,8 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void notifyStartup() {
     	//TODO: GUI signal attendant that this station is ready to be enabled
+    	
+    	// TODO: Unnecessary method, should be removed.
     }
     
     /**

@@ -1,5 +1,6 @@
 package com.autovend.software.swing;
 
+import java.awt.Container;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -85,5 +86,6 @@ public class GUILauncher {
 		
 		// Shut down a station
 		ciocs.get(1).getMainController().shutDown();
+		
 	}
 }
