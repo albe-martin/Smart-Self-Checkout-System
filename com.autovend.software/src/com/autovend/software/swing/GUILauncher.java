@@ -74,5 +74,8 @@ public class GUILauncher {
 			// Register customer to attendant
 			asc.registerController(cioc);
 		}
+		
+		// Shut down a station
+		ciocs.get(1).getMainController().shutDown();
 	}
 }
