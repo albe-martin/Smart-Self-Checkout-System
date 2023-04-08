@@ -27,7 +27,7 @@ public class CustomerOperationPane extends JPanel {
 	/**
 	 * TODO: Delete for final submission.
 	 * 
-	 * Quick GUI launcher
+	 * Quick GUI launcher. Used to allow window builder to work.
 	 */
 	public static void main(String[] args) {
 		// Add French language.
@@ -76,8 +76,20 @@ public class CustomerOperationPane extends JPanel {
         this.setBorder(new EmptyBorder(5, 5, 5, 5));
         this.setLayout(null);
 
-        // Create exit button. TODO: Replace with cart functionalities
-        logoutButton = new JButton("Exit");
+        // Initialize exit button.
+        // TODO: Note: might be removed.
+        initializeExitButton();
+        
+        // TODO: Create cart functionalities
+        
+	}
+	
+	/**
+	 * Initialize the exit button.
+	 */
+	private void initializeExitButton() {
+		// Create exit button.
+		logoutButton = new JButton("Exit");
         logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
         logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

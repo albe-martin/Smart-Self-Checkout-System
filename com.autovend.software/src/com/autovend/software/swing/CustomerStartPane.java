@@ -40,7 +40,7 @@ public class CustomerStartPane extends JPanel {
 	/**
 	 * TODO: Delete for final submission.
 	 * 
-	 * Quick GUI launcher
+	 * Quick GUI launcher, used to allow window builder to work.
 	 */
 	public static void main(String[] args) {
 		// Add French language.
@@ -89,7 +89,18 @@ public class CustomerStartPane extends JPanel {
         this.setLayout(null);
         this.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        // Create login button.
+        // Initialize start button.
+        initializeStartButton();
+        
+        // Initialize language select button.
+        initializeLanguageSelectButton():
+	}
+	
+	/**
+	 * Initialize the start button.
+	 */
+	private void initializeStartButton() {
+		// Create start button.
         startButton = new JButton("START");
         startButton.setFont(new Font("Tahoma", Font.PLAIN, 25));
         startButton.addActionListener(new ActionListener() {
@@ -102,7 +113,13 @@ public class CustomerStartPane extends JPanel {
         });
         startButton.setBounds(290, 200, 200, 200);
         this.add(startButton);
-        // Create language select button.
+	}
+
+	/**
+	 * Initialize the language select button.
+	 */
+	private void initializeLanguageSelectButton() {
+		// Create language select button.
 		languageSelectButton = new JButton(Language.translate(language, "Change Language"));
 	    languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	    languageSelectButton.addActionListener(new ActionListener() {
@@ -150,5 +167,4 @@ public class CustomerStartPane extends JPanel {
 
      	this.add(languageSelectButton);
 	}
-
 }

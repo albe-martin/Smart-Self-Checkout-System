@@ -43,7 +43,7 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * TODO: Delete for final submission.
 	 * 
-	 * Quick GUI Launcher.
+	 * Quick GUI Launcher. Used to allow window builder to work.
 	 */
 	public static void main(String[] args) {
 		// Add French language.
