@@ -218,10 +218,6 @@ public class AttendantLoginPane extends JPanel {
 	 * Display a login error message.
 	 */
 	public void showLoginError() {
-		
-		System.out.println("Called");
-		
-		
 		// Create error label.
 		JLabel errorLabel = new JLabel(Language.translate(language, "Invalid username or password, try again."));
 		errorLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));

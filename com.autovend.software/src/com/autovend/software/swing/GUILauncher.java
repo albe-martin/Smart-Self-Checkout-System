@@ -18,12 +18,20 @@ import com.autovend.software.controllers.CustomerIOController;
 public class GUILauncher {
 	public static void main(String[] args) {
 		// Add French language.
+		// TODO: This is just a demo. The submission will only be in english.
+		// TODO: However, testing will need to create and use a french demo (just for a couple labels to ensure it works).
 		HashMap<String, String> french = new HashMap<>();
 		french.put("Username:", "Le username:");
 		french.put("Password:", "Le password:");
 		french.put("Log In", "Le log in");
 		french.put("Change Language", "Le Change Language");
 		french.put("START", "LE START");
+		french.put("Station Notifications:", "Le Station Notifications:");
+		french.put("Manage Enabled Stations:", "Le Manage Enabled Stations");
+		french.put("Manage Disabled Stations:", "Le Manage Disabled Stations:");
+		french.put("Log Out", "Le Log Out");
+		french.put("Station", "Le Station");
+		french.put("Change Language", "Le Change Language");
 		Language.addLanguage("French", french);
 		
 		// Create attendant station.

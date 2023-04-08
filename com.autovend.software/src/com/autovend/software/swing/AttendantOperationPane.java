@@ -34,9 +34,17 @@ public class AttendantOperationPane extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
+	private String language = "English";
+	// TODO: Have English be the only built in language
+	private String[] languages = new String[] {"English", "French"};
 	public JButton logoutButton;
 	public JPanel manageEnabledPane;
+	public JLabel manageEnabledLabel;
 	public JPanel manageDisabledPane;
+	public JLabel manageDisabledLabel;
+	public JButton languageSelectButton;
+	public JLabel notificationsLabel;
+	public JPanel notificationsPane;
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -98,6 +106,9 @@ public class AttendantOperationPane extends JPanel {
 		// Initialize logout button
 		initializeLogoutButton();
 		
+		// Initialize language select button
+		initializeLanguageSelectButton();
+		
 		// Initialize notifications pane.
 		initializeNotificationsPane();
 
@@ -110,9 +121,9 @@ public class AttendantOperationPane extends JPanel {
 	 */
 	private void initializeLogoutButton() {
 		// Create logout button.
-		logoutButton = new JButton("Log Out");
+		logoutButton = new JButton(Language.translate(language, "Log Out"));
 		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		logoutButton.setBounds(586, 645, 120, 63);
+		logoutButton.setBounds(612, 664, 120, 63);
 		logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Login button pressed
@@ -125,17 +136,75 @@ public class AttendantOperationPane extends JPanel {
 	}
 	
 	/**
+	 * Initialize language select button.
+	 */
+	public void initializeLanguageSelectButton() {
+		// Create language select button.
+		languageSelectButton = new JButton(Language.translate(language, "Change Language"));
+        languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        languageSelectButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Create a panel to hold the language select pop-up
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                // Create a label for the language selection
+                JLabel label = new JLabel("Select a language:");
+                label.setAlignmentX(Component.CENTER_ALIGNMENT);
+                panel.add(label);
+                // Create a group of radio buttons for the available languages
+                ButtonGroup group = new ButtonGroup();
+                for (String language : languages) {
+                    JRadioButton radioButton = new JRadioButton(language);
+                    radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    group.add(radioButton);
+                    panel.add(radioButton);
+                }
+
+                // Show the language selection dialog and get the selected language
+                int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                if (result == JOptionPane.OK_OPTION) {
+                    String newLanguage = null;
+                    // Determine selected button's text
+                    for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                        AbstractButton button = buttons.nextElement();
+                        if (button.isSelected()) {
+                            newLanguage = button.getText();
+                            break;
+                        }
+                    }
+
+                    if (newLanguage != null) {
+                        // Update the language variable
+                        language = newLanguage;
+
+                        // Update texts to new language
+                        notificationsLabel.setText(Language.translate(language, "Station Notifications:"));
+                        manageEnabledLabel.setText(Language.translate(language, "Manage Enabled Stations:"));
+                        manageDisabledLabel.setText(Language.translate(language, "Manage Disabled Stations:"));
+                        logoutButton.setText(Language.translate(language, "Log Out"));
+                        languageSelectButton.setText(Language.translate(language, "Change Language"));
+                        populateManagementPanes();
+                    }
+                }
+            }
+        });
+        languageSelectButton.setBounds(532, 582, 200, 50);
+        this.add(languageSelectButton);
+	}
+	
+	/**
 	 * Initialize notifications pane.
 	 */
 	public void initializeNotificationsPane() {
 		// Create label for notifications panel.
-		JLabel notificationsLabel = new JLabel("Station Notifications:");
+		notificationsLabel = new JLabel(Language.translate(language, "Station Notifications:"));
 		notificationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		notificationsLabel.setBounds(21, 30, 173, 14);
 		this.add(notificationsLabel);
 		
 		// Create panel for notifications.
-		JPanel notificationsPane = new JPanel();
+		notificationsPane = new JPanel();
 		notificationsPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		notificationsPane.setBounds(21, 55, 299, 304);
 		this.add(notificationsPane);
@@ -146,7 +215,7 @@ public class AttendantOperationPane extends JPanel {
 	 */
 	public void initializeManagementPanes() {
 		// Create label for panel with all active stations.
-		JLabel manageEnabledLabel = new JLabel("Manage Enabled Stations:");
+		manageEnabledLabel = new JLabel(Language.translate(language, "Manage Enabled Stations:"));
 		manageEnabledLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		manageEnabledLabel.setBounds(21, 536, 181, 23);
 		this.add(manageEnabledLabel);
@@ -159,7 +228,7 @@ public class AttendantOperationPane extends JPanel {
 		manageEnabledPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		// Create label for panel with all inactive stations.
-		JLabel manageDisabledLabel = new JLabel("Manage Disabled Stations:");
+		manageDisabledLabel = new JLabel(Language.translate(language, "Manage Disabled Stations:"));
 		manageDisabledLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		manageDisabledLabel.setBounds(257, 536, 181, 23);
 		this.add(manageDisabledLabel);
@@ -187,12 +256,12 @@ public class AttendantOperationPane extends JPanel {
 		for (CustomerIOController cioc : aioc.getAllStationsIOControllers()) {
 			if (cioc.getMainController().isDisabled()) {
 				// Add disabled station to disabled pane.
-				JButton btn = new JButton("Station #" + cioc.getMainController().getID());
+				JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
 				addDisabledActionPopup(btn, cioc);
 				manageDisabledPane.add(btn);
 			} else {
 				// Add enabled station to enabled pane.
-				JButton btn = new JButton("Station #" + cioc.getMainController().getID());
+				JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
 				addEnabledActionPopup(btn, cioc);
 				manageEnabledPane.add(btn);
 			}
@@ -222,7 +291,7 @@ public class AttendantOperationPane extends JPanel {
                 
                 // Create a group of radio buttons for the available actions.
                 ButtonGroup group = new ButtonGroup();
-                for (String action : new String[] {"Enable Station"}) {
+                for (String action : new String[] {Language.translate(language, "Enable Station")}) {
                     JRadioButton radioButton = new JRadioButton(action);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                     group.add(radioButton);
@@ -267,13 +336,13 @@ public class AttendantOperationPane extends JPanel {
                 panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 
                 // Create a label for the action selection.
-                JLabel label = new JLabel("Select an action:");
+                JLabel label = new JLabel(Language.translate(language, "Select an action:"));
                 label.setAlignmentX(Component.CENTER_ALIGNMENT);
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available actions.
                 ButtonGroup group = new ButtonGroup();
-                for (String action : new String[] {"Disable Station"}) {
+                for (String action : new String[] {Language.translate(language, "Disable Station")}) {
                     JRadioButton radioButton = new JRadioButton(action);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                     group.add(radioButton);
@@ -281,14 +350,14 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(null, panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Action Selection"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
                 if (result == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
                         AbstractButton button = buttons.nextElement();
                         if (button.isSelected()) {
-                            chosenAction = button.getText();
+                            chosenAction = Language.translate(language, button.getText());
                             break;
                         }
                     }
