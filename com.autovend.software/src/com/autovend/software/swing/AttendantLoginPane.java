@@ -33,7 +33,9 @@ public class AttendantLoginPane extends JPanel {
 	private String language = "English";
 	private String[] languages = new String[] {"English", "French"};
 	private JLabel usernameLabel;
+	private JTextField usernameTextField;
 	private JLabel passwordLabel;
+	private JPasswordField passwordTextField;
 	private JButton loginButton;
 	private JButton languageSelectButton;
 	private JLabel errorLabel;
@@ -66,7 +68,7 @@ public class AttendantLoginPane extends JPanel {
 		this.add(usernameLabel);
 		
 		// Create username text field.
-		JTextField usernameTextField = new JTextField();
+		usernameTextField = new JTextField();
 		usernameTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		usernameTextField.setBounds(330, 301, 192, 38);
 		this.add(usernameTextField);
@@ -80,7 +82,7 @@ public class AttendantLoginPane extends JPanel {
 		this.add(passwordLabel);
 		
 		// Create password text field.
-		JPasswordField passwordTextField = new JPasswordField();
+		passwordTextField = new JPasswordField();
 		passwordTextField.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		passwordTextField.setColumns(10);
 		passwordTextField.setBounds(330, 350, 192, 38);
