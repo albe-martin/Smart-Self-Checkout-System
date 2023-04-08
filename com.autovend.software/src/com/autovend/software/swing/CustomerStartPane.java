@@ -93,7 +93,7 @@ public class CustomerStartPane extends JPanel {
         initializeStartButton();
         
         // Initialize language select button.
-        initializeLanguageSelectButton():
+        initializeLanguageSelectButton();
 	}
 	
 	/**
