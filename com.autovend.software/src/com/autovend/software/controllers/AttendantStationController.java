@@ -206,8 +206,6 @@ public class AttendantStationController {
 				return;
 			}
 		}
-			
-		logout();
 		
 		//Signals AttendantIOController of failure
 		for(DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
