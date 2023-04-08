@@ -5,7 +5,8 @@ import java.util.List;
 
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
-import com.autovend.software.swing.AttendantGUIUtils;
+import com.autovend.software.swing.AttendantLoginPane;
+import com.autovend.software.swing.AttendantOperationPane;
 
 //need to decide whether the keyboard should get its own controller or not,
 //might be excessive to be honest, but it would be consistent....
@@ -149,7 +150,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	// Check validity
     	if (success) {
     		// Switch GUI to operation screen.
-    		getDevice().getFrame().setContentPane(AttendantGUIUtils.getOperationPane(this));
+    		getDevice().getFrame().setContentPane(new AttendantOperationPane(this));
     		getDevice().getFrame().revalidate();
         	getDevice().getFrame().repaint();
     	} else {
@@ -165,7 +166,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void loggedOut(String username) {
     	// Switch GUI to login screen.
-    	getDevice().getFrame().setContentPane(AttendantGUIUtils.getLoginPane(this));
+    	getDevice().getFrame().setContentPane(new AttendantLoginPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
     }

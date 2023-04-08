@@ -1,5 +1,8 @@
 package com.autovend.software.controllers;
 
+import java.math.BigDecimal;
+import java.util.Set;
+
 import com.autovend.Numeral;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
@@ -7,11 +10,8 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.swing.CustomerGUIUtils;
-
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import com.autovend.software.swing.CustomerOperationPane;
+import com.autovend.software.swing.CustomerStartPane;
 
 /**
  *
@@ -174,7 +174,7 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
      */
     public void startPressed() {
     	// Switch to operation screen.
-    	getDevice().getFrame().setContentPane(CustomerGUIUtils.getOperationPane(this));
+    	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
     }
@@ -184,7 +184,7 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
      */
     public void logoutPressed() {
     	// Switch to start screen.
-    	getDevice().getFrame().setContentPane(CustomerGUIUtils.getStartPane(this));
+    	getDevice().getFrame().setContentPane(new CustomerStartPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
     }

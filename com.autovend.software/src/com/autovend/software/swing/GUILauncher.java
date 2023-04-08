@@ -10,7 +10,6 @@ import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
-import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 
 public class GUILauncher {
@@ -20,7 +19,7 @@ public class GUILauncher {
 		SupervisionStation attendantStation = new SupervisionStation();
 		JFrame attendantScreen = attendantStation.screen.getFrame();
 		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
-		attendantScreen.setContentPane(AttendantGUIUtils.getLoginPane(aioc));
+		attendantScreen.setContentPane(new AttendantLoginPane(aioc));
 		
 		AttendantStationController asc = new AttendantStationController();
 		aioc.setMainAttendantController(asc);
@@ -36,7 +35,7 @@ public class GUILauncher {
 				new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
 		JFrame customerScreen = customerStation.screen.getFrame();
 		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
-		customerScreen.setContentPane(CustomerGUIUtils.getStartPane(cioc));
+		customerScreen.setContentPane(new CustomerStartPane(cioc));
 		
 		customerScreen.setVisible(true);
 	}
