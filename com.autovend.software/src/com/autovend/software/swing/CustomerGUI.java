@@ -63,11 +63,15 @@ public class CustomerGUI extends JFrame {
         startContentPane.setLayout(null);
         startContentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        ImageIcon startImage = new ImageIcon(getClass().getResource("resources/start.png"));
-
         // Create login button.
-        JButton startButton = new JButton(startImage);
+        JButton startButton = new JButton("START");
         startButton.setFont(new Font("Tahoma", Font.PLAIN, 25));
+        if (language == "English"){
+            startButton.setText("START");
+        }
+        else if (language == "French"){
+            startButton.setText("COMMENCER");
+        }
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Start button pressed.
@@ -78,8 +82,7 @@ public class CustomerGUI extends JFrame {
             }
         });
 
-        startButton.setBounds(200, 200, startImage.getIconWidth(), startImage.getIconHeight());
-//		startButton.setIcon(new ImageIcon("~/Desktop/start.png"));
+        startButton.setBounds(290, 200, 200, 200);
         startContentPane.add(startButton);
 
         JButton languageSelectButton = new JButton(Language.translate(language, "Select Language"));
@@ -129,10 +132,12 @@ public class CustomerGUI extends JFrame {
                         // Update the text on the buttons
                         if (language == languages[0]){
                             languageSelectButton.setText(Language.translate(language, "Select Language"));
+                            startButton.setText("START");
 
                         }
                         else if (language == languages[1]){
                             languageSelectButton.setText(Language.translate(language, "Choisir la langue"));
+                            startButton.setText("COMMENCER");
                         }
 
                     }
