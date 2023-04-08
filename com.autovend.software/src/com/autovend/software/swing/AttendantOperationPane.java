@@ -3,12 +3,16 @@ package com.autovend.software.swing;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.autovend.devices.SupervisionStation;
 import com.autovend.software.controllers.AttendantIOController;
+import com.autovend.software.controllers.AttendantStationController;
 
 /**
  * A class for the attendant operation pane.
@@ -17,6 +21,44 @@ public class AttendantOperationPane extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
+	public JButton logoutButton;
+	
+	/**
+	 * TODO: Delete for final submission.
+	 * 
+	 * Quick GUI Launcher.
+	 */
+	public static void main(String[] args) {
+		// Add French language.
+		HashMap<String, String> french = new HashMap<>();
+		french.put("Username:", "Le username:");
+		french.put("Password:", "Le password:");
+		french.put("Log In", "Le log in");
+		french.put("Change Language", "Le Change Language");
+		french.put("START", "LE START");
+		Language.addLanguage("French", french);
+		
+		// Create attendant station.
+		SupervisionStation attendantStation = new SupervisionStation();
+		
+		// Get and set up screen
+		JFrame attendantScreen = attendantStation.screen.getFrame();
+		attendantScreen.setExtendedState(0);
+		attendantScreen.setSize(800, 800);
+		attendantScreen.setUndecorated(false);
+		attendantScreen.setResizable(false);
+		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
+		attendantScreen.setContentPane(new AttendantOperationPane(aioc));
+		
+		AttendantStationController asc = new AttendantStationController();
+		aioc.setMainAttendantController(asc);
+		asc.registerController(aioc);
+		
+		// Add valid username and password.
+		asc.registerUser("abc", "123");
+		
+		attendantScreen.setVisible(true);	
+	}
 	
 	/**
 	 * Basic constructor.
@@ -39,9 +81,9 @@ public class AttendantOperationPane extends JPanel {
 		this.setLayout(null);
 		
 		// Create logout button.
-		JButton logoutButton = new JButton("Log Out");
+		logoutButton = new JButton("Log Out");
 		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		logoutButton.setBounds(324, 455, 120, 63);
+		logoutButton.setBounds(586, 645, 120, 63);
 		logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Login button pressed

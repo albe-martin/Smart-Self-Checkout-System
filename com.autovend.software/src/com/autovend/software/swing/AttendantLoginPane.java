@@ -6,12 +6,14 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -21,7 +23,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import com.autovend.devices.SupervisionStation;
 import com.autovend.software.controllers.AttendantIOController;
+import com.autovend.software.controllers.AttendantStationController;
 
 /**
  * A class for the attendant login pane.
@@ -31,14 +35,52 @@ public class AttendantLoginPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
 	private String language = "English";
+	// TODO: Have English be the only built in language
 	private String[] languages = new String[] {"English", "French"};
-	private JLabel usernameLabel;
-	private JTextField usernameTextField;
-	private JLabel passwordLabel;
-	private JPasswordField passwordTextField;
-	private JButton loginButton;
-	private JButton languageSelectButton;
-	private JLabel errorLabel;
+	public JLabel usernameLabel;
+	public JTextField usernameTextField;
+	public JLabel passwordLabel;
+	public JPasswordField passwordTextField;
+	public JButton loginButton;
+	public JButton languageSelectButton;
+	public JLabel errorLabel;
+	
+	/**
+	 * TODO: Delete for final submission.
+	 * 
+	 * Quick GUI Launcher.
+	 */
+	public static void main(String[] args) {
+		// Add French language.
+		HashMap<String, String> french = new HashMap<>();
+		french.put("Username:", "Le username:");
+		french.put("Password:", "Le password:");
+		french.put("Log In", "Le log in");
+		french.put("Change Language", "Le Change Language");
+		french.put("START", "LE START");
+		Language.addLanguage("French", french);
+		
+		// Create attendant station.
+		SupervisionStation attendantStation = new SupervisionStation();
+		
+		// Get and set up screen
+		JFrame attendantScreen = attendantStation.screen.getFrame();
+		attendantScreen.setExtendedState(0);
+		attendantScreen.setSize(800, 800);
+		attendantScreen.setUndecorated(false);
+		attendantScreen.setResizable(false);
+		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
+		attendantScreen.setContentPane(new AttendantLoginPane(aioc));
+		
+		AttendantStationController asc = new AttendantStationController();
+		aioc.setMainAttendantController(asc);
+		asc.registerController(aioc);
+		
+		// Add valid username and password.
+		asc.registerUser("abc", "123");
+		
+		attendantScreen.setVisible(true);	
+	}
 	
 	/**
 	 * Basic constructor.
@@ -152,7 +194,7 @@ public class AttendantLoginPane extends JPanel {
                 }
             }
         });
-        languageSelectButton.setBounds(700, 700, 200, 50);
+        languageSelectButton.setBounds(291, 642, 200, 50);
         this.add(languageSelectButton);
 
 	}

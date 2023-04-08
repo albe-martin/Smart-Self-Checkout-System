@@ -4,19 +4,25 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Locale;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
+import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.software.controllers.CustomerIOController;
 
 /**
@@ -28,8 +34,40 @@ public class CustomerStartPane extends JPanel {
 	// TODO: Make languages parameters.
 	private String language = "English";
 	private String languages[] = new String[] {"English", "French"};
-	private JButton startButton;
-	private JButton languageSelectButton;
+	public JButton startButton;
+	public JButton languageSelectButton;
+	
+	/**
+	 * TODO: Delete for final submission.
+	 * 
+	 * Quick GUI launcher
+	 */
+	public static void main(String[] args) {
+		// Add French language.
+		HashMap<String, String> french = new HashMap<>();
+		french.put("Username:", "Le username:");
+		french.put("Password:", "Le password:");
+		french.put("Log In", "Le log in");
+		french.put("Change Language", "Le Change Language");
+		french.put("START", "LE START");
+		Language.addLanguage("French", french);
+				
+		// Create checkout station.
+		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
+				new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+		
+		// Get and set up screen
+		JFrame customerScreen = customerStation.screen.getFrame();
+		customerScreen.setExtendedState(0);
+		customerScreen.setSize(800, 800);
+		customerScreen.setUndecorated(false);
+		customerScreen.setResizable(false);
+		
+		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
+		customerScreen.setContentPane(new CustomerStartPane(cioc));
+		
+		customerScreen.setVisible(true);
+	}
 	
 	/**
 	 * Basic constructor.
@@ -108,7 +146,7 @@ public class CustomerStartPane extends JPanel {
 	            }
 	        }
 	    });
-	    languageSelectButton.setBounds(700, 700, 200, 50);
+	    languageSelectButton.setBounds(519, 647, 200, 50);
 
      	this.add(languageSelectButton);
 	}
