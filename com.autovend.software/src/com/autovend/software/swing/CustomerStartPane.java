@@ -128,10 +128,12 @@ public class CustomerStartPane extends JPanel {
 	            JPanel panel = new JPanel();
 	            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 	            panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	            
 	            // Create a label for the language selection
 	            JLabel label = new JLabel("Select a language:");
 	            label.setAlignmentX(Component.CENTER_ALIGNMENT);
 	            panel.add(label);
+	            
 	            // Create a group of radio buttons for the available languages
 	            ButtonGroup group = new ButtonGroup();
 	            for (String language : languages) {

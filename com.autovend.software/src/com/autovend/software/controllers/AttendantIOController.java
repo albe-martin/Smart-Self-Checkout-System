@@ -1,24 +1,19 @@
 package com.autovend.software.controllers;
 
 
-import com.autovend.devices.AbstractDevice;
-import com.autovend.devices.SelfCheckoutStation;
-import com.autovend.devices.TouchScreen;
-import com.autovend.devices.observers.KeyboardObserver;
-import com.autovend.devices.observers.TouchScreenObserver;
-import com.autovend.external.ProductDatabases;
-import com.autovend.products.BarcodedProduct;
-import com.autovend.products.PLUCodedProduct;
-import com.autovend.products.Product;
-
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.swing.AttendantLoginPane;
 import com.autovend.software.swing.AttendantOperationPane;
 
@@ -80,20 +75,22 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to start up
      */
-    void startupStation(CheckoutController checkout) {
+    public void startupStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-	        checkout.setShutdown(false);
-	        checkout.enableAllDevices();
+	        // TODO: Changed by Braedon, please verify.
+    		checkout.startUp();
     	}
     }
     
     /**
      * Notifies Attendant GUI that the station has started up and is ready to be enabled.
      */
-    void notifyStartup() {
-    	//TODO: GUI signal attendant that this station is ready to be enabled
-    	
-    	// TODO: Unnecessary method, should be removed.
+    void notifyStartup(CheckoutController checkout) {
+    	System.out.println("notified startup");
+    	for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
+    		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    		pane.notifyStartup((CustomerIOController) customerIOController);
+    	}
     }
     
     /**
@@ -102,10 +99,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to shut down
      */
-    void shutdownStation(CheckoutController checkout) {
+    public void shutdownStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
 	        if(checkout.isInUse()) {
-	        	//TODO: Notify GUI back to confirm shut down
+	        	// Notify GUI back to confirm shut down
+	        	for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
+	        		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+	        		pane.notifyShutdownStationInUse((CustomerIOController) customerIOController);
+	        	}
 	        } else {
 	        	checkout.shutDown();
 	        }
@@ -117,7 +118,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to shut down
      */
-    void forceShutDownStation(CheckoutController checkout) {
+    public void forceShutDownStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
     		checkout.shutDown();
     	}
@@ -173,7 +174,6 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     		// Handle bad login
     		AttendantLoginPane pane = (AttendantLoginPane) getDevice().getFrame().getContentPane();
     		pane.showLoginError();
-    		
     	}
     }
     
@@ -199,7 +199,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @return
      * 		Set<Product>: its a set of products that are collected after the search is done.
      */
-    Set<Product> addItemByTextSearch(String input){
+    public Set<Product> addItemByTextSearch(String input){
     	String[] filteredInput = input.split(" ");
     	Set<Product> productsToReturn = new HashSet<Product>();
     	
@@ -240,12 +240,28 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     /**
      * Called when an attendant approves the customer's added bags. Unlocks the machine, terminates the attendant signal, and zeros the scale.
-     * @param controller the BaggingScaleController of the main system logic.
+     * @param customerIOController the CustomerIOController of the customer who needs their bags approved.
      */
-    void approveAddedBags(BaggingScaleController controller){
-        this.getMainController().systemProtectionLock = false;
-        this.getMainController().AttendantApproved = true;
-        controller.setExpectedWeight(controller.getCurrentWeight());
+    public void approveAddedBags(CustomerIOController customerIOController){
+        customerIOController.getMainController().systemProtectionLock = false;
+        customerIOController.getMainController().AttendantApproved = true;
+        HashMap<String, Set<DeviceController>> baggingControllers = customerIOController.getMainController().getAllDeviceControllersRevised();
+        for (DeviceController<?, ?> baggingController : baggingControllers.get("BaggingAreaController")) {
+        	if (baggingController instanceof BaggingScaleController) {
+	            BaggingScaleController scale = (BaggingScaleController) baggingController;
+	            scale.setExpectedWeight(scale.getCurrentWeight());
+        	}
+        }
+    }
+
+    /**
+     * Notifies the GUI that a customer wants to add bags.
+     * @param customerIOController the CustomerIOController of the customer who wants to add bags.
+     */
+    public void notifyAddBags(CustomerIOController customerIOController){
+    	// Notify GUI to approve added bags.
+		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+		pane.notifyConfirmAddedBags(customerIOController);
     }
 
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
