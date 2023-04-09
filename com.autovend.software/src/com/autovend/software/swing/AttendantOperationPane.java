@@ -488,7 +488,9 @@ public class AttendantOperationPane extends JPanel {
                 ButtonGroup group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Disable Station"),
                 		Language.translate(language, "Shutdown Station"),
-                		Language.translate(language, "Approve Custom Bags"),
+                		// TODO: Remove bag approval notification trigger once customer can cause it.
+                		// TODO: Or, have it on an atendant triggers gui for the demo testing.
+                		Language.translate(language, "Cause bag approval notification"),
                 		Language.translate(language,  "Add Item By Text Search"),
                 		Language.translate(language, "Remove Item")}) {
                     JRadioButton radioButton = new JRadioButton(action);
@@ -549,13 +551,11 @@ public class AttendantOperationPane extends JPanel {
 		} else if (action.equalsIgnoreCase("Startup Station")) {
 			// Request station start up.
 			aioc.startupStation(cioc.getMainController());
-		} else if (action.equalsIgnoreCase("Approve Custom Bags")) {
-			// TODO: Notify station about approval
-			System.out.println("Bags approved");
-			
+		// TODO: Delete this when customer bag request is added so action trigger can be deleted.
+		// TODO: It should be caused by the customer not the attendant.
+		} else if (action.equalsIgnoreCase("Cause Bag Approval Notification")) {
 			// TODO: Delete this, it's just a simulator.
 			this.notifyConfirmAddedBags(cioc);
-			// Remove from notifications.
 		} else if (action.equalsIgnoreCase("Add Item By Text Search")) {
 			// Create text search pop-up.
 			createTextSearchPopup(cioc);
