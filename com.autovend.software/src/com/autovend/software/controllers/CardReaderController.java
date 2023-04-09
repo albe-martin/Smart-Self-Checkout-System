@@ -18,11 +18,14 @@ Amasil Rahim Zihad 30164830
 package com.autovend.software.controllers;
 
 import com.autovend.Card;
+import com.autovend.ChipFailureException;
+import com.autovend.GiftCard;
 import com.autovend.devices.CardReader;
 import com.autovend.devices.observers.CardReaderObserver;
 import com.autovend.external.CardIssuer;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 
 
 /**
@@ -34,6 +37,10 @@ import java.math.BigDecimal;
 //todo: card lock use cases need to be handled.
 public class CardReaderController extends PaymentController<CardReader, CardReaderObserver>
 		implements CardReaderObserver {
+	/**
+	 * The number of times to retry a data read in case of a fail.
+	 */
+	private static final int RETRIES = 5;
 	public boolean isPaying;
 	public boolean registeringMembers;
 	public CardReaderController(CardReader newDevice) {
@@ -76,31 +83,89 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		if (reader != this.getDevice()) {
 			return;
 		}
-		if (registeringMembers==false) {
-			if (this.isPaying && this.bank!=null);
-			{
-				// TODO: Given the data, handle stuff with the transaction
-				int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
-				if (holdNum != -1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
-					getMainController().addToAmountPaid(this.amount);
+		
+		if (registeringMembers == false) {	// If a payment is being made
+			if (data.getType().equalsIgnoreCase("giftcard")) {
+				reactToGiftCardDataRead((GiftCard.GiftCardInsertData) data);
+			} else if (data.getType().equalsIgnoreCase("credit") || data.getType().equalsIgnoreCase("debit")) {	// Credit and Debit cards
+				if (this.isPaying && this.bank != null) {
+					int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
+					if (holdNum != -1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
+						getMainController().addToAmountPaid(this.amount);
+					}
+
+					this.disableDevice();
+
+					this.amount = BigDecimal.ZERO;
+					this.bank = null;
+
+					this.isPaying = false;
 				}
-
-				this.disableDevice();
-
-				this.amount = BigDecimal.ZERO;
-				this.bank = null;
-
-				this.isPaying = false;
+			} else {
+				// TODO: inform customer that card read failed
+				return;
 			}
-		} else {
+		} else {	// Membership is being dealt with
 			this.getMainController().validateMembership(data.getNumber());
 		}
-
+	}
+	
+	/**
+	 * Attempts to make a payment on the gift card with the provided data.
+	 * 
+	 * @param data The GiftCardInsertData for the card.
+	 */
+	private void reactToGiftCardDataRead(GiftCard.GiftCardInsertData data) {
+		BigDecimal balance = data.getRemainingBalance();
+		if (balance == null) {	// If reading failed, try again to get balance RETRIES times
+			int attempts = 0;
+			while (balance == null && attempts <= RETRIES) {
+				balance = data.getRemainingBalance();
+				attempts++;
+			}
+			
+			if (balance == null) {	// Should only happen if a card wasn't properly initialized
+				// TODO: inform customer
+				return;
+			}
+		}
+		
+		if (balance.compareTo(BigDecimal.ZERO) > 0) {
+			Currency cardCurr = data.getCurrency();
+			// TODO: make sure currency matches the station's, reject and inform customer if not
+		} else {
+			// TODO: inform customer
+			return;
+		}
+		
+		try {
+			// The return flag on the deductions is ignored, as the below checks
+			// mean that the deduction will always either return true or throw an exception.
+			if (this.amount.compareTo(balance) > 0) {
+				// Balance is less than amount to be paid. Use the rest of the balance.
+				data.deduct(balance);
+				
+				// Subtract amount paid from amount due
+				this.amount = this.amount.subtract(balance);
+			} else {
+				// Balance is greater than or equal to amount, pay entire cost.
+				data.deduct(this.amount);
+				
+				// Payment is complete
+				this.disableDevice();
+				this.amount = BigDecimal.ZERO;
+			}
+		} catch (ChipFailureException e) {
+			// TODO: inform customer
+			return;
+		}
+		
 	}
 
 	public void enableMemberReg(){
 		registeringMembers=true;
 	}
+	
 	public void disableMemberReg(){
 		registeringMembers=false;
 	}
@@ -110,7 +175,4 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		this.bank = issuer;
 		this.amount = amount;
 	}
-
-
-
 }
