@@ -322,14 +322,13 @@ public class CustomerOperationPane extends JPanel {
 				if (product == null) {
 					JOptionPane.showMessageDialog(null, "Item not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
-					System.out.println("PLU coded product added");
-					// Add the item to the theoretical order.
-					// order.addItem(product);
 					cioc.addProduct(product);
 
 					// Add the item to the grid.
 					addItemToGrid(product.getDescription(), product.getPrice());
 					JOptionPane.getRootFrame().dispose();
+
+					System.out.println("PLU coded product added");
 				}
 			}
 		});
