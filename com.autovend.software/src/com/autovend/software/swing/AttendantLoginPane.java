@@ -34,9 +34,9 @@ public class AttendantLoginPane extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
-	private String language = "English";
+	public String language = "English";
 	// TODO: Have English be the only built in language
-	private String[] languages = new String[] {"English", "French"};
+	public String[] languages = new String[] {"English", "French"};
 	public JLabel usernameLabel;
 	public JTextField usernameTextField;
 	public JLabel passwordLabel;
@@ -44,6 +44,10 @@ public class AttendantLoginPane extends JPanel {
 	public JButton loginButton;
 	public JButton languageSelectButton;
 	public JLabel errorLabel;
+    public JOptionPane options;    
+    public ButtonGroup group;
+
+
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -178,17 +182,16 @@ public class AttendantLoginPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available languages
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String language : languages) {
                     JRadioButton radioButton = new JRadioButton(language);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                     group.add(radioButton);
                     panel.add(radioButton);
                 }
-
+                
                 // Show the language selection dialog and get the selected language
-                int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel) == JOptionPane.OK_OPTION) {
                     String newLanguage = null;
                     // Determine selected button's text
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -214,6 +217,10 @@ public class AttendantLoginPane extends JPanel {
         });
         languageSelectButton.setBounds(291, 642, 200, 50);
         this.add(languageSelectButton);
+	}
+	
+	public int optionDialogPopup(JPanel panel) {
+        return JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 	
 	/**
