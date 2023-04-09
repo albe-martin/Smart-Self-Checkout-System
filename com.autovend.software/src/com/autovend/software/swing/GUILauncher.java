@@ -115,5 +115,8 @@ public class GUILauncher {
 		
 		// getOrder(): Hashmap{product: [amount/weight, price]
 		System.out.println(ciocs.get(0).getMainController().getOrder());
+		
+		
+		// TODO: Delete.
 	}
 }

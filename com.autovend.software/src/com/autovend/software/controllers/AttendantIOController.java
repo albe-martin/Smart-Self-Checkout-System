@@ -74,7 +74,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to start up
      */
-    void startupStation(CheckoutController checkout) {
+    public void startupStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
 	        checkout.setShutdown(false);
 	        checkout.enableAllDevices();
@@ -96,10 +96,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to shut down
      */
-    void shutdownStation(CheckoutController checkout) {
+    public void shutdownStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
 	        if(checkout.isInUse()) {
-	        	//TODO: Notify GUI back to confirm shut down
+	        	// TODO: Notify GUI back to confirm shut down
 	        } else {
 	        	checkout.shutDown();
 	        }
@@ -111,7 +111,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to shut down
      */
-    void forceShutDownStation(CheckoutController checkout) {
+    public void forceShutDownStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
     		checkout.shutDown();
     	}

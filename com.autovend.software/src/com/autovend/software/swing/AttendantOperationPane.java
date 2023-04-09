@@ -47,6 +47,8 @@ public class AttendantOperationPane extends JPanel {
 	public JLabel manageEnabledLabel;
 	public JPanel manageDisabledPane;
 	public JLabel manageDisabledLabel;
+	public JPanel manageShutdownPane;
+	public JLabel manageShutdownLabel;
 	public JButton languageSelectButton;
 	public JLabel notificationsLabel;
 	public JPanel notificationsPane;
@@ -127,8 +129,8 @@ public class AttendantOperationPane extends JPanel {
 	private void initializeLogoutButton() {
 		// Create logout button.
 		logoutButton = new JButton(Language.translate(language, "Log Out"));
-		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		logoutButton.setBounds(612, 664, 120, 63);
+		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		logoutButton.setBounds(631, 19, 118, 50);
 		logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Login button pressed
@@ -196,7 +198,7 @@ public class AttendantOperationPane extends JPanel {
                 }
             }
         });
-        languageSelectButton.setBounds(532, 582, 200, 50);
+        languageSelectButton.setBounds(402, 19, 200, 50);
         this.add(languageSelectButton);
 	}
 	
@@ -221,31 +223,44 @@ public class AttendantOperationPane extends JPanel {
 	 * Initialize enabled and disabled station management panes.
 	 */
 	public void initializeManagementPanes() {
-		// Create label for panel with all active stations.
+		// Create label for panel with all enabled stations.
 		manageEnabledLabel = new JLabel(Language.translate(language, "Manage Enabled Stations:"));
 		manageEnabledLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		manageEnabledLabel.setBounds(21, 536, 181, 23);
-		this.add(manageEnabledLabel);
+		add(manageEnabledLabel);
 		
 		// Create panel for managing enabled stations.
 		manageEnabledPane = new JPanel();
 		manageEnabledPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		manageEnabledPane.setBounds(21, 562, 226, 179);
-		this.add(manageEnabledPane);
+		add(manageEnabledPane);
 		manageEnabledPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		// Create label for panel with all inactive stations.
+		// Create label for panel with all disabled stations.
 		manageDisabledLabel = new JLabel(Language.translate(language, "Manage Disabled Stations:"));
 		manageDisabledLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		manageDisabledLabel.setBounds(257, 536, 181, 23);
-		this.add(manageDisabledLabel);
+		manageDisabledLabel.setBounds(280, 536, 181, 23);
+		add(manageDisabledLabel);
 		
 		// Create panel for managing disabled stations.
 		manageDisabledPane = new JPanel();
 		manageDisabledPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		manageDisabledPane.setBounds(257, 562, 226, 179);
-		this.add(manageDisabledPane);
+		manageDisabledPane.setBounds(280, 562, 226, 179);
+		add(manageDisabledPane);
 		manageDisabledPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		// Create label for managing shutdown stations.
+		manageShutdownLabel = new JLabel(Language.translate(language, "Manage Shutdown Stations:"));
+		manageShutdownLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		manageShutdownLabel.setBounds(542, 536, 227, 23);
+		add(manageShutdownLabel);
+		
+		// Create panel for managing shutdown stations.
+		manageShutdownPane = new JPanel();
+		manageShutdownPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		manageShutdownPane.setBounds(542, 562, 226, 179);
+		add(manageShutdownPane);
+		manageShutdownPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		// Populate the panes.
 		populateManagementPanes();
@@ -258,10 +273,14 @@ public class AttendantOperationPane extends JPanel {
 		// Clear panes.
 		manageEnabledPane.removeAll();
 		manageDisabledPane.removeAll();
+		manageShutdownPane.removeAll();
 		
-		// Add each station to enabled/disabled pane.
+		// Add each station to enabled/disabled/shutdown pane.
 		for (CustomerIOController cioc : aioc.getAllStationsIOControllers()) {
 			if (cioc.getMainController().isDisabled()) {
+				// TODO: If is shutdown, add to shutdown pane.
+				
+				// TODO: Else, add to disabled pane.
 				// Add disabled station to disabled pane.
 				JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
 				addDisabledActionPopup(btn, cioc);
@@ -298,7 +317,8 @@ public class AttendantOperationPane extends JPanel {
                 
                 // Create a group of radio buttons for the available actions.
                 ButtonGroup group = new ButtonGroup();
-                for (String action : new String[] {Language.translate(language, "Enable Station")}) {
+                for (String action : new String[] {Language.translate(language, "Enable Station"),
+                		Language.translate(language, "Shutdown Station")}) {
                     JRadioButton radioButton = new JRadioButton(action);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                     group.add(radioButton);
@@ -350,6 +370,7 @@ public class AttendantOperationPane extends JPanel {
                 // Create a group of radio buttons for the available actions.
                 ButtonGroup group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Disable Station"),
+                		Language.translate(language, "Shutdown Station"),
                 		Language.translate(language, "Approve Custom Bags"),
                 		Language.translate(language,  "Add Item By Text Search"),
                 		Language.translate(language, "Remove Item")}) {
@@ -397,6 +418,16 @@ public class AttendantOperationPane extends JPanel {
 		} else if (action.equalsIgnoreCase("Disable Station")) {
 			// Disable station.
 			aioc.disableStation(cioc.getMainController());
+			// Repopulate management panes.
+			populateManagementPanes();
+		} else if (action.equalsIgnoreCase("Shutdown Station")) {
+			// Shut down station. May receive an in use notification.
+			aioc.shutdownStation(cioc.getMainController());
+			// Repopulate management panes.
+			populateManagementPanes();
+		} else if (action.equalsIgnoreCase("Startup Station")) {
+			// Start up station in disabled mode.
+			aioc.startupStation(cioc.getMainController());
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Approve Custom Bags")) {
@@ -594,4 +625,35 @@ public class AttendantOperationPane extends JPanel {
         }
 	}
 	
+	// TODO: Link up shutdown notification from attendantIOController.
+	
+	/**
+	 * Notify the attendant screen that a station is in use.
+	 * Occurs after an attempt to shutdown a station.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController being shut down.
+	 */
+	public void notifyShutdownStationInUse(CustomerIOController cioc) {
+		// Create confirmation pop-up.
+		
+		// Create panel for the pop-up.
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		// Create a label asking for confirmation.
+		JLabel label = new JLabel(Language.translate(language, "Station is in use. Do you want to force a shutdown?"));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(label);
+		
+		// Show pop-up.
+        int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Remove Item"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (result == JOptionPane.YES_OPTION) {
+            // Force shutdown.
+        	aioc.forceShutDownStation(cioc.getMainController());
+        	// Repopulate management panes
+        	populateManagementPanes();
+        }
+	}
 }
