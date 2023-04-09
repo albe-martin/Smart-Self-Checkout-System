@@ -166,6 +166,16 @@ public class CustomerOperationPane extends JPanel {
 				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
 			}
 		}
+
+		// Add purchased bags to the order grid
+		int bagQuantity = cioc.getMainController().getBagNumber();
+		// Not sure where to get the bag price from
+		BigDecimal bagPrice = new BigDecimal("0.10");
+
+		if (bagQuantity > 0) {
+			model.addRow(new Object[]{"Bags", bagPrice.multiply(BigDecimal.valueOf(bagQuantity))});
+		}
+
 		updateTotalCost();
 	}
 
@@ -187,31 +197,30 @@ public class CustomerOperationPane extends JPanel {
 		add(totalCostLabel);
 	}
 
-	private void addItemToGrid(String itemName, BigDecimal itemPrice) {
-		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
-		model.addRow(new Object[]{itemName, itemPrice});
-		updateTotalCost();
-	}
-
-	private void removeItemFromGrid(int rowIndex) {
-		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
-		if (rowIndex >= 0 && rowIndex < model.getRowCount()) {
-			model.removeRow(rowIndex);
-			updateTotalCost();
-		}
-	}
+//	private void addItemToGrid(String itemName, BigDecimal itemPrice) {
+//		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
+//		model.addRow(new Object[]{itemName, itemPrice});
+//		updateTotalCost();
+//	}
+//
+//	private void removeItemFromGrid(int rowIndex) {
+//		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
+//		if (rowIndex >= 0 && rowIndex < model.getRowCount()) {
+//			model.removeRow(rowIndex);
+//			updateTotalCost();
+//		}
+//	}
 
 	private void updateTotalCost() {
-		BigDecimal totalCost = BigDecimal.ZERO;
-		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
-		int rowCount = model.getRowCount();
+//		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
+//		int rowCount = model.getRowCount();
+//
+//		for (int i = 0; i < rowCount; i++) {
+//			BigDecimal itemPrice = (BigDecimal) model.getValueAt(i, 1);
+//			totalCost = totalCost.add(itemPrice);
+//		}
 
-		for (int i = 0; i < rowCount; i++) {
-			BigDecimal itemPrice = (BigDecimal) model.getValueAt(i, 1);
-			totalCost = totalCost.add(itemPrice);
-		}
-
-		totalCostLabel.setText("Total Cost: $" + totalCost.toString());
+		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
 	private void initializeEnterMembershipNumberButton() {
@@ -224,7 +233,6 @@ public class CustomerOperationPane extends JPanel {
 		enterMembershipNumberButton.setBounds(370, 663, 188, 76);
 		add(enterMembershipNumberButton);
 	}
-
 	private void initializeAddItemByPLUCodeButton() {
 		JButton addItemByPluCodeButton = new JButton("Add Item by PLU Code");
 		addItemByPluCodeButton.addActionListener(new ActionListener() {
@@ -235,7 +243,6 @@ public class CustomerOperationPane extends JPanel {
 		addItemByPluCodeButton.setBounds(589, 112, 173, 60);
 		add(addItemByPluCodeButton);
 	}
-
 	private void initializeAddItemByLookupCodeButton() {
 		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
 		addItemByLookupButton.addActionListener(new ActionListener() {
@@ -246,15 +253,11 @@ public class CustomerOperationPane extends JPanel {
 		addItemByLookupButton.setBounds(388, 112, 173, 60);
 		add(addItemByLookupButton);
 	}
-
-
 	private void initializePayForItemsButton() {
 		JButton payForItemsButton = new JButton("Pay for Items");
 		payForItemsButton.setBounds(490, 351, 173, 60);
 		add(payForItemsButton);
 	}
-	
-	
 	private void initializePurchaseBagsButton() {
 		JButton purchaseBagsButton = new JButton("Purchase Bags");
 		purchaseBagsButton.addActionListener(new ActionListener() {
@@ -265,8 +268,6 @@ public class CustomerOperationPane extends JPanel {
 		purchaseBagsButton.setBounds(490, 251, 173, 60);
 		add(purchaseBagsButton);
 	}
-	
-
 	private void initializeCallAttendantButton() {
 		JButton callAttendantButton = new JButton("Call For Attendant");
 		callAttendantButton.addActionListener(new ActionListener() {
@@ -277,7 +278,6 @@ public class CustomerOperationPane extends JPanel {
 		callAttendantButton.setBounds(83, 671, 173, 60);
 		add(callAttendantButton);
 	}
-
 	private void initializeLanguageSelectButton() {
 
 		JButton selectLanguageButton = new JButton("Select Language");
@@ -333,7 +333,50 @@ public class CustomerOperationPane extends JPanel {
 		add(selectLanguageButton);
 	}
 
-	private void showPurchaseBagsPane();
+	private void showPurchaseBagsPane() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(new JLabel("Please enter the number of bags you wish to purchase:"), gbc);
+
+		JTextField bagQuantityTextField = new JTextField(10);
+		gbc.gridx = 1;
+		panel.add(bagQuantityTextField, gbc);
+
+		JButton enterButton = new JButton("Enter");
+		enterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int bagQuantity = Integer.parseInt(bagQuantityTextField.getText());
+
+					if (bagQuantity < 0) {
+						JOptionPane.showMessageDialog(null, "Invalid quantity. Please enter a non-negative integer.", "Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						// Add the purchased bags to the order.
+						cioc.addBagsToOrder(bagQuantity);
+
+						// Update the order grid to display the bags.
+						refreshOrderGrid();
+
+						JOptionPane.getRootFrame().dispose();
+						System.out.println("Bags purchased: " + bagQuantity);
+					}
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Invalid input. Please enter a non-negative integer.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		panel.add(enterButton, gbc);
+
+		JOptionPane.showOptionDialog(null, panel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+	}
 
 	private void showAddItemByPLUCodePane() {
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -368,7 +411,8 @@ public class CustomerOperationPane extends JPanel {
 					cioc.addProduct(product);
 
 					// Add the item to the grid.
-					addItemToGrid(product.getDescription(), product.getPrice());
+					// addItemToGrid(product.getDescription(), product.getPrice());
+					refreshOrderGrid();
 					JOptionPane.getRootFrame().dispose();
 
 					System.out.println("PLU coded product added");

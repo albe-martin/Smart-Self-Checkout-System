@@ -92,6 +92,12 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         // react to that to modify the GUI
     }
 
+    public void addBagsToOrder(int amountOfBagsToAdd) {
+        //TODO: Add the specified number of bags to the order
+        // technically, the GUI can get away with only knowing the amount of bags for the order elsewhere,
+        // so that bag products don't actually have to be in the order, if that is easier
+    }
+
     void selectAddBags(){
         //todo: self explanatory
     }
