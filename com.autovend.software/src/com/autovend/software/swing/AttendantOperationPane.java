@@ -58,9 +58,10 @@ public class AttendantOperationPane extends JPanel {
 	public JLabel manageShutdownLabel;
 	public JButton languageSelectButton;
 	public JLabel notificationsLabel;
-	public Object[][] notificationsData;
-	private JButton btnNewButton_1;
-	private JLabel label_1;
+	public JPanel notificationsPane;
+	// Array of [label, button] for notifications.
+	ArrayList<JComponent[]> notificationsData;
+	private JLabel manageNotificationsLabel;
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -108,6 +109,8 @@ public class AttendantOperationPane extends JPanel {
 	public AttendantOperationPane(AttendantIOController aioc) {
 		super();
 		this.aioc = aioc;
+		
+		notificationsData = new ArrayList<>();
 		initializeOperationPane();
 	}
 	
@@ -215,14 +218,11 @@ public class AttendantOperationPane extends JPanel {
 	 * Initialize notifications pane.
 	 */
 	public void initializeNotificationsPane() {
-		
-		// Array of [label, button]
-		ArrayList<JComponent[]> notificationsData = new ArrayList<>();
-		
-		// TODO: delete, demo adding data.
-		notificationsData.add(new JComponent[] {new JLabel("hi"), new JButton("yes")});
-		notificationsData.add(new JComponent[] {new JLabel("yo"), new JButton("yee")});
-		notificationsData.add(new JComponent[] {new JLabel("beans"), new JButton("toast")});
+		// Create manage notifications label.
+		manageNotificationsLabel = new JLabel("Manage Notifications:");
+		manageNotificationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		manageNotificationsLabel.setBounds(22, 22, 181, 23);
+		add(manageNotificationsLabel);
 		
 		// Create notifications scroll pane.
 		JScrollPane notificationsScrollPane = new JScrollPane();
@@ -230,9 +230,19 @@ public class AttendantOperationPane extends JPanel {
 		add(notificationsScrollPane);
 		
 		// Add pane to scroll pane.
-		JPanel notificationsPane = new JPanel();
+		notificationsPane = new JPanel();
 		notificationsPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		notificationsScrollPane.setViewportView(notificationsPane);
+		
+		
+	}
+	
+	/**
+	 * Populates the notifications management pane.
+	 */
+	public void populateNotificationsPane() {
+		// Wipe pane.
+		notificationsPane.removeAll();
 		
 		// Create layout.
 		GridBagLayout layout = new GridBagLayout();
@@ -263,6 +273,9 @@ public class AttendantOperationPane extends JPanel {
 				notificationsPane.add(notificationsData.get(row)[col], gbc);
 			}
 		}
+		
+		repaint();
+		revalidate();
 	}
 	
 	/**
@@ -342,6 +355,9 @@ public class AttendantOperationPane extends JPanel {
 				manageEnabledPane.add(btn);
 			}
 		}
+		
+		repaint();
+		revalidate();
 	}
 	
 	/**
@@ -536,6 +552,9 @@ public class AttendantOperationPane extends JPanel {
 		} else if (action.equalsIgnoreCase("Approve Custom Bags")) {
 			// TODO: Notify station about approval
 			System.out.println("Bags approved");
+			
+			// TODO: Delete this, it's just a simulator.
+			this.notifyConfirmAddedBags(cioc);
 			// Remove from notifications.
 		} else if (action.equalsIgnoreCase("Add Item By Text Search")) {
 			// Create text search pop-up.
@@ -769,8 +788,6 @@ public class AttendantOperationPane extends JPanel {
 	public void notifyStartup(CustomerIOController cioc) {
 		// Update management panes.
 		populateManagementPanes();
-		
-		System.out.println("processed startup");
 	}
 	
 	/**
@@ -780,6 +797,20 @@ public class AttendantOperationPane extends JPanel {
 	 * 			CustomerIOController requesting confirmation.
 	 */
 	public void notifyConfirmAddedBags(CustomerIOController cioc) {
-		// TODO: complete
+		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " needs bag confirmation!");
+		JButton button = new JButton("Confirm");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Approve bags.
+            	aioc.approveAddedBags(cioc);
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
 	}
 }
