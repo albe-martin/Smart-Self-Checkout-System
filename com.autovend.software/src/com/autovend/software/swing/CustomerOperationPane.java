@@ -1,19 +1,23 @@
 package com.autovend.software.swing;
 
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
+import com.autovend.Numeral;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.PLUCodedProduct;
 import com.autovend.software.controllers.CustomerIOController;
 
 /**
@@ -22,8 +26,13 @@ import com.autovend.software.controllers.CustomerIOController;
 public class CustomerOperationPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private CustomerIOController cioc;
+	private String language = "English";
+	private String[] languages = new String[] {"English", "French"};
 	public JButton logoutButton;
-	
+	private JTable orderItemsTable;
+	private JLabel totalCostLabel;
+	private JButton languageSelectButton;
+
 	/**
 	 * TODO: Delete for final submission.
 	 * 
@@ -49,7 +58,6 @@ public class CustomerOperationPane extends JPanel {
 		customerScreen.setSize(800, 800);
 		customerScreen.setUndecorated(false);
 		customerScreen.setResizable(false);
-		
 		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
 		customerScreen.setContentPane(new CustomerOperationPane(cioc));
 		
@@ -75,15 +83,266 @@ public class CustomerOperationPane extends JPanel {
 		// Create operation screen pane.
         this.setBorder(new EmptyBorder(5, 5, 5, 5));
         this.setLayout(null);
-
-        // Initialize exit button.
-        // TODO: Note: might be removed.
-        initializeExitButton();
+		initializeHeader();
         
         // TODO: Create cart functionalities
+        initializeCartItemsGrid();
+
+		initializeTotalCostLabel();
+
+		initializeAddItemByPLUCodeButton();
+
+		initializeAddItemByLookupCodeButton();
+
+		initializePayForItemsButton();
+
+		initializeEnterMembershipNumberButton();
+
+		initializeLanguageSelectButton();
+
+		initializeCallAttendantButton();
+
+		// initializeLanguageSelectButton();
+
+
+		// Initialize exit button.
+		// TODO: Should have a confirmation popup (see the one I made for attendant notifyshutdownstationinuse).
+        initializeExitButton();
+
+		updateTotalCost();
         
 	}
-	
+
+	private void initializeHeader() {
+		JLabel selfCheckoutStationLabel = new JLabel("Self Checkout Station");
+		selfCheckoutStationLabel.setBounds(0, 11, 800, 55);
+		selfCheckoutStationLabel.setFont(new Font("Tahoma", Font.BOLD, 36));
+		selfCheckoutStationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(selfCheckoutStationLabel);
+	}
+
+	private void initializeCartItemsGrid() {
+		String[] columnNames = {"Item", "Price"};
+		// TODO: Get actual items in cart.
+		Object[][] data = {
+				{"Item 1", new BigDecimal("10.00")},
+				{"Item 2", new BigDecimal("20.00")},
+				{"Item 3", new BigDecimal("30.00")},
+		};
+		DefaultTableModel items = new DefaultTableModel(data, columnNames) {
+			private static final long serialVersionUID = 1L;
+			
+			// Prevent user editing.
+			public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }
+		};
+		orderItemsTable = new JTable(items);
+		orderItemsTable.setRowHeight(25);
+		orderItemsTable.setRowSelectionAllowed(false);
+		orderItemsTable.setRequestFocusEnabled(false);
+		orderItemsTable.setFocusable(false);
+		orderItemsTable.setShowGrid(true);
+		
+
+		JScrollPane scrollPane = new JScrollPane(orderItemsTable);
+		scrollPane.setBounds(2, 64, 366, 501);
+
+		add(scrollPane);
+	}
+
+	private void initializeTotalCostLabel() {
+		totalCostLabel = new JLabel("Total Cost: $0.00");
+		totalCostLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		totalCostLabel.setBounds(83, 576, 188, 30);
+		totalCostLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(totalCostLabel);
+	}
+
+	private void addItemToGrid(String itemName, BigDecimal itemPrice) {
+		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
+		model.addRow(new Object[]{itemName, itemPrice});
+		updateTotalCost();
+	}
+
+	private void removeItemFromGrid(int rowIndex) {
+		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
+		if (rowIndex >= 0 && rowIndex < model.getRowCount()) {
+			model.removeRow(rowIndex);
+			updateTotalCost();
+		}
+	}
+
+	private void updateTotalCost() {
+		BigDecimal totalCost = BigDecimal.ZERO;
+		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
+		int rowCount = model.getRowCount();
+
+		for (int i = 0; i < rowCount; i++) {
+			BigDecimal itemPrice = (BigDecimal) model.getValueAt(i, 1);
+			totalCost = totalCost.add(itemPrice);
+		}
+
+		totalCostLabel.setText("Total Cost: $" + totalCost.toString());
+	}
+
+	private void initializeEnterMembershipNumberButton() {
+		JButton enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
+		enterMembershipNumberButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cioc.beginSignInAsMember();
+			}
+		});
+		enterMembershipNumberButton.setBounds(370, 663, 188, 76);
+		add(enterMembershipNumberButton);
+	}
+
+	private void initializeAddItemByPLUCodeButton() {
+		JButton addItemByPluCodeButton = new JButton("Add Item by PLU Code");
+		addItemByPluCodeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showAddItemByPLUCodeDialog();
+			}
+		});
+		addItemByPluCodeButton.setBounds(589, 236, 173, 60);
+		add(addItemByPluCodeButton);
+	}
+
+	private void initializeAddItemByLookupCodeButton() {
+		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
+		addItemByLookupButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//cioc.addProduct();
+			}
+		});
+		addItemByLookupButton.setBounds(382, 236, 188, 60);
+		add(addItemByLookupButton);
+	}
+
+
+	private void initializePayForItemsButton() {
+		JButton payForItemsButton = new JButton("Pay for Items");
+		payForItemsButton.setBounds(480, 363, 173, 60);
+		add(payForItemsButton);
+	}
+
+	private void initializeCallAttendantButton() {
+		JButton callAttendantButton = new JButton("Call For Attendant");
+		callAttendantButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		callAttendantButton.setBounds(83, 671, 173, 60);
+		add(callAttendantButton);
+	}
+
+	private void initializeLanguageSelectButton() {
+
+		JButton selectLanguageButton = new JButton("Select Language");
+		selectLanguageButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JPanel panel = new JPanel();
+				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+				panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+				// Create a label for the language selection
+				JLabel label = new JLabel("Select a language:");
+				label.setAlignmentX(Component.CENTER_ALIGNMENT);
+				panel.add(label);
+
+				// Create a group of radio buttons for the available languages
+				ButtonGroup group = new ButtonGroup();
+				for (String language : languages) {
+					JRadioButton radioButton = new JRadioButton(language);
+					radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+					group.add(radioButton);
+					panel.add(radioButton);
+				}
+
+				// Show the language selection dialog and get the selected language
+				int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				if (result == JOptionPane.OK_OPTION) {
+					String newLanguage = null;
+					// Determine selected button's text
+					for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements(); ) {
+						AbstractButton button = buttons.nextElement();
+						if (button.isSelected()) {
+							newLanguage = button.getText();
+							break;
+						}
+					}
+
+//					if (newLanguage != null) {
+//						// Update the language variable
+//						language = newLanguage;
+//
+//						// Update texts to new language
+//						notificationsLabel.setText(Language.translate(language, "Station Notifications:"));
+//						manageEnabledLabel.setText(Language.translate(language, "Manage Enabled Stations:"));
+//						manageDisabledLabel.setText(Language.translate(language, "Manage Disabled Stations:"));
+//						logoutButton.setText(Language.translate(language, "Log Out"));
+//						languageSelectButton.setText(Language.translate(language, "Change Language"));
+//						populateManagementPanes();
+//					}
+				}
+			}
+		});
+		selectLanguageButton.setBounds(589, 663, 173, 76);
+		add(selectLanguageButton);
+	}
+
+	private void showAddItemByPLUCodeDialog() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(new JLabel("Please enter the PLU code:"), gbc);
+
+		JTextField pluCodeTextField = new JTextField(10);
+		gbc.gridx = 1;
+		panel.add(pluCodeTextField, gbc);
+
+		JButton enterButton = new JButton("Enter");
+		enterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String pluCode = pluCodeTextField.getText();
+				Numeral[] numerals = new Numeral[pluCode.length()];
+
+				for (int i = 0; i < pluCode.length(); i++) {
+					byte b = Byte.parseByte(pluCode.substring(i, i + 1));
+					numerals[i] = Numeral.valueOf(b);
+				}
+
+				PriceLookUpCode plu = new PriceLookUpCode(numerals);
+				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
+
+				if (product == null) {
+					JOptionPane.showMessageDialog(null, "Item not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					System.out.println("PLU coded product added");
+					// Add the item to the theoretical order.
+					// order.addItem(product);
+					cioc.addProduct(product);
+
+					// Add the item to the grid.
+					addItemToGrid(product.getDescription(), product.getPrice());
+					JOptionPane.getRootFrame().dispose();
+				}
+			}
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		panel.add(enterButton, gbc);
+
+		JOptionPane.showOptionDialog(null, panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+	}
+
+
 	/**
 	 * Initialize the exit button.
 	 */
@@ -99,7 +358,7 @@ public class CustomerOperationPane extends JPanel {
                 cioc.logoutPressed();
             }
         });
-        logoutButton.setBounds(324, 455, 120, 63);
+        logoutButton.setBounds(511, 503, 120, 63);
         this.add(logoutButton);
 	}
 }

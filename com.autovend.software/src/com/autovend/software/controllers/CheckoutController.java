@@ -720,7 +720,8 @@ public class CheckoutController {
 			((CustomerIOController) io).notifyStartup();
 		}
 		for (DeviceController io : registeredControllers.get("AttendantIOController")) {
-			((AttendantIOController) io).notifyStartup();
+			// Notify attendant about startup.
+			((AttendantIOController) io).notifyStartup(this);
 		}
 	}
 	
@@ -743,5 +744,14 @@ public class CheckoutController {
 
 	public void setShutdown(boolean b) {
 		this.isShutdown = b;
+	}
+	
+	/**
+	 * Check if the station is currently shut down.
+	 * @return
+	 * 			True if shut down, false otherwise.
+	 */
+	public boolean isShutdown() {
+		return isShutdown;
 	}
 }

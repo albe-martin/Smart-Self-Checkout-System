@@ -1,24 +1,18 @@
 package com.autovend.software.controllers;
 
 
-import com.autovend.devices.AbstractDevice;
-import com.autovend.devices.SelfCheckoutStation;
-import com.autovend.devices.TouchScreen;
-import com.autovend.devices.observers.KeyboardObserver;
-import com.autovend.devices.observers.TouchScreenObserver;
-import com.autovend.external.ProductDatabases;
-import com.autovend.products.BarcodedProduct;
-import com.autovend.products.PLUCodedProduct;
-import com.autovend.products.Product;
-
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.swing.AttendantLoginPane;
 import com.autovend.software.swing.AttendantOperationPane;
 
@@ -80,20 +74,22 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to start up
      */
-    void startupStation(CheckoutController checkout) {
+    public void startupStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-	        checkout.setShutdown(false);
-	        checkout.enableAllDevices();
+	        // TODO: Changed by Braedon, please verify.
+    		checkout.startUp();
     	}
     }
     
     /**
      * Notifies Attendant GUI that the station has started up and is ready to be enabled.
      */
-    void notifyStartup() {
-    	//TODO: GUI signal attendant that this station is ready to be enabled
-    	
-    	// TODO: Unnecessary method, should be removed.
+    void notifyStartup(CheckoutController checkout) {
+    	System.out.println("notified startup");
+    	for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
+    		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    		pane.notifyStartup((CustomerIOController) customerIOController);
+    	}
     }
     
     /**
@@ -102,10 +98,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to shut down
      */
-    void shutdownStation(CheckoutController checkout) {
+    public void shutdownStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
 	        if(checkout.isInUse()) {
-	        	//TODO: Notify GUI back to confirm shut down
+	        	// Notify GUI back to confirm shut down
+	        	for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
+	        		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+	        		pane.notifyShutdownStationInUse((CustomerIOController) customerIOController);
+	        	}
 	        } else {
 	        	checkout.shutDown();
 	        }
@@ -113,11 +113,20 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
     
     /**
+     * Check if a customer station is currently shut down.
+     * @return
+     * 		True if shut down, false otherwise.
+     */
+    public boolean isShutdown(CheckoutController checkout) {
+    	return checkout.isShutdown();
+    }
+    
+    /**
      * Forces to initialize shutdown of controller if the attendant is logged in
      * @param checkout
      * 		The checkout station controller to shut down
      */
-    void forceShutDownStation(CheckoutController checkout) {
+    public void forceShutDownStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
     		checkout.shutDown();
     	}
@@ -199,7 +208,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @return
      * 		Set<Product>: its a set of products that are collected after the search is done.
      */
-    Set<Product> addItemByTextSearch(String input){
+    public Set<Product> addItemByTextSearch(String input){
     	String[] filteredInput = input.split(" ");
     	Set<Product> productsToReturn = new HashSet<Product>();
     	
