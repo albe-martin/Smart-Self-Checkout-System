@@ -1,5 +1,8 @@
 package com.autovend.software.controllers;
 
+import java.math.BigDecimal;
+import java.util.Set;
+
 import com.autovend.Numeral;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
@@ -7,15 +10,13 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import com.autovend.software.swing.CustomerOperationPane;
+import com.autovend.software.swing.CustomerStartPane;
 
 /**
  *
  */
-class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
+public class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
@@ -44,6 +45,15 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
             //stuff to the scale first before they do stuff for the PLU code
         }
     }
+    
+    void addItemByBrowsing(Product selectedProduct) {
+    	//product to add will already be selected from the catalogue here
+    	//so it just adds the selected item, gets the product from UI
+    	if (selectedProduct!=null) {
+            this.getMainController().addItem(selectedProduct);
+        }
+    }
+    
 
 
 
@@ -156,6 +166,26 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
      */
     void notifyStartup() {
 
+    }
+    
+    /**
+     * Signals start button was pressed.
+     */
+    public void startPressed() {
+    	// Switch to operation screen.
+    	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
+    	getDevice().getFrame().revalidate();
+    	getDevice().getFrame().repaint();
+    }
+    
+    /**
+     * Signals logout button was pressed.
+     */
+    public void logoutPressed() {
+    	// Switch to start screen.
+    	getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+    	getDevice().getFrame().revalidate();
+    	getDevice().getFrame().repaint();
     }
 
     //this method is used to display that there is a bagging discrepancy
