@@ -182,7 +182,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     /**
      * Called when an attendant approves the customer's added bags. Unlocks the machine, terminates the attendant signal, and zeros the scale.
-     * @param customerIOController the BaggingScaleController of the main system logic.
+     * @param customerIOController the CustomerIOController of the customer who needs their bags approved.
      */
     public void approveAddedBags(CustomerIOController customerIOController){
         this.getMainController().systemProtectionLock = false;
@@ -192,6 +192,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
             BaggingScaleController scale = (BaggingScaleController) baggingController;
             scale.setExpectedWeight(scale.getCurrentWeight());
         }
+    }
+
+    /**
+     * Notifies the GUI that a customer wants to add bags.
+     * @param customerIOController the CustomerIOController of the customer who wants to add bags.
+     */
+    public void notifyAddBags(CustomerIOController customerIOController){
+        // TODO: signal GUI
     }
 
     //todo: add methods which let this controller modify the GUI on the screen
