@@ -4,8 +4,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Set;
@@ -15,11 +20,13 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -52,6 +59,9 @@ public class AttendantOperationPane extends JPanel {
 	public JButton languageSelectButton;
 	public JLabel notificationsLabel;
 	public JPanel notificationsPane;
+	// Array of [label, button] for notifications.
+	ArrayList<JComponent[]> notificationsData;
+	private JLabel manageNotificationsLabel;
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -99,6 +109,8 @@ public class AttendantOperationPane extends JPanel {
 	public AttendantOperationPane(AttendantIOController aioc) {
 		super();
 		this.aioc = aioc;
+		
+		notificationsData = new ArrayList<>();
 		initializeOperationPane();
 	}
 	
@@ -206,17 +218,64 @@ public class AttendantOperationPane extends JPanel {
 	 * Initialize notifications pane.
 	 */
 	public void initializeNotificationsPane() {
-		// Create label for notifications panel.
-		notificationsLabel = new JLabel(Language.translate(language, "Station Notifications:"));
-		notificationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		notificationsLabel.setBounds(21, 30, 173, 14);
-		this.add(notificationsLabel);
+		// Create manage notifications label.
+		manageNotificationsLabel = new JLabel("Manage Notifications:");
+		manageNotificationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		manageNotificationsLabel.setBounds(22, 22, 181, 23);
+		add(manageNotificationsLabel);
 		
-		// Create panel for notifications.
+		// Create notifications scroll pane.
+		JScrollPane notificationsScrollPane = new JScrollPane();
+		notificationsScrollPane.setBounds(21, 49, 358, 462);
+		add(notificationsScrollPane);
+		
+		// Add pane to scroll pane.
 		notificationsPane = new JPanel();
 		notificationsPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		notificationsPane.setBounds(21, 55, 299, 304);
-		this.add(notificationsPane);
+		notificationsScrollPane.setViewportView(notificationsPane);
+		
+		
+	}
+	
+	/**
+	 * Populates the notifications management pane.
+	 */
+	public void populateNotificationsPane() {
+		// Wipe pane.
+		notificationsPane.removeAll();
+		
+		// Create layout.
+		GridBagLayout layout = new GridBagLayout();
+		layout.columnWidths = new int[]{227, 124, 0};
+		
+		// Fill row heights with 30, extra element is 0.
+		int[] rowHeights = new int[notificationsData.size() + 1];
+		Arrays.fill(rowHeights, 30);
+		rowHeights[notificationsData.size()] = 0;
+		layout.rowHeights = rowHeights;
+		
+		layout.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		
+		// Fill row weights with 0.0, extra element is Double.MIN_VALUE.
+		double[] rowWeights = new double[notificationsData.size() + 1];
+		rowWeights[notificationsData.size()] = Double.MIN_VALUE;
+		layout.rowWeights = rowWeights;
+		notificationsPane.setLayout(layout);	
+
+		// Populate grid.
+		for (int row = 0; row < notificationsData.size(); row++) {
+			for (int col = 0; col < 2; col++) {
+				GridBagConstraints gbc = new GridBagConstraints();
+				gbc.fill = GridBagConstraints.BOTH;
+				gbc.insets = new Insets(0, 0, 5, 5);
+				gbc.gridx = col;
+				gbc.gridy = row;
+				notificationsPane.add(notificationsData.get(row)[col], gbc);
+			}
+		}
+		
+		repaint();
+		revalidate();
 	}
 	
 	/**
@@ -296,6 +355,9 @@ public class AttendantOperationPane extends JPanel {
 				manageEnabledPane.add(btn);
 			}
 		}
+		
+		repaint();
+		revalidate();
 	}
 	
 	/**
@@ -426,7 +488,9 @@ public class AttendantOperationPane extends JPanel {
                 ButtonGroup group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Disable Station"),
                 		Language.translate(language, "Shutdown Station"),
-                		Language.translate(language, "Approve Custom Bags"),
+                		// TODO: Remove bag approval notification trigger once customer can cause it.
+                		// TODO: Or, have it on an atendant triggers gui for the demo testing.
+                		Language.translate(language, "Cause bag approval notification"),
                 		Language.translate(language,  "Add Item By Text Search"),
                 		Language.translate(language, "Remove Item")}) {
                     JRadioButton radioButton = new JRadioButton(action);
@@ -487,10 +551,11 @@ public class AttendantOperationPane extends JPanel {
 		} else if (action.equalsIgnoreCase("Startup Station")) {
 			// Request station start up.
 			aioc.startupStation(cioc.getMainController());
-		} else if (action.equalsIgnoreCase("Approve Custom Bags")) {
-			// TODO: Notify station about approval
-			System.out.println("Bags approved");
-			// Remove from notifications.
+		// TODO: Delete this when customer bag request is added so action trigger can be deleted.
+		// TODO: It should be caused by the customer not the attendant.
+		} else if (action.equalsIgnoreCase("Cause Bag Approval Notification")) {
+			// TODO: Delete this, it's just a simulator.
+			this.notifyConfirmAddedBags(cioc);
 		} else if (action.equalsIgnoreCase("Add Item By Text Search")) {
 			// Create text search pop-up.
 			createTextSearchPopup(cioc);
@@ -723,7 +788,29 @@ public class AttendantOperationPane extends JPanel {
 	public void notifyStartup(CustomerIOController cioc) {
 		// Update management panes.
 		populateManagementPanes();
+	}
+	
+	/**
+	 * Notify the attendant to confirm a customer's added bags.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyConfirmAddedBags(CustomerIOController cioc) {
+		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " needs bag confirmation!");
+		JButton button = new JButton("Confirm");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Approve bags.
+            	aioc.approveAddedBags(cioc);
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
 		
-		System.out.println("processed startup");
+		populateNotificationsPane();
 	}
 }
