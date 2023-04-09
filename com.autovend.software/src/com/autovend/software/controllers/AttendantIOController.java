@@ -7,6 +7,7 @@ import com.autovend.devices.observers.KeyboardObserver;
 import com.autovend.devices.observers.TouchScreenObserver;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 //need to decide whether the keyboard should get its own controller or not,
 //might be excessive to be honest, but it would be consistent....
@@ -47,12 +48,16 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     /**
      * Called when an attendant approves the customer's added bags. Unlocks the machine, terminates the attendant signal, and zeros the scale.
-     * @param controller the BaggingScaleController of the main system logic.
+     * @param customerIOController the BaggingScaleController of the main system logic.
      */
-    void approveAddedBags(BaggingScaleController controller){
+    public void approveAddedBags(CustomerIOController customerIOController){
         this.getMainController().systemProtectionLock = false;
         this.getMainController().AttendantApproved = true;
-        controller.setExpectedWeight(controller.getCurrentWeight());
+        Set<DeviceController> baggingControllers = customerIOController.getMainController().getAllDeviceControllers();
+        for (DeviceController baggingController : baggingControllers) {
+            BaggingScaleController scale = (BaggingScaleController) baggingController;
+            scale.setExpectedWeight(scale.getCurrentWeight());
+        }
     }
 
     //todo: add methods which let this controller modify the GUI on the screen
