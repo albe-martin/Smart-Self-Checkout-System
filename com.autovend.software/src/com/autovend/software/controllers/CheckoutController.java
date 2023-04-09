@@ -553,8 +553,7 @@ public class CheckoutController {
 	 * Idea for the addOwnBags revision.
 	 */
 	public void addOwnBagsRevised() {
-		HashMap<String, Set<DeviceController>> baggingControllers = this.getAllDeviceControllersRevised();
-		for (DeviceController<?, ?> baggingController : baggingControllers.get("BaggingAreaController")) {
+		for (DeviceController<?, ?> baggingController : this.getControllersByType("BaggingAreaController")) {
 			if(baggingController instanceof BaggingScaleController){
 				BaggingScaleController scale = (BaggingScaleController) baggingController;
 				scale.setAddingBags(true);

@@ -98,8 +98,7 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
     public void selectBagsAdded(){
-        HashMap<String, Set<DeviceController>> baggingControllers = this.getMainController().getAllDeviceControllersRevised();
-        for (DeviceController<?, ?> baggingController : baggingControllers.get("BaggingAreaController")) {
+        for (DeviceController<?, ?> baggingController : this.getMainController().getControllersByType("BaggingAreaController")) {
             if(baggingController instanceof BaggingScaleController){
                 BaggingScaleController scale = (BaggingScaleController) baggingController;
                 scale.setAddingBags(false);
