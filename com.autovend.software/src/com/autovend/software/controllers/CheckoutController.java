@@ -652,12 +652,37 @@ public class CheckoutController {
 		}
 	}
 
+	// When sign in starts, tells card reader and barcode scanner 
+	// to be ready to scan a membership card.
 	public void signingInAsMember() {
+		for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
+			((CardReaderController) cardReaderController).enableMemberReg();
+		}
+		
+		for (DeviceController barcodeScannerController : registeredControllers.get("BarcodeScannerController")) {
+			((BarcodeScannerController) barcodeScannerController).setScanningItems(false);
+		}
+		
 	}
 	//todo:
 	//memberships and stuff, if valid, tell scanners and card reader that membership has been validated
 	//so they go back to normal function.
 	public void validateMembership(String number){
+		// Since we do not know what validates a membership number, a temporary local variable
+		// will be used for testing purposes, which assumes the membership number is correct
+		boolean isValid = true;
+		
+		if (isValid) {
+			for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
+				((CardReaderController) cardReaderController).disableMemberReg();
+			}
+			
+			for (DeviceController barcodeScannerController : registeredControllers.get("BarcodeScannerController")) {
+				((BarcodeScannerController) barcodeScannerController).setScanningItems(true);
+			}
+		} else {
+			// ????
+		}
 	}
 
 	/**
