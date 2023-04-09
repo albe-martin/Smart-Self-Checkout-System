@@ -9,6 +9,7 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -89,22 +90,24 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
      * Called in response to the customer selecting the 'purchase reusable bags' option.
      * Should trigger a prompt asking the customer how many bags they want to buy.
      */
-    void selectPurchaseBags(){
+    public void selectPurchaseBags(){
 
     }
 
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
-    void selectBagsAdded(){
-        Set<DeviceController> baggingControllers = this.getMainController().getAllDeviceControllersRevised().get("BaggingAreaController");
-        for (DeviceController baggingController : baggingControllers) {
-            BaggingScaleController scale = (BaggingScaleController) baggingController;
-            scale.setAddingBags(false);
-            scale.setExpectedWeight(scale.getSavedWeight());
-            if(scale.getExpectedWeight() != scale.getCurrentWeight()){
-                this.getMainController().systemProtectionLock = true; // Lock the system
-                this.getMainController().AttendantApproved = false; // Signal the attendant
+    public void selectBagsAdded(){
+        HashMap<String, Set<DeviceController>> baggingControllers = this.getMainController().getAllDeviceControllersRevised();
+        for (DeviceController<?, ?> baggingController : baggingControllers.get("BaggingAreaController")) {
+            if(baggingController instanceof BaggingScaleController){
+                BaggingScaleController scale = (BaggingScaleController) baggingController;
+                scale.setAddingBags(false);
+                scale.setExpectedWeight(scale.getSavedWeight());
+                if(scale.getExpectedWeight() != scale.getCurrentWeight()){
+                    this.getMainController().systemProtectionLock = true; // Lock the system
+                    this.getMainController().AttendantApproved = false; // Signal the attendant
+                }
             }
         }
     }

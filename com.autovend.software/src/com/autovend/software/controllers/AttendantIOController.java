@@ -6,10 +6,7 @@ import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.KeyboardObserver;
 import com.autovend.devices.observers.TouchScreenObserver;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 //need to decide whether the keyboard should get its own controller or not,
 //might be excessive to be honest, but it would be consistent....
@@ -185,12 +182,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param customerIOController the CustomerIOController of the customer who needs their bags approved.
      */
     public void approveAddedBags(CustomerIOController customerIOController){
-        this.getMainController().systemProtectionLock = false;
-        this.getMainController().AttendantApproved = true;
-        Set<DeviceController> baggingControllers = customerIOController.getMainController().getAllDeviceControllers();
-        for (DeviceController baggingController : baggingControllers) {
-            BaggingScaleController scale = (BaggingScaleController) baggingController;
-            scale.setExpectedWeight(scale.getCurrentWeight());
+        customerIOController.getMainController().systemProtectionLock = false;
+        customerIOController.getMainController().AttendantApproved = true;
+        HashMap<String, Set<DeviceController>> baggingControllers = customerIOController.getMainController().getAllDeviceControllersRevised();
+        for (DeviceController<?, ?> baggingController : baggingControllers.get("BaggingAreaController")) {
+            if(baggingController instanceof BaggingScaleController){
+                BaggingScaleController scale = (BaggingScaleController) baggingController;
+                scale.setExpectedWeight(scale.getCurrentWeight());
+            }
         }
     }
 

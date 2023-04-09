@@ -553,11 +553,13 @@ public class CheckoutController {
 	 * Idea for the addOwnBags revision.
 	 */
 	public void addOwnBagsRevised() {
-		Set<DeviceController> baggingControllers = this.registeredControllers.get("BaggingAreaController");
-		for (DeviceController baggingController : baggingControllers) {
-			BaggingScaleController scale = (BaggingScaleController) baggingController;
-			scale.setAddingBags(true);
-			scale.saveCurrentWeight();
+		HashMap<String, Set<DeviceController>> baggingControllers = this.getAllDeviceControllersRevised();
+		for (DeviceController<?, ?> baggingController : baggingControllers.get("BaggingAreaController")) {
+			if(baggingController instanceof BaggingScaleController){
+				BaggingScaleController scale = (BaggingScaleController) baggingController;
+				scale.setAddingBags(true);
+				scale.saveCurrentWeight();
+			}
 		}
 
 		// GUI: Signal to customer to add bags, and simultaneously give the customer an option to signal that they are done adding bags.
