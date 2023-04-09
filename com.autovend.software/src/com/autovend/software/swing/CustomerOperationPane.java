@@ -26,6 +26,7 @@ public class CustomerOperationPane extends JPanel {
 	private CustomerIOController cioc;
 	public JButton logoutButton;
 	private JTable table;
+	private JLabel totalCostLabel;
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -82,12 +83,17 @@ public class CustomerOperationPane extends JPanel {
         // TODO: Create cart functionalities
         initializeCartItemsGrid();
 
-        
-        
-        // Initialize exit button.
+		initializeTotalCostLabel();
+
+
+		initializeButtons();
+
+
+		// Initialize exit button.
         // TODO: Note: might be removed.
         initializeExitButton();
-       
+
+		updateTotalCost();
         
 	}
 
@@ -105,7 +111,6 @@ public class CustomerOperationPane extends JPanel {
 				{"Item 1", new BigDecimal("10.00")},
 				{"Item 2", new BigDecimal("20.00")},
 				{"Item 3", new BigDecimal("30.00")},
-				// Add more items here...
 		};
 		DefaultTableModel items = new DefaultTableModel(data, columnNames);
 		table = new JTable(items);
@@ -113,38 +118,80 @@ public class CustomerOperationPane extends JPanel {
 		table.setRowSelectionAllowed(false);
 		table.setRequestFocusEnabled(false);
 		table.setFocusable(false);
-
-		// Customize table appearance
-		//table.setGridColor(Color.BLACK);
-		//table.setIntercellSpacing(new Dimension(1, 1));
-		//table.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 		table.setShowGrid(true);
 
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(27, 97, 339, 468);
-
-		// Customize scroll pane appearance
-		//scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-//		scrollPane.setBackground(new Color(240, 240, 240));
-//		scrollPane.getViewport().setBackground(Color.WHITE);
-//		scrollPane.getVerticalScrollBar().setBackground(new Color(224, 224, 224));
-//		scrollPane.getHorizontalScrollBar().setBackground(new Color(224, 224, 224));
-
-		// Customize table header appearance
-		//table.getTableHeader().setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
-		//table.getTableHeader().setBackground(new Color(240, 240, 240));
-		//4table.getTableHeader().setOpaque(false);
-		//table.getTableHeader().setForeground(Color.BLACK);
-
-		// Adjust the table header border to account for grid lines
-		//table.getTableHeader().setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-		//table.getTableHeader().setReorderingAllowed(false);
-		//table.getTableHeader().setResizingAllowed(false);
+		scrollPane.setBounds(2, 64, 366, 501);
 
 		add(scrollPane);
 	}
 
+	private void initializeTotalCostLabel() {
+		totalCostLabel = new JLabel("Total Cost: $0.00");
+		totalCostLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		totalCostLabel.setBounds(83, 576, 188, 30);
+		totalCostLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(totalCostLabel);
+	}
 
+	private void addItemToGrid(String itemName, BigDecimal itemPrice) {
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.addRow(new Object[]{itemName, itemPrice});
+		updateTotalCost();
+	}
+
+	private void removeItemFromGrid(int rowIndex) {
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		if (rowIndex >= 0 && rowIndex < model.getRowCount()) {
+			model.removeRow(rowIndex);
+			updateTotalCost();
+		}
+	}
+
+
+
+
+
+	private void updateTotalCost() {
+		BigDecimal totalCost = BigDecimal.ZERO;
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		int rowCount = model.getRowCount();
+
+		for (int i = 0; i < rowCount; i++) {
+			BigDecimal itemPrice = (BigDecimal) model.getValueAt(i, 1);
+			totalCost = totalCost.add(itemPrice);
+		}
+
+		totalCostLabel.setText("Total Cost: $" + totalCost.toString());
+	}
+
+
+	private void initializeButtons() {
+
+		JButton enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
+		enterMembershipNumberButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		enterMembershipNumberButton.setBounds(370, 663, 188, 76);
+		add(enterMembershipNumberButton);
+
+		JButton addItemByPluCodeButton = new JButton("Add Item by PLU Code");
+		addItemByPluCodeButton.setBounds(589, 236, 173, 60);
+		add(addItemByPluCodeButton);
+
+		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
+		addItemByLookupButton.setBounds(382, 236, 188, 60);
+		add(addItemByLookupButton);
+
+		JButton payForItemsButton = new JButton("Pay for Items");
+		payForItemsButton.setBounds(480, 363, 173, 60);
+		add(payForItemsButton);
+
+		JButton selectLanguageButton = new JButton("Select Language");
+		selectLanguageButton.setBounds(589, 663, 173, 76);
+		add(selectLanguageButton);
+	}
 
 
 	/**
@@ -162,7 +209,7 @@ public class CustomerOperationPane extends JPanel {
                 cioc.logoutPressed();
             }
         });
-        logoutButton.setBounds(614, 689, 120, 63);
+        logoutButton.setBounds(121, 649, 120, 63);
         this.add(logoutButton);
 	}
 }
