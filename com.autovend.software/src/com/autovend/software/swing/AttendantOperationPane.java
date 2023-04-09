@@ -278,13 +278,17 @@ public class AttendantOperationPane extends JPanel {
 		// Add each station to enabled/disabled/shutdown pane.
 		for (CustomerIOController cioc : aioc.getAllStationsIOControllers()) {
 			if (cioc.getMainController().isDisabled()) {
-				// TODO: If is shutdown, add to shutdown pane.
-				
-				// TODO: Else, add to disabled pane.
-				// Add disabled station to disabled pane.
-				JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
-				addDisabledActionPopup(btn, cioc);
-				manageDisabledPane.add(btn);
+				if (cioc.isShutdown()) {
+					// Add to shutdown pane.
+					JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
+					addShutdownActionPopup(btn, cioc);
+					manageShutdownPane.add(btn);
+				} else {
+					// Add to disabled pane.
+					JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
+					addDisabledActionPopup(btn, cioc);
+					manageDisabledPane.add(btn);
+				}
 			} else {
 				// Add enabled station to enabled pane.
 				JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
@@ -292,6 +296,57 @@ public class AttendantOperationPane extends JPanel {
 				manageEnabledPane.add(btn);
 			}
 		}
+	}
+	
+	/**
+	 * Adds the action pop-up menu for a shut down station.
+	 * 
+	 * @param btn
+	 * 			Button that causes the pop-up.
+	 * @param cioc
+	 * 			CustomerIOController performing the action on.
+	 */
+	public void addShutdownActionPopup(JButton btn, CustomerIOController cioc) {
+		btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Create a panel to hold the actions pop-up.
+                JPanel panel = new JPanel();
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                
+                // Create a label for the action selection.
+                JLabel label = new JLabel("Select an action:");
+                label.setAlignmentX(Component.CENTER_ALIGNMENT);
+                panel.add(label);
+                
+                // Create a group of radio buttons for the available actions.
+                ButtonGroup group = new ButtonGroup();
+                for (String action : new String[] {Language.translate(language, "Startup Station")}) {
+                    JRadioButton radioButton = new JRadioButton(action);
+                    radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    group.add(radioButton);
+                    panel.add(radioButton);
+                }
+
+                // Show the action pop-up and get the selected action.
+                int result = JOptionPane.showOptionDialog(null, panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                if (result == JOptionPane.OK_OPTION) {
+                    String chosenAction = null;
+                    // Determine selected action's text.
+                    for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                        AbstractButton button = buttons.nextElement();
+                        if (button.isSelected()) {
+                            chosenAction = button.getText();
+                            break;
+                        }
+                    }
+                    
+                    // Process the selected action.
+                    processAction(chosenAction, cioc);
+                }
+            }
+        });
+		
 	}
 	
 	/**
@@ -410,6 +465,10 @@ public class AttendantOperationPane extends JPanel {
 	 * 			CustomerIOController to perform the action on.
 	 */
 	public void processAction(String action, CustomerIOController cioc ) {
+		if (action == null) {
+			// Ignore null actions.
+			return;
+		}
 		if (action.equalsIgnoreCase("Enable Station")) {
 			// Enable station.
 			aioc.enableStation(cioc.getMainController());
@@ -426,10 +485,8 @@ public class AttendantOperationPane extends JPanel {
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Startup Station")) {
-			// Start up station in disabled mode.
+			// Request station start up.
 			aioc.startupStation(cioc.getMainController());
-			// Repopulate management panes.
-			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Approve Custom Bags")) {
 			// TODO: Notify station about approval
 			System.out.println("Bags approved");
@@ -655,5 +712,18 @@ public class AttendantOperationPane extends JPanel {
         	// Repopulate management panes
         	populateManagementPanes();
         }
+	}
+	
+	/**
+	 * Notify the attendant that a station has been started up.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController that started up.
+	 */
+	public void notifyStartup(CustomerIOController cioc) {
+		// Update management panes.
+		populateManagementPanes();
+		
+		System.out.println("processed startup");
 	}
 }

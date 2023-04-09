@@ -95,6 +95,7 @@ public class GUILauncher {
 			
 			// Register customer to attendant
 			asc.registerController(cioc);
+			cioc.getMainController().registerController("AttendantIOController", aioc);
 		}
 		
 		// Shut down one station.
@@ -115,8 +116,5 @@ public class GUILauncher {
 		
 		// getOrder(): Hashmap{product: [amount/weight, price]
 		System.out.println(ciocs.get(0).getMainController().getOrder());
-		
-		
-		// TODO: Delete.
 	}
 }

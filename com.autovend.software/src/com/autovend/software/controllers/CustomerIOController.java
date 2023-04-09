@@ -56,9 +56,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         }
     }
     
-
-
-
     public void addProduct(Product product){
         //since products have to be displayed for the catalogue already
         //it just adds the item here.
@@ -66,6 +63,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
             this.getMainController().addItem(product);
         }
     }
+    
     void beginSignInAsMember(){
         this.getMainController().signingInAsMember();
         //Stuff with the GUI
@@ -86,6 +84,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     void choosePayByCard(CardIssuer bank, BigDecimal amount) {
         this.getMainController().payByCard(bank, amount);
     }
+    
     void finalizeOrder(){
         this.getMainController().completePayment();
         //todo:
@@ -206,6 +205,15 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     //method used to display there is a danger to the station due to weight
     //potentially damaging the bagging area
     void displayBaggingProtectionLock() {}
+    
+    /**
+     * Check if this station is shut down.
+     * @return
+     * 		True if shut down, false otherwise.
+     */
+    public boolean isShutdown() {
+    	return getMainController().isShutdown();
+    }
 
 
 }

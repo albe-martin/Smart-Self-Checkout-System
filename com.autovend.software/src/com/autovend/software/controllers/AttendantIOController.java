@@ -76,18 +76,20 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     public void startupStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-	        checkout.setShutdown(false);
-	        checkout.enableAllDevices();
+	        // TODO: Changed by Braedon, please verify.
+    		checkout.startUp();
     	}
     }
     
     /**
      * Notifies Attendant GUI that the station has started up and is ready to be enabled.
      */
-    void notifyStartup() {
-    	//TODO: GUI signal attendant that this station is ready to be enabled
-    	
-    	// TODO: Unnecessary method, should be removed.
+    void notifyStartup(CheckoutController checkout) {
+    	System.out.println("notified startup");
+    	for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
+    		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    		pane.notifyStartup((CustomerIOController) customerIOController);
+    	}
     }
     
     /**
@@ -99,11 +101,24 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     public void shutdownStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
 	        if(checkout.isInUse()) {
-	        	// TODO: Notify GUI back to confirm shut down
+	        	// Notify GUI back to confirm shut down
+	        	for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
+	        		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+	        		pane.notifyShutdownStationInUse((CustomerIOController) customerIOController);
+	        	}
 	        } else {
 	        	checkout.shutDown();
 	        }
     	}
+    }
+    
+    /**
+     * Check if a customer station is currently shut down.
+     * @return
+     * 		True if shut down, false otherwise.
+     */
+    public boolean isShutdown(CheckoutController checkout) {
+    	return checkout.isShutdown();
     }
     
     /**
