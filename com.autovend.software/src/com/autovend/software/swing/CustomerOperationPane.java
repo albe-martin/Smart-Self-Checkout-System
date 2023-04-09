@@ -86,8 +86,17 @@ public class CustomerOperationPane extends JPanel {
 
 		initializeTotalCostLabel();
 
+		initializeAddItemByPLUCodeButton();
 
-		initializeButtons();
+		initializeAddItemByLookupCodeButton();
+
+		initializePayForItemsButton();
+
+		initializeEnterMembershipNumberButton();
+
+		initializeLanguageSelectButton();
+
+		initializeCallAttendantButton();
 
 		// initializeLanguageSelectButton();
 
@@ -160,10 +169,6 @@ public class CustomerOperationPane extends JPanel {
 		}
 	}
 
-
-
-
-
 	private void updateTotalCost() {
 		BigDecimal totalCost = BigDecimal.ZERO;
 		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
@@ -177,9 +182,7 @@ public class CustomerOperationPane extends JPanel {
 		totalCostLabel.setText("Total Cost: $" + totalCost.toString());
 	}
 
-
-	private void initializeButtons() {
-
+	private void initializeEnterMembershipNumberButton() {
 		JButton enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
 		enterMembershipNumberButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -187,18 +190,34 @@ public class CustomerOperationPane extends JPanel {
 		});
 		enterMembershipNumberButton.setBounds(370, 663, 188, 76);
 		add(enterMembershipNumberButton);
+	}
 
+	private void initializeAddItemByPLUCodeButton() {
 		JButton addItemByPluCodeButton = new JButton("Add Item by PLU Code");
 		addItemByPluCodeButton.setBounds(589, 236, 173, 60);
 		add(addItemByPluCodeButton);
+	}
 
+	private void initializeAddItemByLookupCodeButton() {
 		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
 		addItemByLookupButton.setBounds(382, 236, 188, 60);
 		add(addItemByLookupButton);
+	}
 
+
+	private void initializePayForItemsButton() {
 		JButton payForItemsButton = new JButton("Pay for Items");
 		payForItemsButton.setBounds(480, 363, 173, 60);
 		add(payForItemsButton);
+	}
+
+	private void initializeCallAttendantButton() {
+		JButton callAttendantButton = new JButton("Call For Attendant");
+		callAttendantButton.setBounds(83, 671, 173, 60);
+		add(callAttendantButton);
+	}
+
+	private void initializeLanguageSelectButton() {
 
 		JButton selectLanguageButton = new JButton("Select Language");
 		selectLanguageButton.addActionListener(new ActionListener() {
@@ -254,62 +273,62 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 
-	public void initializeLanguageSelectButton() {
-		// Create language select button.
-		languageSelectButton = new JButton(Language.translate(language, "Change Language"));
-		languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		languageSelectButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Create a panel to hold the language select pop-up
-				JPanel panel = new JPanel();
-				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-				panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-				// Create a label for the language selection
-				JLabel label = new JLabel("Select a language:");
-				label.setAlignmentX(Component.CENTER_ALIGNMENT);
-				panel.add(label);
-
-				// Create a group of radio buttons for the available languages
-				ButtonGroup group = new ButtonGroup();
-				for (String language : languages) {
-					JRadioButton radioButton = new JRadioButton(language);
-					radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-					group.add(radioButton);
-					panel.add(radioButton);
-				}
-
-				// Show the language selection dialog and get the selected language
-				int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-				if (result == JOptionPane.OK_OPTION) {
-					String newLanguage = null;
-					// Determine selected button's text
-					for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
-						AbstractButton button = buttons.nextElement();
-						if (button.isSelected()) {
-							newLanguage = button.getText();
-							break;
-						}
-					}
-					// TODO: Update relevant text fields/labels/buttons
-//					if (newLanguage != null) {
-//						// Update the language variable
-//						language = newLanguage;
+//	public void initializeLanguageSelectButton() {
+//		// Create language select button.
+//		languageSelectButton = new JButton(Language.translate(language, "Change Language"));
+//		languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+//		languageSelectButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				// Create a panel to hold the language select pop-up
+//				JPanel panel = new JPanel();
+//				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//				panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 //
-//						// Update texts to new language
-//						notificationsLabel.setText(Language.translate(language, "Station Notifications:"));
-//						manageEnabledLabel.setText(Language.translate(language, "Manage Enabled Stations:"));
-//						manageDisabledLabel.setText(Language.translate(language, "Manage Disabled Stations:"));
-//						logoutButton.setText(Language.translate(language, "Log Out"));
-//						languageSelectButton.setText(Language.translate(language, "Change Language"));
-//						populateManagementPanes();
+//				// Create a label for the language selection
+//				JLabel label = new JLabel("Select a language:");
+//				label.setAlignmentX(Component.CENTER_ALIGNMENT);
+//				panel.add(label);
+//
+//				// Create a group of radio buttons for the available languages
+//				ButtonGroup group = new ButtonGroup();
+//				for (String language : languages) {
+//					JRadioButton radioButton = new JRadioButton(language);
+//					radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+//					group.add(radioButton);
+//					panel.add(radioButton);
+//				}
+//
+//				// Show the language selection dialog and get the selected language
+//				int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+//				if (result == JOptionPane.OK_OPTION) {
+//					String newLanguage = null;
+//					// Determine selected button's text
+//					for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+//						AbstractButton button = buttons.nextElement();
+//						if (button.isSelected()) {
+//							newLanguage = button.getText();
+//							break;
+//						}
 //					}
-				}
-			}
-		});
-		languageSelectButton.setBounds(573, 661, 189, 76);
-		this.add(languageSelectButton);
-	}
+//					// TODO: Update relevant text fields/labels/buttons
+////					if (newLanguage != null) {
+////						// Update the language variable
+////						language = newLanguage;
+////
+////						// Update texts to new language
+////						notificationsLabel.setText(Language.translate(language, "Station Notifications:"));
+////						manageEnabledLabel.setText(Language.translate(language, "Manage Enabled Stations:"));
+////						manageDisabledLabel.setText(Language.translate(language, "Manage Disabled Stations:"));
+////						logoutButton.setText(Language.translate(language, "Log Out"));
+////						languageSelectButton.setText(Language.translate(language, "Change Language"));
+////						populateManagementPanes();
+////					}
+//				}
+//			}
+//		});
+//		languageSelectButton.setBounds(573, 661, 189, 76);
+//		this.add(languageSelectButton);
+//	}
 
 
 	/**
@@ -327,7 +346,7 @@ public class CustomerOperationPane extends JPanel {
                 cioc.logoutPressed();
             }
         });
-        logoutButton.setBounds(121, 649, 120, 63);
+        logoutButton.setBounds(511, 503, 120, 63);
         this.add(logoutButton);
 	}
 }
