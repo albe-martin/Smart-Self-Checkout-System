@@ -93,7 +93,7 @@ public class CustomerOperationPane extends JPanel {
 
 
 		// Initialize exit button.
-        // TODO: Note: might be removed.
+		// TODO: Should have a confirmation popup (see the one I made for attendant notifyshutdownstationinuse).
         initializeExitButton();
 
 		updateTotalCost();
@@ -110,18 +110,27 @@ public class CustomerOperationPane extends JPanel {
 
 	private void initializeCartItemsGrid() {
 		String[] columnNames = {"Item", "Price"};
+		// TODO: Get actual items in cart.
 		Object[][] data = {
 				{"Item 1", new BigDecimal("10.00")},
 				{"Item 2", new BigDecimal("20.00")},
 				{"Item 3", new BigDecimal("30.00")},
 		};
-		DefaultTableModel items = new DefaultTableModel(data, columnNames);
+		DefaultTableModel items = new DefaultTableModel(data, columnNames) {
+			private static final long serialVersionUID = 1L;
+			
+			// Prevent user editing.
+			public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }
+		};
 		orderItemsTable = new JTable(items);
 		orderItemsTable.setRowHeight(25);
 		orderItemsTable.setRowSelectionAllowed(false);
 		orderItemsTable.setRequestFocusEnabled(false);
 		orderItemsTable.setFocusable(false);
 		orderItemsTable.setShowGrid(true);
+		
 
 		JScrollPane scrollPane = new JScrollPane(orderItemsTable);
 		scrollPane.setBounds(2, 64, 366, 501);
@@ -282,7 +291,7 @@ public class CustomerOperationPane extends JPanel {
 							break;
 						}
 					}
-
+					// TODO: Update relevant text fields/labels/buttons
 //					if (newLanguage != null) {
 //						// Update the language variable
 //						language = newLanguage;
