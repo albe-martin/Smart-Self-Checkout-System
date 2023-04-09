@@ -153,10 +153,12 @@ public class AttendantOperationPane extends JPanel {
                 JPanel panel = new JPanel();
                 panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
                 panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                
                 // Create a label for the language selection
                 JLabel label = new JLabel("Select a language:");
                 label.setAlignmentX(Component.CENTER_ALIGNMENT);
                 panel.add(label);
+                
                 // Create a group of radio buttons for the available languages
                 ButtonGroup group = new ButtonGroup();
                 for (String language : languages) {
@@ -349,7 +351,8 @@ public class AttendantOperationPane extends JPanel {
                 ButtonGroup group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Disable Station"),
                 		Language.translate(language, "Approve Custom Bags"),
-                		Language.translate(language,  "Add Item By Text Search")}) {
+                		Language.translate(language,  "Add Item By Text Search"),
+                		Language.translate(language, "Remove Item")}) {
                     JRadioButton radioButton = new JRadioButton(action);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                     group.add(radioButton);
@@ -403,6 +406,8 @@ public class AttendantOperationPane extends JPanel {
 		} else if (action.equalsIgnoreCase("Add Item By Text Search")) {
 			// Create text search pop-up.
 			createTextSearchPopup(cioc);
+		} else if (action.equalsIgnoreCase("Remove Item")) {
+			createRemoveItemPopup(cioc);
 		}
 		
 		// Refresh screen.
@@ -552,6 +557,41 @@ public class AttendantOperationPane extends JPanel {
 			// Create new text search pop-up.
 			createTextSearchPopup(cioc);
 		}
+	}
+	
+	/**
+	 * Create a pop-up allowing the attendant to remove a customer's items.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController to remove item from.
+	 */
+	public void createRemoveItemPopup(CustomerIOController cioc) {
+		// Create pop-up panel.
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // Create pop-up label.
+        JLabel label = new JLabel(Language.translate(language, "Select an item to remove:"));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(label);
+        
+        // Create a group of radio buttons for the available items to remove.
+        ButtonGroup group = new ButtonGroup();
+        
+        // TODO: Loop through each item in customer's cart (includes bags, what product type are they? for description).
+//        for (String language : languages) {
+//            JRadioButton radioButton = new JRadioButton(language);
+//            radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+//            group.add(radioButton);
+//            panel.add(radioButton);
+//        }
+
+        // Show pop-up.
+        int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Remove Item"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (result == JOptionPane.OK_OPTION) {
+            // TODO: Determine item and remove from customer's cart.
+        }
 	}
 	
 }

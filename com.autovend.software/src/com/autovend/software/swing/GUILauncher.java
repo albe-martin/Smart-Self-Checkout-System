@@ -109,5 +109,11 @@ public class GUILauncher {
 		// Add demo products to database.
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
+		
+		// TODO: Can be removed if it conflicts with the customer testing. Just used for testing attendantIO.
+		ciocs.get(0).addProduct(bcproduct1);
+		
+		// getOrder(): Hashmap{product: [amount/weight, price]
+		System.out.println(ciocs.get(0).getMainController().getOrder());
 	}
 }
