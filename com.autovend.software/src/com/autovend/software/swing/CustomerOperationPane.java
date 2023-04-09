@@ -425,8 +425,6 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridwidth = 2;
 		panel.add(enterButton, gbc);
 
-		System.out.println(customerScreen);
-
 		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
