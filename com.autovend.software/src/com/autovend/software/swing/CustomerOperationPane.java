@@ -13,7 +13,11 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.autovend.Numeral;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.PLUCodedProduct;
 import com.autovend.software.controllers.CustomerIOController;
 
 /**
@@ -186,6 +190,7 @@ public class CustomerOperationPane extends JPanel {
 		JButton enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
 		enterMembershipNumberButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				cioc.beginSignInAsMember();
 			}
 		});
 		enterMembershipNumberButton.setBounds(370, 663, 188, 76);
@@ -194,12 +199,22 @@ public class CustomerOperationPane extends JPanel {
 
 	private void initializeAddItemByPLUCodeButton() {
 		JButton addItemByPluCodeButton = new JButton("Add Item by PLU Code");
+		addItemByPluCodeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showAddItemByPLUCodeDialog();
+			}
+		});
 		addItemByPluCodeButton.setBounds(589, 236, 173, 60);
 		add(addItemByPluCodeButton);
 	}
 
 	private void initializeAddItemByLookupCodeButton() {
 		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
+		addItemByLookupButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//cioc.addProduct();
+			}
+		});
 		addItemByLookupButton.setBounds(382, 236, 188, 60);
 		add(addItemByLookupButton);
 	}
@@ -213,6 +228,11 @@ public class CustomerOperationPane extends JPanel {
 
 	private void initializeCallAttendantButton() {
 		JButton callAttendantButton = new JButton("Call For Attendant");
+		callAttendantButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
 		callAttendantButton.setBounds(83, 671, 173, 60);
 		add(callAttendantButton);
 	}
@@ -272,63 +292,55 @@ public class CustomerOperationPane extends JPanel {
 		add(selectLanguageButton);
 	}
 
+	private void showAddItemByPLUCodeDialog() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
 
-//	public void initializeLanguageSelectButton() {
-//		// Create language select button.
-//		languageSelectButton = new JButton(Language.translate(language, "Change Language"));
-//		languageSelectButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
-//		languageSelectButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				// Create a panel to hold the language select pop-up
-//				JPanel panel = new JPanel();
-//				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-//				panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-//
-//				// Create a label for the language selection
-//				JLabel label = new JLabel("Select a language:");
-//				label.setAlignmentX(Component.CENTER_ALIGNMENT);
-//				panel.add(label);
-//
-//				// Create a group of radio buttons for the available languages
-//				ButtonGroup group = new ButtonGroup();
-//				for (String language : languages) {
-//					JRadioButton radioButton = new JRadioButton(language);
-//					radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//					group.add(radioButton);
-//					panel.add(radioButton);
-//				}
-//
-//				// Show the language selection dialog and get the selected language
-//				int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-//				if (result == JOptionPane.OK_OPTION) {
-//					String newLanguage = null;
-//					// Determine selected button's text
-//					for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
-//						AbstractButton button = buttons.nextElement();
-//						if (button.isSelected()) {
-//							newLanguage = button.getText();
-//							break;
-//						}
-//					}
-//					// TODO: Update relevant text fields/labels/buttons
-////					if (newLanguage != null) {
-////						// Update the language variable
-////						language = newLanguage;
-////
-////						// Update texts to new language
-////						notificationsLabel.setText(Language.translate(language, "Station Notifications:"));
-////						manageEnabledLabel.setText(Language.translate(language, "Manage Enabled Stations:"));
-////						manageDisabledLabel.setText(Language.translate(language, "Manage Disabled Stations:"));
-////						logoutButton.setText(Language.translate(language, "Log Out"));
-////						languageSelectButton.setText(Language.translate(language, "Change Language"));
-////						populateManagementPanes();
-////					}
-//				}
-//			}
-//		});
-//		languageSelectButton.setBounds(573, 661, 189, 76);
-//		this.add(languageSelectButton);
-//	}
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(new JLabel("Please enter the PLU code:"), gbc);
+
+		JTextField pluCodeTextField = new JTextField(10);
+		gbc.gridx = 1;
+		panel.add(pluCodeTextField, gbc);
+
+		JButton enterButton = new JButton("Enter");
+		enterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String pluCode = pluCodeTextField.getText();
+				Numeral[] numerals = new Numeral[pluCode.length()];
+
+				for (int i = 0; i < pluCode.length(); i++) {
+					byte b = Byte.parseByte(pluCode.substring(i, i + 1));
+					numerals[i] = Numeral.valueOf(b);
+				}
+
+				PriceLookUpCode plu = new PriceLookUpCode(numerals);
+				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
+
+				if (product == null) {
+					JOptionPane.showMessageDialog(null, "Item not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					System.out.println("PLU coded product added");
+					// Add the item to the theoretical order.
+					// order.addItem(product);
+					cioc.addProduct(product);
+
+					// Add the item to the grid.
+					addItemToGrid(product.getDescription(), product.getPrice());
+					JOptionPane.getRootFrame().dispose();
+				}
+			}
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		panel.add(enterButton, gbc);
+
+		JOptionPane.showOptionDialog(null, panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+	}
 
 
 	/**
