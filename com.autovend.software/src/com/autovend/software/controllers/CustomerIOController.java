@@ -33,7 +33,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
 
 
-    void addItemByPLU(String pluCode){
+    public void addItemByPLU(String pluCode){
         Numeral[] code = new Numeral[pluCode.length()];
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
@@ -48,7 +48,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         }
     }
     
-    void addItemByBrowsing(Product selectedProduct) {
+    public void addItemByBrowsing(Product selectedProduct) {
     	//product to add will already be selected from the catalogue here
     	//so it just adds the selected item, gets the product from UI
     	if (selectedProduct!=null) {
@@ -64,7 +64,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         }
     }
     
-    void beginSignInAsMember(){
+    public void beginSignInAsMember(){
         this.getMainController().signingInAsMember();
         //Stuff with the GUI
     }
@@ -81,7 +81,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
     //since all card payment methods work the same here (basically), then this can just
     //be generically used by the I/O
-    void choosePayByCard(CardIssuer bank, BigDecimal amount) {
+    public void choosePayByCard(CardIssuer bank, BigDecimal amount) {
         this.getMainController().payByCard(bank, amount);
     }
     
