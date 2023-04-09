@@ -14,6 +14,7 @@ import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.CustomerIOController;
@@ -91,6 +92,8 @@ public class CustomerOperationPane extends JPanel {
 		initializeAddItemByPLUCodeButton();
 
 		initializeAddItemByLookupCodeButton();
+		
+		initializePurchaseBagsButton();
 
 		initializePayForItemsButton();
 
@@ -157,17 +160,23 @@ public class CustomerOperationPane extends JPanel {
 		HashMap<Product, Number[]> orderItems = cioc.getMainController().getOrder();
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
-			Number[] quantities = entry.getValue();
-			for (int i = 0; i < quantities.length; i++) {
-				int quantity = quantities[i].intValue();
-				if (quantity > 0) {
-					model.addRow(new Object[]{product, product.getPrice()});
-				}
+			if (product instanceof PLUCodedProduct pluProduct) {
+				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
+			} else if (product instanceof BarcodedProduct barcodeProduct) {
+				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
 			}
 		}
-
 		updateTotalCost();
+	}
 
+	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
+		Number[] quantities = entry.getValue();
+		for (int i = 0; i < quantities.length; i++) {
+			int quantity = quantities[i].intValue();
+			if (quantity > 0) {
+				model.addRow(new Object[]{description, price});
+			}
+		}
 	}
 
 	private void initializeTotalCostLabel() {
@@ -220,10 +229,10 @@ public class CustomerOperationPane extends JPanel {
 		JButton addItemByPluCodeButton = new JButton("Add Item by PLU Code");
 		addItemByPluCodeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showAddItemByPLUCodeDialog();
+				showAddItemByPLUCodePane();
 			}
 		});
-		addItemByPluCodeButton.setBounds(589, 236, 173, 60);
+		addItemByPluCodeButton.setBounds(589, 112, 173, 60);
 		add(addItemByPluCodeButton);
 	}
 
@@ -234,16 +243,29 @@ public class CustomerOperationPane extends JPanel {
 				//cioc.addProduct();
 			}
 		});
-		addItemByLookupButton.setBounds(382, 236, 188, 60);
+		addItemByLookupButton.setBounds(388, 112, 173, 60);
 		add(addItemByLookupButton);
 	}
 
 
 	private void initializePayForItemsButton() {
 		JButton payForItemsButton = new JButton("Pay for Items");
-		payForItemsButton.setBounds(480, 363, 173, 60);
+		payForItemsButton.setBounds(490, 351, 173, 60);
 		add(payForItemsButton);
 	}
+	
+	
+	private void initializePurchaseBagsButton() {
+		JButton purchaseBagsButton = new JButton("Purchase Bags");
+		purchaseBagsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showPurchaseBagsPane();
+			}
+		});
+		purchaseBagsButton.setBounds(490, 251, 173, 60);
+		add(purchaseBagsButton);
+	}
+	
 
 	private void initializeCallAttendantButton() {
 		JButton callAttendantButton = new JButton("Call For Attendant");
@@ -311,7 +333,9 @@ public class CustomerOperationPane extends JPanel {
 		add(selectLanguageButton);
 	}
 
-	private void showAddItemByPLUCodeDialog() {
+	private void showPurchaseBagsPane();
+
+	private void showAddItemByPLUCodePane() {
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
