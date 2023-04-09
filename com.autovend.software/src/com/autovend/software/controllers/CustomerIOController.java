@@ -46,7 +46,7 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
         }
     }
     
-    void addItemByBrowsing(Product selectedProduct) {
+    public void addItemByBrowsing(Product selectedProduct) {
     	//product to add will already be selected from the catalogue here
     	//so it just adds the selected item, gets the product from UI
     	if (selectedProduct!=null) {

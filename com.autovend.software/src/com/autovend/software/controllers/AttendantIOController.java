@@ -14,6 +14,7 @@ import com.autovend.products.Product;
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -199,7 +200,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @return
      * 		Set<Product>: its a set of products that are collected after the search is done.
      */
-    Set<Product> addItemByTextSearch(String input){
+    public Set<Product> addItemByTextSearch(String input){
     	String[] filteredInput = input.split(" ");
     	Set<Product> productsToReturn = new HashSet<Product>();
     	
