@@ -4,10 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,6 +15,7 @@ import com.autovend.PriceLookUpCode;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.controllers.CustomerIOController;
 
 /**
@@ -114,7 +112,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeHeader() {
-		JLabel selfCheckoutStationLabel = new JLabel("Self Checkout Station");
+		JLabel selfCheckoutStationLabel = new JLabel("Self Checkout Station #" + cioc.getMainController().getID());
 		selfCheckoutStationLabel.setBounds(0, 11, 800, 55);
 		selfCheckoutStationLabel.setFont(new Font("Tahoma", Font.BOLD, 36));
 		selfCheckoutStationLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -129,7 +127,7 @@ public class CustomerOperationPane extends JPanel {
 				{"Item 2", new BigDecimal("20.00")},
 				{"Item 3", new BigDecimal("30.00")},
 		};
-		DefaultTableModel items = new DefaultTableModel(data, columnNames) {
+		DefaultTableModel items = new DefaultTableModel(null, columnNames) {
 			private static final long serialVersionUID = 1L;
 			
 			// Prevent user editing.
@@ -149,6 +147,27 @@ public class CustomerOperationPane extends JPanel {
 		scrollPane.setBounds(2, 64, 366, 501);
 
 		add(scrollPane);
+	}
+
+	public void refreshOrderGrid() {
+
+		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
+		model.setRowCount(0);
+
+		HashMap<Product, Number[]> orderItems = cioc.getMainController().getOrder();
+		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
+			Product product = entry.getKey();
+			Number[] quantities = entry.getValue();
+			for (int i = 0; i < quantities.length; i++) {
+				int quantity = quantities[i].intValue();
+				if (quantity > 0) {
+					model.addRow(new Object[]{product, product.getPrice()});
+				}
+			}
+		}
+
+		updateTotalCost();
+
 	}
 
 	private void initializeTotalCostLabel() {
