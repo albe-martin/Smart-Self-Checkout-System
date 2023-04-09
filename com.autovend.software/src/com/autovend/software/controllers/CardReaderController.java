@@ -87,7 +87,7 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		if (registeringMembers == false) {	// If a payment is being made
 			if (data.getType().equalsIgnoreCase("giftcard")) {
 				reactToGiftCardDataRead((GiftCard.GiftCardInsertData) data);
-			} else {	// Credit and Debit cards
+			} else if (data.getType().equalsIgnoreCase("credit") || data.getType().equalsIgnoreCase("debit")) {	// Credit and Debit cards
 				if (this.isPaying && this.bank != null) {
 					int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
 					if (holdNum != -1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
@@ -101,6 +101,9 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 
 					this.isPaying = false;
 				}
+			} else {
+				// TODO: inform customer that card read failed
+				return;
 			}
 		} else {	// Membership is being dealt with
 			this.getMainController().validateMembership(data.getNumber());
