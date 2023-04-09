@@ -1,6 +1,6 @@
 package com.autovend.software.swing;
 
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
@@ -8,10 +8,12 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableModel;
 
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.software.controllers.CustomerIOController;
@@ -23,6 +25,7 @@ public class CustomerOperationPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private CustomerIOController cioc;
 	public JButton logoutButton;
+	private JTable table;
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -49,7 +52,6 @@ public class CustomerOperationPane extends JPanel {
 		customerScreen.setSize(800, 800);
 		customerScreen.setUndecorated(false);
 		customerScreen.setResizable(false);
-		
 		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
 		customerScreen.setContentPane(new CustomerOperationPane(cioc));
 		
@@ -75,15 +77,76 @@ public class CustomerOperationPane extends JPanel {
 		// Create operation screen pane.
         this.setBorder(new EmptyBorder(5, 5, 5, 5));
         this.setLayout(null);
+		initializeHeader();
+        
+        // TODO: Create cart functionalities
+        initializeCartItemsGrid();
 
+        
+        
         // Initialize exit button.
         // TODO: Note: might be removed.
         initializeExitButton();
-        
-        // TODO: Create cart functionalities
+       
         
 	}
-	
+
+	private void initializeHeader() {
+		JLabel selfCheckoutStationLabel = new JLabel("Self Checkout Station");
+		selfCheckoutStationLabel.setBounds(0, 11, 800, 55);
+		selfCheckoutStationLabel.setFont(new Font("Tahoma", Font.BOLD, 36));
+		selfCheckoutStationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(selfCheckoutStationLabel);
+	}
+
+	private void initializeCartItemsGrid() {
+		String[] columnNames = {"Item", "Price"};
+		Object[][] data = {
+				{"Item 1", new BigDecimal("10.00")},
+				{"Item 2", new BigDecimal("20.00")},
+				{"Item 3", new BigDecimal("30.00")},
+				// Add more items here...
+		};
+		DefaultTableModel items = new DefaultTableModel(data, columnNames);
+		table = new JTable(items);
+		table.setRowHeight(25);
+		table.setRowSelectionAllowed(false);
+		table.setRequestFocusEnabled(false);
+		table.setFocusable(false);
+
+		// Customize table appearance
+		//table.setGridColor(Color.BLACK);
+		//table.setIntercellSpacing(new Dimension(1, 1));
+		//table.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		table.setShowGrid(true);
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBounds(27, 97, 339, 468);
+
+		// Customize scroll pane appearance
+		//scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+//		scrollPane.setBackground(new Color(240, 240, 240));
+//		scrollPane.getViewport().setBackground(Color.WHITE);
+//		scrollPane.getVerticalScrollBar().setBackground(new Color(224, 224, 224));
+//		scrollPane.getHorizontalScrollBar().setBackground(new Color(224, 224, 224));
+
+		// Customize table header appearance
+		//table.getTableHeader().setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
+		//table.getTableHeader().setBackground(new Color(240, 240, 240));
+		//4table.getTableHeader().setOpaque(false);
+		//table.getTableHeader().setForeground(Color.BLACK);
+
+		// Adjust the table header border to account for grid lines
+		//table.getTableHeader().setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+		//table.getTableHeader().setReorderingAllowed(false);
+		//table.getTableHeader().setResizingAllowed(false);
+
+		add(scrollPane);
+	}
+
+
+
+
 	/**
 	 * Initialize the exit button.
 	 */
@@ -99,7 +162,7 @@ public class CustomerOperationPane extends JPanel {
                 cioc.logoutPressed();
             }
         });
-        logoutButton.setBounds(324, 455, 120, 63);
+        logoutButton.setBounds(614, 689, 120, 63);
         this.add(logoutButton);
 	}
 }
