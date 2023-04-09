@@ -57,7 +57,7 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
 
 
 
-    void addProduct(Product product){
+    public void addProduct(Product product){
         //since products have to be displayed for the catalogue already
         //it just adds the item here.
         if (product!=null) {

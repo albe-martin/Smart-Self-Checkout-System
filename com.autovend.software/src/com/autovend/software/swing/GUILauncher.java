@@ -9,14 +9,27 @@ import java.util.Locale;
 
 import javax.swing.JFrame;
 
+import com.autovend.Barcode;
+import com.autovend.BarcodedUnit;
+import com.autovend.Numeral;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SupervisionStation;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 
+/**
+ * Launches the customer and attendant GUIs.
+ */
 public class GUILauncher {
+	
+	/**
+	 * Main runner.
+	 */
 	public static void main(String[] args) {
 		// Add French language.
 		// TODO: This is just a demo. The submission will only be in english.
@@ -84,8 +97,22 @@ public class GUILauncher {
 			asc.registerController(cioc);
 		}
 		
-		// Shut down a station
+		// Shut down one station.
 		ciocs.get(1).getMainController().shutDown();
+		
+		// Create demo products.
+		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",
+				BigDecimal.valueOf(83.29), 359.0);
+		BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.four, Numeral.five), "screwdriver",
+				BigDecimal.valueOf(42), 60.0);
+
+		// Add demo products to database.
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
+
+		}
+		
+		
 		
 	}
 }
