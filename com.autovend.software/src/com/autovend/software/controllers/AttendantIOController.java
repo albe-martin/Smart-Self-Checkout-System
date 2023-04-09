@@ -113,15 +113,6 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
     
     /**
-     * Check if a customer station is currently shut down.
-     * @return
-     * 		True if shut down, false otherwise.
-     */
-    public boolean isShutdown(CheckoutController checkout) {
-    	return checkout.isShutdown();
-    }
-    
-    /**
      * Forces to initialize shutdown of controller if the attendant is logged in
      * @param checkout
      * 		The checkout station controller to shut down
@@ -182,7 +173,6 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     		// Handle bad login
     		AttendantLoginPane pane = (AttendantLoginPane) getDevice().getFrame().getContentPane();
     		pane.showLoginError();
-    		
     	}
     }
     
@@ -249,12 +239,26 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     /**
      * Called when an attendant approves the customer's added bags. Unlocks the machine, terminates the attendant signal, and zeros the scale.
-     * @param controller the BaggingScaleController of the main system logic.
+     * @param customerIOController the CustomerIOController of the customer who needs their bags approved.
      */
-    void approveAddedBags(BaggingScaleController controller){
+    public void approveAddedBags(CustomerIOController customerIOController){
         this.getMainController().systemProtectionLock = false;
         this.getMainController().AttendantApproved = true;
-        controller.setExpectedWeight(controller.getCurrentWeight());
+        Set<DeviceController> baggingControllers = customerIOController.getMainController().getAllDeviceControllers();
+        for (DeviceController baggingController : baggingControllers) {
+            BaggingScaleController scale = (BaggingScaleController) baggingController;
+            scale.setExpectedWeight(scale.getCurrentWeight());
+        }
+    }
+
+    /**
+     * Notifies the GUI that a customer wants to add bags.
+     * @param customerIOController the CustomerIOController of the customer who wants to add bags.
+     */
+    public void notifyAddBags(CustomerIOController customerIOController){
+    	// Notify GUI to approve added bags.
+		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+		pane.notifyConfirmAddedBags(customerIOController);
     }
 
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {

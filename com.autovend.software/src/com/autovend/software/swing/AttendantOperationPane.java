@@ -4,8 +4,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Set;
@@ -15,11 +20,13 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -51,7 +58,9 @@ public class AttendantOperationPane extends JPanel {
 	public JLabel manageShutdownLabel;
 	public JButton languageSelectButton;
 	public JLabel notificationsLabel;
-	public JPanel notificationsPane;
+	public Object[][] notificationsData;
+	private JButton btnNewButton_1;
+	private JLabel label_1;
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -206,17 +215,54 @@ public class AttendantOperationPane extends JPanel {
 	 * Initialize notifications pane.
 	 */
 	public void initializeNotificationsPane() {
-		// Create label for notifications panel.
-		notificationsLabel = new JLabel(Language.translate(language, "Station Notifications:"));
-		notificationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		notificationsLabel.setBounds(21, 30, 173, 14);
-		this.add(notificationsLabel);
 		
-		// Create panel for notifications.
-		notificationsPane = new JPanel();
+		// Array of [label, button]
+		ArrayList<JComponent[]> notificationsData = new ArrayList<>();
+		
+		// TODO: delete, demo adding data.
+		notificationsData.add(new JComponent[] {new JLabel("hi"), new JButton("yes")});
+		notificationsData.add(new JComponent[] {new JLabel("yo"), new JButton("yee")});
+		notificationsData.add(new JComponent[] {new JLabel("beans"), new JButton("toast")});
+		
+		// Create notifications scroll pane.
+		JScrollPane notificationsScrollPane = new JScrollPane();
+		notificationsScrollPane.setBounds(21, 49, 358, 462);
+		add(notificationsScrollPane);
+		
+		// Add pane to scroll pane.
+		JPanel notificationsPane = new JPanel();
 		notificationsPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		notificationsPane.setBounds(21, 55, 299, 304);
-		this.add(notificationsPane);
+		notificationsScrollPane.setViewportView(notificationsPane);
+		
+		// Create layout.
+		GridBagLayout layout = new GridBagLayout();
+		layout.columnWidths = new int[]{227, 124, 0};
+		
+		// Fill row heights with 30, extra element is 0.
+		int[] rowHeights = new int[notificationsData.size() + 1];
+		Arrays.fill(rowHeights, 30);
+		rowHeights[notificationsData.size()] = 0;
+		layout.rowHeights = rowHeights;
+		
+		layout.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		
+		// Fill row weights with 0.0, extra element is Double.MIN_VALUE.
+		double[] rowWeights = new double[notificationsData.size() + 1];
+		rowWeights[notificationsData.size()] = Double.MIN_VALUE;
+		layout.rowWeights = rowWeights;
+		notificationsPane.setLayout(layout);	
+
+		// Populate grid.
+		for (int row = 0; row < notificationsData.size(); row++) {
+			for (int col = 0; col < 2; col++) {
+				GridBagConstraints gbc = new GridBagConstraints();
+				gbc.fill = GridBagConstraints.BOTH;
+				gbc.insets = new Insets(0, 0, 5, 5);
+				gbc.gridx = col;
+				gbc.gridy = row;
+				notificationsPane.add(notificationsData.get(row)[col], gbc);
+			}
+		}
 	}
 	
 	/**
@@ -725,5 +771,15 @@ public class AttendantOperationPane extends JPanel {
 		populateManagementPanes();
 		
 		System.out.println("processed startup");
+	}
+	
+	/**
+	 * Notify the attendant to confirm a customer's added bags.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyConfirmAddedBags(CustomerIOController cioc) {
+		// TODO: complete
 	}
 }
