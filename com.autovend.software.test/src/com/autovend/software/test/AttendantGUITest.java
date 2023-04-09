@@ -2,13 +2,26 @@ package com.autovend.software.test;
 
 import static org.junit.Assert.*;
 
+import java.awt.Component;
+import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.swing.AbstractButton;
+import javax.swing.ButtonModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,12 +43,43 @@ import com.autovend.software.swing.Language;
 
 public class AttendantGUITest {
 
+    private volatile int found;
 	TouchScreen screen;
+	AttendantLoginPaneTest attendantPane;
 	
 	boolean enabledEventOccurred = false;
 	boolean disabledEventOccurred = false;
 	
-	// Stub
+	
+	/**
+	 * Overrides the optionDialogPopup method of the AttendantLoginPane class
+	 * to make it possible to test the language selection.
+	 * @author omarkhan
+	 *
+	 */
+	public class AttendantLoginPaneTest extends AttendantLoginPane {
+		private static final long serialVersionUID = 1L;
+
+		public AttendantLoginPaneTest(AttendantIOController aioc) {
+			super(aioc);
+		}
+		
+		@Override
+		public int optionDialogPopup(JPanel panel) {
+            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                AbstractButton button = buttons.nextElement();
+                if (button.getText() == "English") {
+                    button.setSelected(true);
+                    break;
+                }
+            }
+            
+			return 0;
+		}
+		
+	}
+	
+	// Stub for TouchScreenObserver
 	TouchScreenObserver tso = new TouchScreenObserver() {
 		@Override
 		public void reactToEnabledEvent(AbstractDevice<? extends AbstractDeviceObserver> device) {
@@ -79,8 +123,10 @@ public class AttendantGUITest {
 		attendantScreen.setSize(800, 800);
 		attendantScreen.setUndecorated(false);
 		attendantScreen.setResizable(false);
+		
 		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
-		attendantScreen.setContentPane(new AttendantLoginPane(aioc));
+		attendantPane = new AttendantLoginPaneTest(aioc);
+		attendantScreen.setContentPane(attendantPane);
 		
 		AttendantStationController asc = new AttendantStationController();
 		aioc.setMainAttendantController(asc);
@@ -157,11 +203,54 @@ public class AttendantGUITest {
 	}
 	
 	/**
+	 * 
+	 */
+	@Test
+	public void clickLanguageSelect() {
+
+		String language = attendantPane.language;
+		JButton lsb = attendantPane.languageSelectButton;
+		lsb.doClick();
+		
+		assert(language == "English");
+	}
+	
+	/**
 	 * Tests to make sure that a login with incorrect credentials is unsuccessful
 	 */
 	@Test
-	public void TestLoginFail() {
+	public void TestLoginFailure() {
+        JFrame frame = screen.getFrame();
+        
+        JButton loginButton = attendantPane.loginButton;
+		JLabel usernameLabel = attendantPane.usernameLabel;
+		JLabel passwordLabel = attendantPane.passwordLabel;
 
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		JLabel errorLabel = attendantPane.errorLabel;
+		JButton lsb = attendantPane.languageSelectButton;
+		
+		String usernameText = usernameLabel.getText();
+		String passwordText = passwordLabel.getText();
+		
+		usernameTF.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println(e);
+				
+			}
+			
+		});
+		
+		usernameTF.getActionMap();
+		usernameTF.getInputMap();
+		
+		usernameTF.registerKeyboardAction(null, null, found);
+		
 	}
 	
 	/**
@@ -169,7 +258,7 @@ public class AttendantGUITest {
 	 */
 	@Test
 	public void TestLoginSuccess() {
-
+		
 	}
 
 }
