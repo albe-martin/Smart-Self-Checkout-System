@@ -50,6 +50,9 @@ public class TestPrintReceipt {
 
 	LinkedHashMap<Product, Number[]> order;
 	BigDecimal totalCost;
+	private StubBarcodedProduct testItem4;
+	private StubBarcodedProduct testItem5;
+	private StubBarcodedProduct testItem6;
 
 	/**
 	 * Set up of objects, variables etc.. that happens before tests
@@ -125,6 +128,50 @@ public class TestPrintReceipt {
 		} catch (Exception ex) {
 			fail("Exception incorrectly thrown");
 		}
+	}
+	
+	/**
+	 * Testing to see if unit per kg works
+	 */
+	@Test
+	public void testPrintPerKgItems() {
+		// Creating first parameter HashMap<Product, Number[]> in printReceipt()
+		Number[] quantityItem1 = { 1, (83.29) };
+		Number[] quantityItem2 = { 1, (9.29) };
+		Number[] quantityItem3 = { 1, (32.79) };
+		
+		// Creating 3 test items
+		testItem4 = new StubBarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 4",
+				BigDecimal.valueOf(83.29), 359.0, false);
+		testItem5 = new StubBarcodedProduct(new Barcode(Numeral.seven, Numeral.one), "test item 5",
+				BigDecimal.valueOf(9.29), 169.0, false);
+		testItem6 = new StubBarcodedProduct(new Barcode(Numeral.nine, Numeral.two), "test item 6",
+				BigDecimal.valueOf(32.79), 245.0, false);
+		
+		order.put(testItem4, quantityItem1);
+		order.put(testItem5, quantityItem2);
+		order.put(testItem6, quantityItem3);
+		
+		totalCost = BigDecimal.valueOf(83.29 + 9.29 + 32.79);
+
+		String expectedOutput = "Purchase Details:\n" + "1 $83.29 1kg StubBarcodedProduct\n"
+				+ "2 $9.29 1kg StubBarcodedProduct\n" + "3 $32.79 1kg StubBarcodedProduct\n" + "Total: $125.37\n";
+		try {
+			// Add ink and paper into printer
+			testPrinter.addInk(1000);
+			testPrinter.addPaper(1000);
+
+			// Call printReceipt()
+			testReceiptPrinterController.printReceipt(order, totalCost);
+
+			// Cut the paper to finalize the output string
+			testPrinter.cutPaper();
+			String result = testPrinter.removeReceipt();
+			assertEquals(expectedOutput, result);
+		} catch (Exception ex) {
+			fail("Exception incorrectly thrown");
+		}
+		
 	}
 
 	/**
