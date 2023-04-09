@@ -108,7 +108,7 @@ public class AttendantStationController {
 			if(!attendantIOControllers.contains(controller))
 				attendantIOControllers.add(controller);
 		} 
-		else if(!controller.getTypeName().equals("CustomerIOController")) {
+		else if(controller.getTypeName().equals("CustomerIOController")) {
 			Set<DeviceController> customerIoControllers = registeredIOControllers.get("CustomerIOController");
 			if(!customerIoControllers.contains(controller))
 				customerIoControllers.add(controller);
@@ -206,8 +206,6 @@ public class AttendantStationController {
 				return;
 			}
 		}
-			
-		logout();
 		
 		//Signals AttendantIOController of failure
 		for(DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
@@ -223,6 +221,12 @@ public class AttendantStationController {
 	public void logout() {
 		loggedIn = false;
 		currentUser = "";
+		
+		// Signal AttendantIOController of successful logout
+		for (DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
+			((AttendantIOController) io).loggedOut(currentUser);
+		}
+		
 		return;
 	}
 	

@@ -1,5 +1,6 @@
 package com.autovend.software.controllers;
 
+
 import com.autovend.devices.AbstractDevice;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.TouchScreen;
@@ -11,10 +12,15 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 
 import java.math.BigDecimal;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.autovend.devices.TouchScreen;
+import com.autovend.devices.observers.TouchScreenObserver;
+import com.autovend.software.swing.AttendantLoginPane;
+import com.autovend.software.swing.AttendantOperationPane;
 
 //need to decide whether the keyboard should get its own controller or not,
 //might be excessive to be honest, but it would be consistent....
@@ -35,7 +41,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         return "AttendantIOController";
     }
     
-    void setMainAttendantController(AttendantStationController controller) {
+    public void setMainAttendantController(AttendantStationController controller) {
     	this.mainController = controller;
     }
     
@@ -50,7 +56,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to enable
      */
-    void enableStation(CheckoutController checkout) {
+    public void enableStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
             checkout.setMaintenence(false);
             checkout.enableAllDevices();
@@ -62,7 +68,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to disable
      */
-    void disableStation(CheckoutController checkout) {
+    public void disableStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
 	        checkout.setMaintenence(true);
 	        checkout.disableAllDevices();
@@ -86,6 +92,8 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void notifyStartup() {
     	//TODO: GUI signal attendant that this station is ready to be enabled
+    	
+    	// TODO: Unnecessary method, should be removed.
     }
     
     /**
@@ -131,14 +139,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param password
      * 		The password
      */
-    void login(String username, String password) {
+   public void login(String username, String password) {
     	this.mainController.login(username, password);
     }
     
     /**
      * Signals Attendant station controller ot log out if the attendant is logged in
      */
-    void logout() {
+    public void logout() {
     	if(this.mainController.isLoggedIn()) {
     		this.mainController.logout();
     	}
@@ -155,7 +163,18 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 		Will be blank "" if fail
      */
     void loginValidity(boolean success, String username) {
-    	//TODO: signal GUI
+    	// Check validity
+    	if (success) {
+    		// Switch GUI to operation screen.
+    		getDevice().getFrame().setContentPane(new AttendantOperationPane(this));
+    		getDevice().getFrame().revalidate();
+        	getDevice().getFrame().repaint();
+    	} else {
+    		// Handle bad login
+    		AttendantLoginPane pane = (AttendantLoginPane) getDevice().getFrame().getContentPane();
+    		pane.showLoginError();
+    		
+    	}
     }
     
     /**
@@ -165,7 +184,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 		The username of the logged in user who wishes to log out.
      */
     void loggedOut(String username) {
-    	//TODO: signal GUI
+    	// Switch GUI to login screen.
+    	getDevice().getFrame().setContentPane(new AttendantLoginPane(this));
+    	getDevice().getFrame().revalidate();
+    	getDevice().getFrame().repaint();
     }
     
     
@@ -203,7 +225,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * Simple method that will return the checkout station list from this IO's main attendant station in the form of IO controllers
      * 
      */
-    List<CustomerIOController> getAllStationsIOControllers() {
+    public List<CustomerIOController> getAllStationsIOControllers() {
     	return mainController.getAllStationsIOControllers();
     }
     
@@ -212,7 +234,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @return
      * 		List of disabled station IO controllers
      */
-    List<CustomerIOController> getDisabledStationsIOControllers() {
+    public List<CustomerIOController> getDisabledStationsIOControllers() {
     	return mainController.getDisabledStationsIOControllers();
     }
 

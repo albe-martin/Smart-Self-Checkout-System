@@ -56,4 +56,11 @@ public class Language {
 		if (language == null || translations == null) throw new NullPointerException("language and translations params cannot be null!");
 		languageBank.put(language, translations);
 	}
+	
+	/**
+	 * Get the language bank.
+	 */
+	public static HashMap<String, HashMap<String, String>> getLanguageBank() {
+		return languageBank;
+	}
 }
