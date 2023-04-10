@@ -33,7 +33,7 @@ public class AttendantEventSimulator extends JFrame {
 
 	/**
 	 * Create the frame.
-	 */
+	 */      
 	public AttendantEventSimulator(JFrame attendantFrame, CustomerIOController cioc1, CustomerIOController cioc2) {
 		
 		setTitle("Attendant Event Simulator");

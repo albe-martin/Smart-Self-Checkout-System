@@ -13,7 +13,6 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
-import com.autovend.software.swing.CustomerPayPane;
 import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.swing.ShutdownPane;
 
@@ -244,26 +243,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public void logoutPressed() {
     	// Switch to start screen.
     	getDevice().getFrame().setContentPane(new CustomerStartPane(this));
-    	getDevice().getFrame().revalidate();
-    	getDevice().getFrame().repaint();
-    }
-    
-    /**
-     * Signals pay button was pressed.
-     */
-    public void payPressed() {
-    	// Switch to operation screen.
-    	getDevice().getFrame().setContentPane(new CustomerPayPane(this));
-    	getDevice().getFrame().revalidate();
-    	getDevice().getFrame().repaint();
-    }
-    
-    /**
-     * Signals cancel pay button was pressed.
-     */
-    public void cancelPayPressed() {
-    	// Switch to start screen.
-    	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
     }
