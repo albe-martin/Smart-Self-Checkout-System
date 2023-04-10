@@ -79,12 +79,13 @@ public class MembershipTest {
 //		membershipID = "123456789";
 //		Numeral[] ID = BarcodeUtils.stringToNumeralArray(membershipID);
 //		MembershipDatabases.MEMBERSHIP_DATABASE.put(ID, membershipID);
-//		checkoutController.validateMembership(ID);
+//		checkoutController.validateMembership(membership);
 //	    assertNotNull(cardReaderController.state);
 //		assertTrue(barcodeScannerController.getScanningItems());
 //
 //	}
 //	
+	
 //	@Test
 //	public void TestCancelSignIn() {
 //		checkoutController.cancelSigningInAsMember();
@@ -97,7 +98,7 @@ public class MembershipTest {
 //		membershipID = "123456789";
 //		Numeral[] ID = BarcodeUtils.stringToNumeralArray(membershipID);
 //		checkoutController.signingInAsMember();
-//		checkoutController.validateMembership(ID);
+//		checkoutController.validateMembership(membership);
 //		assertFalse(barcodeScannerController.getScanningItems());
 //		assertNotNull(cardReaderController.state);
 
