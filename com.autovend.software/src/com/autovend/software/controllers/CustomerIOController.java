@@ -185,26 +185,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     	}
     }
 
-//    public void enableCustomerOperationPane() {
-//        CustomerOperationPane pane = (CustomerOperationPane) getDevice().getFrame().getContentPane();
-//        pane.enableStation();
-//    }
-//
-//    public void disableCustomerOperationPane() {
-//        CustomerOperationPane pane = (CustomerOperationPane) getDevice().getFrame().getContentPane();
-//        pane.disableStation();
-//    }
-//
-//    public void enableCustomerStartPane() {
-//        CustomerStartPane pane = (CustomerStartPane) getDevice().getFrame().getContentPane();
-//        pane.enableStation();
-//    }
-//
-//    public void disableCustomerStartPane() {
-//        CustomerStartPane pane = (CustomerStartPane) getDevice().getFrame().getContentPane();
-//        pane.disableStation();
-//    }
-
+    /**
+     * Enables the JPane passed into it (JPanel as arg, only as common parent, but distinguished to either
+     * customerStartPane or customerOperationPane inside the method to enable that
+     * @param panel JPanel (JPane) to be enabled
+     */
     public void enablePanel(JPanel panel) {
         if (panel instanceof CustomerOperationPane) {
             CustomerOperationPane pane = (CustomerOperationPane) panel;
@@ -215,6 +200,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         }
     }
 
+    /**
+     * Disables the JPane passed into it (JPanel as arg, only as common parent, but distinguished to either
+     * customerStartPane or customerOperationPane inside the method to disable that
+     * @param panel JPanel (JPane) to be disabled
+     */
     public void disablePanel(JPanel panel) {
         if (panel instanceof CustomerOperationPane) {
             CustomerOperationPane pane = (CustomerOperationPane) panel;
