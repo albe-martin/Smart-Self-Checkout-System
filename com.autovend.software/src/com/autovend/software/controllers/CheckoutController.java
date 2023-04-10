@@ -70,6 +70,7 @@ public class CheckoutController {
 		registeredControllers.put("ValidPaymentControllers", new ArrayList<>());
 		registeredControllers.put("AttendantIOController", new ArrayList<>());
 		registeredControllers.put("CustomerIOController", new ArrayList<>());
+		registeredControllers.put("ScanningScaleController", new ArrayList<>());
 	}
 
 	public CheckoutController(SelfCheckoutStation checkout) {
@@ -118,6 +119,11 @@ public class CheckoutController {
 
 		CustomerIOController customerIOController = new CustomerIOController(checkout.screen);
 		this.registeredControllers.get("CustomerIOController").add(customerIOController);
+
+		//todo: add attendant controller
+		ScanningScaleController scanningScaleController = new ScanningScaleController(checkout.scale);
+		this.registeredControllers.get("ScanningScaleController").add(scanningScaleController);
+
 
 		registerAll();
 		clearOrder();
