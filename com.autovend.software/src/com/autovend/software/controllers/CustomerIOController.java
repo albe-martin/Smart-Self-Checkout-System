@@ -1,10 +1,13 @@
 package com.autovend.software.controllers;
 
+import com.autovend.Barcode;
 import com.autovend.Numeral;
+import com.autovend.ReusableBag;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 
@@ -88,10 +91,19 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
 
     /**
      * Called in response to the customer selecting the 'purchase reusable bags' option.
-     * Should trigger a prompt asking the customer how many bags they want to buy.
+     * Adds quantity of reusableBags to 'order' and dispenses quantity of reusableBags.
+     * @param quantity The number of bags the customer wants to buy.
+     * @param price The price of a reusableBag.
      */
-    public void selectPurchaseBags(){
+    public void selectPurchaseBags(int quantity, BigDecimal price){
+        // reusableBags are SellableUnits, so they cannot be added to 'order'. Need to make a product (?):
+        ReusableBag bag = new ReusableBag(); // Create a bag just to get its weight.
+        Numeral[] numerals = {Numeral.one, Numeral.two}; // Not even sure if these values matter.
+        Barcode barcode = new Barcode(numerals);
+        String description = "ReusableBag";
+        BarcodedProduct reusableBagProduct = new BarcodedProduct(barcode, description, price, bag.getWeight());
 
+        this.getMainController().purchaseBags(reusableBagProduct, reusableBagProduct.getExpectedWeight(), quantity);
     }
 
     /**
