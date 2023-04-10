@@ -672,4 +672,14 @@ public class CheckoutController {
 	public boolean isShutdown() {
 		return isShutdown;
 	}
+	
+	/**
+	 * Method that will get the order hashmap from checkout controller for IOs.
+	 * Order hashmap is as follows:
+	 * Key = Product
+	 * Value = (# of items/total weight depending, total cost)
+	 */
+	public LinkedHashMap<Product, Number[]> getCart() {
+		return order;
+	}
 }

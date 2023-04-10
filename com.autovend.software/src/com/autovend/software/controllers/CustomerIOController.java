@@ -1,6 +1,7 @@
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import com.autovend.Numeral;
@@ -209,6 +210,17 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     public boolean isShutdown() {
     	return getMainController().isShutdown();
+    }
+    
+
+    
+    /**
+     * Method that will get the cart from this controller's main checkout station
+     * @return 
+     * 		LinkedHashMap of order <Product, (Amount(units or by weight), total cost)>
+     */
+    public LinkedHashMap<Product, Number[]> getCart() {
+    	return this.getMainController().getCart();
     }
 
 

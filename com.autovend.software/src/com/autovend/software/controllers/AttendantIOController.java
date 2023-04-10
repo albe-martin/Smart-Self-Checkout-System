@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -260,6 +261,48 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	// Notify GUI to approve added bags.
 		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
 		pane.notifyConfirmAddedBags(customerIOController);
+    }
+    
+    /**
+     * Method that will remove item from order from a specificed checkout station
+     * @param checkout
+     * 		The checkout station to remove from
+     * @param item
+     * 		The item to remove
+     * @param amount
+     * 		The amount of the item to remove
+     */
+    public void removeItemFromOrder(CheckoutController checkout, Product item, BigDecimal amount){
+        checkout.removeItemFromOrder(item, amount);
+    }
+    
+    /**
+     * Method that will get the cart from a specificed checkout station
+     * @param checkout
+     * 		The checkout station to get the cart from
+     * @return 
+     * 		LinkedHashMap of order <Product, (Amount(units or by weight), total cost)>
+     */
+    public LinkedHashMap<Product, Number[]> getCart(CheckoutController checkout) {
+    	return checkout.getCart();
+    }
+    
+    /**
+     * This method notifies the AttendantIO GUI that this station's receipt printer is low on ink
+     * @param checkout
+     * 		The checkout station controller whose ink is low
+     */
+    void notifyLowInk(CheckoutController checkout) {
+    	//TODO: signal GUI
+    }
+    
+    /**
+     * This method notifies the AttendantIO GUI that this station's receipt printer is low on paper
+     * @param checkout
+     * 		The checkout station controller whose ink is low
+     */
+    void notifyLowPaper(CheckoutController checkout) {
+    	//TODO: signal GUI
     }
 
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
