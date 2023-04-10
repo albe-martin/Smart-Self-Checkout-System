@@ -19,8 +19,9 @@ import java.util.*;
 @SuppressWarnings("rawtypes")
 
 public class CheckoutController {
-	//todo: comb through classes fields to update modifiers for them, getters and setters
-	//will be provided for testing purposes for fields where those are necessary.
+	// todo: comb through classes fields to update modifiers for them, getters and
+	// setters
+	// will be provided for testing purposes for fields where those are necessary.
 	private static int IDcounter = 1;
 	private final int stationID = IDcounter++;
 	private LinkedHashMap<Product, Number[]> order;
@@ -29,25 +30,25 @@ public class CheckoutController {
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
 	private HashMap<String, ArrayList<DeviceController>> registeredControllers;
-	//A hashmap which maps the simple names of controller classes to sets of
-	//that type of controller, this is just simpler and less tedious to program with.
+	// A hashmap which maps the simple names of controller classes to sets of
+	// that type of controller, this is just simpler and less tedious to program
+	// with.
 
 	public boolean baggingItemLock;
 	public boolean systemProtectionLock;
-	private boolean payingChangeLock;
+	public boolean payingChangeLock;
 	public boolean addingBagsLock;
 	private boolean isDisabled = false;
 	private boolean isShutdown = false;
 
-	//need this variable to know if this station is being used or not.
+	// need this variable to know if this station is being used or not.
 	private boolean inUse = false;
 
-	//Supervisor Station ID. 0 = not supervised
+	// Supervisor Station ID. 0 = not supervised
 	private int supervisorID = 0;
 
 	private SelfCheckoutStation checkoutStation;
 	private boolean requireAdjustment;
-
 
 	/**
 	 * Constructors for CheckoutController
@@ -58,7 +59,7 @@ public class CheckoutController {
 		clearOrder();
 	}
 
-	private void initControllers(){
+	private void initControllers() {
 		registeredControllers = new HashMap<>();
 		registeredControllers.put("BaggingAreaController", new ArrayList<>());
 		registeredControllers.put("ItemAdderController", new ArrayList<>());
@@ -70,14 +71,16 @@ public class CheckoutController {
 		registeredControllers.put("AttendantIOController", new ArrayList<>());
 		registeredControllers.put("CustomerIOController", new ArrayList<>());
 	}
+
 	public CheckoutController(SelfCheckoutStation checkout) {
-		checkoutStation=checkout;
-		//todo: getters and setters for checkout
+		checkoutStation = checkout;
+		// todo: getters and setters for checkout
 
 		initControllers();
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
-		this.registeredControllers.get("ItemAdderController").addAll(List.of(mainScannerController, handheldScannerController));
+		this.registeredControllers.get("ItemAdderController")
+				.addAll(List.of(mainScannerController, handheldScannerController));
 
 		BaggingScaleController scaleController = new BaggingScaleController(checkout.baggingArea);
 		this.registeredControllers.get("BaggingAreaController").add(scaleController);
@@ -87,25 +90,31 @@ public class CheckoutController {
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
 		CardReaderController cardReaderController = new CardReaderController(checkout.cardReader);
-		this.registeredControllers.get("ValidPaymentControllers").addAll(List.of(billPayController, coinPaymentController, cardReaderController));
+		this.registeredControllers.get("ValidPaymentControllers")
+				.addAll(List.of(billPayController, coinPaymentController, cardReaderController));
 
 		BillChangeSlotController billChangeSlotController = new BillChangeSlotController(checkout.billOutput);
 		CoinTrayController coinChangeSlotController = new CoinTrayController(checkout.coinTray);
-		this.registeredControllers.get("ChangeSlotController").addAll(List.of(billChangeSlotController, coinChangeSlotController));
+		this.registeredControllers.get("ChangeSlotController")
+				.addAll(List.of(billChangeSlotController, coinChangeSlotController));
 
 		HashSet<ChangeDispenserController> changeDispenserControllers = new HashSet<>();
 		for (int denom : checkout.billDispensers.keySet()) {
-			changeDispenserControllers.add(new BillDispenserController(checkout.billDispensers.get(denom), BigDecimal.valueOf(denom)));
+			changeDispenserControllers
+					.add(new BillDispenserController(checkout.billDispensers.get(denom), BigDecimal.valueOf(denom)));
 		}
 
 		for (BigDecimal denom : checkout.coinDispensers.keySet()) {
-			changeDispenserControllers.add(new CoinDispenserController(checkout.coinDispensers.get(denom), denom) {});
+			changeDispenserControllers.add(new CoinDispenserController(checkout.coinDispensers.get(denom), denom) {
+			});
 		}
 		registeredControllers.get("ChangeDispenserController").addAll(changeDispenserControllers);
 
 		// Added CustomerIOController initialization
-		//NOTE: AttendantIOController should be added when and only when a checkout station
-		// is added to an attendant station as a checkout station can only be monitored by at most one attendant station.
+		// NOTE: AttendantIOController should be added when and only when a checkout
+		// station
+		// is added to an attendant station as a checkout station can only be monitored
+		// by at most one attendant station.
 
 		CustomerIOController customerIOController = new CustomerIOController(checkout.screen);
 		this.registeredControllers.get("CustomerIOController").add(customerIOController);
@@ -120,9 +129,10 @@ public class CheckoutController {
 
 	/**
 	 * Returns supervisor ID
+	 * 
 	 * @return
-	 * 		The ID of the supervisor/attendant station
-	 * 		0 = No supervisor
+	 *         The ID of the supervisor/attendant station
+	 *         0 = No supervisor
 	 */
 	public int getSupervisor() {
 		return supervisorID;
@@ -130,8 +140,9 @@ public class CheckoutController {
 
 	/**
 	 * set supervisor ID
+	 * 
 	 * @param id
-	 * 		The ID of the supervisor/attendant station
+	 *           The ID of the supervisor/attendant station
 	 */
 	public void setSupervisor(int id) {
 		this.supervisorID = id;
@@ -158,7 +169,7 @@ public class CheckoutController {
 		payingChangeLock = false;
 		ArrayList<DeviceController> controllers = registeredControllers.get("BaggingAreaController");
 		for (DeviceController controller : controllers) {
-			((BaggingAreaController)controller).resetOrder();
+			((BaggingAreaController) controller).resetOrder();
 		}
 		this.latestItem.clear();
 	}
@@ -172,31 +183,41 @@ public class CheckoutController {
 		return this.cost;
 	}
 
-
 	/**
 	 * Methods to register and deregister peripherals
 	 */
 	public void deregisterController(String typeName, DeviceController controller) {
 		ArrayList<DeviceController> controllerSet = this.registeredControllers.get(typeName);
-		if (controllerSet==null){return;}
-		if (controllerSet.contains(controller)) {controllerSet.remove(controller);}
+		if (controllerSet == null) {
+			return;
+		}
+		if (controllerSet.contains(controller)) {
+			controllerSet.remove(controller);
+		}
 	}
+
 	public void registerController(String typeName, DeviceController controller) {
 		ArrayList<DeviceController> controllerSet = this.registeredControllers.get(typeName);
-		if (controllerSet==null){return;}
-		if (!controllerSet.contains(controller)) {controllerSet.add(controller);}
+		if (controllerSet == null) {
+			return;
+		}
+		if (!controllerSet.contains(controller)) {
+			controllerSet.add(controller);
+		}
 	}
+
 	void registerAll() {
-		for (String key : this.registeredControllers.keySet()){
+		for (String key : this.registeredControllers.keySet()) {
 			ArrayList<DeviceController> controllerSet = this.registeredControllers.get(key);
 			for (DeviceController controller : controllerSet) {
 				controller.setMainController(this);
 			}
 		}
 	}
+
 	public HashSet<DeviceController> getAllDeviceControllers() {
 		HashSet<DeviceController> out = new HashSet<>();
-		for (String key : this.registeredControllers.keySet()){
+		for (String key : this.registeredControllers.keySet()) {
 			out.addAll(this.registeredControllers.get(key));
 		}
 		return out;
@@ -205,53 +226,59 @@ public class CheckoutController {
 	/**
 	 * A different variant of getAllDeviceControllers
 	 */
-	public HashMap<String, ArrayList<DeviceController>> getAllDeviceControllersRevised(){
+	public HashMap<String, ArrayList<DeviceController>> getAllDeviceControllersRevised() {
 		return this.registeredControllers;
 	}
 
 	/**
 	 * Method to add reusable bags to the order after the customer signals to buy
 	 * bags
+	 * 
 	 * @param numBags The number of bags getting added
 	 */
 	public void purchaseBags(int numBags) {
-		if (baggingItemLock || systemProtectionLock) {return;}
-		ArrayList<DeviceController> bagDispenserController = registeredControllers.get("ReusableBagDispenserController");
+		if (baggingItemLock || systemProtectionLock) {
+			return;
+		}
+		ArrayList<DeviceController> bagDispenserController = registeredControllers
+				.get("ReusableBagDispenserController");
 		this.addItem(MiscProductsDatabase.MISC_DATABASE.get(MiscProductsDatabase.bagNumb), BigDecimal.valueOf(numBags));
 		((ReusableBagDispenserController) bagDispenserController.get(0)).dispenseBags(numBags);
 	}
 
-	//if the user wants to cancel adding bags, this will do so.
-	public void cancelAddingBagsLock(){
+	// if the user wants to cancel adding bags, this will do so.
+	public void cancelAddingBagsLock() {
 		addingBagsLock = false;
-		boolean unlock=true;
+		boolean unlock = true;
 		ArrayList<DeviceController> baggingControllers = this.registeredControllers.get("BaggingAreaController");
 		for (DeviceController baggingController : baggingControllers) {
 			BaggingScaleController scale = (BaggingScaleController) baggingController;
 			if (!scale.getBaggingValid()) {
-				unlock=false;
+				unlock = false;
 				break;
 			}
 		}
-		baggingItemLock=unlock;
+		baggingItemLock = unlock;
 	}
 
-	public void setAddingBagsLock(){
-		this.addingBagsLock=true;
-		this.baggingItemLock=true;
-		//todo: stuff with GUIs
+	public void setAddingBagsLock() {
+		this.addingBagsLock = true;
+		this.baggingItemLock = true;
+		// todo: stuff with GUIs
 	}
 
-	//TODO: COMPLETE THIS METHOD!!!!!!
-	public void alertAttendant(String message){
+	// TODO: COMPLETE THIS METHOD!!!!!!
+	public void alertAttendant(String message) {
 		ArrayList<DeviceController> io = registeredControllers.get("AttendantIOController");
-		((AttendantIOController)io.get(0)).displayMessage(message);
+		((AttendantIOController) io.get(0)).displayMessage(message);
 	}
-	public void notifyAddBags(){
+
+	public void notifyAddBags() {
 		ArrayList<DeviceController> io = registeredControllers.get("AttendantIOController");
 		ArrayList<DeviceController> io2 = registeredControllers.get("CustomerIOController");
-		//I really don't get why the GUI team designed it like this, passing around an IO controller
-		((AttendantIOController)io.get(0)).notifyAddBags(((CustomerIOController)io2.get(0)));
+		// I really don't get why the GUI team designed it like this, passing around an
+		// IO controller
+		((AttendantIOController) io.get(0)).notifyAddBags(((CustomerIOController) io2.get(0)));
 	}
 
 	/**
@@ -264,11 +291,10 @@ public class CheckoutController {
 				BaggingScaleController scale = (BaggingScaleController) baggingController;
 				scale.setExpectedWeight(scale.getCurrentWeight());
 			}
-			addingBagsLock=false;
-			baggingItemLock=false;
+			addingBagsLock = false;
+			baggingItemLock = false;
 		}
 	}
-
 
 	/*
 	 * Methods used by ItemAdderControllers
@@ -278,26 +304,35 @@ public class CheckoutController {
 	 * Method to add items to the order
 	 */
 	public void addItem(Product newItem) {
-		this.addItem(newItem,BigDecimal.ONE);
+		this.addItem(newItem, BigDecimal.ONE);
 	}
+
 	public void addItem(Product newItem, BigDecimal count) {
-		if (baggingItemLock || systemProtectionLock || newItem == null) {return;}
-		//then go through the item and get its weight, either expected weight if it exists, or
-		//get the scale controller in the checkout to give us the weight for the PLU code based item.
+		if (baggingItemLock || systemProtectionLock || newItem == null) {
+			return;
+		}
+		// then go through the item and get its weight, either expected weight if it
+		// exists, or
+		// get the scale controller in the checkout to give us the weight for the PLU
+		// code based item.
 		Number[] currentItemInfo = new Number[] { BigDecimal.ZERO, BigDecimal.ZERO };
 
 		// Add item to order
-		if (this.order.containsKey(newItem)) {currentItemInfo = this.order.get(newItem);}
+		if (this.order.containsKey(newItem)) {
+			currentItemInfo = this.order.get(newItem);
+		}
 
 		double weight;
 		if (newItem.isPerUnit()) {
 			weight = ((BarcodedProduct) newItem).getExpectedWeight();
-			if (weight<=0){return;}
-			//if an item has a weight less than or equal to 0, then do nothing.
-			//since such an item couldn't exist.
+			if (weight <= 0) {
+				return;
+			}
+			// if an item has a weight less than or equal to 0, then do nothing.
+			// since such an item couldn't exist.
 
-			//only items priced per unit weight are barcoded products, so this is fine.
-			currentItemInfo[0] = (currentItemInfo[0].intValue())+(count.intValue());
+			// only items priced per unit weight are barcoded products, so this is fine.
+			currentItemInfo[0] = (currentItemInfo[0].intValue()) + (count.intValue());
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice().multiply(count));
 
 			// Add the cost of the new item to the current cost.
@@ -305,34 +340,36 @@ public class CheckoutController {
 		} else {
 			ArrayList<DeviceController> scaleController = registeredControllers.get("ScanningScaleController");
 			weight = ((ScanningScaleController) scaleController.get(0)).getCurrentWeight();
-			//adding the recorded weight on the current scale to the current item information
+			// adding the recorded weight on the current scale to the current item
+			// information
 			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).add(BigDecimal.valueOf(weight));
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(
-					newItem.getPrice().multiply(BigDecimal.valueOf(weight))
-			);
+					newItem.getPrice().multiply(BigDecimal.valueOf(weight)));
 
 			// Add the cost of the new item to the current cost.
 			this.cost = this.cost.add(newItem.getPrice().multiply(BigDecimal.valueOf(weight)));
 		}
 		this.order.put(newItem, currentItemInfo);
 		this.latestItem.clear();
-		this.latestItem.put(newItem,currentItemInfo[1].doubleValue());
+		this.latestItem.put(newItem, currentItemInfo[1].doubleValue());
 		for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newItem, weight, true);
 		}
 		baggingItemLock = true;
 	}
 
-	void doNotBagLatest(){
-		if (this.latestItem.size()==0) {return;}
+	void doNotBagLatest() {
+		if (this.latestItem.size() == 0) {
+			return;
+		}
 		Product latestProd = this.latestItem.keySet().iterator().next();
-		if (baggingItemLock && this.latestItem.get(latestProd)>0) {
+		if (baggingItemLock && this.latestItem.get(latestProd) > 0) {
 			for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 				((BaggingAreaController) baggingController).updateExpectedBaggingArea(
 						null, this.latestItem.get(latestProd), false);
 				this.latestItem.clear();
-				this.baggingItemLock=false;
-				//todo: this is a bad way to handle this
+				this.baggingItemLock = false;
+				// todo: this is a bad way to handle this
 			}
 		}
 	}
@@ -350,41 +387,46 @@ public class CheckoutController {
 		// then we unlock the station.
 		boolean unlockStation = true;
 		for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
-			if (!((BaggingAreaController)baggingController).getBaggingValid()) {
+			if (!((BaggingAreaController) baggingController).getBaggingValid()) {
 				unlockStation = false;
 				break;
 			}
 		}
 		baggingItemLock = unlockStation;
 	}
+
 	void baggedItemsInvalid() {
 		// inform the I/O for both customer and attendant from the error message, this
 		// is a placeholder currently.
 		if (!addingBagsLock) {
 			this.baggingItemLock = true;
-			((CustomerIOController) registeredControllers.get("CustomerIOController").get(0)).displayWeightDiscrepancyMessage();
+			((CustomerIOController) registeredControllers.get("CustomerIOController").get(0))
+					.displayWeightDiscrepancyMessage();
 			alertAttendant("Weight discrepancy at station " + this.getID());
 		}
 	}
+
 	void baggingAreaError() {
-		((CustomerIOController) registeredControllers.get("CustomerIOController").get(0)).displayBaggingProtectionLock();
+		((CustomerIOController) registeredControllers.get("CustomerIOController").get(0))
+				.displayBaggingProtectionLock();
 		alertAttendant("Overload for scale at station " + this.getID());
 		this.systemProtectionLock = true;
 	}
+
 	void baggingAreaErrorEnded() {
 		this.systemProtectionLock = false;
 		alertAttendant("Overload for scale at station " + this.getID() + " has ended.");
-		//todo: stuff for customer GUI
+		// todo: stuff for customer GUI
 	}
-	void attendantOverrideBaggingLock(){
+
+	void attendantOverrideBaggingLock() {
 		ArrayList<DeviceController> baggingControllers = this.registeredControllers.get("BaggingAreaController");
 		for (DeviceController baggingController : baggingControllers) {
 			BaggingScaleController scale = (BaggingScaleController) baggingController;
 			scale.setExpectedWeight(scale.getCurrentWeight());
 		}
-		baggingItemLock=false;
+		baggingItemLock = false;
 	}
-
 
 	/**
 	 * Methods used to control the ReceiptPrinterController
@@ -394,26 +436,28 @@ public class CheckoutController {
 		if (!registeredControllers.get("ReceiptPrinterController").isEmpty()) {
 			// call print receipt method in the ReceiptPrinterController class with the
 			// order details and cost
-			((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0)).printReceipt(this.order, this.cost);
+			((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0))
+					.printReceipt(this.order, this.cost);
 		}
 		clearOrder();
 	}
 
 	public boolean needPrinterRefill = false;
+
 	void printerOutOfResources() {
 		this.needPrinterRefill = true;
-		alertAttendant("Printing Error at station, receipt contents:\n"+this.order.toString());
-		//todo: GUI and better information
+		alertAttendant("Printing Error at station, receipt contents:\n" + this.order.toString());
+		// todo: GUI and better information
 		disableStation();
 	}
-
 
 	void printerRefilled() {
 		this.needPrinterRefill = false;
 	}
+
 	public void setOrder(LinkedHashMap<Product, Number[]> newOrd) {
 		this.order = newOrd;
-		for (Map.Entry<Product, Number[]> entry: this.order.entrySet()) {
+		for (Map.Entry<Product, Number[]> entry : this.order.entrySet()) {
 			Product product = entry.getKey();
 			this.cost = this.cost.add(product.getPrice());
 		}
@@ -425,11 +469,12 @@ public class CheckoutController {
 	public void addToAmountPaid(BigDecimal val) {
 		amountPaid = amountPaid.add(val);
 	}
+
 	public BigDecimal getRemainingAmount() {
 		return getCost().subtract(amountPaid);
 	}
 
-	void completePayment() {
+	public void completePayment() {
 		if (this.baggingItemLock || this.systemProtectionLock) {
 			return;
 		}
@@ -452,7 +497,8 @@ public class CheckoutController {
 
 	void dispenseChange() {
 		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
-			ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0);
+			ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredControllers
+					.get("ReceiptPrinterController").get(0);
 			printerController.printReceipt(this.order, this.cost);
 		} else {
 			TreeSet<ChangeDispenserController> controllers = new TreeSet<>();
@@ -475,10 +521,11 @@ public class CheckoutController {
 			}
 		}
 	}
+
 	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
 		changeDenomLow(controller, denom);
 		alertAttendant("Out of Change!!!!!");
-		//todo: you know the drill... (GUIIIII)
+		// todo: you know the drill... (GUIIIII)
 		if (controller instanceof BillDispenserController) {
 			System.out.println(String.format("Bill dispenser with denomination %s out of bills.", denom.toString()));
 		} else {
@@ -487,27 +534,27 @@ public class CheckoutController {
 		this.amountPaid = this.amountPaid.add(denom);
 	}
 
-
-
-	// when bill/coin dispenser signals that a certain denomination is low (for now low is defined as <= 5)
+	// when bill/coin dispenser signals that a certain denomination is low (for now
+	// low is defined as <= 5)
 	public void changeDenomLow(ChangeDispenserController controller, BigDecimal denom) {
 		if (controller instanceof BillDispenserController) {
-			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+			for (DeviceController io : this.registeredControllers.get("AttendantIOController")) {
 				((AttendantIOController) io).notifyLowBillDenomination(this, controller, denom);
 			}
 		} else {
-			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+			for (DeviceController io : this.registeredControllers.get("AttendantIOController")) {
 				((AttendantIOController) io).notifyLowCoinDenomination(this, controller, denom);
 			}
 		}
 		this.requireAdjustment = true;
 	}
 
-	// load bills into dispenser (done by attendant) after they're notified that the bill dispenser is low
+	// load bills into dispenser (done by attendant) after they're notified that the
+	// bill dispenser is low
 	public void loadBillDenomination(BillDispenserController controller, Bill[] bills) {
 		try {
 			controller.getDevice().load(bills);
-			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+			for (DeviceController io : this.registeredControllers.get("AttendantIOController")) {
 				((AttendantIOController) io).enableStation(this);
 			}
 		} catch (SimulationException | OverloadException e) {
@@ -515,11 +562,12 @@ public class CheckoutController {
 		}
 	}
 
-	// load coins into dispenser (done by attendant) after they're notified that the coin dispenser is low
+	// load coins into dispenser (done by attendant) after they're notified that the
+	// coin dispenser is low
 	public void loadCoinDenomination(CoinDispenserController controller, Coin[] coins) {
 		try {
 			controller.getDevice().load(coins);
-			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+			for (DeviceController io : this.registeredControllers.get("AttendantIOController")) {
 				((AttendantIOController) io).enableStation(this);
 			}
 		} catch (SimulationException | OverloadException e) {
@@ -553,30 +601,33 @@ public class CheckoutController {
 		ArrayList<DeviceController> controllers = this.registeredControllers.get("PaymentController");
 		for (DeviceController controller : controllers) {
 			if (controller instanceof CardReaderController) {
-				((CardReaderController) controller).setState(CardReaderControllerState.PAYINGBYGIFTCARD, null, this.getRemainingAmount());
+				((CardReaderController) controller).setState(CardReaderControllerState.PAYINGBYGIFTCARD, null,
+						this.getRemainingAmount());
 			}
 		}
 	}
 
 	/**
-	 * A method used to remove an item from a customers order of some given quantity.
+	 * A method used to remove an item from a customers order of some given
+	 * quantity.
+	 * 
 	 * @param item
 	 * @param amount
 	 */
-	public void removeItemFromOrder(Product item, BigDecimal amount){
-		if (order.containsKey(item)){
+	public void removeItemFromOrder(Product item, BigDecimal amount) {
+		if (order.containsKey(item)) {
 			Number[] currentItemInfo = order.get(item);
 			amount = amount.min((BigDecimal) currentItemInfo[0]);
 			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).subtract(amount);
-			if (((BigDecimal)currentItemInfo[0]).compareTo(BigDecimal.ZERO)==1) {
+			if (((BigDecimal) currentItemInfo[0]).compareTo(BigDecimal.ZERO) == 1) {
 				currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).subtract(item.getPrice().multiply(amount));
 				order.put(item, currentItemInfo);
 			} else {
 				order.remove(item);
 			}
 			double weight = amount.doubleValue();
-			if (item.isPerUnit()){
-				weight*=((BarcodedProduct) item).getExpectedWeight();
+			if (item.isPerUnit()) {
+				weight *= ((BarcodedProduct) item).getExpectedWeight();
 			}
 			for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 				((BaggingAreaController) baggingController).updateExpectedBaggingArea(item, weight, false);
@@ -585,7 +636,7 @@ public class CheckoutController {
 		}
 	}
 
-	// When sign in starts, tells card reader and barcode scanner 
+	// When sign in starts, tells card reader and barcode scanner
 	// to be ready to scan a membership card.
 	public void signingInAsMember() {
 		for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
@@ -596,7 +647,7 @@ public class CheckoutController {
 		}
 	}
 
-	public void validateMembership(String number){
+	public void validateMembership(String number) {
 		Numeral[] cardNumb = BarcodeUtils.stringToNumeralArray(number);
 		boolean isValid = MembershipDatabases.MEMBERSHIP_DATABASE.containsKey(cardNumb);
 		if (isValid) {
@@ -608,11 +659,11 @@ public class CheckoutController {
 			}
 			((CustomerIOController) registeredControllers.get("CustomerIOController").get(0)).signedIn();
 		} else {
-			//todo: GUI methods to notify failed sign-in
+			// todo: GUI methods to notify failed sign-in
 		}
 	}
 
-	public void cancelSigningInAsMember(){
+	public void cancelSigningInAsMember() {
 		for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
 			((CardReaderController) cardReaderController).setState(CardReaderControllerState.NOTINUSE);
 		}
@@ -622,11 +673,12 @@ public class CheckoutController {
 	}
 
 	/**
-	 * A method that enables all devices registered. It also sets disabled flag to false
+	 * A method that enables all devices registered. It also sets disabled flag to
+	 * false
 	 */
 	public void enableAllDevices() {
-		for(String controllerType : registeredControllers.keySet()) {
-			for(DeviceController device : registeredControllers.get(controllerType)) {
+		for (String controllerType : registeredControllers.keySet()) {
+			for (DeviceController device : registeredControllers.get(controllerType)) {
 				device.enableDevice();
 			}
 		}
@@ -634,11 +686,12 @@ public class CheckoutController {
 	}
 
 	/**
-	 * A method that disabled all devices registered. It also sets disabled flag to true;
+	 * A method that disabled all devices registered. It also sets disabled flag to
+	 * true;
 	 */
 	public void disableAllDevices() {
-		for(String controllerType : registeredControllers.keySet()) {
-			for(DeviceController device : registeredControllers.get(controllerType)) {
+		for (String controllerType : registeredControllers.keySet()) {
+			for (DeviceController device : registeredControllers.get(controllerType)) {
 				device.disableDevice();
 			}
 		}
@@ -684,23 +737,22 @@ public class CheckoutController {
 		}
 	}
 
-	public void disableStation(){
+	public void disableStation() {
 		if (!isShutdown && !inUse) {
 			disableAllDevices();
 			clearOrder();
 			this.isDisabled = true;
-			inUse=false;
+			inUse = false;
 		}
 	}
 
-	public void enableStation(){
+	public void enableStation() {
 		if (!isShutdown) {
 			enableAllDevices();
 			clearOrder();
 			this.isDisabled = false;
 		}
 	}
-
 
 	public boolean isInUse() {
 		return inUse;
@@ -720,8 +772,9 @@ public class CheckoutController {
 
 	/**
 	 * Check if the station is currently shut down.
+	 * 
 	 * @return
-	 * 			True if shut down, false otherwise.
+	 *         True if shut down, false otherwise.
 	 */
 	public boolean isShutdown() {
 		return isShutdown;
