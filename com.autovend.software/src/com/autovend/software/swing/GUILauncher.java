@@ -1,6 +1,6 @@
 package com.autovend.software.swing;
 
-import java.awt.Container;
+import java.awt.EventQueue;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -9,13 +9,14 @@ import java.util.Locale;
 
 import javax.swing.JFrame;
 
-import com.autovend.*;
+import com.autovend.Barcode;
+import com.autovend.Numeral;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
-import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CheckoutController;
@@ -121,7 +122,12 @@ public class GUILauncher {
 		// TODO: Can be removed if it conflicts with the customer testing. Just used for testing attendantIO.
 		ciocs.get(0).addProduct(bcproduct1);
 		
-		// getOrder(): Hashmap{product: [amount/weight, price]
-		System.out.println(ciocs.get(0).getMainController().getOrder());
+		
+		
+		
+		// Run attendant event simulator.
+		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0), ciocs.get(1));
+		attendantEventSimulatorFrame.setVisible(true);
+		attendantEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 }

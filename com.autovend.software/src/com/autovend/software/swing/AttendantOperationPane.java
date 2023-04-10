@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -183,7 +184,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the language selection dialog and get the selected language
-                int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
                 if (result == JOptionPane.OK_OPTION) {
                     String newLanguage = null;
                     // Determine selected button's text
@@ -200,7 +201,7 @@ public class AttendantOperationPane extends JPanel {
                         language = newLanguage;
 
                         // Update texts to new language
-                        notificationsLabel.setText(Language.translate(language, "Station Notifications:"));
+                        manageNotificationsLabel.setText(Language.translate(language, "Station Notifications:"));
                         manageEnabledLabel.setText(Language.translate(language, "Manage Enabled Stations:"));
                         manageDisabledLabel.setText(Language.translate(language, "Manage Disabled Stations:"));
                         logoutButton.setText(Language.translate(language, "Log Out"));
@@ -391,7 +392,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(null, panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
                 if (result == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
@@ -443,7 +444,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(null, panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
                 if (result == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
@@ -500,7 +501,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Action Selection"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+                int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Action Selection"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
                 if (result == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
@@ -590,10 +591,9 @@ public class AttendantOperationPane extends JPanel {
         panel.add(searchField);
         
         // Show pop-up and get result.
-        int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Add Item By Text Search"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Add Item By Text Search"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
         	Set<Product> foundProducts = aioc.addItemByTextSearch(searchField.getText());
-        	System.out.println("found:" + foundProducts.toString());
         	createFoundProductsPopup(cioc, foundProducts);
         }
 	}
@@ -646,7 +646,7 @@ public class AttendantOperationPane extends JPanel {
             }
             
             // Show pop-up.
-            int result = JOptionPane.showOptionDialog(null, panel, "Choose found product", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+            int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Choose found product", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
             if (result == JOptionPane.OK_OPTION) {
                 String selectedProductDescription = null;
                 // Determine selected button's text
@@ -705,7 +705,7 @@ public class AttendantOperationPane extends JPanel {
 		panel.add(label);
 		
 		// Show pop-up.
-		int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "No Products Found"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "No Products Found"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 		if (result == JOptionPane.OK_OPTION) {
 			// Create new text search pop-up.
 			createTextSearchPopup(cioc);
@@ -741,7 +741,7 @@ public class AttendantOperationPane extends JPanel {
 //        }
 
         // Show pop-up.
-        int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Remove Item"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
             // TODO: Determine item and remove from customer's cart.
         }
@@ -770,7 +770,7 @@ public class AttendantOperationPane extends JPanel {
 		panel.add(label);
 		
 		// Show pop-up.
-        int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Remove Item"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (result == JOptionPane.YES_OPTION) {
             // Force shutdown.
         	aioc.forceShutDownStation(cioc.getMainController());
@@ -797,6 +797,7 @@ public class AttendantOperationPane extends JPanel {
 	 * 			CustomerIOController requesting confirmation.
 	 */
 	public void notifyConfirmAddedBags(CustomerIOController cioc) {
+		// Create notification data.
 		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " needs bag confirmation!");
 		JButton button = new JButton("Confirm");
 		JComponent[] data = new JComponent[] {label, button};
@@ -804,6 +805,56 @@ public class AttendantOperationPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
             	// Approve bags.
             	aioc.approveAddedBags(cioc);
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a bill denomination is low.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyLowBillDenomination(CustomerIOController cioc, BigDecimal denom) {
+		// Create notification data.
+		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " low bills: ($" + denom + ")");
+		JButton button = new JButton("Refilled");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Denomination refilled.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a coin denomination is low.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyLowCoinDenomination(CustomerIOController cioc, BigDecimal denom) {
+		// Create notification data.
+		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " low coins: ($" + denom + ")");
+		JButton button = new JButton("Refilled");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Denomination refilled.
+            	
             	// Remove notification.
             	notificationsData.remove(data);
             	populateNotificationsPane();
