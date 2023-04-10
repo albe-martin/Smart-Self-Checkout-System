@@ -39,12 +39,14 @@ import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.swing.AttendantLoginPane;
+import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.swing.Language;
 
 public class AttendantGUITest {
 
 	TouchScreen screen;
+	AttendantIOController aioc;
 	AttendantLoginPaneTest attendantPane;
 	
 	boolean enabledEventOccurred = false;
@@ -55,7 +57,6 @@ public class AttendantGUITest {
 	 * Overrides the optionDialogPopup method of the AttendantLoginPane class
 	 * to make it possible to test the language selection.
 	 * @author omarkhan
-	 *
 	 */
 	public class AttendantLoginPaneTest extends AttendantLoginPane {
 		private static final long serialVersionUID = 1L;
@@ -76,7 +77,32 @@ public class AttendantGUITest {
             
 			return 0;
 		}
+	}
+	
+	/**
+	 * Overrides the optionDialogPopup method of the AttendantOperationPane class
+	 * to make it possible to test the language selection.
+	 * @author omarkhan
+	 */
+	public class AttendantOperationPaneTest extends AttendantOperationPane {
+		private static final long serialVersionUID = 1L;
+
+		public AttendantOperationPaneTest(AttendantIOController aioc) {
+			super(aioc);
+		}
 		
+		@Override
+		public int optionDialogPopup(JPanel panel) {
+            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                AbstractButton button = buttons.nextElement();
+                if (button.getText() == "English") {
+                    button.setSelected(true);
+                    break;
+                }
+            }
+            
+			return 0;
+		}
 	}
 	
 	// Stub for TouchScreenObserver
@@ -124,7 +150,7 @@ public class AttendantGUITest {
 		attendantScreen.setUndecorated(false);
 		attendantScreen.setResizable(false);
 		
-		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
+		aioc = new AttendantIOController(attendantStation.screen);
 		attendantPane = new AttendantLoginPaneTest(aioc);
 		attendantScreen.setContentPane(attendantPane);
 		
@@ -190,10 +216,10 @@ public class AttendantGUITest {
 	}
 	
 	/**
-	 * 
+	 * Tests the functionality of the change language use case in the login screen
 	 */
 	@Test
-	public void clickLanguageSelect() {
+	public void loginLanguageSelectTest() {
 		String language = attendantPane.language;
 		JButton lsb = attendantPane.languageSelectButton;
 		lsb.doClick();
@@ -205,18 +231,20 @@ public class AttendantGUITest {
 	 * Tests to make sure that a login with incorrect credentials is unsuccessful
 	 */
 	@Test
-	public void TestLoginFailure() {
+	public void loginFailureTest() {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
 		
-		usernameTF.setText("wrong");
+		usernameTF.setText("wrong"); // Wrong login credentials
 		passwordTF.setText("wrong");	
 		loginButton.doClick();
 		
 		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
 		
 		System.out.println(numberOfComponents);
+		
+		
 		
 		// If the number of components is not greater than 7, that is evidence that the pane is still the login screen
 		assert(numberOfComponents <= 7);
@@ -226,7 +254,7 @@ public class AttendantGUITest {
 	 * Tests to make sure that a login with correct credentials is successful
 	 */
 	@Test
-	public void TestLoginSuccess() {
+	public void loginSuccessTest() {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
@@ -242,11 +270,51 @@ public class AttendantGUITest {
 	}
 	
 	/**
-	 * 
+	 * Tests the functionality of log out button
 	 */
 	@Test
-	public void test() {
+	public void logoutTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		JButton logout = aop.logoutButton;
+		logout.doClick();
+		
+		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
 
+		// If the number of components is not greater than 7, that is evidence that the pane is still the login screen
+		assert(numberOfComponents <= 7);
+	}
+	
+	/**
+	 * Tests the functionality of the change language use case in the operation screen
+	 */
+	@Test
+	public void operationLanguageSelectTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+		frame.setContentPane(aop);
+		
+		String language = aop.language;
+		JButton lsb = aop.languageSelectButton;
+		lsb.doClick();
+		
+		assert(language == "English");
 	}
 
 }
