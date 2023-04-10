@@ -118,6 +118,23 @@ public class AttendantIOTest {
 	
 	/**
 	 * Tests if station is prevented from use by the Attendant,
+	 * by trying to pay with credit card when the station is disabled.
+	 */
+	@Test
+	public void testPreventStationUse_TryPurchaseBags() {
+		for (DeviceController io : asc.getAttendantIOControllers()) {
+			((AttendantIOController)io).disableStation(checkoutController1);
+		}
+		
+		CardIssuer cardIssuer = new CardIssuer("Stub");
+		checkoutController1.purchaseBags(5);
+		
+		// Item should not be added, and order size should be 0
+		assertEquals(0, checkoutController1.getOrder().size());
+	}
+	
+	/**
+	 * Tests if station is prevented from use by the Attendant,
 	 * by trying to add an item when the station is disabled.
 	 */
 	@Test
