@@ -119,6 +119,8 @@ public class CustomerOperationPane extends JPanel {
 
 		updateTotalCost();
 
+		refreshOrderGrid();
+
 	}
 
 	private void initializeHeader() {
@@ -164,7 +166,7 @@ public class CustomerOperationPane extends JPanel {
 		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
 		model.setRowCount(0);
 
-		HashMap<Product, Number[]> orderItems = cioc.getMainController().getOrder();
+		HashMap<Product, Number[]> orderItems = cioc.getCart();
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
 			if (product instanceof PLUCodedProduct pluProduct) {
@@ -173,6 +175,17 @@ public class CustomerOperationPane extends JPanel {
 				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
 			}
 		}
+
+		// todo: actually get the right bag number and not reading the console??? (???) ((???))
+		// Add purchased bags to the order grid
+		// int bagQuantity = cioc.getMainController().getBagNumber();
+		// todo: Not sure where to get the bag price from
+		BigDecimal bagPrice = new BigDecimal("0.10");
+
+//		if (bagQuantity > 0) {
+//			model.addRow(new Object[]{"Bags", bagPrice.multiply(BigDecimal.valueOf(bagQuantity))});
+//		}
+
 		updateTotalCost();
 	}
 
@@ -217,6 +230,7 @@ public class CustomerOperationPane extends JPanel {
 //			totalCost = totalCost.add(itemPrice);
 //		}
 
+		System.out.println(cioc.getCart());
 		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
