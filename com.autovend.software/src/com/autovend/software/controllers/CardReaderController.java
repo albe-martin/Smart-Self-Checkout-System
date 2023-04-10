@@ -34,9 +34,6 @@ import java.util.Currency;
  */
 
 // todo: card lock use cases need to be handled.
-enum CardReaderControllerState {
-	NOTINUSE, PAYINGBYCREDIT, PAYINGBYDEBIT, PAYINGBYGIFTCARD, REGISTERINGMEMBERS
-}
 
 public class CardReaderController extends PaymentController<CardReader, CardReaderObserver>
 		implements CardReaderObserver {
