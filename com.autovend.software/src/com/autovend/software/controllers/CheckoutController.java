@@ -46,7 +46,7 @@ public class CheckoutController {
 
 	public boolean baggingItemLock;
 	public boolean systemProtectionLock;
-	private boolean payingChangeLock;
+	public boolean payingChangeLock;
 	public boolean AttendantApproved = false;
 	private boolean isDisabled = false;
 	private boolean isDoingMaintenance = false;
@@ -429,7 +429,7 @@ public class CheckoutController {
 	/**
 	 * Methods to control the PaymentController
 	 */
-	void completePayment() {
+	public void completePayment() {
 		if (this.baggingItemLock || this.systemProtectionLock) {
 			return;
 		}
