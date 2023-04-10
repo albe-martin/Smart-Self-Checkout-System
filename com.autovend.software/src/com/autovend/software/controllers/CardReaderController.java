@@ -83,6 +83,7 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		if (reader != this.getDevice()) {
 			return;
 		}
+
 		
 		if (registeringMembers == false) {	// If a payment is being made
 			if (data.getType().equalsIgnoreCase("giftcard")) {
@@ -100,6 +101,7 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 					this.bank = null;
 
 					this.isPaying = false;
+
 				}
 			} else {
 				// TODO: inform customer that card read failed

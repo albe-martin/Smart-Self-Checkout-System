@@ -18,9 +18,11 @@ Amasil Rahim Zihad 30164830
 package com.autovend.software.test;
 
 import com.autovend.CreditCard;
+import com.autovend.devices.BillValidator;
 import com.autovend.devices.CardReader;
 import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
+import com.autovend.software.controllers.BillPaymentController;
 import com.autovend.software.controllers.CardReaderController;
 import com.autovend.software.controllers.CheckoutController;
 import org.junit.After;
@@ -28,7 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Currency;
 
 import static org.junit.Assert.*;
 
@@ -104,14 +108,20 @@ public class CardPaymentTest {
         } catch (Exception ex){
             fail("Exception incorrectly thrown");
         }
-        assertTrue(readerControllerStub.isPaying);
         assertTrue(bankStub.held);
         assertTrue(bankStub.posted);
         cardReaderStub.remove();
         assertFalse(readerControllerStub.isPaying);
-
         assertEquals(controllerStub.getRemainingAmount(), BigDecimal.valueOf(-1));
         assertTrue(cardReaderStub.isDisabled());
+    }
+    
+    @Test
+    public void testTransactionNullBank() throws IOException{
+        readerControllerStub.enablePayment(null, BigDecimal.ONE);
+        cardReaderStub.insert(cardStub, "1337");
+        // isPaying isn't changed to false if bank is null
+        assertTrue(readerControllerStub.isPaying);
     }
 
     @Test
@@ -126,7 +136,6 @@ public class CardPaymentTest {
         } catch (Exception ex){
             fail("Exception incorrectly thrown");
         }
-        assertTrue(readerControllerStub.isPaying);
         assertTrue(bankStub.held);
         assertFalse(bankStub.posted);
         cardReaderStub.remove();
@@ -218,8 +227,20 @@ public class CardPaymentTest {
         assertEquals(readerControllerStub.bank, bankStub);
 
     }
-
-
+    
+    @Test
+    public void payByCardTestSuccessWithAnotherControllerRegistered(){
+    	Currency currency = Currency.getInstance("CAD");
+		int[] billDenominations = new int[] { 5, 10, 20, 50, 100 };
+    	BillValidator validator = new BillValidator(currency, billDenominations);
+    	BillPaymentController anotherController = new BillPaymentController(validator);
+    	controllerStub.registerController("PaymentController", anotherController);
+        assertFalse(readerControllerStub.isPaying);
+        controllerStub.cost=BigDecimal.ONE;
+        controllerStub.payByCard(bankStub,BigDecimal.ONE);
+        assertFalse(cardReaderStub.isDisabled());
+        assertEquals(readerControllerStub.bank, bankStub);
+    }
 
     @Test
     public void payByCardTestSystemProtectionLock(){
@@ -251,13 +272,19 @@ public class CardPaymentTest {
     public void payByCardTestPayMoreThanOrderCost(){
         assertTrue(cardReaderStub.isDisabled());
         controllerStub.cost = BigDecimal.ZERO;
-        controllerStub.payByCard(null,BigDecimal.ONE);
+        controllerStub.payByCard(bankStub,BigDecimal.ONE);
         assertTrue(cardReaderStub.isDisabled());
-
     }
-
-
-
+    
+    @Test
+    public void payByCardTestPayingChangeLock() {
+    	assertTrue(cardReaderStub.isDisabled());
+    	controllerStub.cost=BigDecimal.ONE;
+        controllerStub.payingChangeLock=true;
+        controllerStub.payByCard(bankStub,BigDecimal.ONE);
+        assertTrue(cardReaderStub.isDisabled());
+    }
+    
 
     @After
     public void teardown(){
