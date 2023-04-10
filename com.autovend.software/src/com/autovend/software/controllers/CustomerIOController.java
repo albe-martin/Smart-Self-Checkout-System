@@ -1,8 +1,11 @@
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.autovend.Numeral;
 import com.autovend.devices.TouchScreen;
@@ -13,6 +16,7 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
+import com.autovend.software.swing.Language;
 
 /**
  *
@@ -238,6 +242,18 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     void notifyOutOfOrder() {
 
+    }
+
+    void selectLanguage () {
+        HashMap<String, HashMap<String, String>> language = new HashMap<>();
+        
+        for (Entry<String, HashMap<String, String>> lang :
+        Language.getLanguageBank().entrySet()) {
+            if (Objects.equals("English", lang.getKey())) {
+                language.put(lang.getKey(), lang.getValue());
+            }
+        }
+        
     }
 
 
