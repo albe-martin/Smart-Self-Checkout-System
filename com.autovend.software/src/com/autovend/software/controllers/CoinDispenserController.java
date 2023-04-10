@@ -56,7 +56,7 @@ public class CoinDispenserController extends ChangeDispenserController<CoinDispe
 	}
 
 	@Override
-	void emitChange() {
+	public void emitChange() {
 		try {
 			this.getDevice().emit();
 			if (this.getDevice().size() <= 5) {
