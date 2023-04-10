@@ -6,7 +6,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.autovend.CreditCard;
 import com.autovend.Numeral;
 import com.autovend.devices.BarcodeScanner;
 import com.autovend.software.controllers.BarcodeScannerController;
