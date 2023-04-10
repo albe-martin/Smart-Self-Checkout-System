@@ -333,6 +333,10 @@ public class CoinPaymentTest {
 		CoinDispenserController coinController = new CoinDispenserController(coinDispenser, new BigDecimal(1));
 		coinController.setMainController(checkoutControllerStub);
 		checkoutControllerStub.registerController("ChangeDispenserController", coinController);
+		AttendantStationController attendant = new AttendantStationController();
+		AttendantIOController attendantIO = new AttendantIOController(selfCheckoutStation.screen);
+		attendantIO.setMainAttendantController(attendant);
+		checkoutControllerStub.registerController("AttendantIOController", attendantIO);
 		checkoutControllerStub.completePayment();
 	}
 	
@@ -365,5 +369,33 @@ public class CoinPaymentTest {
 		checkoutControllerStub.registerController("AttendantIOController", attendantIO);
 		checkoutControllerStub.changeDenomLow(coinController, new BigDecimal(1));
 		checkoutControllerStub.completePayment();
+	}
+	
+	@Test
+	public void testPaymentOneProductInvalidCoin() {
+		BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(new Barcode(Numeral.one, Numeral.four));
+		order = new LinkedHashMap<>();
+		order.put(product, new Number[1]);
+
+		checkoutControllerStub.setOrder(order);
+
+		try {
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(2), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(2), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(2), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(2), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(1), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(0.25), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(0.25), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(0.25), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(0.1), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(0.1), currency));
+			selfCheckoutStation.coinSlot.accept(new Coin(new BigDecimal(0.04), currency));
+		} catch (Exception ex) {
+			System.out.printf("Exception " + ex.getMessage());
+		}
+		double amountRemaining = checkoutControllerStub.getRemainingAmount().doubleValue();
+		double expectedAmount = new BigDecimal(0.04).doubleValue();
+		assertEquals(expectedAmount, amountRemaining, 0.01);
 	}
 }
