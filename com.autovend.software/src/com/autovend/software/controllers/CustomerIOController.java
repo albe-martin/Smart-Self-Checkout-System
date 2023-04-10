@@ -5,15 +5,20 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 import com.autovend.Numeral;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerPayPane;
 import com.autovend.software.swing.CustomerStartPane;
+import com.autovend.software.swing.ShutdownPane;
+
+import javax.swing.*;
 
 /**
  *
@@ -33,20 +38,28 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     //todo: add methods which let this controller modify the GUI on the screen
 
 
-
-
-    public void addItemByPLU(String pluCode){
+    /**
+     *
+     * @param pluCode
+     * @return if the item was successfully added or not (returning true/false tells gui what to update)
+     */
+    public boolean addItemByPLU(String pluCode){
         Numeral[] code = new Numeral[pluCode.length()];
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
         }
-        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(code);
+        System.out.println(ProductDatabases.PLU_PRODUCT_DATABASE);
+        PriceLookUpCode plu = new PriceLookUpCode(code);
+        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
         if (product!=null){
             this.getMainController().addItem(product);
+            return true;
         } else {
             System.out.println("Product not in database");
-            //todo: print stuff related to this on GUI, also make sure to notify customer to add
+
             //stuff to the scale first before they do stuff for the PLU code
+            return false;
+
         }
     }
     
@@ -115,7 +128,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
-    void selectBagsAdded(){
+    public void selectBagsAdded(){
         Set<DeviceController> baggingControllers = this.getMainController().getAllDeviceControllersRevised().get("BaggingAreaController");
         for (DeviceController baggingController : baggingControllers) {
             BaggingScaleController scale = (BaggingScaleController) baggingController;
@@ -172,19 +185,57 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     		throw new IllegalStateException("Checkout Station is not assigned to an Attendant Station."); 
     	}
     }
+
+    /**
+     * Enables the JPane passed into it (JPanel as arg, only as common parent, but distinguished to either
+     * customerStartPane or customerOperationPane inside the method to enable that
+     * @param panel JPanel (JPane) to be enabled
+     */
+    public void enablePanel(JPanel panel) {
+        if (panel instanceof CustomerOperationPane) {
+            CustomerOperationPane pane = (CustomerOperationPane) panel;
+            pane.enableStation();
+        } else if (panel instanceof CustomerStartPane) {
+            CustomerStartPane pane = (CustomerStartPane) panel;
+            pane.enableStation();
+        }
+    }
+
+    /**
+     * Disables the JPane passed into it (JPanel as arg, only as common parent, but distinguished to either
+     * customerStartPane or customerOperationPane inside the method to disable that
+     * @param panel JPanel (JPane) to be disabled
+     */
+    public void disablePanel(JPanel panel) {
+        if (panel instanceof CustomerOperationPane) {
+            CustomerOperationPane pane = (CustomerOperationPane) panel;
+            pane.disableStation();
+        } else if (panel instanceof CustomerStartPane) {
+            CustomerStartPane pane = (CustomerStartPane) panel;
+            pane.disableStation();
+        }
+    }
     
     /**
      * Signals GUI to terminate (since it is turning off).
      */
     void notifyShutdown() {
-    	
+        getDevice().getFrame().setContentPane(new ShutdownPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
+
+        getMainController().setInUse(false);
     }
     
     /**
      * Signals GUI to start GUI.
      */
     void notifyStartup() {
-    	
+        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
+
+        disablePanel((JPanel) getDevice().getFrame().getContentPane());
     }
     
     /**
@@ -195,8 +246,12 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
+
+        getMainController().setInUse(true);
     }
-    
+
+
+    // don't think this is needed, as only the temporary customer gui exit button utilized it
     /**
      * Signals logout button was pressed.
      */
