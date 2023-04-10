@@ -130,7 +130,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeCartItemsGrid() {
-		String[] columnNames = {"Item", "Price"};
+		String[] columnNames = {"Item", "Price", "Qty"};
 		DefaultTableModel items = new DefaultTableModel(null, columnNames) {
 			private static final long serialVersionUID = 1L;
 
@@ -185,10 +185,12 @@ public class CustomerOperationPane extends JPanel {
 
 	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
 		Number[] quantities = entry.getValue();
+		Number quantity = quantities[0];
+		System.out.println(Arrays.toString(quantities));
 //		System.out.println(description);
 //		System.out.println(Arrays.toString(quantities));
 
-		model.addRow(new Object[]{description, price});
+		model.addRow(new Object[]{description, price, quantity});
 
 //		for (int i = 0; i < quantities.length; i++) {
 //			int quantity = quantities[i].intValue();
