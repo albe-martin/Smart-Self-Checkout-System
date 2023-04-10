@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.autovend.IllegalDigitException;
-import com.autovend.software.controllers.MembershipCardController;
 
 @SuppressWarnings("unused")
 
