@@ -581,7 +581,7 @@ public class AddItemTest {
 		
 		Set<Product> actual = new HashSet<Product>();
 		String inputString = "test item 1";
-		actual = attendantController.addItemByTextSearch(inputString);
+		actual = attendantController.searchProductsByText(inputString);
 		assertEquals(expected,actual);
 		
 	}
@@ -595,7 +595,7 @@ public class AddItemTest {
 		int expectedCount = 1;
 		
 		// adding the item
-		customerController.addItemByBrowsing(databaseItem1);
+		customerController.addProduct(databaseItem1);
 		
 		// checking if the cost is correctly updated when an item is added by browsing
 		assertEquals(expectedTotal, checkoutController.getCost());
@@ -614,7 +614,7 @@ public class AddItemTest {
 		int expectedCount = 0;
 		
 		// adding null item
-		customerController.addItemByBrowsing(null);
+		customerController.addProduct(null);
 		
 		assertEquals(expectedTotal, checkoutController.getCost());
 		assertEquals(expectedCount, checkoutController.getOrder().size());

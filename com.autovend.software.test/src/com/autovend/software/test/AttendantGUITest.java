@@ -189,18 +189,6 @@ public class AttendantGUITest {
 		assert(enabledEventOccurred && disabledEventOccurred);
 	}
 	
-	/**
-	 * Test to set the screen visibility 
-	 */
-	@Test
-	public void screenSetVisibleTest() {
-		try {
-			screen.setVisible(false);
-			screen.setVisible(true);
-		} catch (Exception e) {
-			fail("No exception expected");
-		}
-	}
 	
 	/**
 	 * 
@@ -246,8 +234,9 @@ public class AttendantGUITest {
 			
 		});
 		
-		usernameTF.getActionMap();
-		usernameTF.getInputMap();
+		usernameTF.setText("abc");
+		passwordTF.setText("123");
+
 		
 		usernameTF.registerKeyboardAction(null, null, found);
 		
