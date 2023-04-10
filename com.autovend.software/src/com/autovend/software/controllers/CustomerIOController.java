@@ -16,7 +16,9 @@ import com.autovend.software.swing.CustomerStartPane;
 /**
  *
  */
-public class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
+public class
+
+CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
@@ -31,7 +33,7 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
 
 
 
-    void addItemByPLU(String pluCode){
+    public void addItemByPLU(String pluCode){
         Numeral[] code = new Numeral[pluCode.length()];
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
@@ -46,7 +48,7 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
         }
     }
     
-    void addItemByBrowsing(Product selectedProduct) {
+    public void addItemByBrowsing(Product selectedProduct) {
     	//product to add will already be selected from the catalogue here
     	//so it just adds the selected item, gets the product from UI
     	if (selectedProduct!=null) {
@@ -54,17 +56,15 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
         }
     }
     
-
-
-
-    void addProduct(Product product){
+    public void addProduct(Product product){
         //since products have to be displayed for the catalogue already
         //it just adds the item here.
         if (product!=null) {
             this.getMainController().addItem(product, BigDecimal.ONE);
         }
     }
-    void beginSignInAsMember(){
+    
+    public void beginSignInAsMember(){
         this.getMainController().signingInAsMember();
         //Stuff with the GUI
     }
@@ -84,11 +84,18 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
     public void choosePayByCard(CardIssuer bank, BigDecimal amount) {
         this.getMainController().payByCard(bank, amount);
     }
+    
     void finalizeOrder(){
         this.getMainController().completePayment();
         //todo:
         // add stuff for GUI here, also modify that method to return stuff so we can
         // react to that to modify the GUI
+    }
+
+    public void addBagsToOrder(int amountOfBagsToAdd) {
+        //TODO: Add the specified number of bags to the order
+        // technically, the GUI can get away with only knowing the amount of bags for the order elsewhere,
+        // so that bag products don't actually have to be in the order, if that is easier
     }
 
     void selectAddBags(){
