@@ -255,7 +255,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * Notifies the GUI that a customer wants to add bags.
      * @param customerIOController the CustomerIOController of the customer who wants to add bags.
      */
-    public void notifyAddBags(CustomerIOController customerIOController){
+    void notifyAddBags(CustomerIOController customerIOController){
     	// Notify GUI to approve added bags.
 		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
 		pane.notifyConfirmAddedBags(customerIOController);
@@ -279,9 +279,31 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	}
     }
 
-    //todo: add methods which let this controller modify the GUI on the screen
+    /**
+     * Notify the GUI that paper is low for a customer station.
+     * 
+     * TODO: Back-end functionality that calls this function needs to be implemented.
+     * 
+     * @param customerIOController
+     * 			CustomerIOController that is low on paper.
+     */
+    void notifyLowPaper(CustomerIOController customerIOController) {
+    	// Notify GUI about low paper.
+    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    	pane.notifyLowPaper(customerIOController);
+    }
     
-    
-
-
+    /**
+     * Notify the GUI that ink is low for a customer station.
+     * 
+     * TODO: Back-end functionality that calls this function needs to be implemented.
+     * 
+     * @param customerIOController
+     * 			CustomerIOController that is low on ink.
+     */
+    void notifyLowInk(CustomerIOController customerIOController) {
+    	// Notify GUI about low ink.
+    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    	pane.notifyLowInk(customerIOController);
+    }
 }

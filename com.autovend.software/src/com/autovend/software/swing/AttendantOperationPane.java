@@ -855,4 +855,26 @@ public class AttendantOperationPane extends JPanel {
 		
 		populateNotificationsPane();
 	}
+	
+	/**
+	 * Notify the attendant that paper is low.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyLowPaper(CustomerIOController cioc) {
+		// TODO: Implement
+		
+		// Might want separate screen, unless I can put text-only notifications.
+	}
+	
+	/**
+	 * Notify the attendant that ink is low.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyLowInk(CustomerIOController cioc) {
+		// TODO: Implement
+	}
 }
