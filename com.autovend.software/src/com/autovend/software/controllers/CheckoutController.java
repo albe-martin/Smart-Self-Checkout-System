@@ -639,22 +639,23 @@ public class CheckoutController {
 	// When sign in starts, tells card reader and barcode scanner
 	// to be ready to scan a membership card.
 	public void signingInAsMember() {
-		for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
+		for (DeviceController cardReaderController : registeredControllers.get("ValidPaymentControllers")) {
 			((CardReaderController) cardReaderController).setState(CardReaderControllerState.REGISTERINGMEMBERS);
 		}
-		for (DeviceController barcodeScannerController : registeredControllers.get("BarcodeScannerController")) {
+		for (DeviceController barcodeScannerController : registeredControllers.get("ItemAdderController")) {
 			((BarcodeScannerController) barcodeScannerController).setScanningItems(false);
 		}
 	}
 
-	public void validateMembership(String number) {
-		Numeral[] cardNumb = BarcodeUtils.stringToNumeralArray(number);
-		boolean isValid = MembershipDatabases.MEMBERSHIP_DATABASE.containsKey(cardNumb);
+
+	public void validateMembership(String number){
+		boolean isValid = MembershipDatabases.MEMBERSHIP_DATABASE.containsKey(number);
+
 		if (isValid) {
-			for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
+			for (DeviceController cardReaderController : registeredControllers.get("ValidPaymentControllers")) {
 				((CardReaderController) cardReaderController).setState(CardReaderControllerState.NOTINUSE);
 			}
-			for (DeviceController barcodeScannerController : registeredControllers.get("BarcodeScannerController")) {
+			for (DeviceController barcodeScannerController : registeredControllers.get("ItemAdderController")) {
 				((BarcodeScannerController) barcodeScannerController).setScanningItems(true);
 			}
 			((CustomerIOController) registeredControllers.get("CustomerIOController").get(0)).signedIn();
@@ -663,11 +664,13 @@ public class CheckoutController {
 		}
 	}
 
-	public void cancelSigningInAsMember() {
-		for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
+
+	public void cancelSigningInAsMember(){
+		for (DeviceController cardReaderController : registeredControllers.get("ValidPaymentControllers")) {
+
 			((CardReaderController) cardReaderController).setState(CardReaderControllerState.NOTINUSE);
 		}
-		for (DeviceController barcodeScannerController : registeredControllers.get("BarcodeScannerController")) {
+		for (DeviceController barcodeScannerController : registeredControllers.get("ItemAdderController")) {
 			((BarcodeScannerController) barcodeScannerController).setScanningItems(true);
 		}
 	}
