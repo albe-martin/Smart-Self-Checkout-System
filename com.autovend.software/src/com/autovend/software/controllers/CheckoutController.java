@@ -20,8 +20,12 @@ package com.autovend.software.controllers;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.autovend.Barcode;
+import com.autovend.Numeral;
+import com.autovend.ReusableBag;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.external.CardIssuer;
+import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
 
@@ -276,8 +280,8 @@ public class CheckoutController {
 		for (DeviceController baggingController : this.registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newBag, weight, true);
 		}
-		for(int i = 0; i <= numBags; i++){ // dispense the bags and add them to the order
-			// addItem(checkoutStation.ReusableBagDispenser.dispense); (there is currently no ReusableBagDispenser in SelfCheckoutStation)
+		for(int i = 0; i < numBags; i++){ // dispense the bags
+			// checkoutStation.ReusableBagDispenser.dispense; (there is currently no ReusableBagDispenser in SelfCheckoutStation)
 		}
 		baggingItemLock = true;
 		System.out.println("Reusable bag has been added, you may continue.");
