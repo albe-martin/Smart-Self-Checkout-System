@@ -102,6 +102,8 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 
 					this.isPaying = false;
 
+
+
 				}
 			} else {
 				// TODO: inform customer that card read failed
@@ -110,6 +112,7 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		} else {	// Membership is being dealt with
 			this.getMainController().validateMembership(data.getNumber());
 		}
+
 	}
 	
 	/**
@@ -162,6 +165,7 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 			return;
 		}
 		
+
 	}
 
 	public void enableMemberReg(){
