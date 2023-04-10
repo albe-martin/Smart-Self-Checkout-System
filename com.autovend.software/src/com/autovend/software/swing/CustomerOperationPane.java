@@ -21,6 +21,7 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.utils.MiscProductsDatabase;
 
 /**
  * A class for  the customer start pane.
@@ -178,9 +179,8 @@ public class CustomerOperationPane extends JPanel {
 				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
 				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
-//			} else {
-//				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
-//			}
+			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+				updateGrid(model, entry, "bag(s)", bagProduct.getPrice());
 			}
 
 		}

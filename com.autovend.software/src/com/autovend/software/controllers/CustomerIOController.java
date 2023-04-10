@@ -57,6 +57,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
             //stuff to the scale first before they do stuff for the PLU code
             return false;
 
+
+            //todo: please figure out why calling addItemByPLU and subsequently calling getCart() does not have
+            // an updated cart (GUI team request)
+
+
         }
     }
     //this is also used for adding by browsing!!!!!
