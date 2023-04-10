@@ -762,7 +762,9 @@ public class CheckoutController {
 			this.isDisabled = false;
 		}
 	}
-	
+	/**
+	 * 
+	 */
 	public void notifyAttendantNoBagRequest() {
 		baggingItemLock = true;
 		for(DeviceController io: this.registeredControllers.get("attendantIOController")) {
