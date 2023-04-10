@@ -23,6 +23,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -74,6 +76,11 @@ public class AddItemTest {
 	BarcodeScanner stubScanner;
 	ElectronicScale stubScale;
 	TouchScreen stubDevice;
+	
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+	private final PrintStream ORIGINAL_OUT = System.out;
+	private final PrintStream ORIGINAL_ERR = System.err;
 
 	/**
 	 * Setup for testing
@@ -611,6 +618,44 @@ public class AddItemTest {
 		
 		assertEquals(expectedTotal, checkoutController.getCost());
 		assertEquals(expectedCount, checkoutController.getOrder().size());
+	}
+	@Test
+	public void testInvalidPLUItemAdd() {
+		System.setOut(new PrintStream(outContent));
+		System.setErr(new PrintStream(errContent));
+		customerController.addItemByPLU("0");
+		
+		String expected =  "Product not in database" + System.lineSeparator();		
+		assertEquals(expected, outContent.toString());
+		
+		System.setOut(ORIGINAL_OUT);
+	    System.setErr(ORIGINAL_ERR);
+	}
+	
+	@Test(expected = NumberFormatException.class)
+	public void testNonNumericalPLUAdd() {
+		customerController.addItemByPLU("A");
+	}
+	@Test(expected = NullPointerException.class)
+	public void testNullPLUCodeADD() {
+		customerController.addItemByPLU(null);
+	}
+	@Test
+	public void testPLUAddItem() {
+		int expected_order_len = 1;
+		
+		customerController.addItemByPLU(
+				pluProduct1.getPLUCode().toString()
+			);
+		System.out.println("Code in string: "+ pluProduct1.getPLUCode().toString());
+		assertEquals(
+				pluProduct1.getPrice(), 
+				checkoutController.getCost()
+			);
+		assertEquals(
+				expected_order_len,
+				checkoutController.getOrder().size()
+			);
 	}
 	
 
