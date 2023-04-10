@@ -23,11 +23,16 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
+import com.autovend.software.controllers.AttendantIOController;
+import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.BaggingScaleController;
 import org.junit.After;
 import org.junit.Before;
@@ -36,14 +41,18 @@ import org.junit.Test;
 import com.autovend.Barcode;
 import com.autovend.BarcodedUnit;
 import com.autovend.Numeral;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.BarcodeScanner;
 import com.autovend.devices.DisabledException;
 import com.autovend.devices.ElectronicScale;
+import com.autovend.devices.TouchScreen;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
+import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.DeviceController;
 
 @SuppressWarnings("deprecation")
@@ -55,13 +64,23 @@ public class AddItemTest {
 	private CheckoutController checkoutController;
 	private BarcodeScannerController scannerController;
 	private BaggingScaleController scaleController;
+	private AttendantIOController attendantController;
+	private AttendantStationController stationController;
+	private CustomerIOController customerController;
 	private BarcodedProduct databaseItem1;
 	private BarcodedProduct databaseItem2;
+	private PLUCodedProduct pluProduct1;
 	private BarcodedUnit validUnit1;
 	private BarcodedUnit validUnit2;
 
 	BarcodeScanner stubScanner;
 	ElectronicScale stubScale;
+	TouchScreen stubDevice;
+	
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+	private final PrintStream ORIGINAL_OUT = System.out;
+	private final PrintStream ORIGINAL_ERR = System.err;
 
 	/**
 	 * Setup for testing
@@ -71,6 +90,8 @@ public class AddItemTest {
 		checkoutController = new CheckoutController();
 		scannerController = new BarcodeScannerController(new BarcodeScanner());
 		scaleController = new BaggingScaleController(new ElectronicScale(1000, 1));
+		stationController = new AttendantStationController();
+		stubDevice = new TouchScreen();
 
 		// First item to be scanned
 		databaseItem1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1",
@@ -85,6 +106,10 @@ public class AddItemTest {
 
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem1.getBarcode(), databaseItem1);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem2.getBarcode(), databaseItem2);
+		
+		// PLU products
+		pluProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.five, Numeral.five, Numeral.five, Numeral.five, Numeral.five), "test item 1",BigDecimal.valueOf(83.29));
+		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluProduct1.getPLUCode(), pluProduct1);
 
 		stubScanner = new BarcodeScanner();
 		stubScale = new ElectronicScale(1000, 1);
@@ -93,6 +118,10 @@ public class AddItemTest {
 		scannerController.setMainController(checkoutController);
 		scaleController = new BaggingScaleController(stubScale);
 		scaleController.setMainController(checkoutController);
+		attendantController = new AttendantIOController(stubDevice);
+		attendantController.setMainAttendantController(stationController);
+		customerController = new CustomerIOController(stubDevice);
+		customerController.setMainController(checkoutController);
 
 		stubScanner.register(scannerController);
 		stubScale.register(scaleController);
@@ -533,5 +562,101 @@ public class AddItemTest {
 		assertEquals(total, checkoutController.getCost());
 
 	}
+	
+	
+	/*
+	 * A method to test if addingItemByTextSearch works properly and returns the proper HashSet
+	 */
+	@Test
+	public void testAddingItemByTextSearch() {
+		Set<Product> expected = new HashSet<Product>();
+		PLUCodedProduct pluProd = pluProduct1; 
+		BarcodedProduct exproduct = databaseItem1;
+		BarcodedProduct exproduct2 = databaseItem2;
+		expected.add((Product) pluProd);
+		expected.add((Product) exproduct);
+		expected.add((Product) exproduct2);
+		
+		
+		
+		Set<Product> actual = new HashSet<Product>();
+		String inputString = "test item 1";
+		actual = attendantController.searchProductsByText(inputString);
+		assertEquals(expected,actual);
+		
+	}
+	
+	/*
+	 * A method to test if addItemByBrowsing successfully adds an item to the order
+	 */
+	@Test
+	public void testAddItemByBrowsing() {	
+		BigDecimal expectedTotal = databaseItem1.getPrice();
+		int expectedCount = 1;
+		
+		// adding the item
+		customerController.addProduct(databaseItem1);
+		
+		// checking if the cost is correctly updated when an item is added by browsing
+		assertEquals(expectedTotal, checkoutController.getCost());
+		
+		// checking if the size of the order is correctly updated when an item is added by browsing
+		assertEquals(expectedCount, checkoutController.getOrder().size());
+		
+	}
+	
+	/*
+	 * A method to test if addItemByBrowsing successfully recognizes a null product and does not add it to the order
+	 */
+	@Test
+	public void testAddNullItemByBrowsing() {
+		BigDecimal expectedTotal = BigDecimal.ZERO;
+		int expectedCount = 0;
+		
+		// adding null item
+		customerController.addProduct(null);
+		
+		assertEquals(expectedTotal, checkoutController.getCost());
+		assertEquals(expectedCount, checkoutController.getOrder().size());
+	}
+	@Test
+	public void testInvalidPLUItemAdd() {
+		System.setOut(new PrintStream(outContent));
+		System.setErr(new PrintStream(errContent));
+		customerController.addItemByPLU("0");
+		
+		String expected =  "Product not in database" + System.lineSeparator();		
+		assertEquals(expected, outContent.toString());
+		
+		System.setOut(ORIGINAL_OUT);
+	    System.setErr(ORIGINAL_ERR);
+	}
+	
+	@Test(expected = NumberFormatException.class)
+	public void testNonNumericalPLUAdd() {
+		customerController.addItemByPLU("A");
+	}
+	@Test(expected = NullPointerException.class)
+	public void testNullPLUCodeADD() {
+		customerController.addItemByPLU(null);
+	}
+	@Test
+	public void testPLUAddItem() {
+		int expected_order_len = 1;
+		
+		customerController.addItemByPLU(
+				pluProduct1.getPLUCode().toString()
+			);
+		System.out.println("Code in string: "+ pluProduct1.getPLUCode().toString());
+		assertEquals(
+				pluProduct1.getPrice(), 
+				checkoutController.getCost()
+			);
+		assertEquals(
+				expected_order_len,
+				checkoutController.getOrder().size()
+			);
+	}
+	
 
 }
