@@ -3,6 +3,7 @@ package com.autovend.software.test;
 import static org.junit.Assert.*;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,7 +44,6 @@ import com.autovend.software.swing.Language;
 
 public class AttendantGUITest {
 
-    private volatile int found;
 	TouchScreen screen;
 	AttendantLoginPaneTest attendantPane;
 	
@@ -190,24 +190,10 @@ public class AttendantGUITest {
 	}
 	
 	/**
-	 * Test to set the screen visibility 
-	 */
-	@Test
-	public void screenSetVisibleTest() {
-		try {
-			screen.setVisible(false);
-			screen.setVisible(true);
-		} catch (Exception e) {
-			fail("No exception expected");
-		}
-	}
-	
-	/**
 	 * 
 	 */
 	@Test
 	public void clickLanguageSelect() {
-
 		String language = attendantPane.language;
 		JButton lsb = attendantPane.languageSelectButton;
 		lsb.doClick();
@@ -220,37 +206,20 @@ public class AttendantGUITest {
 	 */
 	@Test
 	public void TestLoginFailure() {
-        JFrame frame = screen.getFrame();
-        
         JButton loginButton = attendantPane.loginButton;
-		JLabel usernameLabel = attendantPane.usernameLabel;
-		JLabel passwordLabel = attendantPane.passwordLabel;
-
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
 		
-		JLabel errorLabel = attendantPane.errorLabel;
-		JButton lsb = attendantPane.languageSelectButton;
+		usernameTF.setText("wrong");
+		passwordTF.setText("wrong");	
+		loginButton.doClick();
 		
-		String usernameText = usernameLabel.getText();
-		String passwordText = passwordLabel.getText();
+		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
 		
-		usernameTF.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.out.println(e);
-				
-			}
-			
-		});
+		System.out.println(numberOfComponents);
 		
-		usernameTF.getActionMap();
-		usernameTF.getInputMap();
-		
-		usernameTF.registerKeyboardAction(null, null, found);
-		
+		// If the number of components is not greater than 7, that is evidence that the pane is still the login screen
+		assert(numberOfComponents <= 7);
 	}
 	
 	/**
@@ -258,7 +227,26 @@ public class AttendantGUITest {
 	 */
 	@Test
 	public void TestLoginSuccess() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
 		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
+		
+		// If the number of components is greater than 7, that is evidence that the pane is no longer the login screen
+		assert(numberOfComponents > 7);
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	public void test() {
+
 	}
 
 }
