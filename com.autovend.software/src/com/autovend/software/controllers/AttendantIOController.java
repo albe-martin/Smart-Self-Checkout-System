@@ -27,7 +27,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     //I don't like that we have to maintain 2 arraylists for controllers
     //but this will be necessary, annoyingly.
     private ArrayList<CheckoutController> controllers;
-    
+
     //mainController changed to AttendantStatioNController instead.
     private AttendantStationController mainController;
 
@@ -35,27 +35,26 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     String getTypeName() {
         return "AttendantIOController";
     }
-    
-    public void setMainAttendantController(AttendantStationController controller) {
-    	this.mainController = controller;
+
+    void setMainAttendantController(AttendantStationController controller) {
+        this.mainController = controller;
     }
-    
+
     AttendantStationController getMainAttendantController() {
-    	return this.mainController;
+        return this.mainController;
     }
 
     //Enable and disable stations methods can be used by permit/prevent use case
-    
+
     /**
      * Enables a specified checkout station's registered devices if the attendant is logged in
      * @param checkout
      * 		The checkout station controller to enable
      */
-    public void enableStation(CheckoutController checkout) {
-    	if(this.mainController.isLoggedIn()) {
-            checkout.setMaintenence(false);
-            checkout.enableAllDevices();
-    	}
+    void enableStation(CheckoutController checkout) {
+        if(this.mainController.isLoggedIn()) {
+            checkout.enableStation();
+        }
     }
 
     /**
@@ -63,11 +62,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to disable
      */
-    public void disableStation(CheckoutController checkout) {
-    	if(this.mainController.isLoggedIn()) {
-	        checkout.setMaintenence(true);
-	        checkout.disableAllDevices();
-    	}
+    void disableStation(CheckoutController checkout) {
+        if(this.mainController.isLoggedIn() && !checkout.isInUse()) {
+            checkout.disableStation();
+        }
     }
 
     /**
@@ -81,7 +79,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     		checkout.startUp();
     	}
     }
-    
+
     /**
      * Notifies Attendant GUI that the station has started up and is ready to be enabled.
      */
@@ -91,7 +89,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     		pane.notifyStartup((CustomerIOController) customerIOController);
     	}
     }
-    
+
     /**
      * Initializes shut down of a controller if not in use  if the attendant is logged in
      * However, a signal will be sent back to the GUI to ask Attendant to force shut down.
@@ -111,7 +109,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 	        }
     	}
     }
-    
+
     /**
      * Forces to initialize shutdown of controller if the attendant is logged in
      * @param checkout
@@ -122,16 +120,16 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     		checkout.shutDown();
     	}
     }
-    
+
     /**
      * Gets the ID of the main controller of this IO controller.
      * @return
      * 		The ID of the station.
      */
     int getID() {
-    	return this.mainController.getID();
+        return this.mainController.getID();
     }
-    
+
     /**
      * Passes credentials to Attendant Station Controller
      * @param username
@@ -139,22 +137,22 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param password
      * 		The password
      */
-   public void login(String username, String password) {
-    	this.mainController.login(username, password);
+    void login(String username, String password) {
+        this.mainController.login(username, password);
     }
-    
+
     /**
      * Signals Attendant station controller ot log out if the attendant is logged in
      */
-    public void logout() {
-    	if(this.mainController.isLoggedIn()) {
-    		this.mainController.logout();
-    	}
+    void logout() {
+        if(this.mainController.isLoggedIn()) {
+            this.mainController.logout();
+        }
     }
-    
+
     /**
      * Simple method that will signal GUI with success or failure.
-     * 
+     *
      * @param success
      * 		True if login was successful,
      * 		False if login was a failure
@@ -175,15 +173,15 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     		pane.showLoginError();
     	}
     }
-    
+
     /**
      * Simple method that will signal GUI that a user logged out
-     * 
+     *
      * @param username
      * 		The username of the logged in user who wishes to log out.
      */
     void loggedOut(String username) {
-    	// Switch GUI to login screen.
+        /// Switch GUI to login screen.
     	getDevice().getFrame().setContentPane(new AttendantLoginPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
@@ -217,26 +215,26 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	}
     	
     	return productsToReturn;
-    	
     }
-    
+    	
+
     /**
      * Simple method that will return the checkout station list from this IO's main attendant station in the form of IO controllers
-     * 
+     *
      */
-    public List<CustomerIOController> getAllStationsIOControllers() {
-    	return mainController.getAllStationsIOControllers();
+    List<CustomerIOController> getAllStationsIOControllers() {
+        return mainController.getAllStationsIOControllers();
     }
-    
+
     /**
      * Simple method that will return a list of disabled station io controllers
      * @return
      * 		List of disabled station IO controllers
      */
-    public List<CustomerIOController> getDisabledStationsIOControllers() {
-    	return mainController.getDisabledStationsIOControllers();
+    List<CustomerIOController> getDisabledStationsIOControllers() {
+        return mainController.getDisabledStationsIOControllers();
     }
-
+    
     /**
      * Called when an attendant approves the customer's added bags. Unlocks the machine, terminates the attendant signal, and zeros the scale.
      * @param customerIOController the CustomerIOController of the customer who needs their bags approved.

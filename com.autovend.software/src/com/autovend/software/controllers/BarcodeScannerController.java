@@ -23,6 +23,7 @@ import com.autovend.devices.observers.BarcodeScannerObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 
+import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 /**
@@ -50,7 +51,7 @@ public class BarcodeScannerController extends ItemAdderController<BarcodeScanner
 		if (isScanningItems) {
 			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
 			if (product != null) {
-				this.getMainController().addItem(product);
+				this.getMainController().addItem(product, BigDecimal.ONE);
 			}
 		} else {
 			this.getMainController().validateMembership(String.join("",barcode.digits().stream().map(i->i.toString()).collect(Collectors.toList())));
