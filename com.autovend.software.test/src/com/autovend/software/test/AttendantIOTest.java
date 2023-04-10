@@ -71,6 +71,9 @@ public class AttendantIOTest {
 			asc.addStation(station3, (CustomerIOController)io);
 		}
 		
+		asc.registerUser("test", "test");
+		asc.login("test", "test");
+		
 		product1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1", BigDecimal.valueOf(83.29), 359.0);
 	}
 	
@@ -110,6 +113,23 @@ public class AttendantIOTest {
 				assertFalse(((CardReaderController) controller).bank == cardIssuer);
 			}
 		}		
+	}
+	
+	/**
+	 * Tests if station is prevented from use by the Attendant,
+	 * by trying to add an item when the station is disabled.
+	 */
+	@Test
+	public void testPreventStationUseAndUnlock_TryAddItem() {
+		for (DeviceController io : asc.getAttendantIOControllers()) {
+			((AttendantIOController)io).disableStation(checkoutController1);
+			((AttendantIOController)io).enableStation(checkoutController1);
+		}
+		
+		checkoutController1.addItem(product1);
+		
+		// Item should be added, so order size should be 1
+		assertEquals(1, checkoutController1.getOrder().size());
 	}
 	
 	/**
