@@ -76,26 +76,31 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		if (reader != this.getDevice()) {
 			return;
 		}
-		if (registeringMembers==false) {
-			if (this.isPaying && this.bank!=null)
-			{
-				// TODO: Given the data, handle stuff with the transaction
-				int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
-				if (holdNum != -1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
-					getMainController().addToAmountPaid(this.amount);
+		
+		if (registeringMembers == false) {	// If a payment is being made
+			if (data.getType().equalsIgnoreCase("giftcard")) {
+				reactToGiftCardDataRead((GiftCard.GiftCardInsertData) data);
+			} else if (data.getType().equalsIgnoreCase("credit") || data.getType().equalsIgnoreCase("debit")) {	// Credit and Debit cards
+				if (this.isPaying && this.bank != null) {
+					int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
+					if (holdNum != -1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
+						getMainController().addToAmountPaid(this.amount);
+					}
+
+					this.disableDevice();
+
+					this.amount = BigDecimal.ZERO;
+					this.bank = null;
+
+					this.isPaying = false;
 				}
-
-				this.disableDevice();
-
-				this.amount = BigDecimal.ZERO;
-				this.bank = null;
-
-				this.isPaying = false;
+			} else {
+				// TODO: inform customer that card read failed
+				return;
 			}
-		} else {
+		} else {	// Membership is being dealt with
 			this.getMainController().validateMembership(data.getNumber());
 		}
-
 	}
 
 	public void enableMemberReg(){
