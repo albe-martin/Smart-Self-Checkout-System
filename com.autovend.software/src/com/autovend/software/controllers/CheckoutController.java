@@ -603,8 +603,7 @@ public class CheckoutController {
 	}
 
 	public void validateMembership(String number){
-		Numeral[] cardNumb = BarcodeUtils.stringToNumeralArray(number);
-		boolean isValid = MembershipDatabases.MEMBERSHIP_DATABASE.containsKey(cardNumb);
+		boolean isValid = MembershipDatabases.MEMBERSHIP_DATABASE.containsKey(number);
 		if (isValid) {
 			for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
 				((CardReaderController) cardReaderController).setState(CardReaderControllerState.NOTINUSE);
