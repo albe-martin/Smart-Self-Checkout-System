@@ -73,7 +73,6 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param checkout
      * 		The checkout station controller to start up
      */
-
     public void startupStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
 	        // TODO: Changed by Braedon, please verify.
