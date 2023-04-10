@@ -106,9 +106,10 @@ public class CustomerOperationPane extends JPanel {
 		// initializeLanguageSelectButton();
 
 
-		// Initialize exit button.
+
 		// TODO: Should have a confirmation popup (see the one I made for attendant notifyshutdownstationinuse).
-        initializeExitButton();
+
+        // initializeExitButton();
 
 		updateTotalCost();
         
@@ -169,7 +170,7 @@ public class CustomerOperationPane extends JPanel {
 
 		// Add purchased bags to the order grid
 		int bagQuantity = cioc.getMainController().getBagNumber();
-		// Not sure where to get the bag price from
+		// todo: Not sure where to get the bag price from
 		BigDecimal bagPrice = new BigDecimal("0.10");
 
 		if (bagQuantity > 0) {
@@ -358,6 +359,9 @@ public class CustomerOperationPane extends JPanel {
 						// Add the purchased bags to the order.
 						cioc.addBagsToOrder(bagQuantity);
 
+						// todo: is this the right spot to call this ???
+						cioc.selectBagsAdded();
+
 						// Update the order grid to display the bags.
 						refreshOrderGrid();
 
@@ -395,27 +399,13 @@ public class CustomerOperationPane extends JPanel {
 		enterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String pluCode = pluCodeTextField.getText();
-				Numeral[] numerals = new Numeral[pluCode.length()];
+				boolean itemAddedSuccessfully = cioc.addItemByPLU(pluCode);
 
-				for (int i = 0; i < pluCode.length(); i++) {
-					byte b = Byte.parseByte(pluCode.substring(i, i + 1));
-					numerals[i] = Numeral.valueOf(b);
-				}
-
-				PriceLookUpCode plu = new PriceLookUpCode(numerals);
-				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
-
-				if (product == null) {
-					JOptionPane.showMessageDialog(null, "Item not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
-				} else {
-					cioc.addProduct(product);
-
-					// Add the item to the grid.
-					// addItemToGrid(product.getDescription(), product.getPrice());
+				if (itemAddedSuccessfully) {
 					refreshOrderGrid();
 					JOptionPane.getRootFrame().dispose();
-
-					System.out.println("PLU coded product added");
+				} else {
+					JOptionPane.showMessageDialog(null, "Item not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -429,22 +419,28 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 
-	/**
-	 * Initialize the exit button.
-	 */
-	private void initializeExitButton() {
-		// Create exit button.
-		logoutButton = new JButton("Exit");
-        logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
-        logoutButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Logout button pressed.
+//	/**
+//	 * Initialize the exit button.
+//	 */
+//	private void initializeExitButton() {
+//		// Create exit button.
+//		logoutButton = new JButton("Exit");
+//        logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+//        logoutButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                // Logout button pressed.
+//
+//                // Notify controller that logout is requested.
+//                cioc.logoutPressed();
+//            }
+//        });
+//        logoutButton.setBounds(511, 503, 120, 63);
+//        this.add(logoutButton);
+//	}
 
-                // Notify controller that logout is requested.
-                cioc.logoutPressed();
-            }
-        });
-        logoutButton.setBounds(511, 503, 120, 63);
-        this.add(logoutButton);
+	public void shutDownStation() {
+
 	}
+
+
 }

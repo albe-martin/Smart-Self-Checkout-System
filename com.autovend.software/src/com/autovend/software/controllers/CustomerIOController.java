@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 import com.autovend.Numeral;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.CardIssuer;
@@ -32,20 +33,28 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     //todo: add methods which let this controller modify the GUI on the screen
 
 
-
-
-    public void addItemByPLU(String pluCode){
+    /**
+     *
+     * @param pluCode
+     * @return if the item was successfully added or not (returning true/false tells gui what to update)
+     */
+    public boolean addItemByPLU(String pluCode){
         Numeral[] code = new Numeral[pluCode.length()];
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
         }
-        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(code);
+        System.out.println(ProductDatabases.PLU_PRODUCT_DATABASE);
+        PriceLookUpCode plu = new PriceLookUpCode(code);
+        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
         if (product!=null){
             this.getMainController().addItem(product);
+            return true;
         } else {
             System.out.println("Product not in database");
-            //todo: print stuff related to this on GUI, also make sure to notify customer to add
+
             //stuff to the scale first before they do stuff for the PLU code
+            return false;
+
         }
     }
     
@@ -114,7 +123,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
-    void selectBagsAdded(){
+    public void selectBagsAdded(){
         Set<DeviceController> baggingControllers = this.getMainController().getAllDeviceControllersRevised().get("BaggingAreaController");
         for (DeviceController baggingController : baggingControllers) {
             BaggingScaleController scale = (BaggingScaleController) baggingController;
@@ -176,7 +185,8 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * Signals GUI to terminate (since it is turning off).
      */
     void notifyShutdown() {
-    	
+
+        getMainController().setInUse(false);
     }
     
     /**
@@ -194,6 +204,8 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
+
+        getMainController().setInUse(true);
     }
     
     /**
