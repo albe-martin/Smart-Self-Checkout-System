@@ -160,9 +160,6 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	public void refreshOrderGrid() {
-
-		System.out.println("called");
-
 		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
 		model.setRowCount(0);
 
@@ -192,7 +189,6 @@ public class CustomerOperationPane extends JPanel {
 	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
 		Number[] quantities = entry.getValue();
 		Number quantity = quantities[0];
-		System.out.println(Arrays.toString(quantities));
 //		System.out.println(description);
 //		System.out.println(Arrays.toString(quantities));
 
@@ -383,9 +379,15 @@ public class CustomerOperationPane extends JPanel {
 						cioc.purchaseBags(bagQuantity);
 
 						// Update the order grid to display the bags.
-						refreshOrderGrid();
+						//refreshOrderGrid();
 
-						JOptionPane.getRootFrame().dispose();
+						System.out.println("here");
+
+						Window window = SwingUtilities.getWindowAncestor(enterButton);
+						if (window != null) {
+							window.dispose();
+						}
+
 						System.out.println("Bags purchased: " + bagQuantity);
 					}
 				} catch (NumberFormatException ex) {
@@ -422,8 +424,14 @@ public class CustomerOperationPane extends JPanel {
 				boolean itemAddedSuccessfully = cioc.addItemByPLU(pluCode);
 
 				if (itemAddedSuccessfully) {
+					System.out.println("ehre");
 					refreshOrderGrid();
-					JOptionPane.getRootFrame().dispose();
+					System.out.println("aawdawd");
+
+					Window window = SwingUtilities.getWindowAncestor(enterButton);
+					if (window != null) {
+						window.dispose();
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Item not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
