@@ -21,8 +21,6 @@ import com.autovend.devices.ElectronicScale;
 import com.autovend.devices.observers.ElectronicScaleObserver;
 import com.autovend.products.Product;
 
-import java.util.ArrayList;
-
 public class BaggingScaleController extends BaggingAreaController<ElectronicScale, ElectronicScaleObserver>
 		implements ElectronicScaleObserver {
 	private double currentWeight;
@@ -57,53 +55,35 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		this.currentWeight = 0;
 		this.expectedWeight = 0;
 	}
-
 	@Override
 	public void reactToWeightChangedEvent(ElectronicScale scale, double weightInGrams) {
-		if (scale != this.getDevice()) {
-			return;
-		}
+		if (scale != this.getDevice()) {return;}
 		this.currentWeight = weightInGrams;
 		if (this.currentWeight == this.expectedWeight) {
 			this.getMainController().baggedItemsValid();
 
 		}
 		else {
-			this.getMainController().baggedItemsInvalid("The items in the bagging area don't have the correct weight.");
+			this.getMainController().baggedItemsInvalid();
 			this.setBaggingValid(false);
 		}
 	}
-
 	@Override
 	public void reactToOverloadEvent(ElectronicScale scale) {
-		if (scale != this.getDevice()) {
-			return;
-		}
-		;
-		this.getMainController().baggingAreaError("The scale is currently overloaded, please take items off it to avoid damaging the system.");
+		if (scale != this.getDevice()) {return;}
+		this.getMainController().baggingAreaError();
 	}
-
 	@Override
 	public void reactToOutOfOverloadEvent(ElectronicScale scale) {
-		if (scale != this.getDevice()) {
-			return;
-		}
-		;
-		this.getMainController().baggingAreaErrorEnded("The scale is no longer overloaded.");
+		if (scale != this.getDevice()) {return;}
+		this.getMainController().baggingAreaErrorEnded();
 	}
-
 	public double getCurrentWeight() {
 		return currentWeight;
 	}
-
-	public void updateWithBagWeight(double weight) {
-		this.expectedWeight += weight;
-	}
-
 	public double getExpectedWeight() {
 		return this.expectedWeight;
 	}
-
 	public void setExpectedWeight(double newWeight) {
 		this.expectedWeight = newWeight;
 	}

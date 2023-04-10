@@ -54,8 +54,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     public void enableStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-            checkout.setMaintenence(false);
-            checkout.enableAllDevices();
+            checkout.enableStation();
     	}
     }
 
@@ -66,8 +65,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     public void disableStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-	        checkout.setMaintenence(true);
-	        checkout.disableAllDevices();
+            checkout.disableStation();
     	}
     }
 
@@ -78,7 +76,6 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     public void startupStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-	        // TODO: Changed by Braedon, please verify.
     		checkout.startUp();
     	}
     }
@@ -200,7 +197,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @return
      * 		Set<Product>: its a set of products that are collected after the search is done.
      */
-    public Set<Product> addItemByTextSearch(String input){
+    public Set<Product> searchProductsByText(String input){
     	String[] filteredInput = input.split(" ");
     	Set<Product> productsToReturn = new HashSet<Product>();
     	
@@ -219,7 +216,11 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	}
     	
     	return productsToReturn;
-    	
+    }
+
+    public void addProductByText(CheckoutController controller, Product prod, BigDecimal count){
+        //for items priced by unit, count is the number of items, otherwise it reads the scale.
+        controller.addItem(prod, count);
     }
     
     /**
@@ -244,25 +245,24 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param customerIOController the CustomerIOController of the customer who needs their bags approved.
      */
     public void approveAddedBags(CustomerIOController customerIOController){
-        customerIOController.getMainController().systemProtectionLock = false;
-        customerIOController.getMainController().AttendantApproved = true;
-        HashMap<String, Set<DeviceController>> baggingControllers = customerIOController.getMainController().getAllDeviceControllersRevised();
-        for (DeviceController<?, ?> baggingController : baggingControllers.get("BaggingAreaController")) {
-        	if (baggingController instanceof BaggingScaleController) {
-	            BaggingScaleController scale = (BaggingScaleController) baggingController;
-	            scale.setExpectedWeight(scale.getCurrentWeight());
-        	}
-        }
+        customerIOController.getMainController().approveAddingBags();
     }
 
     /**
      * Notifies the GUI that a customer wants to add bags.
+     *
      * @param customerIOController the CustomerIOController of the customer who wants to add bags.
      */
     public void notifyAddBags(CustomerIOController customerIOController){
     	// Notify GUI to approve added bags.
+        //might be better to not need to pass in the controller...
 		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
 		pane.notifyConfirmAddedBags(customerIOController);
+    }
+
+    public void approveWeightDiscrepancy(CheckoutController controller) {
+        controller.attendantOverrideBaggingLock();
+        //todo: GUI
     }
     
     /**
@@ -286,7 +286,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 		LinkedHashMap of order <Product, (Amount(units or by weight), total cost)>
      */
     public LinkedHashMap<Product, Number[]> getCart(CheckoutController checkout) {
-    	return checkout.getCart();
+    	return checkout.getOrder();
     }
     
     /**
@@ -316,8 +316,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
 
     //todo: add methods which let this controller modify the GUI on the screen
-    
-    
 
-
+    void displayMessage(String message){
+    }
 }

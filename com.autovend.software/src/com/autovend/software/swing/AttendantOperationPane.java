@@ -592,7 +592,7 @@ public class AttendantOperationPane extends JPanel {
         // Show pop-up and get result.
         int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Add Item By Text Search"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
-        	Set<Product> foundProducts = aioc.addItemByTextSearch(searchField.getText());
+        	Set<Product> foundProducts = aioc.searchProductsByText(searchField.getText());
         	System.out.println("found:" + foundProducts.toString());
         	createFoundProductsPopup(cioc, foundProducts);
         }
