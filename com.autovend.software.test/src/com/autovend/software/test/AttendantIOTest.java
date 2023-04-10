@@ -19,6 +19,7 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CardReaderController;
+import com.autovend.software.controllers.CardReaderControllerState;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.DeviceController;
@@ -95,16 +96,16 @@ public class AttendantIOTest {
 	
 	/**
 	 * Tests if station is prevented from use by the Attendant,
-	 * by trying to purchase bags when the station is disabled.
+	 * by trying to pay with credit card when the station is disabled.
 	 */
 	@Test
-	public void testPreventStationUse_TryPayWithCard() {
+	public void testPreventStationUse_TryPayWithCreditCard() {
 		for (DeviceController io : asc.getAttendantIOControllers()) {
 			((AttendantIOController)io).disableStation(checkoutController1);
 		}
 		
 		CardIssuer cardIssuer = new CardIssuer("Stub");
-		checkoutController1.payByCard(cardIssuer, new BigDecimal(0.00));
+		checkoutController1.payByBankCard(CardReaderControllerState.PAYINGBYCREDIT, cardIssuer, new BigDecimal(0.00));
 		
 		for (DeviceController controller : checkoutController1.getControllersByType("PaymentController")) {
 			if (controller instanceof CardReaderController) {
