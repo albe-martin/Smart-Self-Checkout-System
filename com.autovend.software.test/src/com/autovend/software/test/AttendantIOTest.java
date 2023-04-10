@@ -1,6 +1,8 @@
 package com.autovend.software.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -12,9 +14,11 @@ import com.autovend.Barcode;
 import com.autovend.Numeral;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SupervisionStation;
+import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
+import com.autovend.software.controllers.CardReaderController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.DeviceController;
@@ -55,15 +59,15 @@ public class AttendantIOTest {
 		attendantStation = new SupervisionStation();
 		asc = new AttendantStationController(attendantStation);
 		
-		for(DeviceController io : checkoutController1.getControllersByType("CustomerIOController")) {
+		for (DeviceController io : checkoutController1.getControllersByType("CustomerIOController")) {
 			asc.addStation(station1, (CustomerIOController)io);
 		}
 		
-		for(DeviceController io : checkoutController2.getControllersByType("CustomerIOController")) {
+		for (DeviceController io : checkoutController2.getControllersByType("CustomerIOController")) {
 			asc.addStation(station2, (CustomerIOController)io);
 		}
 		
-		for(DeviceController io : checkoutController3.getControllersByType("CustomerIOController")) {
+		for (DeviceController io : checkoutController3.getControllersByType("CustomerIOController")) {
 			asc.addStation(station3, (CustomerIOController)io);
 		}
 		
@@ -76,12 +80,55 @@ public class AttendantIOTest {
 	 */
 	@Test
 	public void testPreventStationUse_TryAddItem() {
-		aic.disableStation(checkoutController1);
-
+		for (DeviceController io : asc.getAttendantIOControllers()) {
+			((AttendantIOController)io).disableStation(checkoutController1);
+		}
+		
 		checkoutController1.addItem(product1);
 		
 		// Item should not be added, and order size should be 0
 		assertEquals(0, checkoutController1.getOrder().size());
 	}
 	
+	/**
+	 * Tests if station is prevented from use by the Attendant,
+	 * by trying to purchase bags when the station is disabled.
+	 */
+	@Test
+	public void testPreventStationUse_TryPayWithCard() {
+		for (DeviceController io : asc.getAttendantIOControllers()) {
+			((AttendantIOController)io).disableStation(checkoutController1);
+		}
+		
+		CardIssuer cardIssuer = new CardIssuer("Stub");
+		checkoutController1.payByCard(cardIssuer, new BigDecimal(0.00));
+		
+		for (DeviceController controller : checkoutController1.getControllersByType("PaymentController")) {
+			if (controller instanceof CardReaderController) {
+				// payByCard should not go through, 
+				// so that the controller would not set the bank to be the cardIssuer
+				assertFalse(((CardReaderController) controller).bank == cardIssuer);
+			}
+		}		
+	}
+	
+	/**
+	 * Tests if station is prevented from use by the Attendant,
+	 * when the station is not registered to the Attendant.
+	 */
+	@Test
+	public void testPreventStationUse_NotRegistered_TryAddItem() {
+		for (DeviceController io : checkoutController1.getControllersByType("CustomerIOController")) {
+			asc.removeStation(station1, (CustomerIOController)io);
+		}
+		
+		for (DeviceController io : asc.getAttendantIOControllers()) {
+			((AttendantIOController)io).disableStation(checkoutController1);
+		}
+		
+		checkoutController1.addItem(product1);
+		
+		// Item should not be added, and order size should be 0
+		assertEquals(0, checkoutController1.getOrder().size());
+	}
 }
