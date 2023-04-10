@@ -220,7 +220,7 @@ public class AttendantLoginPane extends JPanel {
 	}
 	
 	public int optionDialogPopup(JPanel panel) {
-        return JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        return JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 	
 	/**
