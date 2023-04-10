@@ -50,7 +50,8 @@ public class CoinDispenserControllerTest {
 	        checkoutControllerStub = new CheckoutController();
 	        coinDispenserStub = new CoinDispenser(100);
 	        coinDispenserControllerStub = new CoinDispenserController(coinDispenserStub, denom);
-	        checkoutControllerStub.registerController("PaymentController", billPaymentControllerStub);
+	        coinDispenserControllerStub.setMainController(checkoutControllerStub);
+	        checkoutControllerStub.registerController("PaymentController", coinDispenserControllerStub);
 
 	        BarcodedProduct barcodedProduct;
 	        barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.one), "test item 1",
@@ -97,17 +98,17 @@ public class CoinDispenserControllerTest {
 	        order.put(product, new Number[1]);
 
 	        checkoutControllerStub.setOrder(order);
-	        
+            BigDecimal denom = new BigDecimal (0.01);
 	        try {
-	            BigDecimal denom = new BigDecimal (0.01);
+
 				selfCheckoutStation.coinSlot.accept(new Coin(denom, Currency.getInstance("CAD")));
 	        } catch (Exception ex) {
 	            System.out.printf("Exception " + ex.getMessage());
 	        }
 	    	
 	    	
-	    	
-	    	coinDispenserControllerStub.emitChange();
+	        CoinDispenserController coinDispenserController = new CoinDispenserController(coinDispenserStub, denom);
+	        coinDispenserController.emitChange();
 	    	
 	    	
 	    }
@@ -120,16 +121,12 @@ public class CoinDispenserControllerTest {
 
 	        checkoutControllerStub.setOrder(order);
 	        BigDecimal denom = new BigDecimal (0.01);
-	        try {
-	            
-				selfCheckoutStation.coinSlot.accept(new Coin(denom, Currency.getInstance("CAD")));
-	        } catch (Exception ex) {
-	            System.out.printf("Exception " + ex.getMessage());
-	        }
+
 	    	
-	    	
+	        CoinDispenserController coinDispenserController = new CoinDispenserController(selfCheckoutStation.coinDispensers.get(1), denom);
+	        coinDispenserController.setMainController(checkoutControllerStub);
 	        for (int i = 0; i < 100; i++) {
-		    	coinDispenserControllerStub.emitChange();
+	        	coinDispenserController.emitChange();
 	            selfCheckoutStation.coinTray.collectCoins();
 	        }
 	    	
@@ -158,8 +155,9 @@ public class CoinDispenserControllerTest {
 	            selfCheckoutStation.coinTray.collectCoins();
 	        }
 	    	
-	        assertEquals(selfCheckoutStation.coinDispensers.size(), 5);
+	        assertEquals(selfCheckoutStation.coinDispensers.get(10).size(), 5);
 	    	
 	    }
 	    
 	}
+
