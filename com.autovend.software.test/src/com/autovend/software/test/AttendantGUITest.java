@@ -316,5 +316,30 @@ public class AttendantGUITest {
 		
 		assert(language == "English");
 	}
+	
+//	/**
+//	 * 
+//	 */
+//	@Test
+//	public void Test() {
+//        JButton loginButton = attendantPane.loginButton;
+//		JTextField usernameTF = attendantPane.usernameTextField;
+//		JPasswordField passwordTF = attendantPane.passwordTextField;
+//		
+//		usernameTF.setText("abc"); // Correct login credentials
+//		passwordTF.setText("123");	
+//		loginButton.doClick();
+//		
+//		JFrame frame = screen.getFrame();
+//		
+//		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+//		frame.setContentPane(aop);
+//		
+//		String language = aop.language;
+//		JButton lsb = aop.languageSelectButton;
+//		lsb.doClick();
+//		
+//		assert(language == "English");
+//	}
 
 }
