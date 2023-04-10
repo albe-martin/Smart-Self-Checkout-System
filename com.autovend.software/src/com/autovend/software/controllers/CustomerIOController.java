@@ -1,5 +1,9 @@
 package com.autovend.software.controllers;
 
+import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Set;
+
 import com.autovend.Numeral;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
@@ -7,13 +11,15 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-
-import java.math.BigDecimal;
+import com.autovend.software.swing.CustomerOperationPane;
+import com.autovend.software.swing.CustomerStartPane;
 
 /**
  *
  */
-class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
+public class
+
+CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
@@ -28,7 +34,7 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
 
 
 
-    void addItemByPLU(String pluCode){
+    public void addItemByPLU(String pluCode){
         Numeral[] code = new Numeral[pluCode.length()];
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
@@ -42,17 +48,24 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
             //stuff to the scale first before they do stuff for the PLU code
         }
     }
-
-
-
-    void addProduct(Product product){
+    
+    public void addItemByBrowsing(Product selectedProduct) {
+    	//product to add will already be selected from the catalogue here
+    	//so it just adds the selected item, gets the product from UI
+    	if (selectedProduct!=null) {
+            this.getMainController().addItem(selectedProduct);
+        }
+    }
+    
+    public void addProduct(Product product){
         //since products have to be displayed for the catalogue already
         //it just adds the item here.
         if (product!=null) {
             this.getMainController().addItem(product);
         }
     }
-    void beginSignInAsMember(){
+    
+    public void beginSignInAsMember(){
         this.getMainController().signingInAsMember();
         //Stuff with the GUI
     }
@@ -69,9 +82,10 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
 
     //since all card payment methods work the same here (basically), then this can just
     //be generically used by the I/O
-    void choosePayByCard(CardIssuer bank, BigDecimal amount) {
+    public void choosePayByCard(CardIssuer bank, BigDecimal amount) {
         this.getMainController().payByCard(bank, amount);
     }
+    
     void finalizeOrder(){
         this.getMainController().completePayment();
         //todo:
@@ -79,8 +93,38 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
         // react to that to modify the GUI
     }
 
+    public void addBagsToOrder(int amountOfBagsToAdd) {
+        //TODO: Add the specified number of bags to the order
+        // technically, the GUI can get away with only knowing the amount of bags for the order elsewhere,
+        // so that bag products don't actually have to be in the order, if that is easier
+    }
+
     void selectAddBags(){
         //todo: self explanatory
+    }
+
+    /**
+     * Called in response to the customer selecting the 'purchase reusable bags' option.
+     * Should trigger a prompt asking the customer how many bags they want to buy.
+     */
+    void selectPurchaseBags(){
+
+    }
+
+    /**
+     * Called in response to the customer selecting the 'finished adding bags' option.
+     */
+    void selectBagsAdded(){
+        Set<DeviceController> baggingControllers = this.getMainController().getAllDeviceControllersRevised().get("BaggingAreaController");
+        for (DeviceController baggingController : baggingControllers) {
+            BaggingScaleController scale = (BaggingScaleController) baggingController;
+            scale.setAddingBags(false);
+            scale.setExpectedWeight(scale.getSavedWeight());
+            if(scale.getExpectedWeight() != scale.getCurrentWeight()){
+                this.getMainController().systemProtectionLock = true; // Lock the system
+                this.getMainController().AttendantApproved = false; // Signal the attendant
+            }
+        }
     }
 
     void selectDoNotBag(Product product){
@@ -141,7 +185,26 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
     void notifyStartup() {
     	
     }
-
+    
+    /**
+     * Signals start button was pressed.
+     */
+    public void startPressed() {
+    	// Switch to operation screen.
+    	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
+    	getDevice().getFrame().revalidate();
+    	getDevice().getFrame().repaint();
+    }
+    
+    /**
+     * Signals logout button was pressed.
+     */
+    public void logoutPressed() {
+    	// Switch to start screen.
+    	getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+    	getDevice().getFrame().revalidate();
+    	getDevice().getFrame().repaint();
+    }
 
     //this method is used to display that there is a bagging discrepancy
     void displayWeightDiscrepancyMessage() {}
@@ -149,6 +212,26 @@ class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObse
     //method used to display there is a danger to the station due to weight
     //potentially damaging the bagging area
     void displayBaggingProtectionLock() {}
+    
+    /**
+     * Check if this station is shut down.
+     * @return
+     * 		True if shut down, false otherwise.
+     */
+    public boolean isShutdown() {
+    	return getMainController().isShutdown();
+    }
+    
+
+    
+    /**
+     * Method that will get the cart from this controller's main checkout station
+     * @return 
+     * 		LinkedHashMap of order <Product, (Amount(units or by weight), total cost)>
+     */
+    public LinkedHashMap<Product, Number[]> getCart() {
+    	return this.getMainController().getCart();
+    }
 
 
 }

@@ -20,7 +20,11 @@ package com.autovend.software.controllers;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.autovend.Bill;
+import com.autovend.Coin;
+import com.autovend.devices.OverloadException;
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
@@ -47,12 +51,16 @@ public class CheckoutController {
 	private boolean isDisabled = false;
 	private boolean isDoingMaintenance = false;
 	private boolean isShutdown = false;
+
+	private boolean requireAdjustment = false;
+
 	
 	//need this variable to know if this station is being used or not.
 	private boolean inUse = false;
 	
 	//Supervisor Station ID. 0 = not supervised
 	private int supervisorID = 0;
+
 
 	private SelfCheckoutStation checkoutStation;
 
@@ -214,6 +222,13 @@ public class CheckoutController {
 	}
 
 	/**
+	 * A different variant of getAllDeviceControllers
+	 */
+	public HashMap<String, Set<DeviceController>> getAllDeviceControllersRevised(){
+		return this.registeredControllers;
+	}
+
+	/**
 	 * A method to get the number of bags from the customer response
 	 * 
 	 * @return number of bags
@@ -268,6 +283,9 @@ public class CheckoutController {
 		this.order.put(newBag, currentBagInfo);
 		for (DeviceController baggingController : this.registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newBag, weight, true);
+		}
+		for(int i = 0; i <= numBags; i++){ // dispense the bags and add them to the order
+			// addItem(checkoutStation.ReusableBagDispenser.dispense); (there is currently no ReusableBagDispenser in SelfCheckoutStation)
 		}
 		baggingItemLock = true;
 		System.out.println("Reusable bag has been added, you may continue.");
@@ -430,6 +448,12 @@ public class CheckoutController {
 		} else {
 			printReceipt();
 		}
+		if (this.requireAdjustment == true) {
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).disableStation(this);
+			}
+		}
+		this.requireAdjustment = false;
 	}
 
 	void dispenseChange() {
@@ -457,6 +481,46 @@ public class CheckoutController {
 			}
 		}
 	}
+
+	// when bill/coin dispenser signals that a certain denomination is low (for now low is defined as <= 5)
+	public void changeDenomLow(ChangeDispenserController controller, BigDecimal denom) {
+		if (controller instanceof BillDispenserController) {
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).notifyLowBillDenomination(this, controller, denom);
+			}
+		} else {
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).notifyLowCoinDenomination(this, controller, denom);
+			}
+		}
+		this.requireAdjustment = true;
+	}
+
+	// load bills into dispenser (done by attendant) after they're notified that the bill dispenser is low
+	public void loadBillDenomination(BillDispenserController controller, Bill[] bills) {
+		try {
+			controller.getDevice().load(bills);
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).enableStation(this);
+			}
+		} catch (SimulationException | OverloadException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	// load coins into dispenser (done by attendant) after they're notified that the coin dispenser is low
+	public void loadCoinDenomination(CoinDispenserController controller, Coin[] coins) {
+		try {
+			controller.getDevice().load(coins);
+			for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).enableStation(this);
+			}
+		} catch (SimulationException | OverloadException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
 		//todo: have it notify attendant and then try dispensing lower decrements (if possible),
 		if (controller instanceof BillDispenserController) {
@@ -547,22 +611,11 @@ public class CheckoutController {
 		for (DeviceController baggingController : baggingControllers) {
 			BaggingScaleController scale = (BaggingScaleController) baggingController;
 			scale.setAddingBags(true);
-			// Idea: In the setAddingBags method in BaggingScaleController:
-			// 		 If 'value' is true, store the current weight 'W' on the scale.
-			//  	 If 'value' is false, set the expected weight to 'W'.
-			// 		 In the (currently nonexistent) setExpectedWeight method:
-			//  	 If currentWeight != expectedWeight: lock the system and signal the attendant.
+			scale.saveCurrentWeight();
 		}
 
 		// GUI: Signal to customer to add bags, and simultaneously give the customer an option to signal that they are done adding bags.
 
-		for (DeviceController baggingController : baggingControllers) {
-			BaggingScaleController scale = (BaggingScaleController) baggingController;
-			scale.setAddingBags(false); // If the above idea is implemented, this will automatically signal the attendant.
-		}
-
-		// At this point, the system is locked and the customer is waiting for an attendant to come resolve the discrepancy.
-		// Anything past this point is unrelated to adding bags and should be handled in other methods (probably in an AttendantIO class).
 	}
 
 	public Map<BaggingAreaController, Double> getWeight() {
@@ -599,12 +652,37 @@ public class CheckoutController {
 		}
 	}
 
+	// When sign in starts, tells card reader and barcode scanner 
+	// to be ready to scan a membership card.
 	public void signingInAsMember() {
+		for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
+			((CardReaderController) cardReaderController).enableMemberReg();
+		}
+		
+		for (DeviceController barcodeScannerController : registeredControllers.get("BarcodeScannerController")) {
+			((BarcodeScannerController) barcodeScannerController).setScanningItems(false);
+		}
+		
 	}
 	//todo:
 	//memberships and stuff, if valid, tell scanners and card reader that membership has been validated
 	//so they go back to normal function.
 	public void validateMembership(String number){
+		// Since we do not know what validates a membership number, a temporary local variable
+		// will be used for testing purposes, which assumes the membership number is correct
+		boolean isValid = true;
+		
+		if (isValid) {
+			for (DeviceController cardReaderController : registeredControllers.get("CardReaderController")) {
+				((CardReaderController) cardReaderController).disableMemberReg();
+			}
+			
+			for (DeviceController barcodeScannerController : registeredControllers.get("BarcodeScannerController")) {
+				((BarcodeScannerController) barcodeScannerController).setScanningItems(true);
+			}
+		} else {
+			// ????
+		}
 	}
 
 	/**
@@ -667,7 +745,8 @@ public class CheckoutController {
 			((CustomerIOController) io).notifyStartup();
 		}
 		for (DeviceController io : registeredControllers.get("AttendantIOController")) {
-			((AttendantIOController) io).notifyStartup();
+			// Notify attendant about startup.
+			((AttendantIOController) io).notifyStartup(this);
 		}
 	}
 	
@@ -690,5 +769,24 @@ public class CheckoutController {
 
 	public void setShutdown(boolean b) {
 		this.isShutdown = b;
+	}
+	
+	/**
+	 * Check if the station is currently shut down.
+	 * @return
+	 * 			True if shut down, false otherwise.
+	 */
+	public boolean isShutdown() {
+		return isShutdown;
+	}
+	
+	/**
+	 * Method that will get the order hashmap from checkout controller for IOs.
+	 * Order hashmap is as follows:
+	 * Key = Product
+	 * Value = (# of items/total weight depending, total cost)
+	 */
+	public LinkedHashMap<Product, Number[]> getCart() {
+		return order;
 	}
 }
