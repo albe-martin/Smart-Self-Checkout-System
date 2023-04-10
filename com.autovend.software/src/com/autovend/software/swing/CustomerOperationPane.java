@@ -492,13 +492,11 @@ public class CustomerOperationPane extends JPanel {
 
 	}
 	
-	
 	private void initializeCashButton() {
 		// Create pay with cash button.
 		JButton cashButton = new JButton("Pay with Cash");
 		cashButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: pay with cash
             }
         });
 		cashButton.setBounds(490, 351, 173, 60);
@@ -534,7 +532,7 @@ public class CustomerOperationPane extends JPanel {
 		JButton cashButton = new JButton("Pay with Gift Card");
 		cashButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: pay with gift card
+        		cioc.choosePayByGiftCard();
             }
         });
 		cashButton.setBounds(490, 531, 173, 60);

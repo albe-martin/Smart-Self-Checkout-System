@@ -40,7 +40,7 @@ public class CustomerPayPane extends JPanel {
                 // Cancel pay button pressed.
 
                 // Notify controller that cancel pay is requested.
-                cioc.cancelPayPressed();
+//                cioc.cancelPayPressed();
             }
         });
 		cancelButton.setBounds(511, 503, 120, 63);
