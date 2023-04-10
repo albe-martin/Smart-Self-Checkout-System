@@ -587,11 +587,18 @@ public class AttendantOperationPane extends JPanel {
 		if (action.equalsIgnoreCase("Enable Station")) {
 			// Enable station.
 			aioc.enableStation(cioc.getMainController());
+
+			//todo: Braedon please check if this is the right spot to call this
+			cioc.enablePanel((JPanel) cioc.getDevice().getFrame().getContentPane());
+
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Disable Station")) {
 			// Disable station.
 			aioc.disableStation(cioc.getMainController());
+
+			cioc.disablePanel((JPanel) cioc.getDevice().getFrame().getContentPane());
+
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Shutdown Station")) {

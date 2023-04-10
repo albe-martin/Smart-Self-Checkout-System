@@ -12,9 +12,12 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.swing.ShutdownPane;
+
+import javax.swing.*;
 
 /**
  *
@@ -181,6 +184,46 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     		throw new IllegalStateException("Checkout Station is not assigned to an Attendant Station."); 
     	}
     }
+
+//    public void enableCustomerOperationPane() {
+//        CustomerOperationPane pane = (CustomerOperationPane) getDevice().getFrame().getContentPane();
+//        pane.enableStation();
+//    }
+//
+//    public void disableCustomerOperationPane() {
+//        CustomerOperationPane pane = (CustomerOperationPane) getDevice().getFrame().getContentPane();
+//        pane.disableStation();
+//    }
+//
+//    public void enableCustomerStartPane() {
+//        CustomerStartPane pane = (CustomerStartPane) getDevice().getFrame().getContentPane();
+//        pane.enableStation();
+//    }
+//
+//    public void disableCustomerStartPane() {
+//        CustomerStartPane pane = (CustomerStartPane) getDevice().getFrame().getContentPane();
+//        pane.disableStation();
+//    }
+
+    public void enablePanel(JPanel panel) {
+        if (panel instanceof CustomerOperationPane) {
+            CustomerOperationPane pane = (CustomerOperationPane) panel;
+            pane.enableStation();
+        } else if (panel instanceof CustomerStartPane) {
+            CustomerStartPane pane = (CustomerStartPane) panel;
+            pane.enableStation();
+        }
+    }
+
+    public void disablePanel(JPanel panel) {
+        if (panel instanceof CustomerOperationPane) {
+            CustomerOperationPane pane = (CustomerOperationPane) panel;
+            pane.disableStation();
+        } else if (panel instanceof CustomerStartPane) {
+            CustomerStartPane pane = (CustomerStartPane) panel;
+            pane.disableStation();
+        }
+    }
     
     /**
      * Signals GUI to terminate (since it is turning off).
@@ -200,6 +243,8 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         getDevice().getFrame().setContentPane(new CustomerStartPane(this));
         getDevice().getFrame().revalidate();
         getDevice().getFrame().repaint();
+
+        disablePanel((JPanel) getDevice().getFrame().getContentPane());
     }
     
     /**
@@ -213,7 +258,9 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
         getMainController().setInUse(true);
     }
-    
+
+
+    // don't think this is needed, as only the temporary customer gui exit button utilized it
     /**
      * Signals logout button was pressed.
      */

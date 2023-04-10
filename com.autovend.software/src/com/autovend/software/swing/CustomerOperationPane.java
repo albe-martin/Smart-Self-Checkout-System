@@ -438,9 +438,12 @@ public class CustomerOperationPane extends JPanel {
 //        this.add(logoutButton);
 //	}
 
-	public void shutDownStation() {
+	public void disableStation() {
 
 	}
 
+	public void enableStation() {
+
+	}
 
 }
