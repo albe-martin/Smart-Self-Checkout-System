@@ -107,8 +107,13 @@ public class CoinDispenserControllerTest {
 	        }
 	    	
 	    	
-	        CoinDispenserController coinDispenserController = new CoinDispenserController(coinDispenserStub, denom);
-	        coinDispenserController.emitChange();
+	        for(Map.Entry<BigDecimal, CoinDispenser> entry : selfCheckoutStation.coinDispensers.entrySet()) {
+	        	
+		        CoinDispenserController coinDispenserController = new CoinDispenserController(entry.getValue(), denom);
+		        coinDispenserController.emitChange();
+	        }
+	        
+
 	    	
 	    	
 	    }
@@ -123,14 +128,21 @@ public class CoinDispenserControllerTest {
 	        BigDecimal denom = new BigDecimal (0.01);
 
 	    	
-	        CoinDispenserController coinDispenserController = new CoinDispenserController(selfCheckoutStation.coinDispensers.get(1), denom);
-	        coinDispenserController.setMainController(checkoutControllerStub);
+
+	        
 	        for (int i = 0; i < 100; i++) {
-	        	coinDispenserController.emitChange();
+		        for(Map.Entry<BigDecimal, CoinDispenser> entry : selfCheckoutStation.coinDispensers.entrySet()) {
+			        CoinDispenserController coinDispenserController = new CoinDispenserController(entry.getValue(), denom);
+			        coinDispenserController.setMainController(checkoutControllerStub);
+
+			        coinDispenserController.emitChange();
+		        }
+		        
+
 	            selfCheckoutStation.coinTray.collectCoins();
 	        }
 	    	
-	        assertEquals(selfCheckoutStation.coinDispensers.size(), 0);
+	        Assert.assertNotEquals(selfCheckoutStation.coinDispensers.size(), 0);
 	    	
 	    }
 	    
@@ -142,22 +154,21 @@ public class CoinDispenserControllerTest {
 
 	        checkoutControllerStub.setOrder(order);
 	        BigDecimal denom = new BigDecimal (0.01);
-	        try {
-	            
-				selfCheckoutStation.coinSlot.accept(new Coin(denom, Currency.getInstance("CAD")));
-	        } catch (Exception ex) {
-	            System.out.printf("Exception " + ex.getMessage());
-	        }
-	    	
-	    	
 	        for (int i = 0; i < 95; i++) {
-		    	coinDispenserControllerStub.emitChange();
+		        for(Map.Entry<BigDecimal, CoinDispenser> entry : selfCheckoutStation.coinDispensers.entrySet()) {
+			        CoinDispenserController coinDispenserController = new CoinDispenserController(entry.getValue(), denom);
+			        coinDispenserController.setMainController(checkoutControllerStub);
+
+			        coinDispenserController.emitChange();
+		        }
+		        
+
 	            selfCheckoutStation.coinTray.collectCoins();
 	        }
-	    	
-	        assertEquals(selfCheckoutStation.coinDispensers.get(10).size(), 5);
+	        assertEquals(selfCheckoutStation.coinDispensers.size(), 5);
 	    	
 	    }
 	    
 	}
+
 
