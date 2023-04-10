@@ -32,10 +32,11 @@ public class CustomerStartPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private CustomerIOController cioc;
 	// TODO: Make languages parameters.
-	private String language = "English";
-	private String languages[] = new String[] {"English", "French"};
+	public String language = "English";
+	public String languages[] = new String[] {"English", "French"};
 	public JButton startButton;
 	public JButton languageSelectButton;
+	public ButtonGroup group;
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -135,7 +136,7 @@ public class CustomerStartPane extends JPanel {
 	            panel.add(label);
 	            
 	            // Create a group of radio buttons for the available languages
-	            ButtonGroup group = new ButtonGroup();
+	            group = new ButtonGroup();
 	            for (String language : languages) {
 	                JRadioButton radioButton = new JRadioButton(language);
 	                radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -144,8 +145,8 @@ public class CustomerStartPane extends JPanel {
 	            }
 	
 	            // Show the language selection dialog and get the selected language
-	            int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-	            if (result == JOptionPane.OK_OPTION) {
+	            //int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+	            if (optionDialogPopup(panel) == JOptionPane.OK_OPTION) {
 	                String newLanguage = null;
 	                // Determine selected button's text
 	                for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -168,5 +169,9 @@ public class CustomerStartPane extends JPanel {
 	    languageSelectButton.setBounds(519, 647, 200, 50);
 
      	this.add(languageSelectButton);
+	}
+	
+	public int optionDialogPopup(JPanel panel) {
+        return JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 }
