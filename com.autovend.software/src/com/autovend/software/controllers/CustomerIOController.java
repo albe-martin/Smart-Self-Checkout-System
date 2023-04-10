@@ -14,6 +14,7 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
+import com.autovend.software.swing.ShutdownPane;
 
 /**
  *
@@ -185,6 +186,9 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * Signals GUI to terminate (since it is turning off).
      */
     void notifyShutdown() {
+        getDevice().getFrame().setContentPane(new ShutdownPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
 
         getMainController().setInUse(false);
     }
@@ -193,7 +197,9 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * Signals GUI to start GUI.
      */
     void notifyStartup() {
-    	
+        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
     }
     
     /**
@@ -211,12 +217,12 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     /**
      * Signals logout button was pressed.
      */
-    public void logoutPressed() {
-    	// Switch to start screen.
-    	getDevice().getFrame().setContentPane(new CustomerStartPane(this));
-    	getDevice().getFrame().revalidate();
-    	getDevice().getFrame().repaint();
-    }
+//    public void logoutPressed() {
+//    	// Switch to start screen.
+//    	getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+//    	getDevice().getFrame().revalidate();
+//    	getDevice().getFrame().repaint();
+//    }
 
     //this method is used to display that there is a bagging discrepancy
     void displayWeightDiscrepancyMessage() {}
