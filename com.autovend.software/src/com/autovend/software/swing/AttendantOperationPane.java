@@ -235,7 +235,7 @@ public class AttendantOperationPane extends JPanel {
 		notificationsPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		notificationsScrollPane.setViewportView(notificationsPane);
 		
-		
+		populateNotificationsPane();
 	}
 	
 	/**
@@ -489,9 +489,6 @@ public class AttendantOperationPane extends JPanel {
                 ButtonGroup group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Disable Station"),
                 		Language.translate(language, "Shutdown Station"),
-                		// TODO: Remove bag approval notification trigger once customer can cause it.
-                		// TODO: Or, have it on an atendant triggers gui for the demo testing.
-                		Language.translate(language, "Cause bag approval notification"),
                 		Language.translate(language,  "Add Item By Text Search"),
                 		Language.translate(language, "Remove Item")}) {
                     JRadioButton radioButton = new JRadioButton(action);
@@ -552,15 +549,11 @@ public class AttendantOperationPane extends JPanel {
 		} else if (action.equalsIgnoreCase("Startup Station")) {
 			// Request station start up.
 			aioc.startupStation(cioc.getMainController());
-		// TODO: Delete this when customer bag request is added so action trigger can be deleted.
-		// TODO: It should be caused by the customer not the attendant.
-		} else if (action.equalsIgnoreCase("Cause Bag Approval Notification")) {
-			// TODO: Delete this, it's just a simulator.
-			this.notifyConfirmAddedBags(cioc);
 		} else if (action.equalsIgnoreCase("Add Item By Text Search")) {
 			// Create text search pop-up.
 			createTextSearchPopup(cioc);
 		} else if (action.equalsIgnoreCase("Remove Item")) {
+			// Create remove item pop-up.
 			createRemoveItemPopup(cioc);
 		}
 		
@@ -746,9 +739,7 @@ public class AttendantOperationPane extends JPanel {
             // TODO: Determine item and remove from customer's cart.
         }
 	}
-	
-	// TODO: Link up shutdown notification from attendantIOController.
-	
+
 	/**
 	 * Notify the attendant screen that a station is in use.
 	 * Occurs after an attempt to shutdown a station.

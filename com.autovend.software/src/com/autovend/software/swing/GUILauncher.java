@@ -1,6 +1,5 @@
 package com.autovend.software.swing;
 
-import java.awt.EventQueue;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -57,6 +56,7 @@ public class GUILauncher {
 		attendantScreen.setSize(800, 800);
 		attendantScreen.setUndecorated(false);
 		attendantScreen.setResizable(false);
+		attendantScreen.setTitle("Attendant Screen");
 		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
 		attendantScreen.setContentPane(new AttendantLoginPane(aioc));
 		
@@ -82,7 +82,7 @@ public class GUILauncher {
 			customerScreen.setSize(800, 800);
 			customerScreen.setUndecorated(false);
 			customerScreen.setResizable(false);
-			
+			customerScreen.setTitle("Customer Screen #" + (i + 1));
 			// Create controller
 			CustomerIOController cioc = new CustomerIOController(customerStation.screen);
 			cioc.setMainController(new CheckoutController());
