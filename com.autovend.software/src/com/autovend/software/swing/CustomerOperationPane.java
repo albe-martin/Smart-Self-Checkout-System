@@ -50,7 +50,7 @@ public class CustomerOperationPane extends JPanel {
 		// Create checkout station.
 		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
 				new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
-		
+
 		// Get and set up screen
 		JFrame customerScreen = customerStation.screen.getFrame();
 		customerScreen.setExtendedState(0);
@@ -302,7 +302,7 @@ public class CustomerOperationPane extends JPanel {
 				}
 
 				// Show the language selection dialog and get the selected language
-				int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				int result = JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 				if (result == JOptionPane.OK_OPTION) {
 					String newLanguage = null;
 					// Determine selected button's text
@@ -375,7 +375,7 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridwidth = 2;
 		panel.add(enterButton, gbc);
 
-		JOptionPane.showOptionDialog(null, panel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
 	private void showAddItemByPLUCodePane() {
@@ -425,7 +425,7 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridwidth = 2;
 		panel.add(enterButton, gbc);
 
-		JOptionPane.showOptionDialog(null, panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
 
