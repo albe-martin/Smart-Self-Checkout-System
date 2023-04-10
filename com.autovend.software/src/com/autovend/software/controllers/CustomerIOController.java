@@ -144,7 +144,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
     	if(this.getMainController().getSupervisor() != 0) {
-    		if(this.getMainController().getControllersByType("AttendantIOControllers").contains(IOController)) {
+    		if(this.getMainController().getControllersByType("AttendantIOController").contains(IOController)) {
     	    	this.getMainController().deregisterController("AttendantIOController", IOController);
         		this.getMainController().setSupervisor(0);
     		}
