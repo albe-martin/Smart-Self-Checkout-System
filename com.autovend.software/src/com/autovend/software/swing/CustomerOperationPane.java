@@ -173,16 +173,6 @@ public class CustomerOperationPane extends JPanel {
 				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
 			}
 		}
-
-		// Add purchased bags to the order grid
-		int bagQuantity = cioc.getMainController().getBagNumber();
-		// todo: Not sure where to get the bag price from
-		BigDecimal bagPrice = new BigDecimal("0.10");
-
-		if (bagQuantity > 0) {
-			model.addRow(new Object[]{"Bags", bagPrice.multiply(BigDecimal.valueOf(bagQuantity))});
-		}
-
 		updateTotalCost();
 	}
 
@@ -369,7 +359,7 @@ public class CustomerOperationPane extends JPanel {
 						JOptionPane.showMessageDialog(null, "Invalid quantity. Please enter a non-negative integer.", "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						// Add the purchased bags to the order.
-						cioc.addBagsToOrder(bagQuantity);
+						cioc.purchaseBags(bagQuantity);
 
 						// todo: is this the right spot to call this ???
 						cioc.selectBagsAdded();
