@@ -102,7 +102,12 @@ public class CustomerOperationPane extends JPanel {
 
 		initializePurchaseBagsButton();
 
-		initializePayForItemsButton();
+//		initializePayForItemsButton();
+        
+        initializeCashButton();
+        initializeCreditButton();
+        initializeDebitButton();
+        initializeGiftCardButton();
 
 		initializeEnterMembershipNumberButton();
 
@@ -263,11 +268,16 @@ public class CustomerOperationPane extends JPanel {
 		add(addItemByLookupButton);
 	}
 
-	private void initializePayForItemsButton() {
-		JButton payForItemsButton = new JButton("Pay for Items");
-		payForItemsButton.setBounds(490, 351, 173, 60);
-		add(payForItemsButton);
-	}
+//	private void initializePayForItemsButton() {
+//		JButton payForItemsButton = new JButton("Pay for Items");
+//		payForItemsButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				cioc.payPressed();
+//			}
+//		});
+//		payForItemsButton.setBounds(490, 351, 173, 60);
+//		add(payForItemsButton);
+//	}
 
 	private void initializePurchaseBagsButton() {
 		JButton purchaseBagsButton = new JButton("Purchase Bags");
@@ -464,6 +474,55 @@ public class CustomerOperationPane extends JPanel {
 			}
 		});
 
+	}
+	
+	
+	private void initializeCashButton() {
+		// Create pay with cash button.
+		JButton cashButton = new JButton("Pay with Cash");
+		cashButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: pay with cash
+            }
+        });
+		cashButton.setBounds(490, 351, 173, 60);
+        add(cashButton);
+	}
+
+	private void initializeCreditButton() {
+		// Create pay with credit button.
+		JButton cashButton = new JButton("Pay with Credit");
+		cashButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: pay with credit
+            }
+        });
+		cashButton.setBounds(490, 411, 173, 60);
+        add(cashButton);
+	}
+
+	private void initializeDebitButton() {
+		// Create pay with debit button.
+		JButton cashButton = new JButton("Pay with Debit");
+		cashButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: pay with debit
+            }
+        });
+		cashButton.setBounds(490, 471, 173, 60);
+        add(cashButton);
+	}
+
+	private void initializeGiftCardButton() {
+		// Create pay with gift card button.
+		JButton cashButton = new JButton("Pay with Gift Card");
+		cashButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: pay with gift card
+            }
+        });
+		cashButton.setBounds(490, 531, 173, 60);
+        add(cashButton);
 	}
 
 
