@@ -77,7 +77,7 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 			return;
 		}
 		if (registeringMembers==false) {
-			if (this.isPaying && this.bank!=null);
+			if (this.isPaying && this.bank!=null)
 			{
 				// TODO: Given the data, handle stuff with the transaction
 				int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
