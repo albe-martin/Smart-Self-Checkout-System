@@ -81,8 +81,8 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
 
     //since all card payment methods work the same here (basically), then this can just
     //be generically used by the I/O
-    void choosePayByCard(CardReaderControllerState state, CardIssuer bank, BigDecimal amount) {
-        this.getMainController().payByBankCard(state, bank, amount);
+    public void choosePayByCard(CardIssuer bank, BigDecimal amount) {
+        this.getMainController().payByCard(bank, amount);
     }
     void finalizeOrder(){
         this.getMainController().completePayment();
@@ -194,4 +194,15 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
     //method used to display there is a danger to the station due to weight
     //potentially damaging the bagging area
     void displayBaggingProtectionLock() {}
+    
+    /**
+     * Check if this station is shut down.
+     * @return
+     * 		True if shut down, false otherwise.
+     */
+    public boolean isShutdown() {
+    	return getMainController().isShutdown();
+    }
+
+
 }
