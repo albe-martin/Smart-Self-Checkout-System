@@ -35,78 +35,81 @@ import java.util.Currency;
  */
 
 //todo: card lock use cases need to be handled.
+enum CardReaderControllerState{NOTINUSE,PAYINGBYCREDIT,PAYINGBYDEBIT,PAYINGBYGIFTCARD,REGISTERINGMEMBERS}
 public class CardReaderController extends PaymentController<CardReader, CardReaderObserver>
 		implements CardReaderObserver {
+	public CardReaderControllerState state;
 	/**
 	 * The number of times to retry a data read in case of a fail.
 	 */
 	private static final int RETRIES = 5;
-	public boolean isPaying;
-	public boolean registeringMembers;
-	public CardReaderController(CardReader newDevice) {
-		super(newDevice);
-	}
 
 	public CardIssuer bank;
 	private BigDecimal amount;
+	public CardReaderController(CardReader newDevice) {
+		super(newDevice);
+		state=CardReaderControllerState.NOTINUSE;
+	}
+	public void setState(CardReaderControllerState newstate) {
+		if ((newstate == CardReaderControllerState.NOTINUSE)) {
+			this.disableDevice();
+		} else {
+			this.enableDevice();
+		}
+		this.state=newstate;
+	}
+
+	public void setState(CardReaderControllerState newstate, CardIssuer newbank, BigDecimal newamount) {
+		this.bank=newbank;
+		this.amount=newamount;
+		setState(newstate);
+	}
+
+	public void setState(CardReaderControllerState newstate, BigDecimal newamount) {
+		this.amount=newamount;
+		setState(newstate);
+	}
+
+
 
 	// TODO: Add Messages for the GUI to reactToCardInserted/Removed/Tapped/Swiped
-	@Override
-	public void reactToCardInsertedEvent(CardReader reader) {
-		this.isPaying = true;
-	}
-
-	@Override
-	public void reactToCardRemovedEvent(CardReader reader) {
-		this.isPaying = false;
-		//technically not required since the data read method does this, but
-		//better safe than sorry.
-	}
-
-	// Don't need to implement below yet (use case only asks for insertion so far)
-	@Override
-	public void reactToCardTappedEvent(CardReader reader) {
-		if (!registeringMembers) {
-			this.isPaying = true;
-		}
-	}
-
-	@Override
-	public void reactToCardSwipedEvent(CardReader reader) {
-		if (!registeringMembers) {
-			this.isPaying = true;
-		}
-	}
+	@Override public void reactToCardInsertedEvent(CardReader reader) {}
+	@Override public void reactToCardRemovedEvent(CardReader reader) {}
+	@Override public void reactToCardTappedEvent(CardReader reader) {}
+	@Override public void reactToCardSwipedEvent(CardReader reader) {}
 
 	@Override
 	public void reactToCardDataReadEvent(CardReader reader, Card.CardData data) {
 		if (reader != this.getDevice()) {
 			return;
 		}
-		
-		if (registeringMembers == false) {	// If a payment is being made
-			if (data.getType().equalsIgnoreCase("giftcard")) {
-				reactToGiftCardDataRead((GiftCard.GiftCardInsertData) data);
-			} else if (data.getType().equalsIgnoreCase("credit") || data.getType().equalsIgnoreCase("debit")) {	// Credit and Debit cards
-				if (this.isPaying && this.bank != null) {
-					int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
-					if (holdNum != -1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
-						getMainController().addToAmountPaid(this.amount);
-					}
-
-					this.disableDevice();
-
-					this.amount = BigDecimal.ZERO;
-					this.bank = null;
-
-					this.isPaying = false;
-				}
-			} else {
-				// TODO: inform customer that card read failed
-				return;
-			}
-		} else {	// Membership is being dealt with
+		if (state==CardReaderControllerState.PAYINGBYGIFTCARD) {
+			reactToGiftCardDataRead((GiftCard.GiftCardInsertData) data);
+		} else if (state==CardReaderControllerState.PAYINGBYCREDIT
+				|| state==CardReaderControllerState.PAYINGBYDEBIT) {	// Credit and Debit cards
+			reactToBankCardRead(reader, data);
+		} else if (state==CardReaderControllerState.REGISTERINGMEMBERS) {	// Membership is being dealt with
 			this.getMainController().validateMembership(data.getNumber());
+		}
+	}
+	/**
+	 * Attempts to make a bank on the debit/credit card with the provided data.
+	 * @param reader the bank card reader, used to update the screen for the card reader for display text.
+	 * @param data The GiftCardInsertData for the card.
+	 */
+	private void reactToBankCardRead(CardReader reader, Card.CardData data){
+		if (this.bank != null) {
+			int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
+			if (holdNum != -1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
+				getMainController().addToAmountPaid(this.amount);
+				this.disableDevice();
+				this.amount = BigDecimal.ZERO;
+				this.bank = null;
+				this.state=CardReaderControllerState.NOTINUSE;
+			}
+		} else {
+			// TODO: inform customer that card read failed
+			return;
 		}
 	}
 	
@@ -133,6 +136,7 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		if (balance.compareTo(BigDecimal.ZERO) > 0) {
 			Currency cardCurr = data.getCurrency();
 			// TODO: make sure currency matches the station's, reject and inform customer if not
+			//It doesn't specify the currency for the station anywhere soooooo lol...
 		} else {
 			// TODO: inform customer
 			return;
@@ -142,15 +146,19 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 			// The return flag on the deductions is ignored, as the below checks
 			// mean that the deduction will always either return true or throw an exception.
 			if (this.amount.compareTo(balance) > 0) {
+				BigDecimal diff = amount.subtract(balance);
 				// Balance is less than amount to be paid. Use the rest of the balance.
 				data.deduct(balance);
 				
 				// Subtract amount paid from amount due
 				this.amount = this.amount.subtract(balance);
+				getMainController().addToAmountPaid(diff);
+				this.disableDevice();
+				this.amount = BigDecimal.ZERO;
 			} else {
 				// Balance is greater than or equal to amount, pay entire cost.
 				data.deduct(this.amount);
-				
+				getMainController().addToAmountPaid(amount);
 				// Payment is complete
 				this.disableDevice();
 				this.amount = BigDecimal.ZERO;
@@ -160,19 +168,5 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 			return;
 		}
 		
-	}
-
-	public void enableMemberReg(){
-		registeringMembers=true;
-	}
-	
-	public void disableMemberReg(){
-		registeringMembers=false;
-	}
-
-	public void enablePayment(CardIssuer issuer, BigDecimal amount) {
-		this.enableDevice();
-		this.bank = issuer;
-		this.amount = amount;
 	}
 }

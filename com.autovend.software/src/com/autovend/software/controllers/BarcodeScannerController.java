@@ -23,6 +23,7 @@ import com.autovend.devices.observers.BarcodeScannerObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 
+import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 /**
