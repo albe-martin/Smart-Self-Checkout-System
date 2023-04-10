@@ -13,7 +13,6 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
-import com.autovend.software.swing.CustomerPayPane;
 import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.swing.ShutdownPane;
 
