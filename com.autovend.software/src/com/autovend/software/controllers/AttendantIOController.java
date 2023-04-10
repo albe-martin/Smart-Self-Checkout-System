@@ -301,6 +301,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     //todo: add methods which let this controller modify the GUI on the screen
 
     void displayMessage(String message){
+    }
     /**
      * Notify the GUI that paper is low for a customer station.
      * 
