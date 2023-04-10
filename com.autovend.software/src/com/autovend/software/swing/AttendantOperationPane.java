@@ -50,7 +50,7 @@ public class AttendantOperationPane extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
-	private String language = "English";
+	public String language = "English";
 	// TODO: Have English be the only built in language
 	private String[] languages = new String[] {"English", "French"};
 	public JButton logoutButton;
@@ -69,6 +69,8 @@ public class AttendantOperationPane extends JPanel {
 	ArrayList<JComponent[]> notificationsData;
 	ArrayList<String> activeIssues;
 	private JLabel manageNotificationsLabel;
+    public ButtonGroup group;
+
 	
 	/**
 	 * TODO: Delete for final submission.
@@ -156,7 +158,7 @@ public class AttendantOperationPane extends JPanel {
 		logoutButton.setBounds(631, 19, 118, 50);
 		logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Login button pressed
+                // Logout button pressed
 
             	// Request logout
             	aioc.logout();
@@ -185,7 +187,7 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available languages
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String language : languages) {
                     JRadioButton radioButton = new JRadioButton(language);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -194,8 +196,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the language selection dialog and get the selected language
-                int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel) == JOptionPane.OK_OPTION) {
                     String newLanguage = null;
                     // Determine selected button's text
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -223,6 +224,10 @@ public class AttendantOperationPane extends JPanel {
         });
         languageSelectButton.setBounds(402, 19, 200, 50);
         this.add(languageSelectButton);
+	}
+	
+	public int optionDialogPopup(JPanel panel) {
+		return JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 	
 	/**

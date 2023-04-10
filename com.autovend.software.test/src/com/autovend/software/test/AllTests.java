@@ -23,6 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ AddItemTest.class, AddOwnBagsTest.class, LowInkPaperTest.class, PurchaseBagsTest.class,
-		TestPrintReceipt.class, CardPaymentTest.class, TestMembershipCardController.class })
+		TestPrintReceipt.class, CardPaymentTest.class, TestMembershipCardController.class,
+		AttendantGUITest.class, CustomerGUITest.class })
 public class AllTests {
 }
