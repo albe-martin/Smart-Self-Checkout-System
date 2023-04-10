@@ -54,7 +54,7 @@ public class AttendantStationController {
 	
 	/**
 	 * Constructor to assign this controller a station.
-	 * @param tation
+	 * @param station
 	 * 		The supervision station to assign this controller to.
 	 * 		
 	 */
