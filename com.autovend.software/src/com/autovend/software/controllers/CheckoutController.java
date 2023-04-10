@@ -426,6 +426,8 @@ public class CheckoutController {
 			}
 	}
 
+	
+
 	/**
 	 * Methods to control the PaymentController
 	 */

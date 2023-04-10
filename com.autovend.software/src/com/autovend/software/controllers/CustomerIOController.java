@@ -232,6 +232,13 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public LinkedHashMap<Product, Number[]> getCart() {
     	return this.getMainController().getCart();
     }
+    
+    /**
+     * Method that will notify that the station is out of order
+     */
+    void notifyOutOfOrder() {
+
+    }
 
 
 }

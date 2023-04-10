@@ -20,6 +20,8 @@ package com.autovend.software.controllers;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
+import javax.lang.model.util.ElementScanner14;
+
 import com.autovend.devices.EmptyException;
 import com.autovend.devices.OverloadException;
 import com.autovend.devices.ReceiptPrinter;
@@ -37,10 +39,21 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	public int estimatedInk = 0;
 	public int estimatedPaper = 0;
 
-	// How do we update the estimated ink and paper on refills? - Arie
+	// Ink and Paper Threshold
+	public static final int INK_THRESHOLD = 500;
+	public static final int PAPER_THRESHOLD = 200;
 
 	public ReceiptPrinterController(ReceiptPrinter newDevice) {
 		super(newDevice);
+	}
+
+
+	public boolean getInkLow(){
+		return inkLow;
+	}
+
+	public boolean getPaperLow() {
+		return paperLow;
 	}
 
 	/**
@@ -55,11 +68,6 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 			estimatedInk += inkAmount;
 		else
 			System.out.println("Negative Ink Not Allowed to be Added");
-
-		if (inkAmount > 500)
-			inkLow = false;
-		else
-			inkLow = true;
 	}
 
 	/**
@@ -74,12 +82,36 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 			estimatedPaper += paperAmount;
 		else
 			System.out.println("Negative Paper Not Allowed to be Added");
-
-		if (paperAmount > 200)
-			paperLow = false;
-		else
-			paperLow = true;
 	}
+
+	/**
+	 * Method to notify when the ink in the printer is below the threshold
+	 * 
+	 * @return 
+	 * 		inkLow printer status
+	 */
+	public boolean lowInk() {
+		if (estimatedInk <= INK_THRESHOLD)
+			inkLow = true;
+		else 
+			inkLow = false;
+		return inkLow;
+	}
+
+	/**
+	 * Method to notify when the paper in the printer is below the threshold
+	 * 
+	 * @return
+	 * 		paperLow printer status
+	 */
+	public boolean lowPaper() {
+		if (estimatedPaper <= PAPER_THRESHOLD)
+			paperLow = true;
+		else
+			paperLow = false;
+		return paperLow;
+	}
+
 
 	/**
 	 * Responsible for printing out a properly formatted Receipt using the list of
@@ -127,38 +159,40 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 		// append total cost at the end of the receipt
 		receipt.append(String.format("Total: $%.2f\n", cost));
 
-		try {
-			for (char c : receipt.toString().toCharArray()) {
-				if (c == '\n') {
-					estimatedPaper--;
-				} else if (!Character.isWhitespace(c)) {
-					estimatedInk--;
+		if (lowInk() && lowPaper()) {
+			try {
+				for (char c : receipt.toString().toCharArray()) {
+					if (c == '\n') {
+						estimatedPaper--;
+					} else if (!Character.isWhitespace(c)) {
+						estimatedInk--;
+					}
+	
+					printer.print(c);
 				}
-
-				printer.print(c);
+				printer.cutPaper();
+			} catch (OverloadException e) {
+				System.out.println("The receipt is too long.");
+			} catch (EmptyException e) {
+				System.out.println("The printer is out of paper or ink.");
+				this.getMainController().printerOutOfResources();
 			}
-			printer.cutPaper();
-		} catch (OverloadException e) {
-			System.out.println("The receipt is too long.");
-		} catch (EmptyException e) {
-			System.out.println("The printer is out of paper or ink.");
-			this.getMainController().printerOutOfResources();
 		}
-
-		if (estimatedInk <= 500) {
+		
+		else if (!lowInk() && lowPaper()) {
 			// Inform the I/O for attendant from the error message about low ink
-			// this is a placeholder currently.
-			System.out.println("Ink Low for Station: " + this.getMainController().getID());
 			inkLow = true;
-		} else
-			inkLow = false;
-		if (estimatedPaper <= 200) {
-			// Inform the I/O for attendant from the error message about low ink
-			// this is a placeholder currently.
-			System.out.println("Paper Low for Station: " + this.getMainController().getID());
+		} 
+		else if (lowInk() && !lowPaper()) {
+			// Inform the I/O for attendant from the error message about low paper
 			paperLow = true;
-		} else
-			paperLow = false;
+		}
+		else if (!lowInk() && !lowPaper()) {
+			//inform the I/O for attendant from the error message about low ink and paper
+			inkLow = true;
+			paperLow = true;
+			
+		}
 	}
 
 	@Override
