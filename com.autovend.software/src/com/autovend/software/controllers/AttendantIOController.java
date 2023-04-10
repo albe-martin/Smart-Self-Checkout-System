@@ -3,6 +3,7 @@ package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,8 +54,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     public void enableStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-            checkout.setMaintenence(false);
-            checkout.enableAllDevices();
+            checkout.enableStation();
     	}
     }
 
@@ -65,8 +65,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     public void disableStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-	        checkout.setMaintenence(true);
-	        checkout.disableAllDevices();
+            checkout.disableStation();
     	}
     }
 
@@ -77,7 +76,6 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     public void startupStation(CheckoutController checkout) {
     	if(this.mainController.isLoggedIn()) {
-	        // TODO: Changed by Braedon, please verify.
     		checkout.startUp();
     	}
     }
@@ -86,8 +84,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * Notifies Attendant GUI that the station has started up and is ready to be enabled.
      */
     void notifyStartup(CheckoutController checkout) {
-    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    	System.out.println("notified startup");
     	for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
+    		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
     		pane.notifyStartup((CustomerIOController) customerIOController);
     	}
     }
@@ -102,8 +101,8 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	if(this.mainController.isLoggedIn()) {
 	        if(checkout.isInUse()) {
 	        	// Notify GUI back to confirm shut down
-	        	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
 	        	for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
+	        		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
 	        		pane.notifyShutdownStationInUse((CustomerIOController) customerIOController);
 	        	}
 	        } else {
@@ -198,7 +197,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @return
      * 		Set<Product>: its a set of products that are collected after the search is done.
      */
-    public Set<Product> addItemByTextSearch(String input){
+    public Set<Product> searchProductsByText(String input){
     	String[] filteredInput = input.split(" ");
     	Set<Product> productsToReturn = new HashSet<Product>();
     	
@@ -217,7 +216,11 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	}
     	
     	return productsToReturn;
-    	
+    }
+
+    public void addProductByText(CheckoutController controller, Product prod, BigDecimal count){
+        //for items priced by unit, count is the number of items, otherwise it reads the scale.
+        controller.addItem(prod, count);
     }
     
     /**
@@ -242,24 +245,24 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param customerIOController the CustomerIOController of the customer who needs their bags approved.
      */
     public void approveAddedBags(CustomerIOController customerIOController){
-        customerIOController.getMainController().systemProtectionLock = false;
-        customerIOController.getMainController().AttendantApproved = true;
-        for (DeviceController<?, ?> baggingController : customerIOController.getMainController().getControllersByType("BaggingAreaController")) {
-        	if (baggingController instanceof BaggingScaleController) {
-	            BaggingScaleController scale = (BaggingScaleController) baggingController;
-	            scale.setExpectedWeight(scale.getCurrentWeight());
-        	}
-        }
+        customerIOController.getMainController().approveAddingBags();
     }
 
     /**
      * Notifies the GUI that a customer wants to add bags.
+     *
      * @param customerIOController the CustomerIOController of the customer who wants to add bags.
      */
-    void notifyAddBags(CustomerIOController customerIOController){
+    public void notifyAddBags(CustomerIOController customerIOController){
     	// Notify GUI to approve added bags.
+        //might be better to not need to pass in the controller...
 		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
 		pane.notifyConfirmAddedBags(customerIOController);
+    }
+
+    public void approveWeightDiscrepancy(CheckoutController controller) {
+        controller.attendantOverrideBaggingLock();
+        //todo: GUI
     }
     
     /**
@@ -283,28 +286,21 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 		LinkedHashMap of order <Product, (Amount(units or by weight), total cost)>
      */
     public LinkedHashMap<Product, Number[]> getCart(CheckoutController checkout) {
-    	return checkout.getCart();
+    	return checkout.getOrder();
     }
-    
 
-    // TODO: I think passing the change controller is unnecessary - Braedon.
+
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
-    	// Notify GUI to approve added bags.
-		AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-		for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
-    		pane.notifyLowBillDenomination((CustomerIOController) customerIOController, denom);
-    	}
+        //TODO: Signal GUI
     }
 
-    // TODO: I think passing the change controller is unecessary again - Braedon.
     void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
-    	// Notify GUI to approve added bags.
-    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-		for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
-    		pane.notifyLowCoinDenomination((CustomerIOController) customerIOController, denom);
-    	}
+        //TODO: Signal GUI
     }
 
+    //todo: add methods which let this controller modify the GUI on the screen
+
+    void displayMessage(String message){
     /**
      * Notify the GUI that paper is low for a customer station.
      * 
@@ -320,10 +316,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
     	pane.notifyLowPaper(customerIOController, printer);
     }
-    
+
     /**
      * Receive notification from attendant GUI about low paper issue being acknowledged.
-     * 
+     *
      * @param customerIOController
      * 			CustomerIOController with the issue acknowledged.
      * @param printer
@@ -332,10 +328,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     public void receiveLowPaperAcknowledgement(CustomerIOController customerIOController, ReceiptPrinterController printer) {
     	// TODO: Connect to back-end
     }
-    
+
     /**
      * Notify the GUI that a low paper issue was resolved.
-     * 
+     *
      * @param customerIOController
      * 			CustomerIOController with low paper resolved.
      */
@@ -360,10 +356,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
     	pane.notifyLowInk(customerIOController, printer);
     }
-    
+
     /**
      * Receive notification from attendant GUI about low ink issue being acknowledged.
-     * 
+     *
      * @param customerIOController
      * 			CustomerIOContoller with the issue acknowledged.
      * @param printer
@@ -372,10 +368,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     public void receiveLowInkAcknowledgement(CustomerIOController customerIOController, ReceiptPrinterController receiptPrinter) {
     	// TODO: Connect to back-end
     }
-    
+
     /**
      * Notify the GUI that a low ink issue was resolved.
-     * 
+     *
      * @param customerIOController
      * 			CustomerIOController with low paper resolved.
      */

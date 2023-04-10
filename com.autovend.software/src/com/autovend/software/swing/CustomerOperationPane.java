@@ -3,6 +3,8 @@ package com.autovend.software.swing;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -26,15 +28,16 @@ public class CustomerOperationPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private CustomerIOController cioc;
 	private String language = "English";
-	private String[] languages = new String[] {"English", "French"};
+	private String[] languages = new String[]{"English", "French"};
 	public JButton logoutButton;
 	private JTable orderItemsTable;
 	private JLabel totalCostLabel;
 	private JButton languageSelectButton;
+	private JPanel glassPane;
 
 	/**
 	 * TODO: Delete for final submission.
-	 * 
+	 * <p>
 	 * Quick GUI launcher. Used to allow window builder to work.
 	 */
 	public static void main(String[] args) {
@@ -46,10 +49,10 @@ public class CustomerOperationPane extends JPanel {
 		french.put("Change Language", "Le Change Language");
 		french.put("START", "LE START");
 		Language.addLanguage("French", french);
-				
+
 		// Create checkout station.
-		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
-				new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA),
+				new int[]{1}, new BigDecimal[]{new BigDecimal(0.25)}, 100, 1);
 
 		// Get and set up screen
 		JFrame customerScreen = customerStation.screen.getFrame();
@@ -59,40 +62,44 @@ public class CustomerOperationPane extends JPanel {
 		customerScreen.setResizable(false);
 		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
 		customerScreen.setContentPane(new CustomerOperationPane(cioc));
-		
+
 		customerScreen.setVisible(true);
 	}
-	
+
 	/**
 	 * Basic constructor.
-	 * 
-	 * @param cioc
-	 * 			Linked CustomerIOController.
+	 *
+	 * @param cioc Linked CustomerIOController.
 	 */
 	public CustomerOperationPane(CustomerIOController cioc) {
 		super();
 		this.cioc = cioc;
 		initializeOperationPane();
 	}
-	
+
 	/**
 	 * Initialize customer start pane.
 	 */
 	private void initializeOperationPane() {
 		// Create operation screen pane.
-        this.setBorder(new EmptyBorder(5, 5, 5, 5));
-        this.setLayout(null);
+		this.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.setLayout(null);
+
+		initializeTransparentPane();
+
+		this.add(glassPane);
+
 		initializeHeader();
-        
-        // TODO: Create cart functionalities
-        initializeCartItemsGrid();
+
+		// TODO: Create cart functionalities
+		initializeCartItemsGrid();
 
 		initializeTotalCostLabel();
 
 		initializeAddItemByPLUCodeButton();
 
 		initializeAddItemByLookupCodeButton();
-		
+
 		initializePurchaseBagsButton();
 
 		initializePayForItemsButton();
@@ -106,13 +113,14 @@ public class CustomerOperationPane extends JPanel {
 		// initializeLanguageSelectButton();
 
 
-
 		// TODO: Should have a confirmation popup (see the one I made for attendant notifyshutdownstationinuse).
 
-        // initializeExitButton();
+		// initializeExitButton();
 
 		updateTotalCost();
-        
+
+		refreshOrderGrid();
+
 	}
 
 	private void initializeHeader() {
@@ -133,11 +141,11 @@ public class CustomerOperationPane extends JPanel {
 		};
 		DefaultTableModel items = new DefaultTableModel(null, columnNames) {
 			private static final long serialVersionUID = 1L;
-			
+
 			// Prevent user editing.
 			public boolean isCellEditable(int row, int column) {
-		        return false;
-		    }
+				return false;
+			}
 		};
 		orderItemsTable = new JTable(items);
 		orderItemsTable.setRowHeight(25);
@@ -145,7 +153,7 @@ public class CustomerOperationPane extends JPanel {
 		orderItemsTable.setRequestFocusEnabled(false);
 		orderItemsTable.setFocusable(false);
 		orderItemsTable.setShowGrid(true);
-		
+
 
 		JScrollPane scrollPane = new JScrollPane(orderItemsTable);
 		scrollPane.setBounds(2, 64, 366, 501);
@@ -158,7 +166,7 @@ public class CustomerOperationPane extends JPanel {
 		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
 		model.setRowCount(0);
 
-		HashMap<Product, Number[]> orderItems = cioc.getMainController().getOrder();
+		HashMap<Product, Number[]> orderItems = cioc.getCart();
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
 			if (product instanceof PLUCodedProduct pluProduct) {
@@ -168,14 +176,15 @@ public class CustomerOperationPane extends JPanel {
 			}
 		}
 
+		// todo: actually get the right bag number and not reading the console??? (???) ((???))
 		// Add purchased bags to the order grid
-		int bagQuantity = cioc.getMainController().getBagNumber();
+		// int bagQuantity = cioc.getMainController().getBagNumber();
 		// todo: Not sure where to get the bag price from
 		BigDecimal bagPrice = new BigDecimal("0.10");
 
-		if (bagQuantity > 0) {
-			model.addRow(new Object[]{"Bags", bagPrice.multiply(BigDecimal.valueOf(bagQuantity))});
-		}
+//		if (bagQuantity > 0) {
+//			model.addRow(new Object[]{"Bags", bagPrice.multiply(BigDecimal.valueOf(bagQuantity))});
+//		}
 
 		updateTotalCost();
 	}
@@ -221,6 +230,7 @@ public class CustomerOperationPane extends JPanel {
 //			totalCost = totalCost.add(itemPrice);
 //		}
 
+		System.out.println(cioc.getCart());
 		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
@@ -234,6 +244,7 @@ public class CustomerOperationPane extends JPanel {
 		enterMembershipNumberButton.setBounds(370, 663, 188, 76);
 		add(enterMembershipNumberButton);
 	}
+
 	private void initializeAddItemByPLUCodeButton() {
 		JButton addItemByPluCodeButton = new JButton("Add Item by PLU Code");
 		addItemByPluCodeButton.addActionListener(new ActionListener() {
@@ -244,6 +255,7 @@ public class CustomerOperationPane extends JPanel {
 		addItemByPluCodeButton.setBounds(589, 112, 173, 60);
 		add(addItemByPluCodeButton);
 	}
+
 	private void initializeAddItemByLookupCodeButton() {
 		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
 		addItemByLookupButton.addActionListener(new ActionListener() {
@@ -254,11 +266,13 @@ public class CustomerOperationPane extends JPanel {
 		addItemByLookupButton.setBounds(388, 112, 173, 60);
 		add(addItemByLookupButton);
 	}
+
 	private void initializePayForItemsButton() {
 		JButton payForItemsButton = new JButton("Pay for Items");
 		payForItemsButton.setBounds(490, 351, 173, 60);
 		add(payForItemsButton);
 	}
+
 	private void initializePurchaseBagsButton() {
 		JButton purchaseBagsButton = new JButton("Purchase Bags");
 		purchaseBagsButton.addActionListener(new ActionListener() {
@@ -269,6 +283,7 @@ public class CustomerOperationPane extends JPanel {
 		purchaseBagsButton.setBounds(490, 251, 173, 60);
 		add(purchaseBagsButton);
 	}
+
 	private void initializeCallAttendantButton() {
 		JButton callAttendantButton = new JButton("Call For Attendant");
 		callAttendantButton.addActionListener(new ActionListener() {
@@ -279,6 +294,7 @@ public class CustomerOperationPane extends JPanel {
 		callAttendantButton.setBounds(83, 671, 173, 60);
 		add(callAttendantButton);
 	}
+
 	private void initializeLanguageSelectButton() {
 
 		JButton selectLanguageButton = new JButton("Select Language");
@@ -357,7 +373,7 @@ public class CustomerOperationPane extends JPanel {
 						JOptionPane.showMessageDialog(null, "Invalid quantity. Please enter a non-negative integer.", "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						// Add the purchased bags to the order.
-						cioc.addBagsToOrder(bagQuantity);
+						cioc.purchaseBags(bagQuantity);
 
 						// todo: is this the right spot to call this ???
 						cioc.selectBagsAdded();
@@ -418,6 +434,42 @@ public class CustomerOperationPane extends JPanel {
 		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
+	private void initializeTransparentPane() {
+		glassPane = new JPanel(new GridBagLayout()) {
+			@Override
+			protected void paintComponent(Graphics g) {
+				g.setColor(new Color(128, 128, 128, 128)); // Semi-transparent gray
+				g.fillRect(0, 0, getWidth(), getHeight());
+				super.paintComponent(g);
+			}
+		};
+		glassPane.setOpaque(false);
+		glassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
+		glassPane.setVisible(false);
+
+		JLabel disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
+		disabledMessage.setFont(new Font("Tahoma", Font.BOLD, 20));
+		glassPane.add(disabledMessage);
+
+		// Make the glass pane "absorb" the mouse events, so that nothing behind it (the buttons) can be clicked while it is displayed
+		glassPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				e.consume();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				e.consume();
+			}
+		});
+
+	}
+
 
 //	/**
 //	 * Initialize the exit button.
@@ -438,9 +490,11 @@ public class CustomerOperationPane extends JPanel {
 //        this.add(logoutButton);
 //	}
 
-	public void shutDownStation() {
-
+	public void enableStation() {
+		glassPane.setVisible(false);
 	}
 
-
+	public void disableStation() {
+		glassPane.setVisible(true);
+	}
 }

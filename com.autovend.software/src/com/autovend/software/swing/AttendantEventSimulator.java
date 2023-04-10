@@ -200,7 +200,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcPaper2.gridx = 1;
 		gbcPaper2.gridy = 5;
 		contentPane.add(lowPaper2, gbcPaper2);
-		
+
 		// Resolve low paper events.
 		JButton lowPaperResolve1 = new JButton("Resolve Low Paper Issue (1)");
 		lowPaperResolve1.addActionListener(new ActionListener() {
@@ -213,7 +213,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcPaperResolve1.gridx = 0;
 		gbcPaperResolve1.gridy = 6;
 		contentPane.add(lowPaperResolve1, gbcPaperResolve1);
-		
+
 		JButton lowPaperResolve2 = new JButton("Resolve Low Paper Issue (2)");
 		lowPaperResolve2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
