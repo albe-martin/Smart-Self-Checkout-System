@@ -11,6 +11,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
@@ -146,6 +147,11 @@ public class CustomerOperationPane extends JPanel {
 		orderItemsTable.setFocusable(false);
 		orderItemsTable.setShowGrid(true);
 
+		int tableWidth = orderItemsTable.getPreferredSize().width;
+		TableColumnModel columnModel = orderItemsTable.getColumnModel();
+		columnModel.getColumn(0).setPreferredWidth(tableWidth / 2);
+		columnModel.getColumn(1).setPreferredWidth(tableWidth / 4);
+		columnModel.getColumn(2).setPreferredWidth(tableWidth / 4);
 
 		JScrollPane scrollPane = new JScrollPane(orderItemsTable);
 		scrollPane.setBounds(2, 64, 366, 501);
