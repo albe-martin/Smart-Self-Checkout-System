@@ -38,6 +38,9 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.ReceiptPrinterController;
+
+import javax.swing.JTextPane;
 
 /**
  * A class for the attendant operation pane.
@@ -46,7 +49,7 @@ public class AttendantOperationPane extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
-	private String language = "English";
+	public String language = "English";
 	// TODO: Have English be the only built in language
 	private String[] languages = new String[] {"English", "French"};
 	public JButton logoutButton;
@@ -62,7 +65,9 @@ public class AttendantOperationPane extends JPanel {
 	// Array of [label, button] for notifications.
 	ArrayList<JComponent[]> notificationsData;
 	private JLabel manageNotificationsLabel;
-	
+    public ButtonGroup group;
+
+
 	/**
 	 * TODO: Delete for final submission.
 	 * 
@@ -145,7 +150,7 @@ public class AttendantOperationPane extends JPanel {
 		logoutButton.setBounds(631, 19, 118, 50);
 		logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Login button pressed
+                // Logout button pressed
 
             	// Request logout
             	aioc.logout();
@@ -174,7 +179,7 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available languages
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String language : languages) {
                     JRadioButton radioButton = new JRadioButton(language);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -214,6 +219,10 @@ public class AttendantOperationPane extends JPanel {
         this.add(languageSelectButton);
 	}
 	
+	public int optionDialogPopup(JPanel panel) {
+		return JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+	}
+
 	/**
 	 * Initialize notifications pane.
 	 */
@@ -536,11 +545,18 @@ public class AttendantOperationPane extends JPanel {
 		if (action.equalsIgnoreCase("Enable Station")) {
 			// Enable station.
 			aioc.enableStation(cioc.getMainController());
+
+			//todo: Braedon please check if this is the right spot to call this
+			cioc.enablePanel((JPanel) cioc.getDevice().getFrame().getContentPane());
+
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Disable Station")) {
 			// Disable station.
 			aioc.disableStation(cioc.getMainController());
+
+			cioc.disablePanel((JPanel) cioc.getDevice().getFrame().getContentPane());
+
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Shutdown Station")) {
@@ -812,5 +828,151 @@ public class AttendantOperationPane extends JPanel {
 		notificationsData.add(data);
 		
 		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a bill denomination is low.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyLowBillDenomination(CustomerIOController cioc, BigDecimal denom) {
+		// Create notification data.
+		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " low bills: ($" + denom + ")");
+		JButton button = new JButton("Refilled");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Denomination refilled.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a coin denomination is low.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyLowCoinDenomination(CustomerIOController cioc, BigDecimal denom) {
+		// Create notification data.
+		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " low coins: ($" + denom + ")");
+		JButton button = new JButton("Refilled");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Denomination refilled.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that paper is low.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 * @param printer
+	 * 			ReceiptPrinterController with the issue.
+	 */
+	public void notifyLowPaper(CustomerIOController cioc, ReceiptPrinterController printer) {
+		// Create notification data.
+		String issueText = "Station #" + cioc.getMainController().getID() + " is low on paper!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Acknowledge");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification acknowledged.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            	
+            	// Add to active issues.
+            	activeIssues.add(issueText);
+            	populateActiveIssuesPane();
+
+            	// Send acknowledgement
+            	aioc.receiveLowPaperAcknowledgement(cioc, printer);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a low paper issue has been resolved.
+	 *
+	 * @param cioc
+	 * 			CustomerIOController with the resolved issue.
+	 */
+	public void notifyLowPaperResolved(CustomerIOController cioc) {
+		// Remove issue text from activeIssues.
+		String issueText = "Station #" + cioc.getMainController().getID() + " is low on paper!";
+		activeIssues.remove(issueText);
+		populateActiveIssuesPane();
+	}
+
+	/**
+	 * Notify the attendant that ink is low.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 * @param printer
+	 * 			ReceiptPrinterController with the issue.
+	 */
+	public void notifyLowInk(CustomerIOController cioc, ReceiptPrinterController printer) {
+		// Create notification data.
+		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Acknowledge");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification acknowledged.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            	
+            	// Add to active issues.
+            	activeIssues.add(issueText);
+            	populateActiveIssuesPane();
+
+            	// Send acknowledgement
+            	aioc.receiveLowInkAcknowledgement(cioc, printer);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+
+	/**
+	 * Notify the attendant that a low ink issue has been resolved.
+	 *
+	 * @param cioc
+	 * 			CustomerIOController with the resolved issue.
+	 */
+	public void notifyLowInkResolved(CustomerIOController cioc) {
+		// Remove issue text from activeIssues.
+		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
+		activeIssues.remove(issueText);
+		populateActiveIssuesPane();
 	}
 }
