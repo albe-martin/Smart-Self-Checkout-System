@@ -117,8 +117,6 @@ public class CustomerOperationPane extends JPanel {
 
 		// initializeExitButton();
 
-		updateTotalCost();
-
 		refreshOrderGrid();
 
 	}
@@ -133,12 +131,6 @@ public class CustomerOperationPane extends JPanel {
 
 	private void initializeCartItemsGrid() {
 		String[] columnNames = {"Item", "Price"};
-		// TODO: Get actual items in cart.
-		Object[][] data = {
-				{"Item 1", new BigDecimal("10.00")},
-				{"Item 2", new BigDecimal("20.00")},
-				{"Item 3", new BigDecimal("30.00")},
-		};
 		DefaultTableModel items = new DefaultTableModel(null, columnNames) {
 			private static final long serialVersionUID = 1L;
 
@@ -162,6 +154,8 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	public void refreshOrderGrid() {
+
+		System.out.println("called");
 
 		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
 		model.setRowCount(0);
@@ -191,12 +185,17 @@ public class CustomerOperationPane extends JPanel {
 
 	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
 		Number[] quantities = entry.getValue();
-		for (int i = 0; i < quantities.length; i++) {
-			int quantity = quantities[i].intValue();
-			if (quantity > 0) {
-				model.addRow(new Object[]{description, price});
-			}
-		}
+//		System.out.println(description);
+//		System.out.println(Arrays.toString(quantities));
+
+		model.addRow(new Object[]{description, price});
+
+//		for (int i = 0; i < quantities.length; i++) {
+//			int quantity = quantities[i].intValue();
+//			if (quantity > 0) {
+//				model.addRow(new Object[]{description, price});
+//			}
+//		}
 	}
 
 	private void initializeTotalCostLabel() {
@@ -374,9 +373,6 @@ public class CustomerOperationPane extends JPanel {
 					} else {
 						// Add the purchased bags to the order.
 						cioc.purchaseBags(bagQuantity);
-
-						// todo: is this the right spot to call this ???
-						cioc.selectBagsAdded();
 
 						// Update the order grid to display the bags.
 						refreshOrderGrid();
