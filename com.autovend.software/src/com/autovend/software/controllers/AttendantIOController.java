@@ -246,12 +246,11 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     public void approveAddedBags(CustomerIOController customerIOController){
         customerIOController.getMainController().systemProtectionLock = false;
         customerIOController.getMainController().AttendantApproved = true;
-        HashMap<String, Set<DeviceController>> baggingControllers = customerIOController.getMainController().getAllDeviceControllersRevised();
-        for (DeviceController<?, ?> baggingController : baggingControllers.get("BaggingAreaController")) {
-        	if (baggingController instanceof BaggingScaleController) {
-	            BaggingScaleController scale = (BaggingScaleController) baggingController;
-	            scale.setExpectedWeight(scale.getCurrentWeight());
-        	}
+        for (DeviceController<?, ?> baggingController : customerIOController.getMainController().getControllersByType("BaggingAreaController")) {
+            if(baggingController instanceof BaggingScaleController){
+                BaggingScaleController scale = (BaggingScaleController) baggingController;
+                scale.setExpectedWeight(scale.getCurrentWeight());
+            }
         }
     }
 

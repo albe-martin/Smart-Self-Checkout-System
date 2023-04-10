@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import com.autovend.Barcode;
 import com.autovend.Numeral;
+import com.autovend.ReusableBag;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.swing.CustomerOperationPane;
@@ -105,24 +108,34 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
     /**
      * Called in response to the customer selecting the 'purchase reusable bags' option.
-     * Should trigger a prompt asking the customer how many bags they want to buy.
+     * Adds quantity of reusableBags to 'order' and dispenses quantity of reusableBags.
+     * @param quantity The number of bags the customer wants to buy.
+     * @param price The price of a reusableBag.
      */
-    void selectPurchaseBags(){
+    public void selectPurchaseBags(int quantity, BigDecimal price){
+        // reusableBags are SellableUnits, so they cannot be added to 'order'. Need to make a product (?):
+        ReusableBag bag = new ReusableBag(); // Create a bag just to get its weight.
+        Numeral[] numerals = {Numeral.one, Numeral.two}; // Not even sure if these values matter.
+        Barcode barcode = new Barcode(numerals);
+        String description = "ReusableBag";
+        BarcodedProduct reusableBagProduct = new BarcodedProduct(barcode, description, price, bag.getWeight());
 
+        this.getMainController().purchaseBags(reusableBagProduct, reusableBagProduct.getExpectedWeight(), quantity);
     }
 
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
     void selectBagsAdded(){
-        Set<DeviceController> baggingControllers = this.getMainController().getAllDeviceControllersRevised().get("BaggingAreaController");
-        for (DeviceController baggingController : baggingControllers) {
-            BaggingScaleController scale = (BaggingScaleController) baggingController;
-            scale.setAddingBags(false);
-            scale.setExpectedWeight(scale.getSavedWeight());
-            if(scale.getExpectedWeight() != scale.getCurrentWeight()){
-                this.getMainController().systemProtectionLock = true; // Lock the system
-                this.getMainController().AttendantApproved = false; // Signal the attendant
+        for (DeviceController<?, ?> baggingController : this.getMainController().getControllersByType("BaggingAreaController")) {
+            if(baggingController instanceof BaggingScaleController){
+                BaggingScaleController scale = (BaggingScaleController) baggingController;
+                scale.setAddingBags(false);
+                scale.setExpectedWeight(scale.getSavedWeight());
+                if(scale.getExpectedWeight() != scale.getCurrentWeight()){
+                    this.getMainController().systemProtectionLock = true; // Lock the system
+                    this.getMainController().AttendantApproved = false; // Signal the attendant
+                }
             }
         }
     }
