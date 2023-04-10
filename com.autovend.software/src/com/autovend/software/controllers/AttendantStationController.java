@@ -321,6 +321,16 @@ public class AttendantStationController {
 	}
 	
 	/**
+	 * Returns the set of registered AttendantIOControllers.
+	 * 
+	 * @return
+	 * 		Set of registered AttendantIOControllers.
+	 */
+	public Set<DeviceController> getAttendantIOControllers() {
+		return registeredIOControllers.get("AttendantIOController");
+	}
+	
+	/**
 	 * Getter for current logged in username
 	 * @return
 	 * 		Username of logged in attendant

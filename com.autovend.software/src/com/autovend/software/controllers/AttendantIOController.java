@@ -1,10 +1,7 @@
 package com.autovend.software.controllers;
 
 
-import com.autovend.devices.AbstractDevice;
-import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.TouchScreen;
-import com.autovend.devices.observers.KeyboardObserver;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
@@ -14,11 +11,10 @@ import com.autovend.products.Product;
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.autovend.devices.TouchScreen;
-import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.software.swing.AttendantLoginPane;
 import com.autovend.software.swing.AttendantOperationPane;
 
