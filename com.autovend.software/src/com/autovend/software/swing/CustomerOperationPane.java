@@ -255,6 +255,11 @@ public class CustomerOperationPane extends JPanel {
 	}
 	private void initializePayForItemsButton() {
 		JButton payForItemsButton = new JButton("Pay for Items");
+		payForItemsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cioc.payPressed();
+			}
+		});
 		payForItemsButton.setBounds(490, 351, 173, 60);
 		add(payForItemsButton);
 	}
