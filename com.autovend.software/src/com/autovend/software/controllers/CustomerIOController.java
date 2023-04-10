@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
 import com.autovend.Numeral;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.CardIssuer;
@@ -34,7 +35,8 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
         }
-        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(code);
+        PriceLookUpCode plu = new PriceLookUpCode(code);
+        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
         if (product!=null){
             this.getMainController().addItem(product);
         } else {
