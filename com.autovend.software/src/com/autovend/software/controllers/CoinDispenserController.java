@@ -59,6 +59,9 @@ public class CoinDispenserController extends ChangeDispenserController<CoinDispe
 	public void emitChange() {
 		try {
 			this.getDevice().emit();
+			if (this.getDevice().size() <= 5) {
+				this.getMainController().changeDenomLow(this, this.getDenom());
+			}
 		} catch (EmptyException ex) {
 			this.getMainController().changeDispenseFailed(this, this.getDenom());
 		} catch (OverloadException ex) {

@@ -54,7 +54,7 @@ public class AttendantStationController {
 	
 	/**
 	 * Constructor to assign this controller a station.
-	 * @param tation
+	 * @param station
 	 * 		The supervision station to assign this controller to.
 	 * 		
 	 */
@@ -108,7 +108,7 @@ public class AttendantStationController {
 			if(!attendantIOControllers.contains(controller))
 				attendantIOControllers.add(controller);
 		} 
-		else if(!controller.getTypeName().equals("CustomerIOController")) {
+		else if(controller.getTypeName().equals("CustomerIOController")) {
 			Set<DeviceController> customerIoControllers = registeredIOControllers.get("CustomerIOController");
 			if(!customerIoControllers.contains(controller))
 				customerIoControllers.add(controller);
@@ -206,8 +206,6 @@ public class AttendantStationController {
 				return;
 			}
 		}
-			
-		logout();
 		
 		//Signals AttendantIOController of failure
 		for(DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
@@ -223,6 +221,12 @@ public class AttendantStationController {
 	public void logout() {
 		loggedIn = false;
 		currentUser = "";
+		
+		// Signal AttendantIOController of successful logout
+		for (DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
+			((AttendantIOController) io).loggedOut(currentUser);
+		}
+		
 		return;
 	}
 	
@@ -317,6 +321,16 @@ public class AttendantStationController {
 	}
 	
 	/**
+	 * Returns the set of registered AttendantIOControllers.
+	 * 
+	 * @return
+	 * 		Set of registered AttendantIOControllers.
+	 */
+	public Set<DeviceController> getAttendantIOControllers() {
+		return registeredIOControllers.get("AttendantIOController");
+	}
+	
+	/**
 	 * Getter for current logged in username
 	 * @return
 	 * 		Username of logged in attendant
@@ -330,5 +344,9 @@ public class AttendantStationController {
 	 */
 	public boolean isLoggedIn() {
 		return loggedIn;
+	}
+	
+	public HashMap getUsers() {
+		return credentials;
 	}
 }

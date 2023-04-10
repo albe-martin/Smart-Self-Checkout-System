@@ -179,6 +179,7 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	@Override
 	public void reactToPaperAddedEvent(ReceiptPrinter printer) {
 		this.getMainController().printerRefilled();
+
 	}
 
 	@Override
