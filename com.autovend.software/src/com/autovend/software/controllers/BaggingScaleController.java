@@ -27,6 +27,10 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		implements ElectronicScaleObserver {
 	private double currentWeight;
 	private double expectedWeight;
+	private double savedWeight;
+	private boolean addingBags;
+
+	private boolean AttendantApproval;
 
 	public BaggingScaleController(ElectronicScale newDevice) {
 		super(newDevice);
@@ -57,20 +61,53 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		this.currentWeight = 0;
 		this.expectedWeight = 0;
 	}
+	
+	public void attendantInput(boolean approval) {
+		AttendantApproval = approval;
+		return;
+	}
 
 	@Override
 	public void reactToWeightChangedEvent(ElectronicScale scale, double weightInGrams) {
 		if (scale != this.getDevice()) {
 			return;
 		}
+		;
 		this.currentWeight = weightInGrams;
+		// if the customer is adding their own bags, no need to check the expected
+		// weight as there is not one yet
+		if (addingBags) {
+			return;
+		}
 		if (this.currentWeight == this.expectedWeight) {
 			this.getMainController().baggedItemsValid();
-
 		}
+		// case of weight discrepancy
 		else {
+			
+
+			// boolean value resolveDisrepancy:
+			// true if discrepancy is resolved by:
+			// -a do not bag request from customer IO
+			// -attendant approval
+			boolean resolveDiscrepancy = false;
+
+			// system blocks checkout from further interaction
+			this.getMainController().baggingItemLock = true;
+
+			// discrepancy resolved if customer signals a dnb request or attendant approves
+			if (AttendantApproval)
+				resolveDiscrepancy = true;
+
+			// validates bagging if the discrepancy was resolved
+			if (resolveDiscrepancy) {
+				this.getMainController().baggedItemsValid();
+				this.getMainController().baggingItemLock = false;
+			}
+			else {
 			this.getMainController().baggedItemsInvalid("The items in the bagging area don't have the correct weight.");
-			this.setBaggingValid(false);
+			}
+
 		}
 	}
 
@@ -100,11 +137,31 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		this.expectedWeight += weight;
 	}
 
+	/**
+	 * Saves the current weight on the scale in the savedWeights ArrayList.
+	 */
+	public void saveCurrentWeight(){
+		savedWeight = this.currentWeight;
+	}
+
+	public void setAddingBags(boolean value) {
+		this.addingBags = value;
+	}
+
 	public double getExpectedWeight() {
 		return this.expectedWeight;
 	}
 
-	public void setExpectedWeight(double newWeight) {
-		this.expectedWeight = newWeight;
+	public void setExpectedWeight (double weight){
+		this.expectedWeight = weight;
 	}
+
+	public boolean getAddingBags() {
+		return this.addingBags;
+	}
+
+	public double getSavedWeight(){
+		return this.savedWeight;
+	}
+
 }
