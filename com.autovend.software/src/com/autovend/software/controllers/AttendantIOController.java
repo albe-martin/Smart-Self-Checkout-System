@@ -286,23 +286,6 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	return checkout.getCart();
     }
     
-    /**
-     * This method notifies the AttendantIO GUI that this station's receipt printer is low on ink
-     * @param checkout
-     * 		The checkout station controller whose ink is low
-     */
-    void notifyLowInk(CheckoutController checkout) {
-    	//TODO: signal GUI
-    }
-    
-    /**
-     * This method notifies the AttendantIO GUI that this station's receipt printer is low on paper
-     * @param checkout
-     * 		The checkout station controller whose ink is low
-     */
-    void notifyLowPaper(CheckoutController checkout) {
-    	//TODO: signal GUI
-    }
 
     // TODO: I think passing the change controller is unnecessary - Braedon.
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
