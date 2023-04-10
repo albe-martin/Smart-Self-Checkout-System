@@ -39,6 +39,8 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.ReceiptPrinterController;
+
 import javax.swing.JTextPane;
 
 /**
@@ -907,8 +909,10 @@ public class AttendantOperationPane extends JPanel {
 	 * 
 	 * @param cioc
 	 * 			CustomerIOController requesting confirmation.
+	 * @param printer
+	 * 			ReceiptPrinterController with the issue.
 	 */
-	public void notifyLowPaper(CustomerIOController cioc) {
+	public void notifyLowPaper(CustomerIOController cioc, ReceiptPrinterController printer) {
 		// Create notification data.
 		String issueText = "Station #" + cioc.getMainController().getID() + " is low on paper!";
 		JLabel label = new JLabel(issueText);
@@ -925,6 +929,9 @@ public class AttendantOperationPane extends JPanel {
             	// Add to active issues.
             	activeIssues.add(issueText);
             	populateActiveIssuesPane();
+            	
+            	// Send acknowledgement
+            	aioc.receiveLowPaperAcknowledgement(cioc, printer);
             }
 		});
 		notificationsData.add(data);
@@ -933,12 +940,27 @@ public class AttendantOperationPane extends JPanel {
 	}
 	
 	/**
+	 * Notify the attendant that a low paper issue has been resolved.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController with the resolved issue.
+	 */
+	public void notifyLowPaperResolved(CustomerIOController cioc) {
+		// Remove issue text from activeIssues.
+		String issueText = "Station #" + cioc.getMainController().getID() + " is low on paper!";
+		activeIssues.remove(issueText);
+		populateActiveIssuesPane();
+	}
+	
+	/**
 	 * Notify the attendant that ink is low.
 	 * 
 	 * @param cioc
 	 * 			CustomerIOController requesting confirmation.
+	 * @param printer
+	 * 			ReceiptPrinterController with the issue.
 	 */
-	public void notifyLowInk(CustomerIOController cioc) {
+	public void notifyLowInk(CustomerIOController cioc, ReceiptPrinterController printer) {
 		// Create notification data.
 		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
 		JLabel label = new JLabel(issueText);
@@ -955,10 +977,26 @@ public class AttendantOperationPane extends JPanel {
             	// Add to active issues.
             	activeIssues.add(issueText);
             	populateActiveIssuesPane();
+            	
+            	// Send acknowledgement
+            	aioc.receiveLowInkAcknowledgement(cioc, printer);
             }
 		});
 		notificationsData.add(data);
 		
 		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a low ink issue has been resolved.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController with the resolved issue.
+	 */
+	public void notifyLowInkResolved(CustomerIOController cioc) {
+		// Remove issue text from activeIssues.
+		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
+		activeIssues.remove(issueText);
+		populateActiveIssuesPane();
 	}
 }
