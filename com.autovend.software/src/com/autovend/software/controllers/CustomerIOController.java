@@ -248,26 +248,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
     }
-    
-    /**
-     * Signals pay button was pressed.
-     */
-    public void payPressed() {
-    	// Switch to operation screen.
-    	getDevice().getFrame().setContentPane(new CustomerPayPane(this));
-    	getDevice().getFrame().revalidate();
-    	getDevice().getFrame().repaint();
-    }
-    
-    /**
-     * Signals cancel pay button was pressed.
-     */
-    public void cancelPayPressed() {
-    	// Switch to start screen.
-    	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
-    	getDevice().getFrame().revalidate();
-    	getDevice().getFrame().repaint();
-    }
 
     //this method is used to display that there is a bagging discrepancy
     void displayWeightDiscrepancyMessage() {}
