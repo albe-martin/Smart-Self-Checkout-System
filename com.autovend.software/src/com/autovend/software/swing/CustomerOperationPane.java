@@ -164,18 +164,27 @@ public class CustomerOperationPane extends JPanel {
 		model.setRowCount(0);
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
+//		System.out.println("\n\n" + orderItems.entrySet());
+		System.out.println(cioc.getMainController().getOrder());
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
+			System.out.println("refresh loop product: " + product);
 			if (product instanceof PLUCodedProduct pluProduct) {
 				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
 				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
+//			} else {
+//				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
+//			}
 			}
+
 		}
 
 		// todo: actually get the right bag number and not reading the console??? (???) ((???))
 		// Add purchased bags to the order grid
 		// int bagQuantity = cioc.getMainController().getBagNumber();
+
+
 		// todo: Not sure where to get the bag price from
 		BigDecimal bagPrice = new BigDecimal("0.10");
 
@@ -233,7 +242,7 @@ public class CustomerOperationPane extends JPanel {
 //			totalCost = totalCost.add(itemPrice);
 //		}
 
-		System.out.println(cioc.getCart());
+		//System.out.println(cioc.getCart());
 		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
@@ -379,9 +388,9 @@ public class CustomerOperationPane extends JPanel {
 						cioc.purchaseBags(bagQuantity);
 
 						// Update the order grid to display the bags.
-						//refreshOrderGrid();
+						refreshOrderGrid();
 
-						System.out.println("here");
+						//System.out.println("here");
 
 						Window window = SwingUtilities.getWindowAncestor(enterButton);
 						if (window != null) {
@@ -421,12 +430,14 @@ public class CustomerOperationPane extends JPanel {
 		enterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String pluCode = pluCodeTextField.getText();
+				//System.out.println("1" + cioc.getCart());
 				boolean itemAddedSuccessfully = cioc.addItemByPLU(pluCode);
+				//System.out.println("2" + cioc.getCart());
 
 				if (itemAddedSuccessfully) {
-					System.out.println("ehre");
+					//System.out.println("ehre");
 					refreshOrderGrid();
-					System.out.println("aawdawd");
+					//System.out.println("aawdawd");
 
 					Window window = SwingUtilities.getWindowAncestor(enterButton);
 					if (window != null) {

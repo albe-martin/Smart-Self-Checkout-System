@@ -47,7 +47,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
         }
-        System.out.println(ProductDatabases.PLU_PRODUCT_DATABASE);
         PriceLookUpCode plu = new PriceLookUpCode(code);
         PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
         if (product!=null){
