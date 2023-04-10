@@ -39,6 +39,7 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CustomerIOController;
+import javax.swing.JTextPane;
 
 /**
  * A class for the attendant operation pane.
@@ -60,8 +61,11 @@ public class AttendantOperationPane extends JPanel {
 	public JButton languageSelectButton;
 	public JLabel notificationsLabel;
 	public JPanel notificationsPane;
+	public JLabel activeIssuesLabel;
+	public JPanel activeIssuesPane;
 	// Array of [label, button] for notifications.
 	ArrayList<JComponent[]> notificationsData;
+	ArrayList<String> activeIssues;
 	private JLabel manageNotificationsLabel;
 	
 	/**
@@ -112,6 +116,7 @@ public class AttendantOperationPane extends JPanel {
 		this.aioc = aioc;
 		
 		notificationsData = new ArrayList<>();
+		activeIssues = new ArrayList<>();
 		initializeOperationPane();
 	}
 	
@@ -134,6 +139,9 @@ public class AttendantOperationPane extends JPanel {
 
 		// Initialize station management panes.
 		initializeManagementPanes();
+		
+		// Initialize active issues pane.
+		initializeActiveIssuesPane();
 	}
 	
 	/**
@@ -277,6 +285,44 @@ public class AttendantOperationPane extends JPanel {
 		
 		repaint();
 		revalidate();
+	}
+	
+	/**
+	 * Initialize active issues pane.
+	 */
+	public void initializeActiveIssuesPane() {
+		// Create active issues label.
+		activeIssuesLabel = new JLabel("Active Issues:");
+		activeIssuesLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		activeIssuesLabel.setBounds(415, 304, 227, 23);
+		add(activeIssuesLabel);
+		
+		// Create active issues pane.
+		activeIssuesPane = new JPanel();
+		activeIssuesPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		activeIssuesPane.setBounds(411, 332, 358, 179);
+		add(activeIssuesPane);
+		activeIssuesPane.setLayout(new BoxLayout(activeIssuesPane, BoxLayout.Y_AXIS));
+		
+		populateActiveIssuesPane();
+	}
+	
+	/**
+	 * Populates the active issues pane.
+	 */
+	public void populateActiveIssuesPane() {
+		// Clear pane.
+		activeIssuesPane.removeAll();
+		
+		// Create labels for active issues.
+		for (String issue : activeIssues) {
+			JLabel label = new JLabel(issue);
+			activeIssuesPane.add(label);
+		}
+		
+		
+		revalidate();
+		repaint();
 	}
 	
 	/**
@@ -561,7 +607,7 @@ public class AttendantOperationPane extends JPanel {
 		this.revalidate();
 		this.repaint();
 	}
-	
+
 	/**
 	 * Create a text search pop-up for the attendant to add items to the chosen customer.
 	 * 
@@ -863,9 +909,27 @@ public class AttendantOperationPane extends JPanel {
 	 * 			CustomerIOController requesting confirmation.
 	 */
 	public void notifyLowPaper(CustomerIOController cioc) {
-		// TODO: Implement
+		// Create notification data.
+		String issueText = "Station #" + cioc.getMainController().getID() + " is low on paper!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Acknowledge");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification acknowledged.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            	
+            	// Add to active issues.
+            	activeIssues.add(issueText);
+            	populateActiveIssuesPane();
+            }
+		});
+		notificationsData.add(data);
 		
-		// Might want separate screen, unless I can put text-only notifications.
+		populateNotificationsPane();
 	}
 	
 	/**
@@ -875,6 +939,26 @@ public class AttendantOperationPane extends JPanel {
 	 * 			CustomerIOController requesting confirmation.
 	 */
 	public void notifyLowInk(CustomerIOController cioc) {
-		// TODO: Implement
+		// Create notification data.
+		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Acknowledge");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification acknowledged.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            	
+            	// Add to active issues.
+            	activeIssues.add(issueText);
+            	populateActiveIssuesPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
 	}
 }
