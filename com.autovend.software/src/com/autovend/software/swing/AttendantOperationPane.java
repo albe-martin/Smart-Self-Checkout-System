@@ -858,13 +858,21 @@ public class AttendantOperationPane extends JPanel {
 		panel.add(label);
 		
 		// Show pop-up.
-        int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-        if (result == JOptionPane.YES_OPTION) {
+        if (yesNoPopup(panel) == JOptionPane.YES_OPTION) {
             // Force shutdown.
         	aioc.forceShutDownStation(checkout);
         	// Repopulate management panes
         	populateManagementPanes();
         }
+	}
+	
+	/**
+	 * Shows popup for yes/no selection
+	 * @param panel
+	 * @return int for whether the user clicked yes (0) or no (1)
+	 */
+	public int yesNoPopup(JPanel panel) {
+		return JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 	
 	/**

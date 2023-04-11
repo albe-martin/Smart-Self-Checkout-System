@@ -66,20 +66,6 @@ public class AttendantGUITest {
 	boolean enabledEventOccurred = false;
 	boolean disabledEventOccurred = false;
 	
-//	private CheckoutController checkoutController;
-//	private BarcodeScannerController scannerController;
-//	private BaggingScaleController scaleController;
-//	private AttendantIOController attendantController;
-//	private AttendantStationController stationController;
-//	private CustomerIOController customerController;
-//	private BarcodedProduct databaseItem1;
-//	private BarcodedProduct databaseItem2;
-//	private PLUCodedProduct pluProduct1;
-//	private BarcodedUnit validUnit1;
-//	private BarcodedUnit validUnit2;
-//	BarcodeScanner stubScanner;
-//	ElectronicScale stubScale;
-	
 	
 	/**
 	 * Overrides the optionDialogPopup method of the AttendantLoginPane class
@@ -108,8 +94,9 @@ public class AttendantGUITest {
 	}
 	
 	/**
-	 * Overrides the optionDialogPopup method of the AttendantOperationPane class
-	 * to make it possible to test the language selection.
+	 * Overrides the optionDialogPopup method and the yesNoPopup method of the 
+	 * AttendantOperationPane class to make it possible to test the language selection
+	 * and shutdown station use.
 	 * @author omarkhan
 	 */
 	public class AttendantOperationPaneTest extends AttendantOperationPane {
@@ -131,7 +118,13 @@ public class AttendantGUITest {
             
 			return 0;
 		}
+		
+		@Override
+		public int yesNoPopup(JPanel panel) {
+				return 0; // Simulates click on "yes"
+		}
 	}
+	
 	
 	// Stub for TouchScreenObserver
 	TouchScreenObserver tso = new TouchScreenObserver() {
@@ -221,46 +214,6 @@ public class AttendantGUITest {
 		
 		// Shut down a station
 		ciocs.get(1).getMainController().shutDown();
-		
-//		/*---- AddItem setup ----*/
-//		checkoutController = new CheckoutController();
-//		scannerController = new BarcodeScannerController(new BarcodeScanner());
-//		scaleController = new BaggingScaleController(new ElectronicScale(1000, 1));
-//		stationController = new AttendantStationController();
-//		stubDevice = new TouchScreen();
-//
-//		// First item to be scanned
-//		databaseItem1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1",
-//				BigDecimal.valueOf(83.29), 359.0);
-//
-//		// Second item to be scanned
-//		databaseItem2 = new BarcodedProduct(new Barcode(Numeral.four, Numeral.five), "test item 2",
-//				BigDecimal.valueOf(42), 60.0);
-//
-//		validUnit1 = new BarcodedUnit(new Barcode(Numeral.three, Numeral.three), 359.0);
-//		validUnit2 = new BarcodedUnit(new Barcode(Numeral.four, Numeral.five), 60.0);
-//
-//		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem1.getBarcode(), databaseItem1);
-//		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem2.getBarcode(), databaseItem2);
-//		
-//		// PLU products
-//		pluProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.five, Numeral.five, Numeral.five, Numeral.five, Numeral.five), "test item 1",BigDecimal.valueOf(83.29));
-//		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluProduct1.getPLUCode(), pluProduct1);
-//
-//		stubScanner = new BarcodeScanner();
-//		stubScale = new ElectronicScale(1000, 1);
-//
-//		scannerController = new BarcodeScannerController(stubScanner);
-//		scannerController.setMainController(checkoutController);
-//		scaleController = new BaggingScaleController(stubScale);
-//		scaleController.setMainController(checkoutController);
-//		attendantController = new AttendantIOController(stubDevice);
-//		attendantController.setMainAttendantController(stationController);
-//		customerController = new CustomerIOController(stubDevice);
-//		customerController.setMainController(checkoutController);
-//
-//		stubScanner.register(scannerController);
-//		stubScale.register(scaleController);
 		
     }
     
@@ -439,7 +392,6 @@ public class AttendantGUITest {
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
 		
-
 		usernameTF.setText("abc"); // Correct login credentials
 		passwordTF.setText("123");	
 		loginButton.doClick();
@@ -455,7 +407,6 @@ public class AttendantGUITest {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
-
 		
 		usernameTF.setText("abc"); // Correct login credentials
 		passwordTF.setText("123");	
@@ -482,6 +433,55 @@ public class AttendantGUITest {
 	}
 	
 	/**
+	 * Tests the resolution of a no bag event in the GUI
+	 */
+	@Test
+	public void noBagTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyNoBag(cioc.getMainController());
+	}
+	
+	/**
+	 * Tests the resolution of a weight discrepancy event in the GUI
+	 */
+	@Test
+	public void weightDiscrepancyTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyWeightDiscrepancy(cioc.getMainController());
+	}
+	
+	/**
+	 * Tests the resolution of a receipt reprint event in the GUI
+	 */
+	@Test
+	public void receiptReprintTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		StringBuilder receipt = new StringBuilder();
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyReceiptRePrint(cioc.getMainController(), receipt);
+	}
+	
+	/**
 	 * Tests the resolution of a low paper event in the GUI
 	 */
 	@Test
@@ -497,6 +497,46 @@ public class AttendantGUITest {
 		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaperResolved(cioc.getMainController());
 
 	}
+	
+	/**
+	 * Tests the startup event in the GUI
+	 */
+	@Test
+	public void startupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyStartup(cioc.getMainController());
+		
+
+	}
+	
+	/**
+	 * Tests the shutdown event in the GUI, then simulates "yes" click on popup
+	 */
+	@Test
+	public void shutdownTestYes() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+						
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+		frame.setContentPane(aop);
+		
+		aop.notifyShutdownStationInUse(cioc.getMainController());
+	}
+	
+
 	
 	/**
 	 * Tests the functionality of addIssue method
@@ -536,10 +576,30 @@ public class AttendantGUITest {
 		loginButton.doClick();
 		
 		AttendantOperationPane operationPane = (AttendantOperationPane) screen.getFrame().getContentPane();
+		int oldCount = operationPane.notificationsData.size();
+		
 		operationPane.receiveMessage("message");
+		int newCount = operationPane.notificationsData.size();
+
 		
-		
-		
-//		assert(newVisibleIssues == visibleIssues + 1); // assert that the new issue is showing up in the GUI
+		assert(newCount == oldCount + 1); // assert that the new message is showing up in the GUI
 	}
+	
+//	/**
+//	 * 
+//	 */
+//	@Test
+//	public void Test() {
+//        JButton loginButton = attendantPane.loginButton;
+//		JTextField usernameTF = attendantPane.usernameTextField;
+//		JPasswordField passwordTF = attendantPane.passwordTextField;
+//		
+//		usernameTF.setText("abc"); // Correct login credentials
+//		passwordTF.setText("123");	
+//		loginButton.doClick();
+//		
+//		AttendantOperationPane operationPane = (AttendantOperationPane) screen.getFrame().getContentPane();
+//
+//		
+//	}
 }
