@@ -496,6 +496,5 @@ public class AttendantGUITest {
 		loginButton.doClick();
 				
 		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaperResolved(cioc);
-
 	}
 }
