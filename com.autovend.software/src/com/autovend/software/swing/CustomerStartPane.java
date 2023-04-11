@@ -6,10 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,9 +20,8 @@ import com.autovend.software.controllers.CustomerIOController;
 public class CustomerStartPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private CustomerIOController cioc;
-	// TODO: Make languages parameters.
-	public String language = "English";
-	public String languages[] = new String[]{"English", "French"};
+	private final ArrayList<String> languages = Language.languages;
+	public String language = Language.defaultLanguage;
 	public JButton startButton;
 	public JButton languageSelectButton;
 	public ButtonGroup group;
@@ -34,19 +30,10 @@ public class CustomerStartPane extends JPanel {
 
 	/**
 	 * TODO: Delete for final submission.
-	 * <p>
+	 *
 	 * Quick GUI launcher, used to allow window builder to work.
 	 */
 	public static void main(String[] args) {
-		// Add French language.
-		HashMap<String, String> french = new HashMap<>();
-		french.put("Username:", "Le username:");
-		french.put("Password:", "Le password:");
-		french.put("Log In", "Le log in");
-		french.put("Change Language", "Le Change Language");
-		french.put("START", "LE START");
-		Language.addLanguage("French", french);
-
 		// Create checkout station.
 		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA),
 				new int[]{1}, new BigDecimal[]{new BigDecimal(0.25)}, 100, 1);

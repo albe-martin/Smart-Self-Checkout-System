@@ -26,8 +26,9 @@ import com.autovend.software.utils.MiscProductsDatabase;
 public class CustomerOperationPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private CustomerIOController cioc;
-	private String language = "English";
-	private String[] languages = new String[]{"English", "French"};
+	private final ArrayList<String> languages = Language.languages;
+	public String language = Language.defaultLanguage;
+
 	public JButton logoutButton;
 	private JTable orderItemsTable;
 	private JLabel totalCostLabel;
@@ -40,15 +41,6 @@ public class CustomerOperationPane extends JPanel {
 	 * Quick GUI launcher. Used to allow window builder to work.
 	 */
 	public static void main(String[] args) {
-		// Add French language.
-		HashMap<String, String> french = new HashMap<>();
-		french.put("Username:", "Le username:");
-		french.put("Password:", "Le password:");
-		french.put("Log In", "Le log in");
-		french.put("Change Language", "Le Change Language");
-		french.put("START", "LE START");
-		Language.addLanguage("French", french);
-
 		// Create checkout station.
 		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA),
 				new int[]{1}, new BigDecimal[]{new BigDecimal(0.25)}, 100, 1);
@@ -128,7 +120,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeHeader() {
-		JLabel selfCheckoutStationLabel = new JLabel("Self Checkout Station #" + cioc.getMainController().getID());
+		JLabel selfCheckoutStationLabel = new JLabel(Language.translate(language, "Self Checkout Station #") + cioc.getMainController().getID());
 		selfCheckoutStationLabel.setBounds(0, 11, 800, 55);
 		selfCheckoutStationLabel.setFont(new Font("Tahoma", Font.BOLD, 36));
 		selfCheckoutStationLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -136,7 +128,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeCartItemsGrid() {
-		String[] columnNames = {"Item", "Price", "Qty"};
+		String[] columnNames = {Language.translate(language, "Item"), Language.translate(language, "Price"), Language.translate(language, "Qty")};
 		DefaultTableModel items = new DefaultTableModel(null, columnNames) {
 			private static final long serialVersionUID = 1L;
 

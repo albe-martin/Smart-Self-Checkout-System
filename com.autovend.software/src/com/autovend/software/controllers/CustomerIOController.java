@@ -143,11 +143,13 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public void addOwnBags(){this.getMainController().setAddingBagsLock();}
     //todo: gui stuff
     public void cancelAddOwnBags(){this.getMainController().cancelAddingBagsLock();}
+
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
     public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
     //todo: more substance
+
 
     public void itemWasAddedToTheBaggingArea() {
         //todo: either make this work, or tell Colton how it is meant to work

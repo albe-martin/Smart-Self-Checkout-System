@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -34,9 +35,8 @@ public class AttendantLoginPane extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
-	public String language = "English";
-	// TODO: Have English be the only built in language
-	public String[] languages = new String[] {"English", "French"};
+	private final ArrayList<String> languages = Language.languages;
+	public String language = Language.defaultLanguage;
 	public JLabel usernameLabel;
 	public JTextField usernameTextField;
 	public JLabel passwordLabel;
