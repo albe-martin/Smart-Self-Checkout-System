@@ -353,6 +353,7 @@ public class AttendantStationController {
 	public void printReceipt(StringBuilder receipt) {
 		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
 		printerController.printReceipt(receipt);
+	}
 
 	
 	public HashMap getUsers() {

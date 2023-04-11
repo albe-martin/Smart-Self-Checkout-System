@@ -215,6 +215,86 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 			
 		}
 	}
+	
+	/**
+	 * Responsible for printing out a properly formatted Receipt using the list of
+	 * Products and total cost. The receipt will contain a numbered list containing
+	 * the price of each product.
+	 * 
+	 * @param order: HashMap of Products on the order
+	 * @param cost:  total cost of the order
+	 */
+	public void printReceipt(LinkedHashMap<Product, Number[]> order, BigDecimal cost) {
+
+		printer = getDevice();
+
+		// initialize String Builder to build the receipt
+		StringBuilder receipt = new StringBuilder();
+		receipt.append("Purchase Details:\n");
+
+		// loop through every product in the order, appending the appropriate strings to
+		// the receipt
+		int i = 1;
+
+		for (Product product : order.keySet()) {
+			Number[] productInfo = order.get(product);
+
+			String productName = product.getClass().getSimpleName();
+			String productString;
+			if (product.isPerUnit()) {
+				productString = String.format("%d $%.2f %dx %s\n", i, productInfo[1], productInfo[0],
+						productName);
+			} else {
+				productString = String.format("%d $%.2f %dkg %s\n", i, productInfo[1], productInfo[0],
+						productName);
+			}
+			int splitPos = 59;
+			String splitterSubString = "-\n    -";
+			while (splitPos < productString.length() - 1) {// -1 to not worry about the \n at the end.
+				productString = productString.substring(0, splitPos) + splitterSubString
+						+ productString.substring(splitPos);
+				splitPos += 61;// 1 extra to account for \n being 1 character (prevents double-spacing of text)
+			}
+
+			receipt.append(productString);
+			i++;
+		}
+		// append total cost at the end of the receipt
+		receipt.append(String.format("Total: $%.2f\n", cost));
+
+		try {
+			for (char c : receipt.toString().toCharArray()) {
+				if (c == '\n') {
+					estimatedPaper--;
+				} else if (!Character.isWhitespace(c)) {
+					estimatedInk--;
+				}
+
+				printer.print(c);
+			}
+			printer.cutPaper();
+		} catch (OverloadException e) {
+			System.out.println("The receipt is too long.");
+		} catch (EmptyException e) {
+			System.out.println("The printer is out of paper or ink.");
+			this.getMainController().printerOutOfResources();
+		}
+
+		if (estimatedInk <= 500) {
+			// Inform the I/O for attendant from the error message about low ink
+			// this is a placeholder currently.
+			System.out.println("Ink Low for Station: " + this.getMainController().getID());
+			inkLow = true;
+		} else
+			inkLow = false;
+		if (estimatedPaper <= 200) {
+			// Inform the I/O for attendant from the error message about low ink
+			// this is a placeholder currently.
+			System.out.println("Paper Low for Station: " + this.getMainController().getID());
+			paperLow = true;
+		} else
+			paperLow = false;
+	}
 
 	@Override
 	public void reactToOutOfPaperEvent(ReceiptPrinter printer) {
