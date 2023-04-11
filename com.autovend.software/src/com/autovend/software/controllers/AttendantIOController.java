@@ -314,7 +314,8 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         return checkout.getOrder();
     }
 
-
+    // TODO: Delete these notify low ink/paper, as they are a repeat of the better version below that passes the printer.
+    
     /**
      * This method notifies the AttendantIO GUI that this station's receipt printer
      * is low on ink
@@ -352,6 +353,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     void displayMessage(String message) {
     }
+    
     /**
      * Notify the GUI that paper is low for a customer station.
      * 

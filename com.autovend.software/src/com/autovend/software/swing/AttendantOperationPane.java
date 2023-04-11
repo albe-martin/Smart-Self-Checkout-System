@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractButton;
@@ -40,6 +41,7 @@ import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.ReceiptPrinterController;
+import com.autovend.software.utils.MiscProductsDatabase;
 
 import javax.swing.JTextPane;
 
@@ -784,19 +786,71 @@ public class AttendantOperationPane extends JPanel {
         
         // Create a group of radio buttons for the available items to remove.
         ButtonGroup group = new ButtonGroup();
-        
-        // TODO: Loop through each item in customer's cart (includes bags, what product type are they? for description).
-//        for (String language : languages) {
-//            JRadioButton radioButton = new JRadioButton(language);
-//            radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//            group.add(radioButton);
-//            panel.add(radioButton);
-//        }
+
+        // Loop through each item in customer's cart.
+        for (Map.Entry<Product, Number[]> entry : aioc.getCart(cioc.getMainController()).entrySet()) {
+        	JRadioButton radioButton;
+			Product product = entry.getKey();
+			if (product instanceof PLUCodedProduct pluProduct) {
+				// Handle PLU product.
+				radioButton = new JRadioButton(entry.getValue()[0] + " " + pluProduct.getDescription() + " for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			} else if (product instanceof BarcodedProduct barcodeProduct) {
+				// Handle barcode product.
+				radioButton = new JRadioButton(entry.getValue()[0] + " " + barcodeProduct.getDescription() + " for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+				// Handle bags.
+				radioButton = new JRadioButton(entry.getValue()[0] + " bags for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			}
+		}
 
         // Show pop-up.
         int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
-            // TODO: Determine item and remove from customer's cart.
+        	String selectedProductDescription = null;
+            // Determine selected button's text
+            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                AbstractButton button = buttons.nextElement();
+                if (button.isSelected()) {
+                    selectedProductDescription = button.getText();
+                    break;
+                }
+            }
+
+            if (selectedProductDescription != null) {
+                // Match the product.
+            	// Loop through each item in customer's cart.
+                for (Map.Entry<Product, Number[]> entry : aioc.getCart(cioc.getMainController()).entrySet()) {
+        			Product product = entry.getKey();
+        			if (product instanceof PLUCodedProduct pluProduct) {
+        				// Handle PLU product.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " " + pluProduct.getDescription() + " for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			} else if (product instanceof BarcodedProduct barcodeProduct) {
+        				// Handle barcode product.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " " + barcodeProduct.getDescription() + " for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+        				// Handle bags.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " bags for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			}
+        		}
+            }
         }
 	}
 
