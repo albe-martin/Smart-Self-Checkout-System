@@ -314,6 +314,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         return checkout.getOrder();
     }
 
+
     /**
      * This method notifies the AttendantIO GUI that this station's receipt printer
      * is low on ink
@@ -336,6 +337,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         // TODO: signal GUI
     }
 
+
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller,
             BigDecimal denom) {
         // TODO: Signal GUI
@@ -349,5 +351,84 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     // todo: add methods which let this controller modify the GUI on the screen
 
     void displayMessage(String message) {
+    }
+    /**
+     * Notify the GUI that paper is low for a customer station.
+     * 
+     * TODO: Back-end functionality that calls this function needs to be implemented.
+     * 
+     * @param customerIOController
+     * 			CustomerIOController that is low on paper.
+     * @param printer
+     * 			ReceiptPrinterController with the issue.
+     */
+    void notifyLowPaper(CustomerIOController customerIOController, ReceiptPrinterController printer) {
+    	// Notify GUI about low paper.
+    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    	pane.notifyLowPaper(customerIOController, printer);
+    }
+
+    /**
+     * Receive notification from attendant GUI about low paper issue being acknowledged.
+     *
+     * @param customerIOController
+     * 			CustomerIOController with the issue acknowledged.
+     * @param printer
+     * 			ReceiptPrinterController with the resolved issue.
+     */
+    public void receiveLowPaperAcknowledgement(CustomerIOController customerIOController, ReceiptPrinterController printer) {
+    	// TODO: Connect to back-end
+    }
+
+    /**
+     * Notify the GUI that a low paper issue was resolved.
+     *
+     * @param customerIOController
+     * 			CustomerIOController with low paper resolved.
+     */
+    void notifyLowPaperResolved(CustomerIOController customerIOController) {
+    	// Notify GUI about low paper resolved.
+    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    	pane.notifyLowPaperResolved(customerIOController);
+    }
+    
+    /**
+     * Notify the GUI that ink is low for a customer station.
+     * 
+     * TODO: Back-end functionality that calls this function needs to be implemented.
+     * 
+     * @param customerIOController
+     * 			CustomerIOController that is low on ink.
+     * @param printer
+     * 			ReceiptPrinterController with the issue.
+     */
+    void notifyLowInk(CustomerIOController customerIOController, ReceiptPrinterController printer) {
+    	// Notify GUI about low ink.
+    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    	pane.notifyLowInk(customerIOController, printer);
+    }
+
+    /**
+     * Receive notification from attendant GUI about low ink issue being acknowledged.
+     *
+     * @param customerIOController
+     * 			CustomerIOContoller with the issue acknowledged.
+     * @param printer
+     * 			ReceiptPrinterController with the acknowledged issue.
+     */
+    public void receiveLowInkAcknowledgement(CustomerIOController customerIOController, ReceiptPrinterController receiptPrinter) {
+    	// TODO: Connect to back-end
+    }
+
+    /**
+     * Notify the GUI that a low ink issue was resolved.
+     *
+     * @param customerIOController
+     * 			CustomerIOController with low paper resolved.
+     */
+    void notifyLowInkResolved(CustomerIOController customerIOController) {
+    	// Notify GUI about low paper resolved.
+    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+    	pane.notifyLowInkResolved(customerIOController);
     }
 }
