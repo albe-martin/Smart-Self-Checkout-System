@@ -9,10 +9,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractButton;
@@ -37,7 +39,9 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
-import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.ReceiptPrinterController;
+import com.autovend.software.utils.MiscProductsDatabase;
 
 /**
  * A class for the attendant operation pane.
@@ -46,9 +50,10 @@ public class AttendantOperationPane extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
-	private String language = "English";
-	// TODO: Have English be the only built in language
-	private String[] languages = new String[] {"English", "French"};
+
+	private final ArrayList<String> languages = Language.languages;
+	public String language = Language.defaultLanguage;
+
 	public JButton logoutButton;
 	public JPanel manageEnabledPane;
 	public JLabel manageEnabledLabel;
@@ -59,46 +64,44 @@ public class AttendantOperationPane extends JPanel {
 	public JButton languageSelectButton;
 	public JLabel notificationsLabel;
 	public JPanel notificationsPane;
+	public JLabel activeIssuesLabel;
+	public JPanel activeIssuesPane;
 	// Array of [label, button] for notifications.
-	ArrayList<JComponent[]> notificationsData;
+	public ArrayList<JComponent[]> notificationsData;
+	public ArrayList<String> activeIssues;
 	private JLabel manageNotificationsLabel;
-	
-	/**
-	 * TODO: Delete for final submission.
-	 * 
-	 * Quick GUI Launcher. Used to allow window builder to work.
-	 */
-	public static void main(String[] args) {
-		// Add French language.
-		HashMap<String, String> french = new HashMap<>();
-		french.put("Username:", "Le username:");
-		french.put("Password:", "Le password:");
-		french.put("Log In", "Le log in");
-		french.put("Change Language", "Le Change Language");
-		french.put("START", "LE START");
-		Language.addLanguage("French", french);
-		
-		// Create attendant station.
-		SupervisionStation attendantStation = new SupervisionStation();
-		
-		// Get and set up screen
-		JFrame attendantScreen = attendantStation.screen.getFrame();
-		attendantScreen.setExtendedState(0);
-		attendantScreen.setSize(800, 800);
-		attendantScreen.setUndecorated(false);
-		attendantScreen.setResizable(false);
-		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
-		attendantScreen.setContentPane(new AttendantOperationPane(aioc));
-		
-		AttendantStationController asc = new AttendantStationController();
-		aioc.setMainAttendantController(asc);
-		asc.registerController(aioc);
-		
-		// Add valid username and password.
-		asc.registerUser("abc", "123");
-		
-		attendantScreen.setVisible(true);	
-	}
+    public ButtonGroup group;
+    public JTextField searchField;
+    public JButton button;
+
+
+//	/**
+//	 * TODO: Delete for final submission.
+//	 * 
+//	 * Quick GUI Launcher. Used to allow window builder to work.
+//	 */
+//	public static void main(String[] args) {
+//		// Create attendant station.
+//		SupervisionStation attendantStation = new SupervisionStation();
+//		
+//		// Get and set up screen
+//		JFrame attendantScreen = attendantStation.screen.getFrame();
+//		attendantScreen.setExtendedState(0);
+//		attendantScreen.setSize(800, 800);
+//		attendantScreen.setUndecorated(false);
+//		attendantScreen.setResizable(false);
+//		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
+//		attendantScreen.setContentPane(new AttendantOperationPane(aioc));
+//		
+//		AttendantStationController asc = new AttendantStationController();
+//		aioc.setMainAttendantController(asc);
+//		asc.registerController(aioc);
+//		
+//		// Add valid username and password.
+//		asc.registerUser("abc", "123");
+//		
+//		attendantScreen.setVisible(true);	
+//	}
 	
 	/**
 	 * Basic constructor.
@@ -111,6 +114,7 @@ public class AttendantOperationPane extends JPanel {
 		this.aioc = aioc;
 		
 		notificationsData = new ArrayList<>();
+		activeIssues = new ArrayList<>();
 		initializeOperationPane();
 	}
 	
@@ -133,6 +137,9 @@ public class AttendantOperationPane extends JPanel {
 
 		// Initialize station management panes.
 		initializeManagementPanes();
+		
+		// Initialize active issues pane.
+		initializeActiveIssuesPane();
 	}
 	
 	/**
@@ -145,7 +152,7 @@ public class AttendantOperationPane extends JPanel {
 		logoutButton.setBounds(631, 19, 118, 50);
 		logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Login button pressed
+                // Logout button pressed
 
             	// Request logout
             	aioc.logout();
@@ -174,7 +181,7 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available languages
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String language : languages) {
                     JRadioButton radioButton = new JRadioButton(language);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -183,8 +190,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the language selection dialog and get the selected language
-                int result = JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel, "Language Selection") == JOptionPane.OK_OPTION) {
                     String newLanguage = null;
                     // Determine selected button's text
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -200,7 +206,7 @@ public class AttendantOperationPane extends JPanel {
                         language = newLanguage;
 
                         // Update texts to new language
-                        notificationsLabel.setText(Language.translate(language, "Station Notifications:"));
+                        manageNotificationsLabel.setText(Language.translate(language, "Station Notifications:"));
                         manageEnabledLabel.setText(Language.translate(language, "Manage Enabled Stations:"));
                         manageDisabledLabel.setText(Language.translate(language, "Manage Disabled Stations:"));
                         logoutButton.setText(Language.translate(language, "Log Out"));
@@ -214,6 +220,10 @@ public class AttendantOperationPane extends JPanel {
         this.add(languageSelectButton);
 	}
 	
+	public int optionDialogPopup(JPanel panel, String header) {
+		return JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, header, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+	}
+
 	/**
 	 * Initialize notifications pane.
 	 */
@@ -234,7 +244,7 @@ public class AttendantOperationPane extends JPanel {
 		notificationsPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		notificationsScrollPane.setViewportView(notificationsPane);
 		
-		
+		populateNotificationsPane();
 	}
 	
 	/**
@@ -276,6 +286,44 @@ public class AttendantOperationPane extends JPanel {
 		
 		repaint();
 		revalidate();
+	}
+	
+	/**
+	 * Initialize active issues pane.
+	 */
+	public void initializeActiveIssuesPane() {
+		// Create active issues label.
+		activeIssuesLabel = new JLabel("Active Issues:");
+		activeIssuesLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		activeIssuesLabel.setBounds(415, 304, 227, 23);
+		add(activeIssuesLabel);
+		
+		// Create active issues pane.
+		activeIssuesPane = new JPanel();
+		activeIssuesPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		activeIssuesPane.setBounds(411, 332, 358, 179);
+		add(activeIssuesPane);
+		activeIssuesPane.setLayout(new BoxLayout(activeIssuesPane, BoxLayout.Y_AXIS));
+		
+		populateActiveIssuesPane();
+	}
+	
+	/**
+	 * Populates the active issues pane.
+	 */
+	public void populateActiveIssuesPane() {
+		// Clear pane.
+		activeIssuesPane.removeAll();
+		
+		// Create labels for active issues.
+		for (String issue : activeIssues) {
+			JLabel label = new JLabel(issue);
+			activeIssuesPane.add(label);
+		}
+		
+		
+		revalidate();
+		repaint();
 	}
 	
 	/**
@@ -335,23 +383,23 @@ public class AttendantOperationPane extends JPanel {
 		manageShutdownPane.removeAll();
 		
 		// Add each station to enabled/disabled/shutdown pane.
-		for (CustomerIOController cioc : aioc.getAllStationsIOControllers()) {
-			if (cioc.getMainController().isDisabled()) {
-				if (cioc.isShutdown()) {
+		for (CheckoutController checkout : aioc.getAllStationsControllers()) {
+			if (checkout.isDisabled()) {
+				if (checkout.isShutdown()) {
 					// Add to shutdown pane.
-					JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
-					addShutdownActionPopup(btn, cioc);
+					JButton btn = new JButton(Language.translate(language, "Station") + " #" + checkout.getID());
+					addShutdownActionPopup(btn, checkout);
 					manageShutdownPane.add(btn);
 				} else {
 					// Add to disabled pane.
-					JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
-					addDisabledActionPopup(btn, cioc);
+					JButton btn = new JButton(Language.translate(language, "Station") + " #" + checkout.getID());
+					addDisabledActionPopup(btn, checkout);
 					manageDisabledPane.add(btn);
 				}
 			} else {
 				// Add enabled station to enabled pane.
-				JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
-				addEnabledActionPopup(btn, cioc);
+				JButton btn = new JButton(Language.translate(language, "Station") + " #" + checkout.getID());
+				addEnabledActionPopup(btn, checkout);
 				manageEnabledPane.add(btn);
 			}
 		}
@@ -365,10 +413,10 @@ public class AttendantOperationPane extends JPanel {
 	 * 
 	 * @param btn
 	 * 			Button that causes the pop-up.
-	 * @param cioc
-	 * 			CustomerIOController performing the action on.
+	 * @param checkout
+	 * 			CheckoutController performing the action on.
 	 */
-	public void addShutdownActionPopup(JButton btn, CustomerIOController cioc) {
+	public void addShutdownActionPopup(JButton btn, CheckoutController checkout) {
 		btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Create a panel to hold the actions pop-up.
@@ -382,7 +430,7 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available actions.
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Startup Station")}) {
                     JRadioButton radioButton = new JRadioButton(action);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -391,8 +439,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(null, panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel, "Action Selection") == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -404,22 +451,23 @@ public class AttendantOperationPane extends JPanel {
                     }
                     
                     // Process the selected action.
-                    processAction(chosenAction, cioc);
+                    processAction(chosenAction, checkout);
                 }
             }
         });
 		
 	}
 	
+	
 	/**
 	 * Adds the action pop-up menu for a disabled station.
 	 * 
 	 * @param btn
 	 * 			Button that causes the pop-up.
-	 * @param cioc
-	 * 			CustomerIOController performing the action on.
+	 * @param checkout
+	 * 			CheckoutController performing the action on.
 	 */
-	public void addDisabledActionPopup(JButton btn, CustomerIOController cioc) {
+	public void addDisabledActionPopup(JButton btn, CheckoutController checkout) {
 		btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Create a panel to hold the actions pop-up.
@@ -433,7 +481,7 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available actions.
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Enable Station"),
                 		Language.translate(language, "Shutdown Station")}) {
                     JRadioButton radioButton = new JRadioButton(action);
@@ -443,8 +491,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(null, panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel, "Action Selection") == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -456,7 +503,7 @@ public class AttendantOperationPane extends JPanel {
                     }
                     
                     // Process the selected action.
-                    processAction(chosenAction, cioc);
+                    processAction(chosenAction, checkout);
                 }
             }
         });
@@ -468,10 +515,10 @@ public class AttendantOperationPane extends JPanel {
 	 * 
 	 * @param btn
 	 * 			Button that causes the pop-up.
-	 * @param cioc
-	 * 			CustomerIOController performing the action on.
+	 * @param checkout
+	 * 			CheckoutController performing the action on.
 	 */
-	public void addEnabledActionPopup(JButton btn, CustomerIOController cioc) {
+	public void addEnabledActionPopup(JButton btn, CheckoutController checkout) {
 		btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Create a panel to hold the actions pop-up.
@@ -485,12 +532,9 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available actions.
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Disable Station"),
                 		Language.translate(language, "Shutdown Station"),
-                		// TODO: Remove bag approval notification trigger once customer can cause it.
-                		// TODO: Or, have it on an atendant triggers gui for the demo testing.
-                		Language.translate(language, "Cause bag approval notification"),
                 		Language.translate(language,  "Add Item By Text Search"),
                 		Language.translate(language, "Remove Item")}) {
                     JRadioButton radioButton = new JRadioButton(action);
@@ -500,8 +544,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Action Selection"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel, "Action Selection") == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -513,7 +556,7 @@ public class AttendantOperationPane extends JPanel {
                     }
                     
                     // Process the selected action.
-                    processAction(chosenAction, cioc);
+                    processAction(chosenAction, checkout);
                 }
             }
         });
@@ -525,56 +568,52 @@ public class AttendantOperationPane extends JPanel {
 	 * 
 	 * @param action
 	 * 			Action to be performed.
-	 * @param cioc
-	 * 			CustomerIOController to perform the action on.
+	 * @param checkout
+	 * 			CheckoutController to perform the action on.
 	 */
-	public void processAction(String action, CustomerIOController cioc ) {
+	public void processAction(String action, CheckoutController checkout ) {
 		if (action == null) {
 			// Ignore null actions.
 			return;
 		}
 		if (action.equalsIgnoreCase("Enable Station")) {
 			// Enable station.
-			aioc.enableStation(cioc.getMainController());
+			aioc.enableStation(checkout);
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Disable Station")) {
 			// Disable station.
-			aioc.disableStation(cioc.getMainController());
+			aioc.disableStation(checkout);
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Shutdown Station")) {
 			// Shut down station. May receive an in use notification.
-			aioc.shutdownStation(cioc.getMainController());
+			aioc.shutdownStation(checkout);
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Startup Station")) {
 			// Request station start up.
-			aioc.startupStation(cioc.getMainController());
-		// TODO: Delete this when customer bag request is added so action trigger can be deleted.
-		// TODO: It should be caused by the customer not the attendant.
-		} else if (action.equalsIgnoreCase("Cause Bag Approval Notification")) {
-			// TODO: Delete this, it's just a simulator.
-			this.notifyConfirmAddedBags(cioc);
+			aioc.startupStation(checkout);
 		} else if (action.equalsIgnoreCase("Add Item By Text Search")) {
 			// Create text search pop-up.
-			createTextSearchPopup(cioc);
+			createTextSearchPopup(checkout);
 		} else if (action.equalsIgnoreCase("Remove Item")) {
-			createRemoveItemPopup(cioc);
+			// Create remove item pop-up.
+			createRemoveItemPopup(checkout);
 		}
 		
 		// Refresh screen.
 		this.revalidate();
 		this.repaint();
 	}
-	
+
 	/**
 	 * Create a text search pop-up for the attendant to add items to the chosen customer.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController to add an item to.
+	 * @param checkout
+	 * 			CheckoutController to add an item to.
 	 */
-	public void createTextSearchPopup(CustomerIOController cioc) {
+	public void createTextSearchPopup(CheckoutController checkout) {
 		// Create a panel to hold the text search pop-up.
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -586,30 +625,28 @@ public class AttendantOperationPane extends JPanel {
         panel.add(label);
 
         // Create a text field to search in.
-        JTextField searchField = new JTextField();
+        searchField = new JTextField();
         panel.add(searchField);
         
         // Show pop-up and get result.
-        int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Add Item By Text Search"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-        if (result == JOptionPane.OK_OPTION) {
+        if (optionDialogPopup(panel, Language.translate(language, "Add Item By Text Search")) == JOptionPane.OK_OPTION) {
         	Set<Product> foundProducts = aioc.searchProductsByText(searchField.getText());
-        	System.out.println("found:" + foundProducts.toString());
-        	createFoundProductsPopup(cioc, foundProducts);
+        	createFoundProductsPopup(checkout, foundProducts);
         }
 	}
 	
 	/**
 	 * Creates another pop-up for the attendant to select which found products they want to add.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController to add an item to.
+	 * @param checkout
+	 * 			CheckoutController to add an item to.
 	 * @param foundProducts
 	 * 			Set of products found by the text search.
 	 */
-	public void createFoundProductsPopup(CustomerIOController cioc, Set<Product> foundProducts) {
+	public void createFoundProductsPopup(CheckoutController checkout, Set<Product> foundProducts) {
 		if (foundProducts.size() == 0) {
 			// No products found, try again.
-			createNoFoundProductsPopop(cioc);
+			createNoFoundProductsPopop(checkout);
 		} else {
 			// Display found products pop-up.
 			
@@ -624,7 +661,7 @@ public class AttendantOperationPane extends JPanel {
 			panel.add(label);
 			
 			// Create a group of radio buttons for the found products.
-            ButtonGroup group = new ButtonGroup();
+            group = new ButtonGroup();
             
             // Add each found product.
             for (Product product : foundProducts) {
@@ -646,8 +683,7 @@ public class AttendantOperationPane extends JPanel {
             }
             
             // Show pop-up.
-            int result = JOptionPane.showOptionDialog(null, panel, "Choose found product", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-            if (result == JOptionPane.OK_OPTION) {
+            if (optionDialogPopup(panel, "Choose found product") == JOptionPane.OK_OPTION) {
                 String selectedProductDescription = null;
                 // Determine selected button's text
                 for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -666,7 +702,7 @@ public class AttendantOperationPane extends JPanel {
             				BarcodedProduct bcproduct = (BarcodedProduct) product;
             				if (selectedProductDescription.equals(bcproduct.getDescription() + " for $" + bcproduct.getPrice())) {
             					// Product found
-            					cioc.addProduct(product);
+            					aioc.addProductByText(checkout, product, BigDecimal.ONE);
             					break;
             				}
             			} else if (product instanceof PLUCodedProduct) {
@@ -674,14 +710,14 @@ public class AttendantOperationPane extends JPanel {
             				PLUCodedProduct pluproduct = (PLUCodedProduct) product;
             				if (selectedProductDescription.equals(pluproduct.getDescription() + " for $" + pluproduct.getPrice())) {
             					// Product found
-            					cioc.addProduct(product);
+            					aioc.addProductByText(checkout, product, BigDecimal.ONE);
             					break;
             				}
             			}
                     }
                 } else {
                 	// No product selected, attempt another search.
-                	createTextSearchPopup(cioc);
+                	createTextSearchPopup(checkout);
                 }
             }
 		}
@@ -690,10 +726,10 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Creates another pop-up indicating that no products were found, and to try again.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController to add an item to. (When trying again).
+	 * @param checkout
+	 * 			CheckoutController to add an item to. (When trying again).
 	 */
-	public void createNoFoundProductsPopop(CustomerIOController cioc) {
+	public void createNoFoundProductsPopop(CheckoutController checkout) {
 		// Create panel for the pop-up.
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -705,20 +741,19 @@ public class AttendantOperationPane extends JPanel {
 		panel.add(label);
 		
 		// Show pop-up.
-		int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "No Products Found"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-		if (result == JOptionPane.OK_OPTION) {
+		if (optionDialogPopup(panel, Language.translate(language, "No Products Found")) == JOptionPane.OK_OPTION) {
 			// Create new text search pop-up.
-			createTextSearchPopup(cioc);
+			createTextSearchPopup(checkout);
 		}
 	}
 	
 	/**
 	 * Create a pop-up allowing the attendant to remove a customer's items.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController to remove item from.
+	 * @param checkout
+	 * 			CheckoutController to remove item from.
 	 */
-	public void createRemoveItemPopup(CustomerIOController cioc) {
+	public void createRemoveItemPopup(CheckoutController checkout) {
 		// Create pop-up panel.
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -730,33 +765,82 @@ public class AttendantOperationPane extends JPanel {
         panel.add(label);
         
         // Create a group of radio buttons for the available items to remove.
-        ButtonGroup group = new ButtonGroup();
-        
-        // TODO: Loop through each item in customer's cart (includes bags, what product type are they? for description).
-//        for (String language : languages) {
-//            JRadioButton radioButton = new JRadioButton(language);
-//            radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//            group.add(radioButton);
-//            panel.add(radioButton);
-//        }
+        group = new ButtonGroup();
+
+        // Loop through each item in customer's cart.
+        for (Map.Entry<Product, Number[]> entry : aioc.getCart(checkout).entrySet()) {
+        	JRadioButton radioButton;
+			Product product = entry.getKey();
+			if (product instanceof PLUCodedProduct pluProduct) {
+				// Handle PLU product.
+				radioButton = new JRadioButton(entry.getValue()[0] + " " + pluProduct.getDescription() + " for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			} else if (product instanceof BarcodedProduct barcodeProduct) {
+				// Handle barcode product.
+				radioButton = new JRadioButton(entry.getValue()[0] + " " + barcodeProduct.getDescription() + " for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+				// Handle bags.
+				radioButton = new JRadioButton(entry.getValue()[0] + " bags for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			}
+		}
 
         // Show pop-up.
-        int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Remove Item"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-        if (result == JOptionPane.OK_OPTION) {
-            // TODO: Determine item and remove from customer's cart.
+        if (optionDialogPopup(panel, Language.translate(language, "Remove Item")) == JOptionPane.OK_OPTION) {
+        	String selectedProductDescription = null;
+            // Determine selected button's text
+            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                AbstractButton button = buttons.nextElement();
+                if (button.isSelected()) {
+                    selectedProductDescription = button.getText();
+                    break;
+                }
+            }
+
+            if (selectedProductDescription != null) {
+                // Match the product.
+            	// Loop through each item in customer's cart.
+                for (Map.Entry<Product, Number[]> entry : aioc.getCart(checkout).entrySet()) {
+        			Product product = entry.getKey();
+        			if (product instanceof PLUCodedProduct pluProduct) {
+        				// Handle PLU product.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " " + pluProduct.getDescription() + " for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(checkout, product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			} else if (product instanceof BarcodedProduct barcodeProduct) {
+        				// Handle barcode product.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " " + barcodeProduct.getDescription() + " for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(checkout, product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+        				// Handle bags.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " bags for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(checkout, product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			}
+        		}
+            }
         }
 	}
-	
-	// TODO: Link up shutdown notification from attendantIOController.
-	
+
 	/**
 	 * Notify the attendant screen that a station is in use.
 	 * Occurs after an attempt to shutdown a station.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController being shut down.
+	 * @param checkout
+	 * 			CheckoutController being shut down.
 	 */
-	public void notifyShutdownStationInUse(CustomerIOController cioc) {
+	public void notifyShutdownStationInUse(CheckoutController checkout) {
 		// Create confirmation pop-up.
 		
 		// Create panel for the pop-up.
@@ -770,22 +854,30 @@ public class AttendantOperationPane extends JPanel {
 		panel.add(label);
 		
 		// Show pop-up.
-        int result = JOptionPane.showOptionDialog(null, panel, Language.translate(language, "Remove Item"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-        if (result == JOptionPane.YES_OPTION) {
+        if (yesNoPopup(panel) == JOptionPane.YES_OPTION) {
             // Force shutdown.
-        	aioc.forceShutDownStation(cioc.getMainController());
+        	aioc.forceShutDownStation(checkout);
         	// Repopulate management panes
         	populateManagementPanes();
         }
 	}
 	
 	/**
+	 * Shows popup for yes/no selection
+	 * @param panel
+	 * @return int for whether the user clicked yes (0) or no (1)
+	 */
+	public int yesNoPopup(JPanel panel) {
+		return JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+	}
+	
+	/**
 	 * Notify the attendant that a station has been started up.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController that started up.
+	 * @param checkout
+	 * 			CheckoutController that started up.
 	 */
-	public void notifyStartup(CustomerIOController cioc) {
+	public void notifyStartup(CheckoutController checkout) {
 		// Update management panes.
 		populateManagementPanes();
 	}
@@ -793,20 +885,278 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant to confirm a customer's added bags.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
 	 */
-	public void notifyConfirmAddedBags(CustomerIOController cioc) {
-		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " needs bag confirmation!");
-		JButton button = new JButton("Confirm");
+	public void notifyConfirmAddedBags(CheckoutController checkout) {
+		// Create notification data.
+		JLabel label = new JLabel("Station #" + checkout.getID() + " needs bag confirmation!");
+		button = new JButton("Confirm");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	// Approve bags.
-            	aioc.approveAddedBags(cioc);
+            	aioc.approveAddedBags(checkout);
             	// Remove notification.
             	notificationsData.remove(data);
             	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a bill denomination is low.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController making request.
+	 */
+	public void notifyLowBillDenomination(CheckoutController checkout, BigDecimal denom) {
+		// Create notification data.
+		JLabel label = new JLabel("Station #" + checkout.getID() + " low bills: ($" + denom + ")");
+		button = new JButton("Refilled");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Denomination refilled.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a coin denomination is low.
+	 * 
+	 * @param chekout CheckoutController making request.
+	 */
+	public void notifyLowCoinDenomination(CheckoutController checkout, BigDecimal denom) {
+		// Create notification data.
+		JLabel label = new JLabel("Station #" + checkout.getID() + " low coins: ($" + denom + ")");
+		button = new JButton("Refilled");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Denomination refilled.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that paper is low.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
+	 * @param printer
+	 * 			ReceiptPrinterController with the issue.
+	 */
+	public void notifyLowPaper(CheckoutController checkout, ReceiptPrinterController printer) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " is low on paper!";
+		JLabel label = new JLabel(issueText);
+		button = new JButton("Acknowledge");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification acknowledged.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            	
+            	// Add to active issues.
+            	activeIssues.add(issueText);
+            	populateActiveIssuesPane();
+
+            	// Send acknowledgement
+            	aioc.receiveLowPaperAcknowledgement(checkout, printer);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant that a low paper issue has been resolved.
+	 *
+	 * @param checkout
+	 * 			CheckoutController with the resolved issue.
+	 */
+	public void notifyLowPaperResolved(CheckoutController checkout) {
+		// Remove issue text from activeIssues.
+		String issueText = "Station #" + checkout.getID() + " is low on paper!";
+		activeIssues.remove(issueText);
+		populateActiveIssuesPane();
+	}
+
+	/**
+	 * Notify the attendant that ink is low.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
+	 * @param printer
+	 * 			ReceiptPrinterController with the issue.
+	 */
+	public void notifyLowInk(CheckoutController checkout, ReceiptPrinterController printer) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " is low on ink!";
+		JLabel label = new JLabel(issueText);
+		button = new JButton("Acknowledge");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification acknowledged.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            	
+            	// Add to active issues.
+            	activeIssues.add(issueText);
+            	populateActiveIssuesPane();
+
+            	// Send acknowledgement
+            	aioc.receiveLowInkAcknowledgement(checkout, printer);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+
+	/**
+	 * Notify the attendant that a low ink issue has been resolved.
+	 *
+	 * @param checkout
+	 * 			CheckoutController with the resolved issue.
+	 */
+	public void notifyLowInkResolved(CheckoutController checkout) {
+		// Remove issue text from activeIssues.
+		String issueText = "Station #" + checkout.getID() + " is low on ink!";
+		activeIssues.remove(issueText);
+		populateActiveIssuesPane();
+	}
+	
+	/**
+	 * Receive a message.
+	 * 
+	 * @param message
+	 * 			Message being received.
+	 */
+	public void receiveMessage(String message) {
+		// Create notification data.
+		JLabel label = new JLabel(message);
+		button = new JButton("Resolve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification resolved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant about a no bag request.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
+	 */
+	public void notifyNoBag(CheckoutController checkout) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " made a no bag request!";
+		JLabel label = new JLabel(issueText);
+		button = new JButton("Approve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification approved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+
+            	// Send approval.
+            	aioc.approveNoBagRequest(checkout);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant about a weight discrepancy.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
+	 */
+	public void notifyWeightDiscrepancy(CheckoutController checkout) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " has a weight discrepancy!";
+		JLabel label = new JLabel(issueText);
+		button = new JButton("Approve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification approved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+
+            	// Send approval.
+            	aioc.approveWeightDiscrepancy(checkout);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant about a need for a receipt reprint.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
+	 */
+	public void notifyReceiptRePrint(CheckoutController checkout, StringBuilder receipt) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " needs a receipt reprint!";
+		JLabel label = new JLabel(issueText);
+		button = new JButton("Reprint");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification approved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+
+            	// Send reprint
+            	aioc.rePrintReceipt(checkout, receipt);
             }
 		});
 		notificationsData.add(data);

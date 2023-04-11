@@ -1,7 +1,13 @@
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+
+import java.util.Objects;
+import java.util.Set;
+import java.util.Map.Entry;
+
 
 import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
@@ -11,8 +17,16 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
+
+import com.autovend.software.swing.Language;
+
+import com.autovend.software.swing.ShutdownPane;
+
+import javax.swing.*;
+
 
 /**
  *
@@ -30,18 +44,36 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
 
     //todo: add methods which let this controller modify the GUI on the screen
-    public void addItemByPLU(String pluCode){
+
+
+    /**
+     *
+     * @param pluCode
+     * @return if the item was successfully added or not (returning true/false tells gui what to update)
+     */
+    public boolean addItemByPLU(String pluCode){
         Numeral[] code = new Numeral[pluCode.length()];
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
         }
-        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(new PriceLookUpCode(code));
+
+        PriceLookUpCode plu = new PriceLookUpCode(code);
+        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
+
         if (product!=null){
             this.getMainController().addItem(product);
+            return true;
         } else {
             System.out.println("Product not in database");
-            //todo: print stuff related to this on GUI, also make sure to notify customer to add
+
             //stuff to the scale first before they do stuff for the PLU code
+            return false;
+
+
+            //todo: please figure out why calling addItemByPLU and subsequently calling getCart() does not have
+            // an updated cart (GUI team request)
+
+
         }
     }
     //this is also used for adding by browsing!!!!!
@@ -54,6 +86,13 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     }
     //syntactic sugar method
     public void addItemByBrowsing(Product selectedProduct) {addProduct(selectedProduct);}
+
+    /**
+     * Called when an item has been added, and now needs to go to the bagging area
+     */
+    public void promptAddItemToBaggingArea() {
+
+    }
 
     /**
      * Methods for membership sign-in and stuff
@@ -101,21 +140,37 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         this.getMainController().purchaseBags(amountOfBagsToAdd);
     }
 
-    void addOwnBags(){this.getMainController().setAddingBagsLock();}
+    public void addOwnBags(){this.getMainController().setAddingBagsLock();}
     //todo: gui stuff
-    void cancelAddOwnBags(){this.getMainController().cancelAddingBagsLock();}
+    public void cancelAddOwnBags(){this.getMainController().cancelAddingBagsLock();}
+
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
-    void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
+    public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
     //todo: more substance
 
-    void selectDoNotBag(Product product){
-        this.getMainController().doNotBagLatest();
+
+    public void itemWasAddedToTheBaggingArea() {
+        //todo: either make this work, or tell Colton how it is meant to work
+    }
+
+    public void selectDoNotBag(Product product){
+        this.getMainController().notifyAttendantNoBagRequest();
         /* todo: update UI so it goes back to the normal order, also make the do not bag code
          * not trash you idiot
          */
     }
+
+    /**
+     * Same thing as above with no product param, as the gui does not have the current product added when
+     * the customer chooses to not bag that item
+     */
+    public void selectDoNotBag() {
+        this.getMainController().notifyAttendantNoBagRequest();
+        // todo: either make this work or tell Colton how it is meant to work with a product param
+    }
+
     
     /**
      * Registers an Attendant's IO Controller into CustomerIO Controller if not already assigned one.
@@ -124,7 +179,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * @throws IllegalStateException
      * 		When a Checkout station is already assigned to an attendant station.
      */
-    void registerAttendant(AttendantIOController IOController) throws IllegalStateException{
+    public void registerAttendant(AttendantIOController IOController) throws IllegalStateException{
     	if(this.getMainController().getSupervisor() == 0) {
     		this.getMainController().registerController("AttendantIOController", IOController);
     		this.getMainController().setSupervisor(IOController.getID());
@@ -142,9 +197,9 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * 		if this checkout station is not being supervised.
      * 
      */
-    void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
+    public void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
     	if(this.getMainController().getSupervisor() != 0) {
-    		if(this.getMainController().getControllersByType("AttendantIOControllers").contains(IOController)) {
+    		if(this.getMainController().getControllersByType("AttendantIOController").contains(IOController)) {
     	    	this.getMainController().deregisterController("AttendantIOController", IOController);
         		this.getMainController().setSupervisor(0);
     		}
@@ -155,16 +210,73 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     		throw new IllegalStateException("Checkout Station is not assigned to an Attendant Station."); 
     	}
     }
+
+    /**
+     * Enables the JPane passed into it (JPanel as arg, only as common parent, but distinguished to either
+     * customerStartPane or customerOperationPane inside the method to enable that
+     * @param panel JPanel (JPane) to be enabled
+     */
+    public void enablePanel(JPanel panel) {
+        if (panel instanceof CustomerOperationPane) {
+            CustomerOperationPane pane = (CustomerOperationPane) panel;
+            pane.enableStation();
+        } else if (panel instanceof CustomerStartPane) {
+            CustomerStartPane pane = (CustomerStartPane) panel;
+            pane.enableStation();
+        }
+    }
+
+    /**
+     * Disables the JPane passed into it (JPanel as arg, only as common parent, but distinguished to either
+     * customerStartPane or customerOperationPane inside the method to disable that
+     * @param panel JPanel (JPane) to be disabled
+     */
+    public void disablePanel(JPanel panel) {
+        if (panel instanceof CustomerOperationPane) {
+            CustomerOperationPane pane = (CustomerOperationPane) panel;
+            pane.disableStation();
+        } else if (panel instanceof CustomerStartPane) {
+            CustomerStartPane pane = (CustomerStartPane) panel;
+            pane.disableStation();
+        }
+    }
+    
+    /**
+     * Signals GUI that station is enabled.
+     */
+    void notifyEnabled() {
+    	enablePanel((JPanel) getDevice().getFrame().getContentPane());
+    }
+    
+    /**
+     * Signals GUI that station is disabled.
+     */
+    void notifyDisabled() {
+		disablePanel((JPanel) getDevice().getFrame().getContentPane());
+
+    }
     
     /**
      * Signals GUI to terminate (since it is turning off).
      */
-    void notifyShutdown() {}
+    void notifyShutdown() {
+        getDevice().getFrame().setContentPane(new ShutdownPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
+
+        getMainController().setInUse(false);
+    }
     
     /**
      * Signals GUI to start GUI.
      */
-    void notifyStartup() {}
+    void notifyStartup() {
+        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
+
+        disablePanel((JPanel) getDevice().getFrame().getContentPane());
+    }
     
     /**
      * Signals start button was pressed.
@@ -174,8 +286,12 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
+
+        getMainController().setInUse(true);
     }
-    
+
+
+    // don't think this is needed, as only the temporary customer gui exit button utilized it
     /**
      * Signals logout button was pressed.
      */
@@ -209,6 +325,25 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     public LinkedHashMap<Product, Number[]> getCart() {
     	return this.getMainController().getOrder();
+    }
+    
+    /**
+     * Method that will notify that the station is out of order
+     */
+    void notifyOutOfOrder() {
+
+    }
+
+    void selectLanguage () {
+        HashMap<String, HashMap<String, String>> language = new HashMap<>();
+        
+        for (Entry<String, HashMap<String, String>> lang :
+        Language.getLanguageBank().entrySet()) {
+            if (Objects.equals("English", lang.getKey())) {
+                language.put(lang.getKey(), lang.getValue());
+            }
+        }
+        
     }
 
 

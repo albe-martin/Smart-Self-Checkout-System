@@ -1,12 +1,15 @@
 package com.autovend.software.swing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class used for translating the programmers (english) text to the customer's desired language
  */
 public class Language {
-	// public static String[] languages = new String[] {"English", "French"};
+	public static ArrayList<String> languages = new ArrayList<>(List.of("English"));
+	public static String defaultLanguage = "English";
 
 	// Map looks like {
 	//   	language: {
@@ -18,16 +21,7 @@ public class Language {
 	// 	 		text2: translation
 	// 		}
 	// 	 }
-	private static final HashMap<String, HashMap<String, String>> languageBank = new HashMap<>() {{
-			put("English", new HashMap<>(){{
-				put("Log In", "Log In");
-				put("Log Out", "Log Out");
-				put("Username:", "Username:");
-				put("Password:", "Password:");
-				put("Exit", "Exit");
-				put("Select Language", "Select Language");
-		}});
-	}};
+	private static final HashMap<String, HashMap<String, String>> languageBank = new HashMap<>() {};
 
 	/**
 	 * Translates the programmers (english) text to the translation of said language, if it exists.
@@ -40,6 +34,8 @@ public class Language {
 	 */
 	public static String translate(String language, String text) {
 		if (language == null || text == null) throw new NullPointerException("Language and text params cannot be null!");
+		// we don't translate english to english!
+		if (language.equals("English")) return text;
 		// that language has no translations! return original text (can change depending on what should happen)
 		if (!languageBank.containsKey(language)) return text;
 		// that translation for that language doesn't exist! return original text (can change depending on what should happen)

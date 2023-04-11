@@ -17,14 +17,14 @@ Amasil Rahim Zihad 30164830
 
 package com.autovend.software.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
+import com.autovend.software.controllers.AttendantIOController;
+import com.autovend.software.controllers.AttendantStationController;
+import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.ReceiptPrinterController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,26 +33,32 @@ import com.autovend.Barcode;
 import com.autovend.Numeral;
 import com.autovend.devices.OverloadException;
 import com.autovend.devices.ReceiptPrinter;
+import com.autovend.devices.TouchScreen;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.controllers.CheckoutController;
-import com.autovend.software.controllers.ReceiptPrinterController;
+
+import static org.junit.Assert.*;
 
 public class TestPrintReceipt {
 	ReceiptPrinter testPrinter;
 	ReceiptPrinterController testReceiptPrinterController;
 	CheckoutController checkoutController;
 
+	private AttendantIOController attendantController;
+	private AttendantStationController stationController;
+	private CustomerIOController customerController;
+
 	BarcodedProduct testItem1;
 	BarcodedProduct testItem2;
 	BarcodedProduct testItem3;
+	BarcodedProduct testItem4;
+
+	StringBuilder receipt;
+	TouchScreen stubDevice;
 
 	LinkedHashMap<Product, Number[]> order;
 	BigDecimal totalCost;
-	private StubBarcodedProduct testItem4;
-	private StubBarcodedProduct testItem5;
-	private StubBarcodedProduct testItem6;
 
 	/**
 	 * Set up of objects, variables etc.. that happens before tests
@@ -61,10 +67,23 @@ public class TestPrintReceipt {
 	public void setup() {
 		// Create a test receipt printer and its controllers
 		testPrinter = new ReceiptPrinter();
-		testReceiptPrinterController = new ReceiptPrinterController(testPrinter);
 		checkoutController = new CheckoutController();
+		testReceiptPrinterController = new ReceiptPrinterController(testPrinter);
+		stationController = new AttendantStationController();
+		stubDevice = new TouchScreen();
+		receipt = new StringBuilder();
+		
+			
 		checkoutController.registerController("ReceiptPrinterController", testReceiptPrinterController);
 		testReceiptPrinterController.setMainController(checkoutController);
+		attendantController = new AttendantIOController(stubDevice);
+		attendantController.setMainAttendantController(stationController);
+		checkoutController.registerController("AttendantIOController", attendantController);
+		customerController = new CustomerIOController(stubDevice);
+		customerController.setMainController(checkoutController);
+
+
+		
 
 		// Create 3 test items
 		testItem1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1",
@@ -73,6 +92,8 @@ public class TestPrintReceipt {
 				BigDecimal.valueOf(9.29), 169.0);
 		testItem3 = new BarcodedProduct(new Barcode(Numeral.nine, Numeral.two), "test item 3",
 				BigDecimal.valueOf(32.79), 245.0);
+		testItem4 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.seven), "test item 4",
+				BigDecimal.valueOf(21), 10.0);
 
 		// Enters the 3 test items int othe Product Database
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(testItem1.getBarcode(), testItem1);
@@ -90,12 +111,13 @@ public class TestPrintReceipt {
 	public void teardown() {
 		// Readability
 		System.out.println();
+		receipt = null;
 	}
 
 	/**
 	 * Creates an order using the test items and checks to see if printReceipt()
 	 * properly prints out the order.
-	 * 
+	 *
 	 * @throws OverloadException
 	 */
 	@Test
@@ -119,65 +141,21 @@ public class TestPrintReceipt {
 			testPrinter.addPaper(1000);
 
 			// Call printReceipt()
-			testReceiptPrinterController.printReceipt(order, totalCost);
-
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
 			// Cut the paper to finalize the output string
-			testPrinter.cutPaper();
 			String result = testPrinter.removeReceipt();
 			assertEquals(expectedOutput, result);
 		} catch (Exception ex) {
 			fail("Exception incorrectly thrown");
 		}
 	}
-	
-	/**
-     * Testing to see if unit per kg works
-     */
-    @Test
-    public void testPrintPerKgItems() {
-        // Creating first parameter HashMap<Product, Number[]> in printReceipt()
-        Number[] quantityItem1 = { 1, (83.29) };
-        Number[] quantityItem2 = { 1, (9.29) };
-        Number[] quantityItem3 = { 1, (32.79) };
-        
-        // Creating 3 test items
-        testItem4 = new StubBarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 4",
-                BigDecimal.valueOf(83.29), 359.0, false);
-        testItem5 = new StubBarcodedProduct(new Barcode(Numeral.seven, Numeral.one), "test item 5",
-                BigDecimal.valueOf(9.29), 169.0, false);
-        testItem6 = new StubBarcodedProduct(new Barcode(Numeral.nine, Numeral.two), "test item 6",
-                BigDecimal.valueOf(32.79), 245.0, false);
-        
-        order.put(testItem4, quantityItem1);
-        order.put(testItem5, quantityItem2);
-        order.put(testItem6, quantityItem3);
-        
-        totalCost = BigDecimal.valueOf(83.29 + 9.29 + 32.79);
-
-        String expectedOutput = "Purchase Details:\n" + "1 $83.29 1kg StubBarcodedProduct\n"
-                + "2 $9.29 1kg StubBarcodedProduct\n" + "3 $32.79 1kg StubBarcodedProduct\n" + "Total: $125.37\n";
-        try {
-            // Add ink and paper into printer
-            testPrinter.addInk(1000);
-            testPrinter.addPaper(1000);
-
-            // Call printReceipt()
-            testReceiptPrinterController.printReceipt(order, totalCost);
-
-            // Cut the paper to finalize the output string
-            testPrinter.cutPaper();
-            String result = testPrinter.removeReceipt();
-            assertEquals(expectedOutput, result);
-        } catch (Exception ex) {
-            fail("Exception incorrectly thrown");
-        }
-        
-    }
 
 	/**
 	 * Ensures a no paper/ink message is received when the printer has ink but no
 	 * paper
-	 * 
+	 *
 	 * @throws OverloadException
 	 */
 	@Test
@@ -192,7 +170,9 @@ public class TestPrintReceipt {
 			// Add ink into printer
 			testPrinter.addInk(5);
 			// Call printReceipt()
-			testReceiptPrinterController.printReceipt(order, totalCost);
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
 		} catch (OverloadException ex) {
 			fail("Overload Exception Unexpectedly Thrown");
 		}
@@ -202,7 +182,7 @@ public class TestPrintReceipt {
 	/**
 	 * Ensures a no paper/ink message is received when the printer has paper but no
 	 * ink
-	 * 
+	 *
 	 * @throws OverloadException
 	 */
 	@Test
@@ -217,7 +197,9 @@ public class TestPrintReceipt {
 			// Add ink into printer
 			testPrinter.addPaper(5);
 			// Call printReceipt()
-			testReceiptPrinterController.printReceipt(order, totalCost);
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
 		} catch (OverloadException ex) {
 			fail("Overload Exception Unexpectedly Thrown");
 		}
@@ -228,7 +210,7 @@ public class TestPrintReceipt {
 	 * Checks that if a receipt is too long message is received when there is an
 	 * overload of characters/the receipt is too long. ***I BELIEVE THIS IS AN ERROR
 	 * IN THE HARDWARE CODE***
-	 * 
+	 *
 	 * @throws OverloadException
 	 */
 	@Test
@@ -248,8 +230,9 @@ public class TestPrintReceipt {
 			testPrinter.addPaper(1000);
 
 			// Call printReceipt()
-			testReceiptPrinterController.printReceipt(order, totalCost);
-			testPrinter.cutPaper();
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
 			String result = testPrinter.removeReceipt();
 			assertEquals(expectedOutput, result);
 		} catch (Exception ex) {
@@ -291,25 +274,25 @@ public class TestPrintReceipt {
 
 	/**
 	 * If you try to print while the printer is disabled, expect a DisabledException
-	 * 
+	 *
 	 * @throws OverloadException This is a bug in the hardware code.
 	 */
 	/*
 	 * @Test(expected = DisabledException.class) public void testDisabledPrinter()
 	 * throws OverloadException { // Disabling ReceiptPrinterController
 	 * testReceiptPrinterController.disableDevice();
-	 * 
+	 *
 	 * // Creating first parameter HashMap<Product, Number[]> in printReceipt()
 	 * Number[] quantityItem1 = {2, (2*83.29)}; order.put(testItem1, quantityItem1);
-	 * 
+	 *
 	 * // Computing total cost totalCost = BigDecimal.valueOf(2*83.29);
-	 * 
+	 *
 	 * // Adding ink and paper into machine testPrinter.addInk(100);
 	 * testPrinter.addPaper(100);
-	 * 
+	 *
 	 * // Call printReceipt() testReceiptPrinterController.printReceipt(order,
 	 * totalCost); }
-	 * 
+	 *
 	 */
 
 	@Test
@@ -345,5 +328,47 @@ public class TestPrintReceipt {
 		} catch (Exception ex) {
 			fail("Exception incorrectly thrown");
 		}
+	}
+
+	@Test
+	public void testAddedInk_negative() {
+		int initial = testReceiptPrinterController.estimatedInk;
+		testReceiptPrinterController.addedInk(-50);
+		assertEquals(initial, testReceiptPrinterController.estimatedInk);
+	}
+	@Test
+	public void testAddedInk() {
+		int initial = testReceiptPrinterController.estimatedInk;
+		testReceiptPrinterController.addedInk(100);
+		assertEquals(initial+100, testReceiptPrinterController.estimatedInk);
+	}
+
+	@Test
+	public void testAddedInk_highAmount() {
+		int initialInk = testReceiptPrinterController.estimatedInk;
+		testReceiptPrinterController.addedInk(1000);
+		assertEquals(initialInk + 1000, testReceiptPrinterController.estimatedInk);
+		assertEquals(false, testReceiptPrinterController.inkLow);
+	}
+
+	@Test
+	public void testAddedPaper_negative() {
+		int initial = testReceiptPrinterController.estimatedPaper;
+		testReceiptPrinterController.addedPaper(-50);
+		assertEquals(initial, testReceiptPrinterController.estimatedPaper);
+	}
+	@Test
+	public void testAddedPaper() {
+		int initial = testReceiptPrinterController.estimatedPaper;
+		testReceiptPrinterController.addedPaper(100);
+		assertEquals(initial+100, testReceiptPrinterController.estimatedPaper);
+	}
+
+	@Test
+	public void testAddedPaper_highAmount() {
+		int initial = testReceiptPrinterController.estimatedPaper;
+		testReceiptPrinterController.addedPaper(1000);
+		assertEquals(initial + 1000, testReceiptPrinterController.estimatedPaper);
+		assertFalse(testReceiptPrinterController.paperLow);
 	}
 }
