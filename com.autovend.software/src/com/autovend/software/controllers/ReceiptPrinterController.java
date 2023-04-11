@@ -66,11 +66,6 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	public void addedInk(int inkAmount) {
 		if (inkAmount > 0) {
 			estimatedInk += inkAmount;
-			try{
-				printer.addInk(inkAmount);
-			} catch (OverloadException e) {
-				System.out.println(e);
-			}
 			
 		}
 		else
@@ -87,11 +82,6 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	public void addedPaper(int paperAmount) {
 		if (paperAmount > 0){ 
 			estimatedPaper += paperAmount;
-			try{
-				printer.addPaper(paperAmount);
-			} catch (OverloadException e) {
-				System.out.println(e);
-			}
 		}
 		else
 			System.out.println("Negative Paper Not Allowed to be Added");

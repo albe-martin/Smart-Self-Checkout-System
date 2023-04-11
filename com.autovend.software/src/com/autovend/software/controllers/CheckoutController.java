@@ -528,9 +528,7 @@ public class CheckoutController {
 	void dispenseChange() {
 		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
 
-			ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredControllers
-					.get("ReceiptPrinterController").get(0);
-			printerController.createReceipt(this.order, this.cost);
+			printReceipt();
 
 		} else {
 			TreeSet<ChangeDispenserController> controllers = new TreeSet<>();
