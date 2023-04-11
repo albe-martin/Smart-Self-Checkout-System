@@ -259,6 +259,25 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
 
     /**
+     * Simple method that will return the checkout station list 
+     * attendant station
+     * 
+     */
+    public List<CheckoutController> getAllStationControllers() {
+        return mainController.getAllStationControllers();
+    }
+
+    /**
+     * Simple method that will return a list of disabled station controllers
+     * 
+     * @return
+     *         List of disabled stations
+     */
+    public List<CheckoutController> getDisabledStationControllers() {
+        return mainController.getDisabledStationControllers();
+    }
+
+    /**
      * Called when an attendant approves the customer's added bags. Unlocks the
      * machine, terminates the attendant signal, and zeros the scale.
      * 

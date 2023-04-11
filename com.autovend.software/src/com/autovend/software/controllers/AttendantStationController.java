@@ -282,6 +282,51 @@ public class AttendantStationController {
 	 * 		immutable list  of checkout stations.
 	 * 		Returns null if not logged in
 	 */
+	public List<CheckoutController> getAllStationControllers() {
+		List<CheckoutController> controllers = new ArrayList<>();
+		if(loggedIn) {
+			//Loop through Customer IO Controllers and add
+			for(DeviceController io : this.registeredIOControllers.get("CustomerIOController")) {
+				controllers.add(((CustomerIOController) io).getMainController());
+			}
+			return controllers;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
+	 * A simple method that will return a list of disabled stations monitored by this attendant station.
+	 * 
+	 * @return 
+	 * 		List of disabled checkout station controllers.
+	 * 		Returns null if not logged in.
+	 */
+	public List<CheckoutController> getDisabledStationControllers() {
+		List<CheckoutController> disabledControllers = new ArrayList<>();
+		if(loggedIn) {
+			//Loop through Customer IO Controllers
+			//If main controller of that io controller is disabled, add io controller to disabled controllers
+			for(DeviceController io : this.registeredIOControllers.get("CustomerIOController")) {
+				if(((CustomerIOController)io).getMainController().isDisabled()) {
+					disabledControllers.add(((CustomerIOController) io).getMainController());
+				}
+			}
+			return disabledControllers;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
+	 * A simple method that will return an immutable list of stations monitored by this attendant station
+	 * 
+	 * @return 
+	 * 		immutable list  of checkout stations io controllers.
+	 * 		Returns null if not logged in
+	 */
 	public List<CustomerIOController> getAllStationsIOControllers() {
 		List<CustomerIOController> controllers = new ArrayList<>();
 		if(loggedIn) {
