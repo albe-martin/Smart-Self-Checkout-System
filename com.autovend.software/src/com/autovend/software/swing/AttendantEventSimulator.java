@@ -271,5 +271,29 @@ public class AttendantEventSimulator extends JFrame {
 		gbcweight2.gridy = 8;
 		contentPane.add(weight2, gbcweight2);
 		
+		// Receipt reprint events.
+		JButton reprint1 = new JButton("Create Receipt Reprint Notification (1)");
+		reprint1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyReceiptRePrint(checkout2, new StringBuilder("receipt"));
+			}
+		});
+		GridBagConstraints gbcreprint1 = new GridBagConstraints();
+		gbcreprint1.fill = GridBagConstraints.BOTH;
+		gbcreprint1.gridx = 0;
+		gbcreprint1.gridy = 9;
+		contentPane.add(reprint1, gbcreprint1);
+		
+		JButton reprint2 = new JButton("Create Receipt Reprint Notification (2)");
+		reprint2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyReceiptRePrint(checkout2, new StringBuilder("receipt"));
+			}
+		});
+		GridBagConstraints gbcreprint2 = new GridBagConstraints();
+		gbcreprint2.fill = GridBagConstraints.BOTH;
+		gbcreprint2.gridx = 1;
+		gbcreprint2.gridy = 9;
+		contentPane.add(reprint2, gbcreprint2);
 	}
 }

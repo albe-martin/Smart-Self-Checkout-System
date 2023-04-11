@@ -261,12 +261,12 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param CheckoutController the CheckoutController of the customer who
      *                             wants to add bags.
      */
-    public void notifyAddBags(CheckoutController checkout) {
+    void notifyAddBags(CheckoutController checkout) {
         // Notify GUI to approve added bags.
     	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyConfirmAddedBags(checkout);
     }
     
-    public void notifyNoBagRequest(CheckoutController checkout) {
+    void notifyNoBagRequest(CheckoutController checkout) {
     	// Notify GUI.
     	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyNoBag(checkout);
     }
@@ -275,7 +275,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         checkout.doNotBagLatest();
     }
     
-    public void notifyWeightDiscrepancy(CheckoutController checkout) {
+    void notifyWeightDiscrepancy(CheckoutController checkout) {
     	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyWeightDiscrepancy(checkout);
     }
     
@@ -410,7 +410,8 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 			Receipt to be reprinted.
      */
     void notifyRePrintReceipt(CheckoutController checkout, StringBuilder receipt) {
-    	//TODO: Connect to GUI
+    	// Notify GUI about reprint needed.
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyReceiptRePrint(checkout, receipt);
     }
     
     /**
@@ -418,7 +419,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @param receipt
      * 			Receipt to be reprinted.
      */
-    void rePrintReceipt (CheckoutController checkout, StringBuilder receipt){
+    public void rePrintReceipt (CheckoutController checkout, StringBuilder receipt){
         mainController.printReceipt(receipt);
     }
    

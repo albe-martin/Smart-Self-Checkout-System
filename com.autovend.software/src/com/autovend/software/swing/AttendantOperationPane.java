@@ -1147,4 +1147,33 @@ public class AttendantOperationPane extends JPanel {
 		
 		populateNotificationsPane();
 	}
+	
+	/**
+	 * Notify the attendant about a need for a receipt reprint.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
+	 */
+	public void notifyReceiptRePrint(CheckoutController checkout, StringBuilder receipt) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " needs a receipt reprint!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Reprint");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification approved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+
+            	// Send reprint
+            	aioc.rePrintReceipt(checkout, receipt);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
 }
