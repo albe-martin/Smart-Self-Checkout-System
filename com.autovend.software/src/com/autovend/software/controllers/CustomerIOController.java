@@ -133,7 +133,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     //todo: more substance
 
     void selectDoNotBag(Product product){
-        this.getMainController().doNotBagLatest();
+        this.getMainController().notifyAttendantNoBagRequest();
         /* todo: update UI so it goes back to the normal order, also make the do not bag code
          * not trash you idiot
          */
@@ -146,7 +146,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * @throws IllegalStateException
      * 		When a Checkout station is already assigned to an attendant station.
      */
-    void registerAttendant(AttendantIOController IOController) throws IllegalStateException{
+    public void registerAttendant(AttendantIOController IOController) throws IllegalStateException{
     	if(this.getMainController().getSupervisor() == 0) {
     		this.getMainController().registerController("AttendantIOController", IOController);
     		this.getMainController().setSupervisor(IOController.getID());
@@ -164,7 +164,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * 		if this checkout station is not being supervised.
      * 
      */
-    void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
+    public void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
     	if(this.getMainController().getSupervisor() != 0) {
     		if(this.getMainController().getControllersByType("AttendantIOController").contains(IOController)) {
     	    	this.getMainController().deregisterController("AttendantIOController", IOController);

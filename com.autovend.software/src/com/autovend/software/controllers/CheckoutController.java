@@ -765,7 +765,17 @@ public class CheckoutController {
 			this.isDisabled = false;
 		}
 	}
-
+	
+	/**
+	 * Method that notifies an attendant for a no bag request
+	 */
+	public void notifyAttendantNoBagRequest() {
+		baggingItemLock = true;
+		for(DeviceController io: this.registeredControllers.get("attendantIOController")) {
+			((AttendantIOController) io).noBagRequest(this);
+		}
+	}
+	
 	public boolean isInUse() {
 		return inUse;
 	}
