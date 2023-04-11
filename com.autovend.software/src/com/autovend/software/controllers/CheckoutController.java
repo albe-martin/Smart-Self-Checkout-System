@@ -334,7 +334,7 @@ public class CheckoutController {
 
 		double weight;
 		if (newItem.isPerUnit()) {
-			weight = ((BarcodedProduct) newItem).getExpectedWeight();
+			weight = ((BarcodedProduct) newItem).getExpectedWeight() * count.intValue();
 			if (weight <= 0) {
 				return;
 			}
@@ -350,7 +350,7 @@ public class CheckoutController {
 		} else {
 			ArrayList<DeviceController> scaleController = registeredControllers.get("ScanningScaleController");
 			try {
-				weight = ((ScanningScaleController) scaleController.get(0)).getCurrentWeight();
+				weight = ((ScanningScaleController) scaleController.get(0)).getCurrentWeight() * count.intValue();
 			} catch (IndexOutOfBoundsException e) {
 				weight = 0;
 			}
