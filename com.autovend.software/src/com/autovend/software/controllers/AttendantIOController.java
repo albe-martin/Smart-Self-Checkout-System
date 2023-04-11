@@ -361,7 +361,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * Notify the GUI that a low paper issue was resolved.
      *
      * @param checkout
-     * 			CustomerIOCheckoutControllerpaper resolved.
+     * 			CheckoutController paper resolved.
      */
     void notifyLowPaperResolved(CheckoutController checkout) {
     	// Notify GUI about low paper resolved.
@@ -385,7 +385,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * Receive notification from attendant GUI about low ink issue being acknowledged.
      *
      * @param checkout
-     * 			CustomerIOContoller with the issue acknowledged.
+     * 			CheckoutController with the issue acknowledged.
      * @param printer
      * 			ReceiptPrinterController with the acknowledged issue.
      */
