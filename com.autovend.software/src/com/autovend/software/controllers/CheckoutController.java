@@ -4,6 +4,7 @@ import com.autovend.Bill;
 import com.autovend.Coin;
 import com.autovend.Numeral;
 import com.autovend.devices.OverloadException;
+import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
@@ -71,6 +72,7 @@ public class CheckoutController {
 		registeredControllers.put("AttendantIOController", new ArrayList<>());
 		registeredControllers.put("CustomerIOController", new ArrayList<>());
 		registeredControllers.put("ScanningScaleController", new ArrayList<>());
+		registeredControllers.put("ReusableBagDispenserController", new ArrayList<>());
 	}
 
 	public CheckoutController(SelfCheckoutStation checkout) {
@@ -85,6 +87,10 @@ public class CheckoutController {
 
 		BaggingScaleController scaleController = new BaggingScaleController(checkout.baggingArea);
 		this.registeredControllers.get("BaggingAreaController").add(scaleController);
+
+		ReusableBagDispenser bagDispenser = new ReusableBagDispenser(105);
+		ReusableBagDispenserController bagDispenserController = new ReusableBagDispenserController(bagDispenser);
+		this.registeredControllers.get("ReusableBagDispenserController").add(bagDispenserController);
 
 		this.registeredControllers.get("ReceiptPrinterController").add(new ReceiptPrinterController(checkout.printer));
 

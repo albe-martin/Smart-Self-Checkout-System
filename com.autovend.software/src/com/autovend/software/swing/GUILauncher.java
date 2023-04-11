@@ -120,13 +120,13 @@ public class GUILauncher {
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
 		
 		// TODO: Can be removed if it conflicts with the customer testing. Just used for testing attendantIO.
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct2);
-//		ciocs.get(0).addProduct(pluCodedProduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct2);
+		ciocs.get(0).addProduct(pluCodedProduct1);
 		
 		
 		
