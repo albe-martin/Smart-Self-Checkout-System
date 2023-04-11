@@ -311,10 +311,6 @@ public class AttendantGUITest {
 		
 		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
 		
-		System.out.println(numberOfComponents);
-		
-		
-		
 		// If the number of components is not greater than 7, that is evidence that the pane is still the login screen
 		assert(numberOfComponents <= 7);
 	}
@@ -387,10 +383,10 @@ public class AttendantGUITest {
 	}
 	
 	/**
-	 * Bag request event
+	 * Tests creation of a bag request event in the GUI
 	 */
 	@Test
-	public void Test() {
+	public void bagRequestTest() {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
@@ -403,10 +399,10 @@ public class AttendantGUITest {
 	}
 	
 	/**
-	 * Low coins event
+	 * Tests creation of a low bills event in the GUI
 	 */
 	@Test
-	public void Test1() {
+	public void lowCoinsTest() {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
@@ -415,14 +411,14 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowCoinDenomination(cioc, new BigDecimal("0.25"));
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowCoinDenomination(cioc.getMainController(), new BigDecimal("0.25"));
 	}
 	
 	/**
-	 * Low bill event
+	 * Tests creation of a low bills event in the GUI
 	 */
 	@Test
-	public void Test2() {
+	public void lowBillTest() {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
@@ -431,11 +427,11 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowBillDenomination(cioc, new BigDecimal("5"));
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowBillDenomination(cioc.getMainController(), new BigDecimal("5"));
 	}
 	
 	/**
-	 * Tests creation on a low ink event in the GUI
+	 * Tests creation of a low ink event in the GUI
 	 */
 	@Test
 	public void lowInkTest() {
@@ -500,5 +496,50 @@ public class AttendantGUITest {
 				
 		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaperResolved(cioc);
 
+	}
+	
+	/**
+	 * Tests the functionality of addIssue method
+	 */
+	@Test
+	public void addIssues() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		AttendantOperationPane operationPane = (AttendantOperationPane) screen.getFrame().getContentPane();
+		int visibleIssues = operationPane.activeIssuesPane.getComponentCount();
+				
+		String issue = "issue";
+		operationPane.activeIssues.add(issue);
+		operationPane.populateActiveIssuesPane();
+		int newVisibleIssues = operationPane.activeIssuesPane.getComponentCount();
+		
+		assert(newVisibleIssues == visibleIssues + 1); // assert that the new issue is showing up in the GUI
+	}
+	
+	/**
+	 * Tests the functionality of recieveMessage method
+	 */
+	@Test
+	public void recieveMessageTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		AttendantOperationPane operationPane = (AttendantOperationPane) screen.getFrame().getContentPane();
+		operationPane.receiveMessage("message");
+		
+		
+		
+//		assert(newVisibleIssues == visibleIssues + 1); // assert that the new issue is showing up in the GUI
 	}
 }
