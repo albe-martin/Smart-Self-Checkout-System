@@ -111,7 +111,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     //todo: more substance
 
     void selectDoNotBag(Product product){
-        this.getMainController().doNotBagLatest();
+        this.getMainController().notifyAttendantNoBagRequest();
         /* todo: update UI so it goes back to the normal order, also make the do not bag code
          * not trash you idiot
          */

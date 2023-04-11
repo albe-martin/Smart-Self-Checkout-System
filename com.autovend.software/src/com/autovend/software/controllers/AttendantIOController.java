@@ -291,7 +291,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
 
     public void noBagRequest(CheckoutController checkout) {
-
+    	//TODO: gui
     }
     
     public void approveWeightDiscrepancy(CheckoutController controller) {

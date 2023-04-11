@@ -762,8 +762,9 @@ public class CheckoutController {
 			this.isDisabled = false;
 		}
 	}
+	
 	/**
-	 * 
+	 * Method that notifies an attendant for a no bag request
 	 */
 	public void notifyAttendantNoBagRequest() {
 		baggingItemLock = true;
