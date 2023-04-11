@@ -1118,4 +1118,33 @@ public class AttendantOperationPane extends JPanel {
 		
 		populateNotificationsPane();
 	}
+	
+	/**
+	 * Notify the attendant about a weight discrepancy.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
+	 */
+	public void notifyWeightDiscrepancy(CheckoutController checkout) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " has a weight discrepancy!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Approve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification approved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+
+            	// Send approval.
+            	aioc.approveWeightDiscrepancy(checkout);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
 }

@@ -281,20 +281,22 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         pane.notifyConfirmAddedBags(customerIOController);
     }
     
-    /**
-     * 
-     * @param controller
-     */
-    public void approveNoBagRequest(CheckoutController controller){
-        controller.doNotBagLatest();
+
+    public void approveNoBagRequest(CheckoutController checkout){
+        checkout.doNotBagLatest();
     }
 
-    public void noBagRequest(CheckoutController checkout) {
-    	//TODO: gui
+    public void notifyNoBagRequest(CheckoutController checkout) {
+    	// Notify GUI.
+    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyNoBag(checkout);
     }
     
-    public void approveWeightDiscrepancy(CheckoutController controller) {
-        controller.attendantOverrideBaggingLock();
+    public void notifyWeightDiscrepancy(CheckoutController checkout) {
+    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyWeightDiscrepancy(checkout);
+    }
+    
+    public void approveWeightDiscrepancy(CheckoutController checkout) {
+        checkout.attendantOverrideBaggingLock();
         // todo: GUI
     }
 
