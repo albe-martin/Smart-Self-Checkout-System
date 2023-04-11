@@ -132,7 +132,7 @@ public class GUILauncher {
 		
 		
 		// Run attendant event simulator.
-		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0), ciocs.get(1));
+		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0).getMainController(), ciocs.get(1).getMainController());
 		attendantEventSimulatorFrame.setVisible(true);
 		attendantEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
