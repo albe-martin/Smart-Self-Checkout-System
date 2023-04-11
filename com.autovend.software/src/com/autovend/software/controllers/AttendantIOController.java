@@ -2,7 +2,6 @@ package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -282,20 +281,22 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         pane.notifyConfirmAddedBags(customerIOController);
     }
     
-    /**
-     * 
-     * @param controller
-     */
-    public void approveNoBagRequest(CheckoutController controller){
-        controller.doNotBagLatest();
+
+    public void approveNoBagRequest(CheckoutController checkout){
+        checkout.doNotBagLatest();
     }
 
-    public void noBagRequest(CheckoutController checkout) {
-    	//TODO: gui
+    public void notifyNoBagRequest(CheckoutController checkout) {
+    	// Notify GUI.
+    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyNoBag(checkout);
     }
     
-    public void approveWeightDiscrepancy(CheckoutController controller) {
-        controller.attendantOverrideBaggingLock();
+    public void notifyWeightDiscrepancy(CheckoutController checkout) {
+    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyWeightDiscrepancy(checkout);
+    }
+    
+    public void approveWeightDiscrepancy(CheckoutController checkout) {
+        checkout.attendantOverrideBaggingLock();
         // todo: GUI
     }
 
@@ -326,7 +327,8 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         return checkout.getOrder();
     }
 
-
+    // TODO: Delete these notify low ink/paper, as they are a repeat of the better version below that passes the printer.
+    
     /**
      * This method notifies the AttendantIO GUI that this station's receipt printer
      * is low on ink
@@ -352,18 +354,27 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller,
             BigDecimal denom) {
-        // TODO: Signal GUI
+    	// Notify GUI about low bill.
+		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowBillDenomination(checkout, denom);
     }
 
     void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller,
             BigDecimal denom) {
-        // TODO: Signal GUI
+    	// Notify GUI about low coin.
+    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowCoinDenomination(checkout, denom);
     }
 
     // todo: add methods which let this controller modify the GUI on the screen
 
+    /**
+     * Send any given message to the attendant screen.
+     * @param message
+     * 			Message to be sent.
+     */
     void displayMessage(String message) {
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).receiveMessage(message);
     }
+    
     /**
      * Notify the GUI that paper is low for a customer station.
      * 

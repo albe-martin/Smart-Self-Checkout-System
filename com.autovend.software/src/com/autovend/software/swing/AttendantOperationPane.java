@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractButton;
@@ -38,10 +39,10 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.ReceiptPrinterController;
-
-import javax.swing.JTextPane;
+import com.autovend.software.utils.MiscProductsDatabase;
 
 /**
  * A class for the attendant operation pane.
@@ -784,19 +785,71 @@ public class AttendantOperationPane extends JPanel {
         
         // Create a group of radio buttons for the available items to remove.
         ButtonGroup group = new ButtonGroup();
-        
-        // TODO: Loop through each item in customer's cart (includes bags, what product type are they? for description).
-//        for (String language : languages) {
-//            JRadioButton radioButton = new JRadioButton(language);
-//            radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//            group.add(radioButton);
-//            panel.add(radioButton);
-//        }
+
+        // Loop through each item in customer's cart.
+        for (Map.Entry<Product, Number[]> entry : aioc.getCart(cioc.getMainController()).entrySet()) {
+        	JRadioButton radioButton;
+			Product product = entry.getKey();
+			if (product instanceof PLUCodedProduct pluProduct) {
+				// Handle PLU product.
+				radioButton = new JRadioButton(entry.getValue()[0] + " " + pluProduct.getDescription() + " for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			} else if (product instanceof BarcodedProduct barcodeProduct) {
+				// Handle barcode product.
+				radioButton = new JRadioButton(entry.getValue()[0] + " " + barcodeProduct.getDescription() + " for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+				// Handle bags.
+				radioButton = new JRadioButton(entry.getValue()[0] + " bags for " + entry.getValue()[1]);
+				radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            group.add(radioButton);
+	            panel.add(radioButton);
+			}
+		}
 
         // Show pop-up.
         int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
-            // TODO: Determine item and remove from customer's cart.
+        	String selectedProductDescription = null;
+            // Determine selected button's text
+            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                AbstractButton button = buttons.nextElement();
+                if (button.isSelected()) {
+                    selectedProductDescription = button.getText();
+                    break;
+                }
+            }
+
+            if (selectedProductDescription != null) {
+                // Match the product.
+            	// Loop through each item in customer's cart.
+                for (Map.Entry<Product, Number[]> entry : aioc.getCart(cioc.getMainController()).entrySet()) {
+        			Product product = entry.getKey();
+        			if (product instanceof PLUCodedProduct pluProduct) {
+        				// Handle PLU product.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " " + pluProduct.getDescription() + " for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			} else if (product instanceof BarcodedProduct barcodeProduct) {
+        				// Handle barcode product.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " " + barcodeProduct.getDescription() + " for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+        				// Handle bags.
+        				if (selectedProductDescription.equals(entry.getValue()[0] + " bags for " + entry.getValue()[1])) {
+        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					break;
+        				}
+        			}
+        		}
+            }
         }
 	}
 
@@ -869,12 +922,12 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a bill denomination is low.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param checkout
+	 * 			CheckoutController making request.
 	 */
-	public void notifyLowBillDenomination(CustomerIOController cioc, BigDecimal denom) {
+	public void notifyLowBillDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.
-		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " low bills: ($" + denom + ")");
+		JLabel label = new JLabel("Station #" + checkout.getID() + " low bills: ($" + denom + ")");
 		JButton button = new JButton("Refilled");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
@@ -894,12 +947,12 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a coin denomination is low.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param chekout
+	 * 			CheckoutController making request.
 	 */
-	public void notifyLowCoinDenomination(CustomerIOController cioc, BigDecimal denom) {
+	public void notifyLowCoinDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.
-		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " low coins: ($" + denom + ")");
+		JLabel label = new JLabel("Station #" + checkout.getID() + " low coins: ($" + denom + ")");
 		JButton button = new JButton("Refilled");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
@@ -1010,5 +1063,88 @@ public class AttendantOperationPane extends JPanel {
 		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
 		activeIssues.remove(issueText);
 		populateActiveIssuesPane();
+	}
+	
+	/**
+	 * Receive a message.
+	 * 
+	 * @param message
+	 * 			Message being received.
+	 */
+	public void receiveMessage(String message) {
+		// Create notification data.
+		JLabel label = new JLabel(message);
+		JButton button = new JButton("Resolve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification resolved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant about a no bag request.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyNoBag(CheckoutController checkout) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " made a no bag request!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Approve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification approved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+
+            	// Send approval.
+            	aioc.approveNoBagRequest(checkout);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant about a weight discrepancy.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
+	 */
+	public void notifyWeightDiscrepancy(CheckoutController checkout) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " has a weight discrepancy!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Approve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification approved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+
+            	// Send approval.
+            	aioc.approveWeightDiscrepancy(checkout);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
 	}
 }

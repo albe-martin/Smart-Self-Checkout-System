@@ -1,22 +1,17 @@
 package com.autovend.software.swing;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import com.autovend.software.controllers.CustomerIOController;
-
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 
 import javax.swing.JButton;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import com.autovend.software.controllers.CustomerIOController;
 
 /**
  * GUI used to simulate events related to the Attendant.
@@ -46,9 +41,9 @@ public class AttendantEventSimulator extends JFrame {
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{293, 293, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
 		// Bag request events
@@ -80,7 +75,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowChange1 = new JButton("Create Low Coin Notification (1)");
 		lowChange1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(cioc1, new BigDecimal("0.25"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(cioc1.getMainController(), new BigDecimal("0.25"));
 			}
 		});
 		GridBagConstraints gbcChange1 = new GridBagConstraints();
@@ -92,7 +87,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowChange2 = new JButton("Create Low Coin Notification (2)");
 		lowChange2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(cioc2, new BigDecimal("0.10"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(cioc2.getMainController(), new BigDecimal("0.10"));
 			}
 		});
 		GridBagConstraints gbcCoin2 = new GridBagConstraints();
@@ -105,7 +100,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowBill1 = new JButton("Create Low Bill Notification (1)");
 		lowBill1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(cioc1, new BigDecimal("5"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(cioc1.getMainController(), new BigDecimal("5"));
 			}
 		});
 		GridBagConstraints gbcBill1 = new GridBagConstraints();
@@ -117,7 +112,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowBill2 = new JButton("Create Low Bill Notification (2)");
 		lowBill2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(cioc2, new BigDecimal("20"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(cioc2.getMainController(), new BigDecimal("20"));
 			}
 		});
 		GridBagConstraints gbcBill2 = new GridBagConstraints();
@@ -225,6 +220,56 @@ public class AttendantEventSimulator extends JFrame {
 		gbcPaperResolve2.gridx = 1;
 		gbcPaperResolve2.gridy = 6;
 		contentPane.add(lowPaperResolve2, gbcPaperResolve2);
+		
+		// No bag request events.
+		JButton noBag1 = new JButton("Create No Bag Request (1)");
+		noBag1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyNoBag(cioc1.getMainController());
+			}
+		});
+		GridBagConstraints gbcnoBag1 = new GridBagConstraints();
+		gbcnoBag1.fill = GridBagConstraints.BOTH;
+		gbcnoBag1.gridx = 0;
+		gbcnoBag1.gridy = 7;
+		contentPane.add(noBag1, gbcnoBag1);
+		
+		JButton noBag2 = new JButton("Create No Bag Request (2)");
+		noBag2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyNoBag(cioc2.getMainController());
+			}
+		});
+		GridBagConstraints gbcnoBag2 = new GridBagConstraints();
+		gbcnoBag2.fill = GridBagConstraints.BOTH;
+		gbcnoBag2.gridx = 1;
+		gbcnoBag2.gridy = 7;
+		contentPane.add(noBag2, gbcnoBag2);
+		
+		// Weight discrepancy events.
+		JButton weight1 = new JButton("Create Weight Discrepancy (1)");
+		weight1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyWeightDiscrepancy(cioc1.getMainController());
+			}
+		});
+		GridBagConstraints gbcweight1 = new GridBagConstraints();
+		gbcweight1.fill = GridBagConstraints.BOTH;
+		gbcweight1.gridx = 0;
+		gbcweight1.gridy = 8;
+		contentPane.add(weight1, gbcweight1);
+		
+		JButton weight2 = new JButton("Create Weight Discrepancy (2)");
+		weight2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyWeightDiscrepancy(cioc2.getMainController());
+			}
+		});
+		GridBagConstraints gbcweight2 = new GridBagConstraints();
+		gbcweight2.fill = GridBagConstraints.BOTH;
+		gbcweight2.gridx = 1;
+		gbcweight2.gridy = 8;
+		contentPane.add(weight2, gbcweight2);
+		
 	}
-
 }
