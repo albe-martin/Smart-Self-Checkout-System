@@ -1,7 +1,13 @@
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+
+import java.util.Objects;
+import java.util.Set;
+import java.util.Map.Entry;
+
 
 import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
@@ -14,9 +20,13 @@ import com.autovend.products.Product;
 import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
+
+import com.autovend.software.swing.Language;
+
 import com.autovend.software.swing.ShutdownPane;
 
 import javax.swing.*;
+
 
 /**
  *
@@ -277,6 +287,25 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     public LinkedHashMap<Product, Number[]> getCart() {
     	return this.getMainController().getOrder();
+    }
+    
+    /**
+     * Method that will notify that the station is out of order
+     */
+    void notifyOutOfOrder() {
+
+    }
+
+    void selectLanguage () {
+        HashMap<String, HashMap<String, String>> language = new HashMap<>();
+        
+        for (Entry<String, HashMap<String, String>> lang :
+        Language.getLanguageBank().entrySet()) {
+            if (Objects.equals("English", lang.getKey())) {
+                language.put(lang.getKey(), lang.getValue());
+            }
+        }
+        
     }
 
 

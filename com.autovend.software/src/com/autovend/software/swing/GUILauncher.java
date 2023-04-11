@@ -1,6 +1,7 @@
 package com.autovend.software.swing;
 
 import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.HashMap;
@@ -128,11 +129,13 @@ public class GUILauncher {
 		ciocs.get(0).addProduct(bcproduct2);
 		ciocs.get(0).addProduct(pluCodedProduct1);
 		
-		
-		
+		// Run customer event simulator. 
+		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0),ciocs.get(1));
+		customerEventSimulatorFrame.setVisible(true);
+		customerEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		// Run attendant event simulator.
-		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0), ciocs.get(1));
+		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0).getMainController(), ciocs.get(1).getMainController());
 		attendantEventSimulatorFrame.setVisible(true);
 		attendantEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
