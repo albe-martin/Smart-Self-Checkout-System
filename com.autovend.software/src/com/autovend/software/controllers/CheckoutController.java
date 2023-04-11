@@ -530,7 +530,7 @@ public class CheckoutController {
 
 			ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredControllers
 					.get("ReceiptPrinterController").get(0);
-			printerController.printReceipt(this.order, this.cost);
+			printerController.createReceipt(this.order, this.cost);
 
 		} else {
 			TreeSet<ChangeDispenserController> controllers = new TreeSet<>();
