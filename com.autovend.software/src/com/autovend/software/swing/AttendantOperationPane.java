@@ -71,6 +71,7 @@ public class AttendantOperationPane extends JPanel {
 	public ArrayList<String> activeIssues;
 	private JLabel manageNotificationsLabel;
     public ButtonGroup group;
+    public JTextField searchField;
 
 
 	/**
@@ -623,12 +624,11 @@ public class AttendantOperationPane extends JPanel {
         panel.add(label);
 
         // Create a text field to search in.
-        JTextField searchField = new JTextField();
+        searchField = new JTextField();
         panel.add(searchField);
         
         // Show pop-up and get result.
-        int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Add Item By Text Search"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-        if (result == JOptionPane.OK_OPTION) {
+        if (optionDialogPopup(panel, Language.translate(language, "Add Item By Text Search")) == JOptionPane.OK_OPTION) {
         	Set<Product> foundProducts = aioc.searchProductsByText(searchField.getText());
         	createFoundProductsPopup(checkout, foundProducts);
         }
@@ -660,7 +660,7 @@ public class AttendantOperationPane extends JPanel {
 			panel.add(label);
 			
 			// Create a group of radio buttons for the found products.
-            ButtonGroup group = new ButtonGroup();
+            group = new ButtonGroup();
             
             // Add each found product.
             for (Product product : foundProducts) {
@@ -682,8 +682,7 @@ public class AttendantOperationPane extends JPanel {
             }
             
             // Show pop-up.
-            int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Choose found product", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-            if (result == JOptionPane.OK_OPTION) {
+            if (optionDialogPopup(panel, "Choose found product") == JOptionPane.OK_OPTION) {
                 String selectedProductDescription = null;
                 // Determine selected button's text
                 for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -741,8 +740,7 @@ public class AttendantOperationPane extends JPanel {
 		panel.add(label);
 		
 		// Show pop-up.
-		int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "No Products Found"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-		if (result == JOptionPane.OK_OPTION) {
+		if (optionDialogPopup(panel, Language.translate(language, "No Products Found")) == JOptionPane.OK_OPTION) {
 			// Create new text search pop-up.
 			createTextSearchPopup(checkout);
 		}

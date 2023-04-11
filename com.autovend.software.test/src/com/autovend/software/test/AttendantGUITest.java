@@ -63,6 +63,8 @@ public class AttendantGUITest {
 	CustomerIOController cioc;
 	AttendantLoginPaneTest attendantPane;
 	
+	PLUCodedProduct pluCodedProduct1;
+	
 	boolean enabledEventOccurred = false;
 	boolean disabledEventOccurred = false;
 	
@@ -93,6 +95,7 @@ public class AttendantGUITest {
 		}
 	}
 	
+
 	/**
 	 * Overrides the optionDialogPopup method and the yesNoPopup method of the 
 	 * AttendantOperationPane class to make it possible to test the language selection
@@ -101,7 +104,8 @@ public class AttendantGUITest {
 	 */
 	public class AttendantOperationPaneTest extends AttendantOperationPane {
 		private static final long serialVersionUID = 1L;
-
+		boolean searchAlreadyAttempted = false; // This is to test whether it attempts another search if no product is selected
+		
 		public AttendantOperationPaneTest(AttendantIOController aioc) {
 			super(aioc);
 		}
@@ -125,10 +129,27 @@ public class AttendantGUITest {
 	                    break;
 	                }
 	            }
+			} else if (header == Language.translate(language, "No Products Found")) {
+				return -1;
+			} else if (header == Language.translate(language, "Add Item By Text Search")) {
+				setItemSearch();
+			} else if (header == "Choose found product") {
+
+	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
+					if (searchAlreadyAttempted) {
+		                button.setSelected(true);
+					} else {
+						searchAlreadyAttempted = true;
+					}
+	                System.out.println(button.getText());
+	                break;
+	            }
+
+
+
 			}
 			
-
-         
 			return 0;
 		}
 		
@@ -136,6 +157,29 @@ public class AttendantGUITest {
 		public int yesNoPopup(JPanel panel) {
 				return 0; // Simulates click on "yes"
 		}
+		
+		public void setItemSearch() {
+			searchField.setText("b");
+		}
+	}
+	
+	/**
+	 * Overrides the setItem method AttendantOperationPane class to make it possible to 
+	 * test noFoundProductsPopup
+	 * @author omarkhan
+	 */
+	public class AttendantOperationPaneTest2 extends AttendantOperationPaneTest {
+		private static final long serialVersionUID = 1L;
+
+		public AttendantOperationPaneTest2(AttendantIOController aioc) {
+			super(aioc);
+		}
+		
+		@Override
+		public void setItemSearch() {
+			searchField.setText("A thousand and fourteen rocks"); // Random text that doesn't show results in the search
+		}
+		
 	}
 	
 	
@@ -228,6 +272,23 @@ public class AttendantGUITest {
 		// Shut down a station
 		ciocs.get(1).getMainController().shutDown();
 		
+		// Create demo products.
+		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",
+				BigDecimal.valueOf(83.29), 359.0);
+		BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.four, Numeral.five), "screwdriver",
+				BigDecimal.valueOf(42), 60.0);
+
+		// Add demo products to database.
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
+
+		pluCodedProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four), "apple" , BigDecimal.valueOf(0.89));
+		PLUCodedProduct pluCodedProduct2 = new PLUCodedProduct(new PriceLookUpCode(Numeral.four, Numeral.three, Numeral.two, Numeral.one), "banana" , BigDecimal.valueOf(0.82));
+		PLUCodedProduct pluCodedProduct3 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.one, Numeral.one, Numeral.one), "bunch of jabuticaba" , BigDecimal.valueOf(17.38));
+
+		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct1.getPLUCode(), pluCodedProduct1);
+		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct2.getPLUCode(), pluCodedProduct2);
+		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
     }
     
     @After
@@ -640,8 +701,6 @@ public class AttendantGUITest {
 
 		frame.setContentPane(aop);
 		
-		
-		
 		JButton btn = new JButton();
 		aop.add(btn);
 		aop.addEnabledActionPopup(btn, cioc.getMainController()); // disabling the station to so I can test enabling it
@@ -673,5 +732,53 @@ public class AttendantGUITest {
 		aop.add(btn);
 		aop.addEnabledActionPopup(btn, cioc.getMainController());
 		btn.doClick();
+	}
+	
+	/**
+	 * Tests the functionality of the createTextSearchPopup case in the operation screen,
+	 * with a blank search input
+	 */
+	@Test
+	public void createBlankTextSearchPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		aop.createTextSearchPopup(cioc.getMainController());
+	}
+	
+	/**
+	 * Tests the functionality of the createTextSearchPopup case in the operation screen,
+	 * with a non-blank search input
+	 */
+	@Test
+	public void createNonBlankTextSearchPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest2(aioc);
+
+		frame.setContentPane(aop);
+		
+
+		aop.createTextSearchPopup(cioc.getMainController());
+
+
+
 	}
 }

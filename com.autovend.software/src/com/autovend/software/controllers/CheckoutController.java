@@ -349,7 +349,11 @@ public class CheckoutController {
 			this.cost = this.cost.add(newItem.getPrice().multiply(count));
 		} else {
 			ArrayList<DeviceController> scaleController = registeredControllers.get("ScanningScaleController");
-			weight = ((ScanningScaleController) scaleController.get(0)).getCurrentWeight();
+			try {
+				weight = ((ScanningScaleController) scaleController.get(0)).getCurrentWeight();
+			} catch (IndexOutOfBoundsException e) {
+				weight = 0;
+			}
 			// adding the recorded weight on the current scale to the current item
 			// information
 			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).add(BigDecimal.valueOf(weight));
