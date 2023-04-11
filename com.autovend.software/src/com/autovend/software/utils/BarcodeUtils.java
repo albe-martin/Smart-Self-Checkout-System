@@ -24,7 +24,7 @@ import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
 
 public class BarcodeUtils {
-	 private static Numeral[] stringToNumeralArray(String input) {
+	 public static Numeral[] stringToNumeralArray(String input) {
 	        char[] chars = input.toCharArray();
 	        ArrayList<Numeral> numerals = new ArrayList<Numeral>();
 	        for (char c: chars) {

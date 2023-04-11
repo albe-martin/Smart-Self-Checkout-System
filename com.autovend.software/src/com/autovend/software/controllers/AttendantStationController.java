@@ -321,6 +321,16 @@ public class AttendantStationController {
 	}
 	
 	/**
+	 * Returns the set of registered AttendantIOControllers.
+	 * 
+	 * @return
+	 * 		Set of registered AttendantIOControllers.
+	 */
+	public Set<DeviceController> getAttendantIOControllers() {
+		return registeredIOControllers.get("AttendantIOController");
+	}
+	
+	/**
 	 * Getter for current logged in username
 	 * @return
 	 * 		Username of logged in attendant
@@ -336,11 +346,17 @@ public class AttendantStationController {
 		return loggedIn;
 	}
 
+
 	/**
 	 * Methods for printing receipt in the case that the checkout station is low on ink or paper
 	 */
 	public void printReceipt(StringBuilder receipt) {
 		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
 		printerController.printReceipt(receipt);
+
+	
+	public HashMap getUsers() {
+		return credentials;
+
 	}
 }
