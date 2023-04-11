@@ -395,7 +395,7 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyConfirmAddedBags(cioc);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyConfirmAddedBags(cioc.getMainController());
 	}
 	
 	/**
@@ -444,7 +444,7 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc, null);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc.getMainController(), null);
 	}
 	
 	/**
@@ -461,8 +461,8 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc, null);
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInkResolved(cioc);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc.getMainController(), null);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInkResolved(cioc.getMainController());
 	}
 
 	/**
@@ -478,7 +478,7 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaper(cioc, null);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaper(cioc.getMainController(), null);
 	}
 	
 	/**
@@ -494,7 +494,7 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaperResolved(cioc);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaperResolved(cioc.getMainController());
 
 	}
 	
