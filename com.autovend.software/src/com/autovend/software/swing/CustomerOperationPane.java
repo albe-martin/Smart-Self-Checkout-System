@@ -11,6 +11,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
@@ -20,6 +21,7 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.utils.MiscProductsDatabase;
 
 /**
  * A class for  the customer start pane.
@@ -102,7 +104,12 @@ public class CustomerOperationPane extends JPanel {
 
 		initializePurchaseBagsButton();
 
-		initializePayForItemsButton();
+//		initializePayForItemsButton();
+        
+        initializeCashButton();
+        initializeCreditButton();
+        initializeDebitButton();
+        initializeGiftCardButton();
 
 		initializeEnterMembershipNumberButton();
 
@@ -117,8 +124,6 @@ public class CustomerOperationPane extends JPanel {
 
 		// initializeExitButton();
 
-		updateTotalCost();
-
 		refreshOrderGrid();
 
 	}
@@ -132,13 +137,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeCartItemsGrid() {
-		String[] columnNames = {"Item", "Price"};
-		// TODO: Get actual items in cart.
-		Object[][] data = {
-				{"Item 1", new BigDecimal("10.00")},
-				{"Item 2", new BigDecimal("20.00")},
-				{"Item 3", new BigDecimal("30.00")},
-		};
+		String[] columnNames = {"Item", "Price", "Qty"};
 		DefaultTableModel items = new DefaultTableModel(null, columnNames) {
 			private static final long serialVersionUID = 1L;
 
@@ -154,6 +153,11 @@ public class CustomerOperationPane extends JPanel {
 		orderItemsTable.setFocusable(false);
 		orderItemsTable.setShowGrid(true);
 
+		int tableWidth = orderItemsTable.getPreferredSize().width;
+		TableColumnModel columnModel = orderItemsTable.getColumnModel();
+		columnModel.getColumn(0).setPreferredWidth(tableWidth / 2);
+		columnModel.getColumn(1).setPreferredWidth(tableWidth / 4);
+		columnModel.getColumn(2).setPreferredWidth(tableWidth / 4);
 
 		JScrollPane scrollPane = new JScrollPane(orderItemsTable);
 		scrollPane.setBounds(2, 64, 366, 501);
@@ -162,23 +166,30 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	public void refreshOrderGrid() {
-
 		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
 		model.setRowCount(0);
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
+//		System.out.println("\n\n" + orderItems.entrySet());
+		System.out.println(cioc.getMainController().getOrder());
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
+			System.out.println("refresh loop product: " + product);
 			if (product instanceof PLUCodedProduct pluProduct) {
 				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
 				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
+			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+				updateGrid(model, entry, "bag(s)", bagProduct.getPrice());
 			}
+
 		}
 
 		// todo: actually get the right bag number and not reading the console??? (???) ((???))
 		// Add purchased bags to the order grid
 		// int bagQuantity = cioc.getMainController().getBagNumber();
+
+
 		// todo: Not sure where to get the bag price from
 		BigDecimal bagPrice = new BigDecimal("0.10");
 
@@ -191,12 +202,18 @@ public class CustomerOperationPane extends JPanel {
 
 	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
 		Number[] quantities = entry.getValue();
-		for (int i = 0; i < quantities.length; i++) {
-			int quantity = quantities[i].intValue();
-			if (quantity > 0) {
-				model.addRow(new Object[]{description, price});
-			}
-		}
+		Number quantity = quantities[0];
+//		System.out.println(description);
+//		System.out.println(Arrays.toString(quantities));
+
+		model.addRow(new Object[]{description, price, quantity});
+
+//		for (int i = 0; i < quantities.length; i++) {
+//			int quantity = quantities[i].intValue();
+//			if (quantity > 0) {
+//				model.addRow(new Object[]{description, price});
+//			}
+//		}
 	}
 
 	private void initializeTotalCostLabel() {
@@ -230,7 +247,7 @@ public class CustomerOperationPane extends JPanel {
 //			totalCost = totalCost.add(itemPrice);
 //		}
 
-		System.out.println(cioc.getCart());
+		//System.out.println(cioc.getCart());
 		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
@@ -267,11 +284,16 @@ public class CustomerOperationPane extends JPanel {
 		add(addItemByLookupButton);
 	}
 
-	private void initializePayForItemsButton() {
-		JButton payForItemsButton = new JButton("Pay for Items");
-		payForItemsButton.setBounds(490, 351, 173, 60);
-		add(payForItemsButton);
-	}
+//	private void initializePayForItemsButton() {
+//		JButton payForItemsButton = new JButton("Pay for Items");
+//		payForItemsButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				cioc.payPressed();
+//			}
+//		});
+//		payForItemsButton.setBounds(490, 351, 173, 60);
+//		add(payForItemsButton);
+//	}
 
 	private void initializePurchaseBagsButton() {
 		JButton purchaseBagsButton = new JButton("Purchase Bags");
@@ -375,13 +397,16 @@ public class CustomerOperationPane extends JPanel {
 						// Add the purchased bags to the order.
 						cioc.purchaseBags(bagQuantity);
 
-						// todo: is this the right spot to call this ???
-						cioc.selectBagsAdded();
-
 						// Update the order grid to display the bags.
 						refreshOrderGrid();
 
-						JOptionPane.getRootFrame().dispose();
+						//System.out.println("here");
+
+						Window window = SwingUtilities.getWindowAncestor(enterButton);
+						if (window != null) {
+							window.dispose();
+						}
+
 						System.out.println("Bags purchased: " + bagQuantity);
 					}
 				} catch (NumberFormatException ex) {
@@ -415,13 +440,27 @@ public class CustomerOperationPane extends JPanel {
 		enterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String pluCode = pluCodeTextField.getText();
+
+				if (pluCode.length() < 4 || pluCode.length() > 5) {
+					JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				//System.out.println("1" + cioc.getCart());
 				boolean itemAddedSuccessfully = cioc.addItemByPLU(pluCode);
+				//System.out.println("2" + cioc.getCart());
 
 				if (itemAddedSuccessfully) {
+					//System.out.println("ehre");
 					refreshOrderGrid();
-					JOptionPane.getRootFrame().dispose();
+					//System.out.println("aawdawd");
+
+					Window window = SwingUtilities.getWindowAncestor(enterButton);
+					if (window != null) {
+						window.dispose();
+					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Item not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "That item was not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -468,6 +507,53 @@ public class CustomerOperationPane extends JPanel {
 			}
 		});
 
+	}
+	
+	private void initializeCashButton() {
+		// Create pay with cash button.
+		JButton cashButton = new JButton("Pay with Cash");
+		cashButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+		cashButton.setBounds(490, 351, 173, 60);
+        add(cashButton);
+	}
+
+	private void initializeCreditButton() {
+		// Create pay with credit button.
+		JButton cashButton = new JButton("Pay with Credit");
+		cashButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: pay with credit
+            }
+        });
+		cashButton.setBounds(490, 411, 173, 60);
+        add(cashButton);
+	}
+
+	private void initializeDebitButton() {
+		// Create pay with debit button.
+		JButton cashButton = new JButton("Pay with Debit");
+		cashButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: pay with debit
+            }
+        });
+		cashButton.setBounds(490, 471, 173, 60);
+        add(cashButton);
+	}
+
+	private void initializeGiftCardButton() {
+		// Create pay with gift card button.
+		JButton cashButton = new JButton("Pay with Gift Card");
+		cashButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+        		cioc.choosePayByGiftCard();
+            }
+        });
+		cashButton.setBounds(490, 531, 173, 60);
+        add(cashButton);
 	}
 
 

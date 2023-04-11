@@ -42,7 +42,7 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.BillPaymentController;
 import com.autovend.software.controllers.CheckoutController;
 
-public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> {
+public class BillPaymentControllerTest {
 	SelfCheckoutStation selfCheckoutStation;
 	CheckoutController checkoutControllerStub;
 	BillPaymentController billPaymentControllerStub;
@@ -77,6 +77,27 @@ public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> 
 		barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.four), "test item 4",
 				BigDecimal.valueOf(9.99), 26.75);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcodedProduct.getBarcode(), barcodedProduct);
+		barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.five), "test item 5",
+				BigDecimal.valueOf(10.00), 30.00);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcodedProduct.getBarcode(), barcodedProduct);
+	}
+	
+	@Test
+	public void standardPaymentTest() {
+		BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(new Barcode(Numeral.one, Numeral.five));
+		order = new LinkedHashMap<>();
+		order.put(product, new Number[1]);
+
+		checkoutControllerStub.setOrder(order);
+
+		try {
+			selfCheckoutStation.billInput.accept(new Bill(10, Currency.getInstance("CAD")));
+		} catch (Exception ex) {
+			System.out.printf("Exception " + ex.getMessage());
+		}
+		double amountRemaining = checkoutControllerStub.getRemainingAmount().doubleValue();
+		double expectedAmount = new BigDecimal(0).doubleValue();
+		assertEquals(expectedAmount, amountRemaining, 0);
 	}
 	
 
@@ -97,12 +118,6 @@ public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> 
 		double amountRemaining = checkoutControllerStub.getRemainingAmount().doubleValue();
 		double expextedAmount = new BigDecimal(19.99).doubleValue();
 		assertEquals(amountRemaining, expextedAmount, 0);
-//
-//
-//		billPaymentControllerStub.reactToValidBillDetectedEvent(billValidatorStub, Currency.getInstance("CAD"), 10);
-//		remainingAmount = checkoutControllerStub.getRemainingAmount();
-//		actualRemainingAmount = BigDecimal.valueOf(40.0);
-//		assertEquals(actualRemainingAmount, remainingAmount);
 	}
 
 	@Test

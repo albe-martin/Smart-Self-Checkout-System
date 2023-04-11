@@ -13,7 +13,6 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
-import com.autovend.software.swing.CustomerPayPane;
 import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.swing.ShutdownPane;
 
@@ -47,9 +46,10 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
         }
-        System.out.println(ProductDatabases.PLU_PRODUCT_DATABASE);
+
         PriceLookUpCode plu = new PriceLookUpCode(code);
         PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
+
         if (product!=null){
             this.getMainController().addItem(product);
             return true;
@@ -58,6 +58,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
             //stuff to the scale first before they do stuff for the PLU code
             return false;
+
+
+            //todo: please figure out why calling addItemByPLU and subsequently calling getCart() does not have
+            // an updated cart (GUI team request)
+
 
         }
     }
@@ -161,7 +166,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
     	if(this.getMainController().getSupervisor() != 0) {
-    		if(this.getMainController().getControllersByType("AttendantIOControllers").contains(IOController)) {
+    		if(this.getMainController().getControllersByType("AttendantIOController").contains(IOController)) {
     	    	this.getMainController().deregisterController("AttendantIOController", IOController);
         		this.getMainController().setSupervisor(0);
     		}
@@ -245,26 +250,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public void logoutPressed() {
     	// Switch to start screen.
     	getDevice().getFrame().setContentPane(new CustomerStartPane(this));
-    	getDevice().getFrame().revalidate();
-    	getDevice().getFrame().repaint();
-    }
-    
-    /**
-     * Signals pay button was pressed.
-     */
-    public void payPressed() {
-    	// Switch to operation screen.
-    	getDevice().getFrame().setContentPane(new CustomerPayPane(this));
-    	getDevice().getFrame().revalidate();
-    	getDevice().getFrame().repaint();
-    }
-    
-    /**
-     * Signals cancel pay button was pressed.
-     */
-    public void cancelPayPressed() {
-    	// Switch to start screen.
-    	getDevice().getFrame().setContentPane(new CustomerOperationPane(this));
     	getDevice().getFrame().revalidate();
     	getDevice().getFrame().repaint();
     }
