@@ -3,6 +3,7 @@ package com.autovend.software.test;
 import static org.junit.Assert.*;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,7 @@ import java.util.Currency;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
@@ -27,35 +29,62 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.autovend.Barcode;
+import com.autovend.BarcodedUnit;
+import com.autovend.Numeral;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.AbstractDevice;
+import com.autovend.devices.BarcodeScanner;
+import com.autovend.devices.ElectronicScale;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.AbstractDeviceObserver;
 import com.autovend.devices.observers.TouchScreenObserver;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
+import com.autovend.software.controllers.BaggingScaleController;
+import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.swing.AttendantLoginPane;
+import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.swing.Language;
 
 public class AttendantGUITest {
 
-    private volatile int found;
 	TouchScreen screen;
+	AttendantIOController aioc;
+	CustomerIOController cioc;
 	AttendantLoginPaneTest attendantPane;
 	
 	boolean enabledEventOccurred = false;
 	boolean disabledEventOccurred = false;
+	
+//	private CheckoutController checkoutController;
+//	private BarcodeScannerController scannerController;
+//	private BaggingScaleController scaleController;
+//	private AttendantIOController attendantController;
+//	private AttendantStationController stationController;
+//	private CustomerIOController customerController;
+//	private BarcodedProduct databaseItem1;
+//	private BarcodedProduct databaseItem2;
+//	private PLUCodedProduct pluProduct1;
+//	private BarcodedUnit validUnit1;
+//	private BarcodedUnit validUnit2;
+//	BarcodeScanner stubScanner;
+//	ElectronicScale stubScale;
 	
 	
 	/**
 	 * Overrides the optionDialogPopup method of the AttendantLoginPane class
 	 * to make it possible to test the language selection.
 	 * @author omarkhan
-	 *
 	 */
 	public class AttendantLoginPaneTest extends AttendantLoginPane {
 		private static final long serialVersionUID = 1L;
@@ -76,7 +105,32 @@ public class AttendantGUITest {
             
 			return 0;
 		}
+	}
+	
+	/**
+	 * Overrides the optionDialogPopup method of the AttendantOperationPane class
+	 * to make it possible to test the language selection.
+	 * @author omarkhan
+	 */
+	public class AttendantOperationPaneTest extends AttendantOperationPane {
+		private static final long serialVersionUID = 1L;
+
+		public AttendantOperationPaneTest(AttendantIOController aioc) {
+			super(aioc);
+		}
 		
+		@Override
+		public int optionDialogPopup(JPanel panel) {
+            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+                AbstractButton button = buttons.nextElement();
+                if (button.getText() == "English") {
+                    button.setSelected(true);
+                    break;
+                }
+            }
+            
+			return 0;
+		}
 	}
 	
 	// Stub for TouchScreenObserver
@@ -124,7 +178,7 @@ public class AttendantGUITest {
 		attendantScreen.setUndecorated(false);
 		attendantScreen.setResizable(false);
 		
-		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
+		aioc = new AttendantIOController(attendantStation.screen);
 		attendantPane = new AttendantLoginPaneTest(aioc);
 		attendantScreen.setContentPane(attendantPane);
 		
@@ -152,7 +206,7 @@ public class AttendantGUITest {
 			customerScreen.setResizable(false);
 			
 			// Create controller
-			CustomerIOController cioc = new CustomerIOController(customerStation.screen);
+			cioc = new CustomerIOController(customerStation.screen);
 			cioc.setMainController(new CheckoutController());
 			
 			// Add to array
@@ -167,6 +221,46 @@ public class AttendantGUITest {
 		
 		// Shut down a station
 		ciocs.get(1).getMainController().shutDown();
+		
+//		/*---- AddItem setup ----*/
+//		checkoutController = new CheckoutController();
+//		scannerController = new BarcodeScannerController(new BarcodeScanner());
+//		scaleController = new BaggingScaleController(new ElectronicScale(1000, 1));
+//		stationController = new AttendantStationController();
+//		stubDevice = new TouchScreen();
+//
+//		// First item to be scanned
+//		databaseItem1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1",
+//				BigDecimal.valueOf(83.29), 359.0);
+//
+//		// Second item to be scanned
+//		databaseItem2 = new BarcodedProduct(new Barcode(Numeral.four, Numeral.five), "test item 2",
+//				BigDecimal.valueOf(42), 60.0);
+//
+//		validUnit1 = new BarcodedUnit(new Barcode(Numeral.three, Numeral.three), 359.0);
+//		validUnit2 = new BarcodedUnit(new Barcode(Numeral.four, Numeral.five), 60.0);
+//
+//		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem1.getBarcode(), databaseItem1);
+//		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem2.getBarcode(), databaseItem2);
+//		
+//		// PLU products
+//		pluProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.five, Numeral.five, Numeral.five, Numeral.five, Numeral.five), "test item 1",BigDecimal.valueOf(83.29));
+//		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluProduct1.getPLUCode(), pluProduct1);
+//
+//		stubScanner = new BarcodeScanner();
+//		stubScale = new ElectronicScale(1000, 1);
+//
+//		scannerController = new BarcodeScannerController(stubScanner);
+//		scannerController.setMainController(checkoutController);
+//		scaleController = new BaggingScaleController(stubScale);
+//		scaleController.setMainController(checkoutController);
+//		attendantController = new AttendantIOController(stubDevice);
+//		attendantController.setMainAttendantController(stationController);
+//		customerController = new CustomerIOController(stubDevice);
+//		customerController.setMainController(checkoutController);
+//
+//		stubScanner.register(scannerController);
+//		stubScale.register(scaleController);
 		
     }
     
@@ -189,13 +283,12 @@ public class AttendantGUITest {
 		assert(enabledEventOccurred && disabledEventOccurred);
 	}
 	
-	
+
 	/**
-	 * 
+	 * Tests the functionality of the change language use case in the login screen
 	 */
 	@Test
-	public void clickLanguageSelect() {
-
+	public void loginLanguageSelectTest() {
 		String language = attendantPane.language;
 		JButton lsb = attendantPane.languageSelectButton;
 		lsb.doClick();
@@ -207,47 +300,205 @@ public class AttendantGUITest {
 	 * Tests to make sure that a login with incorrect credentials is unsuccessful
 	 */
 	@Test
-	public void TestLoginFailure() {
-        JFrame frame = screen.getFrame();
-        
+	public void loginFailureTest() {
         JButton loginButton = attendantPane.loginButton;
-		JLabel usernameLabel = attendantPane.usernameLabel;
-		JLabel passwordLabel = attendantPane.passwordLabel;
-
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
 		
-		JLabel errorLabel = attendantPane.errorLabel;
-		JButton lsb = attendantPane.languageSelectButton;
+		usernameTF.setText("wrong"); // Wrong login credentials
+		passwordTF.setText("wrong");	
+		loginButton.doClick();
 		
-		String usernameText = usernameLabel.getText();
-		String passwordText = passwordLabel.getText();
+		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
 		
-		usernameTF.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.out.println(e);
-				
-			}
-			
-		});
+		System.out.println(numberOfComponents);
 		
-		usernameTF.setText("abc");
-		passwordTF.setText("123");
-
 		
-		usernameTF.registerKeyboardAction(null, null, found);
 		
+		// If the number of components is not greater than 7, that is evidence that the pane is still the login screen
+		assert(numberOfComponents <= 7);
 	}
 	
 	/**
 	 * Tests to make sure that a login with correct credentials is successful
 	 */
 	@Test
-	public void TestLoginSuccess() {
+	public void loginSuccessTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
 		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
+		
+		// If the number of components is greater than 7, that is evidence that the pane is no longer the login screen
+		assert(numberOfComponents > 7);
+	}
+	
+	/**
+	 * Tests the functionality of log out button
+	 */
+	@Test
+	public void logoutTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		JButton logout = aop.logoutButton;
+		logout.doClick();
+		
+		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
+
+		// If the number of components is not greater than 7, that is evidence that the pane is still the login screen
+		assert(numberOfComponents <= 7);
+	}
+	
+	/**
+	 * Tests the functionality of the change language use case in the operation screen
+	 */
+	@Test
+	public void operationLanguageSelectTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+		frame.setContentPane(aop);
+		
+		String language = aop.language;
+		JButton lsb = aop.languageSelectButton;
+		lsb.doClick();
+		
+		assert(language == "English");
+	}
+	
+	/**
+	 * Bag request event
+	 */
+	@Test
+	public void Test() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyConfirmAddedBags(cioc);
+	}
+	
+	/**
+	 * Low coins event
+	 */
+	@Test
+	public void Test1() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowCoinDenomination(cioc, new BigDecimal("0.25"));
+	}
+	
+	/**
+	 * Low bill event
+	 */
+	@Test
+	public void Test2() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowBillDenomination(cioc, new BigDecimal("5"));
+	}
+	
+	/**
+	 * Tests creation on a low ink event in the GUI
+	 */
+	@Test
+	public void lowInkTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc, null);
+	}
+	
+	/**
+	 * Tests the resolution of a low ink event in the GUI
+	 */
+	@Test
+	public void resolveLowInkTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc, null);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInkResolved(cioc);
 	}
 
+	/**
+	 * Tests creation on a low paper event in the GUI
+	 */
+	@Test
+	public void lowPaperTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaper(cioc, null);
+	}
+	
+	/**
+	 * Tests the resolution of a low paper event in the GUI
+	 */
+	@Test
+	public void resolveLowPaperTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaperResolved(cioc);
+
+	}
 }

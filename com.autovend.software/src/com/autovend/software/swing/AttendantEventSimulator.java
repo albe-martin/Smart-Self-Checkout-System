@@ -33,7 +33,7 @@ public class AttendantEventSimulator extends JFrame {
 
 	/**
 	 * Create the frame.
-	 */
+	 */      
 	public AttendantEventSimulator(JFrame attendantFrame, CustomerIOController cioc1, CustomerIOController cioc2) {
 		
 		setTitle("Attendant Event Simulator");
@@ -130,7 +130,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowink1 = new JButton("Create Low Ink Notification (1)");
 		lowink1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInk(cioc1);
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInk(cioc1, null);
 			}
 		});
 		GridBagConstraints gbcink1 = new GridBagConstraints();
@@ -142,7 +142,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowink2 = new JButton("Create Low Ink Notification (2)");
 		lowink2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInk(cioc2);
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInk(cioc2, null);
 			}
 		});
 		GridBagConstraints gbcink2 = new GridBagConstraints();
@@ -151,20 +151,36 @@ public class AttendantEventSimulator extends JFrame {
 		gbcink2.gridy = 3;
 		contentPane.add(lowink2, gbcink2);
 		
+		// Resolve low ink events.
+		JButton lowinkResolve1 = new JButton("Resolve Low Ink Issue (1)");
+		lowinkResolve1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInkResolved(cioc1);
+			}
+		});
+		GridBagConstraints gbcinkResolve1 = new GridBagConstraints();
+		gbcinkResolve1.fill = GridBagConstraints.BOTH;
+		gbcinkResolve1.gridx = 0;
+		gbcinkResolve1.gridy = 4;
+		contentPane.add(lowinkResolve1, gbcinkResolve1);
 		
-		
-		// TODO: Resolve low ink, low paper.
-		
-		
-		
-		
-		
-		
+		JButton lowinkResolve2 = new JButton("Resolve Low Ink Issue (2)");
+		lowinkResolve2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInkResolved(cioc2);
+			}
+		});
+		GridBagConstraints gbcinkResolve2 = new GridBagConstraints();
+		gbcinkResolve2.fill = GridBagConstraints.BOTH;
+		gbcinkResolve2.gridx = 1;
+		gbcinkResolve2.gridy = 4;
+		contentPane.add(lowinkResolve2, gbcinkResolve2);
+
 		// Low paper events.
 		JButton lowPaper1 = new JButton("Create Low Paper Notification (1)");
 		lowPaper1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaper(cioc1);
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaper(cioc1, null);
 			}
 		});
 		GridBagConstraints gbcpaper1 = new GridBagConstraints();
@@ -176,7 +192,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowPaper2 = new JButton("Create Low Paper Notification (2)");
 		lowPaper2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaper(cioc2);
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaper(cioc2, null);
 			}
 		});
 		GridBagConstraints gbcPaper2 = new GridBagConstraints();
@@ -184,6 +200,31 @@ public class AttendantEventSimulator extends JFrame {
 		gbcPaper2.gridx = 1;
 		gbcPaper2.gridy = 5;
 		contentPane.add(lowPaper2, gbcPaper2);
+
+		// Resolve low paper events.
+		JButton lowPaperResolve1 = new JButton("Resolve Low Paper Issue (1)");
+		lowPaperResolve1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaperResolved(cioc1);
+			}
+		});
+		GridBagConstraints gbcPaperResolve1 = new GridBagConstraints();
+		gbcPaperResolve1.fill = GridBagConstraints.BOTH;
+		gbcPaperResolve1.gridx = 0;
+		gbcPaperResolve1.gridy = 6;
+		contentPane.add(lowPaperResolve1, gbcPaperResolve1);
+
+		JButton lowPaperResolve2 = new JButton("Resolve Low Paper Issue (2)");
+		lowPaperResolve2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaperResolved(cioc2);
+			}
+		});
+		GridBagConstraints gbcPaperResolve2 = new GridBagConstraints();
+		gbcPaperResolve2.fill = GridBagConstraints.BOTH;
+		gbcPaperResolve2.gridx = 1;
+		gbcPaperResolve2.gridy = 6;
+		contentPane.add(lowPaperResolve2, gbcPaperResolve2);
 	}
 
 }
