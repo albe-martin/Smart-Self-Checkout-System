@@ -1,12 +1,15 @@
 package com.autovend.software.swing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class used for translating the programmers (english) text to the customer's desired language
  */
 public class Language {
-	public static String[] languages = new String[] {"English"};
+	public static ArrayList<String> languages = new ArrayList<>(List.of("English"));
+	public static String defaultLanguage = "English";
 
 	// Map looks like {
 	//   	language: {

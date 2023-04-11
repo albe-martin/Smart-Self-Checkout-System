@@ -50,9 +50,10 @@ public class AttendantOperationPane extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private AttendantIOController aioc;
-	public String language = "English";
-	// TODO: Have English be the only built in language
-	private String[] languages = new String[] {"English", "French"};
+
+	private final ArrayList<String> languages = Language.languages;
+	public String language = Language.defaultLanguage;
+
 	public JButton logoutButton;
 	public JPanel manageEnabledPane;
 	public JLabel manageEnabledLabel;
@@ -78,7 +79,6 @@ public class AttendantOperationPane extends JPanel {
 	 * Quick GUI Launcher. Used to allow window builder to work.
 	 */
 	public static void main(String[] args) {
-		
 		// Create attendant station.
 		SupervisionStation attendantStation = new SupervisionStation();
 		
@@ -939,8 +939,7 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a coin denomination is low.
 	 * 
-	 * @param chekout
-	 * 			CheckoutController making request.
+	 * @param chekout CheckoutController making request.
 	 */
 	public void notifyLowCoinDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.

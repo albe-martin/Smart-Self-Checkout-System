@@ -46,8 +46,21 @@ public class GUILauncher {
 		french.put("Manage Disabled Stations:", "Le Manage Disabled Stations:");
 		french.put("Log Out", "Le Log Out");
 		french.put("Station", "Le Station");
+		french.put("Self Checkout Station #", "Le Self Checkout Station #");
+		french.put("Item", "Le Item");
+		french.put("Price", "Le Price");
+		french.put("Qty", "Le Qty");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+
 		Language.addLanguage("French", french);
-		
+		Language.languages.add("French");
+
 		// Create attendant station.
 		SupervisionStation attendantStation = new SupervisionStation();
 		
