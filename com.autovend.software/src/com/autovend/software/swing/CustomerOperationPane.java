@@ -1,10 +1,7 @@
 package com.autovend.software.swing;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -103,6 +100,8 @@ public class CustomerOperationPane extends JPanel {
 		initializeAddItemByLookupCodeButton();
 
 		initializePurchaseBagsButton();
+
+		initializeAddOwnBagsButton();
 
 //		initializePayForItemsButton();
         
@@ -302,7 +301,19 @@ public class CustomerOperationPane extends JPanel {
 				showPurchaseBagsPane();
 			}
 		});
-		purchaseBagsButton.setBounds(490, 251, 173, 60);
+		purchaseBagsButton.setBounds(589, 230, 173, 60);
+		add(purchaseBagsButton);
+	}
+
+	private void initializeAddOwnBagsButton() {
+		JButton purchaseBagsButton = new JButton("Add Own Bags");
+		purchaseBagsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cioc.addOwnBags();
+				showAddOwnBagsPane();
+			}
+		});
+		purchaseBagsButton.setBounds(388, 230, 173, 60);
 		add(purchaseBagsButton);
 	}
 
@@ -423,6 +434,47 @@ public class CustomerOperationPane extends JPanel {
 		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
+	private void showAddOwnBagsPane() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(new JLabel("Please add your own bags to the bagging area, and press \"Finished\" when you are done."), gbc);
+
+		JButton finishedButton = new JButton("Finished");
+		finishedButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cioc.notifyAttendantBagsAdded();
+
+				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+				if (window1 != null) {
+					window1.dispose();
+				}
+			}
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		panel.add(finishedButton, gbc);
+
+		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Add Own Bags");
+
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Code to run when the JOptionPane is closed
+				System.out.println("JOptionPane closed");
+				cioc.cancelAddOwnBags();
+			}
+		});
+
+		dialog.setVisible(true);
+	}
+
 	private void showAddItemByPLUCodePane() {
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -483,7 +535,7 @@ public class CustomerOperationPane extends JPanel {
 			}
 		};
 		glassPane.setOpaque(false);
-		glassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
+		glassPane.setBounds(0, 0, 31, 35); // Set the bounds to match the size of the CustomerStartPane
 		glassPane.setVisible(false);
 
 		JLabel disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");

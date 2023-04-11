@@ -133,13 +133,13 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         this.getMainController().purchaseBags(amountOfBagsToAdd);
     }
 
-    void addOwnBags(){this.getMainController().setAddingBagsLock();}
+    public void addOwnBags(){this.getMainController().setAddingBagsLock();}
     //todo: gui stuff
-    void cancelAddOwnBags(){this.getMainController().cancelAddingBagsLock();}
+    public void cancelAddOwnBags(){this.getMainController().cancelAddingBagsLock();}
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
-    void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
+    public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
     //todo: more substance
 
     void selectDoNotBag(Product product){
