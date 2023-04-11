@@ -478,7 +478,12 @@ public class CheckoutController {
 
 	void printerOutOfResources() {
 		this.needPrinterRefill = true;
-		alertAttendant("Printing Error at station, receipt contents:\n" + this.order.toString());
+		if (this.order.size() > 0){
+			alertAttendant("Printing Error at station, receipt contents:\n" + this.order.toString());
+		}
+		else {
+			alertAttendant("Printing Error at station, no receipt contents");
+		}
 		// todo: GUI and better information
 		disableStation();
 	}
