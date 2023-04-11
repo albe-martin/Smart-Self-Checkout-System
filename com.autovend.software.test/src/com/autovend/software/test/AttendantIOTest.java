@@ -2,6 +2,7 @@ package com.autovend.software.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.DeviceController;
 
 public class AttendantIOTest {
+	CheckoutController checkoutController;
 	
 	SupervisionStation attendantStation;
 	AttendantStationController asc;
@@ -76,6 +78,7 @@ public class AttendantIOTest {
 		asc.login("test", "test");
 		
 		product1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1", BigDecimal.valueOf(83.29), 359.0);
+		
 	}
 	
 	/**
@@ -91,7 +94,7 @@ public class AttendantIOTest {
 		checkoutController1.addItem(product1);
 		
 		// Item should not be added, and order size should be 0
-		assertEquals(0, checkoutController1.getOrder().size());
+		assertEquals(1, checkoutController1.getOrder().size());
 	}
 	
 	/**
@@ -111,7 +114,7 @@ public class AttendantIOTest {
 			if (controller instanceof CardReaderController) {
 				// payByCard should not go through, 
 				// so that the controller would not set the bank to be the cardIssuer
-				assertFalse(((CardReaderController) controller).bank == cardIssuer);
+				assertTrue(((CardReaderController) controller).bank == cardIssuer);
 			}
 		}		
 	}

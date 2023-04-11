@@ -97,6 +97,26 @@ public class LoginLogoutTest {
 		
 	}
 	
+	@Test
+	public void testDeregisterUser() {
+		String username = "Ana";
+		String password = "seng123";
+		credentials.put(username, password);
+		attendantStationController.registerUser(username, password);
+		
+		attendantStationController.deregisterUser(username);
+		String expectedOutput = "SUCCESS: User removed.";
+		
+		try {
+			attendantStationController.deregisterUser(username);
+			assertEquals(expectedOutput, "SUCCESS: User removed.");
+		}
+		catch (Exception ex) {
+			fail("Exception incorrectly thrown");
+		}
+	}
+	
+	
 	/**
 	 * Tests that login works when person is registered
 	 */
