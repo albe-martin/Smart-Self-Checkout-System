@@ -774,7 +774,6 @@ public class AddItemTest {
 	@Test
 	public void testPLUAddItem() {
 		
-		//int expected_order_len = 1;
 		System.out.println("Code in string: "+ pluProduct1.getPLUCode().toString());
 		
 		PriceLookUpCodedUnit placedPLUItem = new PriceLookUpCodedUnit(pluProduct1.getPLUCode(), 10);
@@ -795,7 +794,7 @@ public class AddItemTest {
 		
 		assertTrue("Correct equivalent database item should be in the order", order.keySet().contains(equivalentItem));
 		
-		assertEquals("PLU product's amount equal to weight should be added to order", expectedWeight, order.get(equivalentItem)[0]);
+		assertEquals("PLU product's amount equal to weight should be added to order", expectedWeight, order.get(equivalentItem)[0].doubleValue(), 0.01d);
 		assertEquals("PLU product's total cost should be added to order", expectedAmount, order.get(equivalentItem)[1]);
 		
 		assertEquals("PLU product's item should be added to total cost", expectedAmount, checkoutController.getCost());
@@ -803,8 +802,6 @@ public class AddItemTest {
 		assertEquals("PLU product's weight should be added to expected weight of bagging area.", expectedWeight, scaleController.getExpectedWeight(), 0.01d);
 		
 		
-		//assertEquals(pluProduct1.getPrice(), checkoutController.getCost());
-		//assertEquals(expected_order_len, checkoutController.getOrder().size());
 	}
 	
 
