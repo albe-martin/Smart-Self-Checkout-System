@@ -63,22 +63,10 @@ public class AttendantGUITest {
 	CustomerIOController cioc;
 	AttendantLoginPaneTest attendantPane;
 	
+	PLUCodedProduct pluCodedProduct1;
+	
 	boolean enabledEventOccurred = false;
 	boolean disabledEventOccurred = false;
-	
-//	private CheckoutController checkoutController;
-//	private BarcodeScannerController scannerController;
-//	private BaggingScaleController scaleController;
-//	private AttendantIOController attendantController;
-//	private AttendantStationController stationController;
-//	private CustomerIOController customerController;
-//	private BarcodedProduct databaseItem1;
-//	private BarcodedProduct databaseItem2;
-//	private PLUCodedProduct pluProduct1;
-//	private BarcodedUnit validUnit1;
-//	private BarcodedUnit validUnit2;
-//	BarcodeScanner stubScanner;
-//	ElectronicScale stubScale;
 	
 	
 	/**
@@ -107,31 +95,97 @@ public class AttendantGUITest {
 		}
 	}
 	
+
 	/**
-	 * Overrides the optionDialogPopup method of the AttendantOperationPane class
-	 * to make it possible to test the language selection.
+	 * Overrides the optionDialogPopup method and the yesNoPopup method of the 
+	 * AttendantOperationPane class to make it possible to test the language selection
+	 * and shutdown station use.
 	 * @author omarkhan
 	 */
 	public class AttendantOperationPaneTest extends AttendantOperationPane {
 		private static final long serialVersionUID = 1L;
-
+		boolean searchAlreadyAttempted = false; // This is to test whether it attempts another search if no product is selected
+		
 		public AttendantOperationPaneTest(AttendantIOController aioc) {
 			super(aioc);
 		}
 		
 		@Override
-		public int optionDialogPopup(JPanel panel) {
-            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
-                AbstractButton button = buttons.nextElement();
-                if (button.getText() == "English") {
+		public int optionDialogPopup(JPanel panel, String header) {
+			
+			if (header == "Language Selection") {
+	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
+	                if (button.getText() == "English") {
+	                    button.setSelected(true);
+	                    break;
+	                }
+	            }
+			} else if (header == "Action Selection") {
+	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
+	                if (button.getText() == "Startup Station" || button.getText() == "Disable Station" || button.getText() == "Enable Station") {
+	                    button.setSelected(true);
+	                    break;
+	                }
+	            }
+			} else if (header == Language.translate(language, "No Products Found")) {
+				return -1;
+			} else if (header == Language.translate(language, "Add Item By Text Search")) {
+				setItemSearch();
+			} else if (header == "Choose found product") {
+
+	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
+					if (searchAlreadyAttempted) {
+		                button.setSelected(true);
+					} else {
+						searchAlreadyAttempted = true;
+					}
+	                System.out.println(button.getText());
+	                break;
+	            }
+	            
+			} else if (header == "Remove Item") {
+	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
                     button.setSelected(true);
                     break;
-                }
-            }
-            
+	            }
+			}
+			
 			return 0;
 		}
+		
+		@Override
+		public int yesNoPopup(JPanel panel) {
+				return 0; // Simulates click on "yes"
+		}
+		
+		public void setItemSearch() {
+			searchField.setText("b");
+		}
 	}
+	
+	/**
+	 * Overrides the setItem method AttendantOperationPane class to make it possible to 
+	 * test noFoundProductsPopup
+	 * @author omarkhan
+	 */
+	public class AttendantOperationPaneTest2 extends AttendantOperationPaneTest {
+		private static final long serialVersionUID = 1L;
+
+		public AttendantOperationPaneTest2(AttendantIOController aioc) {
+			super(aioc);
+		}
+		
+		@Override
+		public void setItemSearch() {
+			searchField.setText("A thousand and fourteen rocks"); // Random text that doesn't show results in the search
+		}
+		
+	}
+	
 	
 	// Stub for TouchScreenObserver
 	TouchScreenObserver tso = new TouchScreenObserver() {
@@ -222,46 +276,23 @@ public class AttendantGUITest {
 		// Shut down a station
 		ciocs.get(1).getMainController().shutDown();
 		
-//		/*---- AddItem setup ----*/
-//		checkoutController = new CheckoutController();
-//		scannerController = new BarcodeScannerController(new BarcodeScanner());
-//		scaleController = new BaggingScaleController(new ElectronicScale(1000, 1));
-//		stationController = new AttendantStationController();
-//		stubDevice = new TouchScreen();
-//
-//		// First item to be scanned
-//		databaseItem1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1",
-//				BigDecimal.valueOf(83.29), 359.0);
-//
-//		// Second item to be scanned
-//		databaseItem2 = new BarcodedProduct(new Barcode(Numeral.four, Numeral.five), "test item 2",
-//				BigDecimal.valueOf(42), 60.0);
-//
-//		validUnit1 = new BarcodedUnit(new Barcode(Numeral.three, Numeral.three), 359.0);
-//		validUnit2 = new BarcodedUnit(new Barcode(Numeral.four, Numeral.five), 60.0);
-//
-//		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem1.getBarcode(), databaseItem1);
-//		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(databaseItem2.getBarcode(), databaseItem2);
-//		
-//		// PLU products
-//		pluProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.five, Numeral.five, Numeral.five, Numeral.five, Numeral.five), "test item 1",BigDecimal.valueOf(83.29));
-//		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluProduct1.getPLUCode(), pluProduct1);
-//
-//		stubScanner = new BarcodeScanner();
-//		stubScale = new ElectronicScale(1000, 1);
-//
-//		scannerController = new BarcodeScannerController(stubScanner);
-//		scannerController.setMainController(checkoutController);
-//		scaleController = new BaggingScaleController(stubScale);
-//		scaleController.setMainController(checkoutController);
-//		attendantController = new AttendantIOController(stubDevice);
-//		attendantController.setMainAttendantController(stationController);
-//		customerController = new CustomerIOController(stubDevice);
-//		customerController.setMainController(checkoutController);
-//
-//		stubScanner.register(scannerController);
-//		stubScale.register(scaleController);
-		
+		// Create demo products.
+		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",
+				BigDecimal.valueOf(83.29), 359.0);
+		BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.four, Numeral.five), "screwdriver",
+				BigDecimal.valueOf(42), 60.0);
+
+		// Add demo products to database.
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
+
+		pluCodedProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four), "apple" , BigDecimal.valueOf(0.89));
+		PLUCodedProduct pluCodedProduct2 = new PLUCodedProduct(new PriceLookUpCode(Numeral.four, Numeral.three, Numeral.two, Numeral.one), "banana" , BigDecimal.valueOf(0.82));
+		PLUCodedProduct pluCodedProduct3 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.one, Numeral.one, Numeral.one), "bunch of jabuticaba" , BigDecimal.valueOf(17.38));
+
+		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct1.getPLUCode(), pluCodedProduct1);
+		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct2.getPLUCode(), pluCodedProduct2);
+		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
     }
     
     @After
@@ -310,10 +341,6 @@ public class AttendantGUITest {
 		loginButton.doClick();
 		
 		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
-		
-		System.out.println(numberOfComponents);
-		
-		
 		
 		// If the number of components is not greater than 7, that is evidence that the pane is still the login screen
 		assert(numberOfComponents <= 7);
@@ -387,10 +414,10 @@ public class AttendantGUITest {
 	}
 	
 	/**
-	 * Bag request event
+	 * Tests creation of a bag request event in the GUI
 	 */
 	@Test
-	public void Test() {
+	public void bagRequestTest() {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
@@ -399,14 +426,16 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyConfirmAddedBags(cioc);
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyConfirmAddedBags(cioc.getMainController());
+		aop.button.doClick();		
 	}
 	
 	/**
-	 * Low coins event
+	 * Tests creation of a low bills event in the GUI
 	 */
 	@Test
-	public void Test1() {
+	public void lowCoinsTest() {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
@@ -415,14 +444,16 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowCoinDenomination(cioc, new BigDecimal("0.25"));
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyLowCoinDenomination(cioc.getMainController(), new BigDecimal("0.25"));
+		aop.button.doClick();	
 	}
 	
 	/**
-	 * Low bill event
+	 * Tests creation of a low bills event in the GUI
 	 */
 	@Test
-	public void Test2() {
+	public void lowBillTest() {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
@@ -431,11 +462,13 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowBillDenomination(cioc, new BigDecimal("5"));
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyLowBillDenomination(cioc.getMainController(), new BigDecimal("5"));
+		aop.button.doClick();		
 	}
 	
 	/**
-	 * Tests creation on a low ink event in the GUI
+	 * Tests creation of a low ink event in the GUI
 	 */
 	@Test
 	public void lowInkTest() {
@@ -443,12 +476,13 @@ public class AttendantGUITest {
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
 		
-
 		usernameTF.setText("abc"); // Correct login credentials
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc, null);
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyLowInk(cioc.getMainController(), null);
+		aop.button.doClick();	
 	}
 	
 	/**
@@ -459,14 +493,13 @@ public class AttendantGUITest {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
-
 		
 		usernameTF.setText("abc"); // Correct login credentials
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc, null);
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInkResolved(cioc);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc.getMainController(), null);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInkResolved(cioc.getMainController());
 	}
 
 	/**
@@ -482,7 +515,62 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaper(cioc, null);
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyLowPaper(cioc.getMainController(), null);
+		aop.button.doClick();	}
+	
+	/**
+	 * Tests the resolution of a no bag event in the GUI
+	 */
+	@Test
+	public void noBagTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyNoBag(cioc.getMainController());
+		aop.button.doClick();
+	}
+	
+	/**
+	 * Tests the resolution of a weight discrepancy event in the GUI
+	 */
+	@Test
+	public void weightDiscrepancyTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyWeightDiscrepancy(cioc.getMainController());
+		aop.button.doClick();	}
+	
+	/**
+	 * Tests the resolution of a receipt reprint event in the GUI
+	 */
+	@Test
+	public void receiptReprintTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		StringBuilder receipt = new StringBuilder();
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyReceiptRePrint(cioc.getMainController(), receipt);
+		aop.button.doClick();	
 	}
 	
 	/**
@@ -498,7 +586,236 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaperResolved(cioc);
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaperResolved(cioc.getMainController());
 
+	}
+	
+	/**
+	 * Tests the startup event in the GUI
+	 */
+	@Test
+	public void startupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+				
+		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyStartup(cioc.getMainController());
+		
+
+	}
+	
+	/**
+	 * Tests the shutdown event in the GUI, then simulates "yes" click on popup
+	 */
+	@Test
+	public void shutdownTestYes() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+						
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+		frame.setContentPane(aop);
+		
+		aop.notifyShutdownStationInUse(cioc.getMainController());
+	}
+	
+
+	
+	/**
+	 * Tests the functionality of addIssue method
+	 */
+	@Test
+	public void addIssues() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		AttendantOperationPane operationPane = (AttendantOperationPane) screen.getFrame().getContentPane();
+		int visibleIssues = operationPane.activeIssuesPane.getComponentCount();
+				
+		String issue = "issue";
+		operationPane.activeIssues.add(issue);
+		operationPane.populateActiveIssuesPane();
+		int newVisibleIssues = operationPane.activeIssuesPane.getComponentCount();
+		
+		assert(newVisibleIssues == visibleIssues + 1); // assert that the new issue is showing up in the GUI
+	}
+	
+	/**
+	 * Tests the functionality of recieveMessage method
+	 */
+	@Test
+	public void recieveMessageTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		AttendantOperationPane operationPane = (AttendantOperationPane) screen.getFrame().getContentPane();
+		int oldCount = operationPane.notificationsData.size();
+		
+		operationPane.receiveMessage("message");
+		int newCount = operationPane.notificationsData.size();
+		
+		assert(newCount == oldCount + 1); // assert that the new message is showing up in the GUI
+		
+		operationPane.button.doClick();
+	}
+	
+	/**
+	 * Tests the functionality of the addShutdownActionPopop case in the operation screen
+	 */
+	@Test
+	public void shutdownActionPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		JButton btn = new JButton();
+		aop.add(btn);
+		aop.addShutdownActionPopup(btn, cioc.getMainController());
+		btn.doClick();
+	}
+	
+	/**
+	 * Tests the functionality of the addDisabledActionPopup case in the operation screen
+	 */
+	@Test
+	public void disabledActionPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		JButton btn = new JButton();
+		aop.add(btn);
+		aop.addEnabledActionPopup(btn, cioc.getMainController()); // disabling the station to so I can test enabling it
+		btn.doClick();
+		
+		aop.addDisabledActionPopup(btn, cioc.getMainController());
+		btn.doClick();
+	}
+	
+	/**
+	 * Tests the functionality of the addensabledActionPopup case in the operation screen
+	 */
+	@Test
+	public void enabledActionPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		JButton btn = new JButton();
+		aop.add(btn);
+		aop.addEnabledActionPopup(btn, cioc.getMainController());
+		btn.doClick();
+	}
+	
+	/**
+	 * Tests the functionality of the createTextSearchPopup case in the operation screen,
+	 * with a blank search input
+	 */
+	@Test
+	public void createBlankTextSearchPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		aop.createTextSearchPopup(cioc.getMainController());
+	}
+	
+	/**
+	 * Tests the functionality of the createTextSearchPopup case in the operation screen,
+	 * with a non-blank search input
+	 */
+	@Test
+	public void createNonBlankTextSearchPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest2(aioc);
+
+		frame.setContentPane(aop);
+		
+		aop.createTextSearchPopup(cioc.getMainController());
+	}
+	
+	/**
+	 * Tests the functionality of the createRemoveItemPopup case in the operation screen
+	 */
+	@Test
+	public void createRemoveItemPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		aop.createTextSearchPopup(cioc.getMainController()); // Add an item by PLU code
+		aop.createRemoveItemPopup(cioc.getMainController()); // Remove the item
 	}
 }

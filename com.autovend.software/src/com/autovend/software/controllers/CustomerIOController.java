@@ -88,6 +88,13 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public void addItemByBrowsing(Product selectedProduct) {addProduct(selectedProduct);}
 
     /**
+     * Called when an item has been added, and now needs to go to the bagging area
+     */
+    public void promptAddItemToBaggingArea() {
+
+    }
+
+    /**
      * Methods for membership sign-in and stuff
      */
     
@@ -133,21 +140,37 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         this.getMainController().purchaseBags(amountOfBagsToAdd);
     }
 
-    void addOwnBags(){this.getMainController().setAddingBagsLock();}
+    public void addOwnBags(){this.getMainController().setAddingBagsLock();}
     //todo: gui stuff
-    void cancelAddOwnBags(){this.getMainController().cancelAddingBagsLock();}
+    public void cancelAddOwnBags(){this.getMainController().cancelAddingBagsLock();}
+
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
-    void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
+    public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
     //todo: more substance
 
-    void selectDoNotBag(Product product){
+
+    public void itemWasAddedToTheBaggingArea() {
+        //todo: either make this work, or tell Colton how it is meant to work
+    }
+
+    public void selectDoNotBag(Product product){
         this.getMainController().notifyAttendantNoBagRequest();
         /* todo: update UI so it goes back to the normal order, also make the do not bag code
          * not trash you idiot
          */
     }
+
+    /**
+     * Same thing as above with no product param, as the gui does not have the current product added when
+     * the customer chooses to not bag that item
+     */
+    public void selectDoNotBag() {
+        this.getMainController().notifyAttendantNoBagRequest();
+        // todo: either make this work or tell Colton how it is meant to work with a product param
+    }
+
     
     /**
      * Registers an Attendant's IO Controller into CustomerIO Controller if not already assigned one.
@@ -216,6 +239,21 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
             CustomerStartPane pane = (CustomerStartPane) panel;
             pane.disableStation();
         }
+    }
+    
+    /**
+     * Signals GUI that station is enabled.
+     */
+    void notifyEnabled() {
+    	enablePanel((JPanel) getDevice().getFrame().getContentPane());
+    }
+    
+    /**
+     * Signals GUI that station is disabled.
+     */
+    void notifyDisabled() {
+		disablePanel((JPanel) getDevice().getFrame().getContentPane());
+
     }
     
     /**

@@ -41,13 +41,26 @@ public class GUILauncher {
 		french.put("Change Language", "Le Change Language");
 		french.put("START", "LE START");
 		french.put("Station Notifications:", "Le Station Notifications:");
+		french.put("Active Issues:", "Le Active Issues:");
 		french.put("Manage Enabled Stations:", "Le Manage Enabled Stations");
 		french.put("Manage Disabled Stations:", "Le Manage Disabled Stations:");
 		french.put("Log Out", "Le Log Out");
 		french.put("Station", "Le Station");
-		french.put("Change Language", "Le Change Language");
+		french.put("Self Checkout Station #", "Le Self Checkout Station #");
+		french.put("Item", "Le Item");
+		french.put("Price", "Le Price");
+		french.put("Qty", "Le Qty");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+		french.put("Item", "Le Item");
+
 		Language.addLanguage("French", french);
-		
+		Language.languages.add("French");
+
 		// Create attendant station.
 		SupervisionStation attendantStation = new SupervisionStation();
 		
@@ -121,13 +134,13 @@ public class GUILauncher {
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
 		
 		// TODO: Can be removed if it conflicts with the customer testing. Just used for testing attendantIO.
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct1);
-//		ciocs.get(0).addProduct(bcproduct2);
-//		ciocs.get(0).addProduct(pluCodedProduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct1);
+		ciocs.get(0).addProduct(bcproduct2);
+		ciocs.get(0).addProduct(pluCodedProduct1);
 		
 		// Run customer event simulator. 
 		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0),ciocs.get(1));
@@ -135,7 +148,7 @@ public class GUILauncher {
 		customerEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		// Run attendant event simulator.
-		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0), ciocs.get(1));
+		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0).getMainController(), ciocs.get(1).getMainController());
 		attendantEventSimulatorFrame.setVisible(true);
 		attendantEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}

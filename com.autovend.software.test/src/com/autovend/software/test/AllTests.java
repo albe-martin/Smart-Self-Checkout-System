@@ -22,7 +22,11 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AddItemTest.class, AddOwnBagsTest.class, LowInkPaperTest.class, PurchaseBagsTest.class,
-		TestPrintReceipt.class, BillPaymentControllerTest.class, CardPaymentTest.class, CoinPaymentTest.class, TestMembershipCardController.class })
+@SuiteClasses({ AddItemPLU.class, AddItemTest.class, AddOwnBagsTest.class, AttendantGUITest.class,
+	AttendantIOTest.class, BillDispenserControllerTest.class, BillPaymentControllerTest.class, 
+	BillDispenserControllerTest.class, CardPaymentTest.class, CoinDispenserControllerTest.class,
+	CoinPaymentTest.class, LoginLogoutTest.class, LowInkPaperTest.class, MembershipTest.class,
+	PurchaseBagsTest.class, RemoveItemTest.class, StartupShutdownStationTest.class,
+	TestMembershipCardController.class, TestPrintReceipt.class})
 public class AllTests {
 }

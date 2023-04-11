@@ -1,7 +1,6 @@
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,13 +19,10 @@ import com.autovend.software.swing.AttendantOperationPane;
 //might be excessive to be honest, but it would be consistent....
 public class AttendantIOController extends DeviceController<TouchScreen, TouchScreenObserver>
         implements TouchScreenObserver {
+	
     public AttendantIOController(TouchScreen newDevice) {
         super(newDevice);
     }
-
-    // I don't like that we have to maintain 2 arraylists for controllers
-    // but this will be necessary, annoyingly.
-    private ArrayList<CheckoutController> controllers;
 
     // mainController changed to AttendantStatioNController instead.
     private AttendantStationController mainController;
@@ -89,11 +85,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * enabled.
      */
     void notifyStartup(CheckoutController checkout) {
-        System.out.println("notified startup");
-        for (DeviceController<?, ?> customerIOController : checkout.getControllersByType("CustomerIOController")) {
-            AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-            pane.notifyStartup((CustomerIOController) customerIOController);
-        }
+        ((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyStartup(checkout);
     }
 
     /**
@@ -109,11 +101,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         if (this.mainController.isLoggedIn()) {
             if (checkout.isInUse()) {
                 // Notify GUI back to confirm shut down
-                for (DeviceController<?, ?> customerIOController : checkout
-                        .getControllersByType("CustomerIOController")) {
-                    AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-                    pane.notifyShutdownStationInUse((CustomerIOController) customerIOController);
-                }
+                ((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyShutdownStationInUse(checkout);
             } else {
                 checkout.shutDown();
             }
@@ -182,8 +170,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
             getDevice().getFrame().repaint();
         } else {
             // Handle bad login
-            AttendantLoginPane pane = (AttendantLoginPane) getDevice().getFrame().getContentPane();
-            pane.showLoginError();
+            ((AttendantLoginPane)getDevice().getFrame().getContentPane()).showLoginError();
         }
     }
 
@@ -243,7 +230,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * attendant station
      * 
      */
-    public List<CheckoutController> getAllStationControllers() {
+    public List<CheckoutController> getAllStationsControllers() {
         return mainController.getAllStationControllers();
     }
 
@@ -253,7 +240,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * @return
      *         List of disabled stations
      */
-    public List<CheckoutController> getDisabledStationControllers() {
+    public List<CheckoutController> getDisabledStationsControllers() {
         return mainController.getDisabledStationControllers();
     }
 
@@ -261,37 +248,34 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * Called when an attendant approves the customer's added bags. Unlocks the
      * machine, terminates the attendant signal, and zeros the scale.
      * 
-     * @param customerIOController the CustomerIOController of the customer who
+     * @param checkout the CheckoutController of the customer who
      *                             needs their bags approved.
      */
-    public void approveAddedBags(CustomerIOController customerIOController) {
-        customerIOController.getMainController().approveAddingBags();
+    public void approveAddedBags(CheckoutController checkout) {
+        checkout.approveAddingBags();
     }
 
     /**
      * Notifies the GUI that a customer wants to add bags.
      *
-     * @param customerIOController the CustomerIOController of the customer who
+     * @param CheckoutController the CheckoutController of the customer who
      *                             wants to add bags.
      */
-    public void notifyAddBags(CustomerIOController customerIOController) {
+    void notifyAddBags(CheckoutController checkout) {
         // Notify GUI to approve added bags.
-        // might be better to not need to pass in the controller...
-        AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-        pane.notifyConfirmAddedBags(customerIOController);
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyConfirmAddedBags(checkout);
     }
     
-
-    public void approveNoBagRequest(CheckoutController checkout){
-        checkout.doNotBagLatest();
-    }
-
-    public void notifyNoBagRequest(CheckoutController checkout) {
+    void notifyNoBagRequest(CheckoutController checkout) {
     	// Notify GUI.
     	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyNoBag(checkout);
     }
     
-    public void notifyWeightDiscrepancy(CheckoutController checkout) {
+    public void approveNoBagRequest(CheckoutController checkout){
+        checkout.doNotBagLatest();
+    }
+    
+    void notifyWeightDiscrepancy(CheckoutController checkout) {
     	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyWeightDiscrepancy(checkout);
     }
     
@@ -327,39 +311,12 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         return checkout.getOrder();
     }
 
-    // TODO: Delete these notify low ink/paper, as they are a repeat of the better version below that passes the printer.
-    
-    /**
-     * This method notifies the AttendantIO GUI that this station's receipt printer
-     * is low on ink
-     * 
-     * @param checkout
-     *                 The checkout station controller whose ink is low
-     */
-    void notifyLowInk(CheckoutController checkout) {
-        // TODO: signal GUI
-    }
-
-    /**
-     * This method notifies the AttendantIO GUI that this station's receipt printer
-     * is low on paper
-     * 
-     * @param checkout
-     *                 The checkout station controller whose ink is low
-     */
-    void notifyLowPaper(CheckoutController checkout) {
-        // TODO: signal GUI
-    }
-
-
-    void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller,
-            BigDecimal denom) {
+    void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
     	// Notify GUI about low bill.
 		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowBillDenomination(checkout, denom);
     }
 
-    void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller,
-            BigDecimal denom) {
+    void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
     	// Notify GUI about low coin.
     	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowCoinDenomination(checkout, denom);
     }
@@ -378,99 +335,91 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     /**
      * Notify the GUI that paper is low for a customer station.
      * 
-     * TODO: Back-end functionality that calls this function needs to be implemented.
-     * 
-     * @param customerIOController
-     * 			CustomerIOController that is low on paper.
+     * @param checkout
+     * 			CheckoutController that is low on paper.
      * @param printer
      * 			ReceiptPrinterController with the issue.
      */
-    void notifyLowPaper(CustomerIOController customerIOController, ReceiptPrinterController printer) {
+    void notifyLowPaper(CheckoutController checkout, ReceiptPrinterController printer) {
     	// Notify GUI about low paper.
-    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-    	pane.notifyLowPaper(customerIOController, printer);
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowPaper(checkout, printer);
     }
 
     /**
      * Receive notification from attendant GUI about low paper issue being acknowledged.
      *
-     * @param customerIOController
-     * 			CustomerIOController with the issue acknowledged.
+     * @param checkout
+     * 			CheckoutController with the issue acknowledged.
      * @param printer
      * 			ReceiptPrinterController with the resolved issue.
      */
-    public void receiveLowPaperAcknowledgement(CustomerIOController customerIOController, ReceiptPrinterController printer) {
+    public void receiveLowPaperAcknowledgement(CheckoutController checkout, ReceiptPrinterController printer) {
     	// TODO: Connect to back-end
     }
 
     /**
      * Notify the GUI that a low paper issue was resolved.
      *
-     * @param customerIOController
-     * 			CustomerIOController with low paper resolved.
+     * @param checkout
+     * 			CheckoutController paper resolved.
      */
-    void notifyLowPaperResolved(CustomerIOController customerIOController) {
+    void notifyLowPaperResolved(CheckoutController checkout) {
     	// Notify GUI about low paper resolved.
-    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-    	pane.notifyLowPaperResolved(customerIOController);
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowPaperResolved(checkout);
     }
     
     /**
      * Notify the GUI that ink is low for a customer station.
      * 
-     * TODO: Back-end functionality that calls this function needs to be implemented.
-     * 
-     * @param customerIOController
-     * 			CustomerIOController that is low on ink.
+     * @param checkout
+     * 			CheckoutController that is low on ink.
      * @param printer
      * 			ReceiptPrinterController with the issue.
      */
-    void notifyLowInk(CustomerIOController customerIOController, ReceiptPrinterController printer) {
+    void notifyLowInk(CheckoutController checkout, ReceiptPrinterController printer) {
     	// Notify GUI about low ink.
-    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-    	pane.notifyLowInk(customerIOController, printer);
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowInk(checkout, printer);
     }
 
     /**
      * Receive notification from attendant GUI about low ink issue being acknowledged.
      *
-     * @param customerIOController
-     * 			CustomerIOContoller with the issue acknowledged.
+     * @param checkout
+     * 			CheckoutController with the issue acknowledged.
      * @param printer
      * 			ReceiptPrinterController with the acknowledged issue.
      */
-    public void receiveLowInkAcknowledgement(CustomerIOController customerIOController, ReceiptPrinterController receiptPrinter) {
+    public void receiveLowInkAcknowledgement(CheckoutController checkout, ReceiptPrinterController receiptPrinter) {
     	// TODO: Connect to back-end
     }
 
     /**
      * Notify the GUI that a low ink issue was resolved.
      *
-     * @param customerIOController
-     * 			CustomerIOController with low paper resolved.
+     * @param checkout
+     * 			CheckoutController with low ink resolved.
      */
-    void notifyLowInkResolved(CustomerIOController customerIOController) {
-    	// Notify GUI about low paper resolved.
-    	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-    	pane.notifyLowInkResolved(customerIOController);
-    }
-
-
-    /**
-     * Notify the GUI that if ink or paper is low
-     * 
-     * 
-     */
-    void notifyLowPaperInk(CustomerIOController customerIOController, ReceiptPrinterController controller) {
-        AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
-        if (controller.inkLow && !controller.paperLow)
-            pane.notifyLowInk(customerIOController, controller);
-        else if (!controller.inkLow &&  controller.paperLow)
-            pane.notifyLowPaper(customerIOController, controller);
-
+    void notifyLowInkResolved(CheckoutController checkout) {
+    	// Notify GUI about low ink resolved.
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowInkResolved(checkout);
     }
     
-    void rePrintReceipt (StringBuilder receipt){
+    /**
+     * Notify the GUI that a receipt reprint is necessary.
+     * @param receipt
+     * 			Receipt to be reprinted.
+     */
+    void notifyRePrintReceipt(CheckoutController checkout, StringBuilder receipt) {
+    	// Notify GUI about reprint needed.
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyReceiptRePrint(checkout, receipt);
+    }
+    
+    /**
+     * Called by GUI to reprint the receipt.
+     * @param receipt
+     * 			Receipt to be reprinted.
+     */
+    public void rePrintReceipt (CheckoutController checkout, StringBuilder receipt){
         mainController.printReceipt(receipt);
     }
    

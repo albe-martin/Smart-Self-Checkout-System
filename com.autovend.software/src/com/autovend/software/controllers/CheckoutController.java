@@ -4,6 +4,7 @@ import com.autovend.Bill;
 import com.autovend.Coin;
 import com.autovend.Numeral;
 import com.autovend.devices.OverloadException;
+import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
@@ -72,7 +73,7 @@ public class CheckoutController {
 		registeredControllers.put("AttendantIOController", new ArrayList<>());
 		registeredControllers.put("CustomerIOController", new ArrayList<>());
 		registeredControllers.put("ScanningScaleController", new ArrayList<>());
-
+		registeredControllers.put("ReusableBagDispenserController", new ArrayList<>());
 	}
 
 	public CheckoutController(SelfCheckoutStation checkout) {
@@ -87,6 +88,10 @@ public class CheckoutController {
 
 		BaggingScaleController scaleController = new BaggingScaleController(checkout.baggingArea);
 		this.registeredControllers.get("BaggingAreaController").add(scaleController);
+
+		ReusableBagDispenser bagDispenser = new ReusableBagDispenser(105);
+		ReusableBagDispenserController bagDispenserController = new ReusableBagDispenserController(bagDispenser);
+		this.registeredControllers.get("ReusableBagDispenserController").add(bagDispenserController);
 
 		this.registeredControllers.get("ReceiptPrinterController").add(new ReceiptPrinterController(checkout.printer));
 
@@ -283,10 +288,7 @@ public class CheckoutController {
 
 	public void notifyAddBags() {
 		ArrayList<DeviceController> io = registeredControllers.get("AttendantIOController");
-		ArrayList<DeviceController> io2 = registeredControllers.get("CustomerIOController");
-		// I really don't get why the GUI team designed it like this, passing around an
-		// IO controller
-		((AttendantIOController) io.get(0)).notifyAddBags(((CustomerIOController) io2.get(0)));
+		((AttendantIOController) io.get(0)).notifyAddBags(this);
 	}
 
 	/**
@@ -347,7 +349,11 @@ public class CheckoutController {
 			this.cost = this.cost.add(newItem.getPrice().multiply(count));
 		} else {
 			ArrayList<DeviceController> scaleController = registeredControllers.get("ScanningScaleController");
-			weight = ((ScanningScaleController) scaleController.get(0)).getCurrentWeight();
+			try {
+				weight = ((ScanningScaleController) scaleController.get(0)).getCurrentWeight();
+			} catch (IndexOutOfBoundsException e) {
+				weight = 0;
+			}
 			// adding the recorded weight on the current scale to the current item
 			// information
 			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).add(BigDecimal.valueOf(weight));
@@ -455,7 +461,7 @@ public class CheckoutController {
 				// if either ink or paper is low then the station will be disabled
 				for(DeviceController io : this.registeredControllers.get("CustomerIOController")) {
 					((AttendantIOController) io).disableStation(this);
-					((AttendantIOController) io).rePrintReceipt(receipt);
+					((AttendantIOController) io).rePrintReceipt(this, receipt);
 				}
 
 			}
@@ -778,6 +784,11 @@ public class CheckoutController {
 			clearOrder();
 			this.isDisabled = true;
 			inUse = false;
+			
+			// Notify customerIO
+			for (DeviceController io : registeredControllers.get("CustomerIOController")) {
+				((CustomerIOController) io).notifyDisabled();
+			}
 		}
 	}
 
@@ -786,6 +797,11 @@ public class CheckoutController {
 			enableAllDevices();
 			clearOrder();
 			this.isDisabled = false;
+			
+			// Notify customerIO
+			for (DeviceController io : registeredControllers.get("CustomerIOController")) {
+				((CustomerIOController) io).notifyEnabled();
+			}
 		}
 	}
 	
