@@ -40,7 +40,6 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CheckoutController;
-import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.ReceiptPrinterController;
 import com.autovend.software.utils.MiscProductsDatabase;
 
@@ -390,23 +389,23 @@ public class AttendantOperationPane extends JPanel {
 		manageShutdownPane.removeAll();
 		
 		// Add each station to enabled/disabled/shutdown pane.
-		for (CustomerIOController cioc : aioc.getAllStationsIOControllers()) {
-			if (cioc.getMainController().isDisabled()) {
-				if (cioc.isShutdown()) {
+		for (CheckoutController checkout : aioc.getAllStationsControllers()) {
+			if (checkout.isDisabled()) {
+				if (checkout.isShutdown()) {
 					// Add to shutdown pane.
-					JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
-					addShutdownActionPopup(btn, cioc);
+					JButton btn = new JButton(Language.translate(language, "Station") + " #" + checkout.getID());
+					addShutdownActionPopup(btn, checkout);
 					manageShutdownPane.add(btn);
 				} else {
 					// Add to disabled pane.
-					JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
-					addDisabledActionPopup(btn, cioc);
+					JButton btn = new JButton(Language.translate(language, "Station") + " #" + checkout.getID());
+					addDisabledActionPopup(btn, checkout);
 					manageDisabledPane.add(btn);
 				}
 			} else {
 				// Add enabled station to enabled pane.
-				JButton btn = new JButton(Language.translate(language, "Station") + " #" + cioc.getMainController().getID());
-				addEnabledActionPopup(btn, cioc);
+				JButton btn = new JButton(Language.translate(language, "Station") + " #" + checkout.getID());
+				addEnabledActionPopup(btn, checkout);
 				manageEnabledPane.add(btn);
 			}
 		}
@@ -420,10 +419,10 @@ public class AttendantOperationPane extends JPanel {
 	 * 
 	 * @param btn
 	 * 			Button that causes the pop-up.
-	 * @param cioc
-	 * 			CustomerIOController performing the action on.
+	 * @param checkout
+	 * 			CheckoutController performing the action on.
 	 */
-	public void addShutdownActionPopup(JButton btn, CustomerIOController cioc) {
+	public void addShutdownActionPopup(JButton btn, CheckoutController checkout) {
 		btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Create a panel to hold the actions pop-up.
@@ -459,7 +458,7 @@ public class AttendantOperationPane extends JPanel {
                     }
                     
                     // Process the selected action.
-                    processAction(chosenAction, cioc);
+                    processAction(chosenAction, checkout);
                 }
             }
         });
@@ -471,10 +470,10 @@ public class AttendantOperationPane extends JPanel {
 	 * 
 	 * @param btn
 	 * 			Button that causes the pop-up.
-	 * @param cioc
-	 * 			CustomerIOController performing the action on.
+	 * @param checkout
+	 * 			CheckoutController performing the action on.
 	 */
-	public void addDisabledActionPopup(JButton btn, CustomerIOController cioc) {
+	public void addDisabledActionPopup(JButton btn, CheckoutController checkout) {
 		btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Create a panel to hold the actions pop-up.
@@ -511,7 +510,7 @@ public class AttendantOperationPane extends JPanel {
                     }
                     
                     // Process the selected action.
-                    processAction(chosenAction, cioc);
+                    processAction(chosenAction, checkout);
                 }
             }
         });
@@ -523,10 +522,10 @@ public class AttendantOperationPane extends JPanel {
 	 * 
 	 * @param btn
 	 * 			Button that causes the pop-up.
-	 * @param cioc
-	 * 			CustomerIOController performing the action on.
+	 * @param checkout
+	 * 			CheckoutController performing the action on.
 	 */
-	public void addEnabledActionPopup(JButton btn, CustomerIOController cioc) {
+	public void addEnabledActionPopup(JButton btn, CheckoutController checkout) {
 		btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Create a panel to hold the actions pop-up.
@@ -565,7 +564,7 @@ public class AttendantOperationPane extends JPanel {
                     }
                     
                     // Process the selected action.
-                    processAction(chosenAction, cioc);
+                    processAction(chosenAction, checkout);
                 }
             }
         });
@@ -577,45 +576,46 @@ public class AttendantOperationPane extends JPanel {
 	 * 
 	 * @param action
 	 * 			Action to be performed.
-	 * @param cioc
-	 * 			CustomerIOController to perform the action on.
+	 * @param checkout
+	 * 			CheckoutController to perform the action on.
 	 */
-	public void processAction(String action, CustomerIOController cioc ) {
+	public void processAction(String action, CheckoutController checkout ) {
 		if (action == null) {
 			// Ignore null actions.
 			return;
 		}
 		if (action.equalsIgnoreCase("Enable Station")) {
 			// Enable station.
-			aioc.enableStation(cioc.getMainController());
+			aioc.enableStation(checkout);
 
-			//todo: Braedon please check if this is the right spot to call this
-			cioc.enablePanel((JPanel) cioc.getDevice().getFrame().getContentPane());
+			// TODO: Investigate. Braedon please check if this is the right spot to call this
+			// checkout.enablePanel((JPanel) checkout.getDevice().getFrame().getContentPane());
 
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Disable Station")) {
 			// Disable station.
-			aioc.disableStation(cioc.getMainController());
+			aioc.disableStation(checkout);
 
-			cioc.disablePanel((JPanel) cioc.getDevice().getFrame().getContentPane());
+			// TODO: Investigate again.
+			// checkout.disablePanel((JPanel) checkout.getDevice().getFrame().getContentPane());
 
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Shutdown Station")) {
 			// Shut down station. May receive an in use notification.
-			aioc.shutdownStation(cioc.getMainController());
+			aioc.shutdownStation(checkout);
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Startup Station")) {
 			// Request station start up.
-			aioc.startupStation(cioc.getMainController());
+			aioc.startupStation(checkout);
 		} else if (action.equalsIgnoreCase("Add Item By Text Search")) {
 			// Create text search pop-up.
-			createTextSearchPopup(cioc);
+			createTextSearchPopup(checkout);
 		} else if (action.equalsIgnoreCase("Remove Item")) {
 			// Create remove item pop-up.
-			createRemoveItemPopup(cioc);
+			createRemoveItemPopup(checkout);
 		}
 		
 		// Refresh screen.
@@ -626,10 +626,10 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Create a text search pop-up for the attendant to add items to the chosen customer.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController to add an item to.
+	 * @param checkout
+	 * 			CheckoutController to add an item to.
 	 */
-	public void createTextSearchPopup(CustomerIOController cioc) {
+	public void createTextSearchPopup(CheckoutController checkout) {
 		// Create a panel to hold the text search pop-up.
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -648,22 +648,22 @@ public class AttendantOperationPane extends JPanel {
         int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Add Item By Text Search"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
         	Set<Product> foundProducts = aioc.searchProductsByText(searchField.getText());
-        	createFoundProductsPopup(cioc, foundProducts);
+        	createFoundProductsPopup(checkout, foundProducts);
         }
 	}
 	
 	/**
 	 * Creates another pop-up for the attendant to select which found products they want to add.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController to add an item to.
+	 * @param checkout
+	 * 			CheckoutController to add an item to.
 	 * @param foundProducts
 	 * 			Set of products found by the text search.
 	 */
-	public void createFoundProductsPopup(CustomerIOController cioc, Set<Product> foundProducts) {
+	public void createFoundProductsPopup(CheckoutController checkout, Set<Product> foundProducts) {
 		if (foundProducts.size() == 0) {
 			// No products found, try again.
-			createNoFoundProductsPopop(cioc);
+			createNoFoundProductsPopop(checkout);
 		} else {
 			// Display found products pop-up.
 			
@@ -720,7 +720,7 @@ public class AttendantOperationPane extends JPanel {
             				BarcodedProduct bcproduct = (BarcodedProduct) product;
             				if (selectedProductDescription.equals(bcproduct.getDescription() + " for $" + bcproduct.getPrice())) {
             					// Product found
-            					cioc.addProduct(product);
+            					aioc.addProductByText(checkout, product, BigDecimal.ONE);
             					break;
             				}
             			} else if (product instanceof PLUCodedProduct) {
@@ -728,14 +728,14 @@ public class AttendantOperationPane extends JPanel {
             				PLUCodedProduct pluproduct = (PLUCodedProduct) product;
             				if (selectedProductDescription.equals(pluproduct.getDescription() + " for $" + pluproduct.getPrice())) {
             					// Product found
-            					cioc.addProduct(product);
+            					aioc.addProductByText(checkout, product, BigDecimal.ONE);
             					break;
             				}
             			}
                     }
                 } else {
                 	// No product selected, attempt another search.
-                	createTextSearchPopup(cioc);
+                	createTextSearchPopup(checkout);
                 }
             }
 		}
@@ -744,10 +744,10 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Creates another pop-up indicating that no products were found, and to try again.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController to add an item to. (When trying again).
+	 * @param checkout
+	 * 			CheckoutController to add an item to. (When trying again).
 	 */
-	public void createNoFoundProductsPopop(CustomerIOController cioc) {
+	public void createNoFoundProductsPopop(CheckoutController checkout) {
 		// Create panel for the pop-up.
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -762,17 +762,17 @@ public class AttendantOperationPane extends JPanel {
 		int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "No Products Found"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 		if (result == JOptionPane.OK_OPTION) {
 			// Create new text search pop-up.
-			createTextSearchPopup(cioc);
+			createTextSearchPopup(checkout);
 		}
 	}
 	
 	/**
 	 * Create a pop-up allowing the attendant to remove a customer's items.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController to remove item from.
+	 * @param checkout
+	 * 			CheckoutController to remove item from.
 	 */
-	public void createRemoveItemPopup(CustomerIOController cioc) {
+	public void createRemoveItemPopup(CheckoutController checkout) {
 		// Create pop-up panel.
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -787,7 +787,7 @@ public class AttendantOperationPane extends JPanel {
         ButtonGroup group = new ButtonGroup();
 
         // Loop through each item in customer's cart.
-        for (Map.Entry<Product, Number[]> entry : aioc.getCart(cioc.getMainController()).entrySet()) {
+        for (Map.Entry<Product, Number[]> entry : aioc.getCart(checkout).entrySet()) {
         	JRadioButton radioButton;
 			Product product = entry.getKey();
 			if (product instanceof PLUCodedProduct pluProduct) {
@@ -827,24 +827,24 @@ public class AttendantOperationPane extends JPanel {
             if (selectedProductDescription != null) {
                 // Match the product.
             	// Loop through each item in customer's cart.
-                for (Map.Entry<Product, Number[]> entry : aioc.getCart(cioc.getMainController()).entrySet()) {
+                for (Map.Entry<Product, Number[]> entry : aioc.getCart(checkout).entrySet()) {
         			Product product = entry.getKey();
         			if (product instanceof PLUCodedProduct pluProduct) {
         				// Handle PLU product.
         				if (selectedProductDescription.equals(entry.getValue()[0] + " " + pluProduct.getDescription() + " for " + entry.getValue()[1])) {
-        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					aioc.removeItemFromOrder(checkout, product, new BigDecimal(entry.getValue()[0].toString()));
         					break;
         				}
         			} else if (product instanceof BarcodedProduct barcodeProduct) {
         				// Handle barcode product.
         				if (selectedProductDescription.equals(entry.getValue()[0] + " " + barcodeProduct.getDescription() + " for " + entry.getValue()[1])) {
-        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					aioc.removeItemFromOrder(checkout, product, new BigDecimal(entry.getValue()[0].toString()));
         					break;
         				}
         			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
         				// Handle bags.
         				if (selectedProductDescription.equals(entry.getValue()[0] + " bags for " + entry.getValue()[1])) {
-        					aioc.removeItemFromOrder(cioc.getMainController(), product, new BigDecimal(entry.getValue()[0].toString()));
+        					aioc.removeItemFromOrder(checkout, product, new BigDecimal(entry.getValue()[0].toString()));
         					break;
         				}
         			}
@@ -857,10 +857,10 @@ public class AttendantOperationPane extends JPanel {
 	 * Notify the attendant screen that a station is in use.
 	 * Occurs after an attempt to shutdown a station.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController being shut down.
+	 * @param checkout
+	 * 			CheckoutController being shut down.
 	 */
-	public void notifyShutdownStationInUse(CustomerIOController cioc) {
+	public void notifyShutdownStationInUse(CheckoutController checkout) {
 		// Create confirmation pop-up.
 		
 		// Create panel for the pop-up.
@@ -877,7 +877,7 @@ public class AttendantOperationPane extends JPanel {
         int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (result == JOptionPane.YES_OPTION) {
             // Force shutdown.
-        	aioc.forceShutDownStation(cioc.getMainController());
+        	aioc.forceShutDownStation(checkout);
         	// Repopulate management panes
         	populateManagementPanes();
         }
@@ -886,10 +886,10 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a station has been started up.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController that started up.
+	 * @param checkout
+	 * 			CheckoutController that started up.
 	 */
-	public void notifyStartup(CustomerIOController cioc) {
+	public void notifyStartup(CheckoutController checkout) {
 		// Update management panes.
 		populateManagementPanes();
 	}
@@ -897,18 +897,18 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant to confirm a customer's added bags.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
 	 */
-	public void notifyConfirmAddedBags(CustomerIOController cioc) {
+	public void notifyConfirmAddedBags(CheckoutController checkout) {
 		// Create notification data.
-		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " needs bag confirmation!");
+		JLabel label = new JLabel("Station #" + checkout.getID() + " needs bag confirmation!");
 		JButton button = new JButton("Confirm");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	// Approve bags.
-            	aioc.approveAddedBags(cioc);
+            	aioc.approveAddedBags(checkout);
             	// Remove notification.
             	notificationsData.remove(data);
             	populateNotificationsPane();
@@ -972,14 +972,14 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that paper is low.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
 	 * @param printer
 	 * 			ReceiptPrinterController with the issue.
 	 */
-	public void notifyLowPaper(CustomerIOController cioc, ReceiptPrinterController printer) {
+	public void notifyLowPaper(CheckoutController checkout, ReceiptPrinterController printer) {
 		// Create notification data.
-		String issueText = "Station #" + cioc.getMainController().getID() + " is low on paper!";
+		String issueText = "Station #" + checkout.getID() + " is low on paper!";
 		JLabel label = new JLabel(issueText);
 		JButton button = new JButton("Acknowledge");
 		JComponent[] data = new JComponent[] {label, button};
@@ -996,7 +996,7 @@ public class AttendantOperationPane extends JPanel {
             	populateActiveIssuesPane();
 
             	// Send acknowledgement
-            	aioc.receiveLowPaperAcknowledgement(cioc, printer);
+            	aioc.receiveLowPaperAcknowledgement(checkout, printer);
             }
 		});
 		notificationsData.add(data);
@@ -1007,12 +1007,12 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a low paper issue has been resolved.
 	 *
-	 * @param cioc
-	 * 			CustomerIOController with the resolved issue.
+	 * @param checkout
+	 * 			CheckoutController with the resolved issue.
 	 */
-	public void notifyLowPaperResolved(CustomerIOController cioc) {
+	public void notifyLowPaperResolved(CheckoutController checkout) {
 		// Remove issue text from activeIssues.
-		String issueText = "Station #" + cioc.getMainController().getID() + " is low on paper!";
+		String issueText = "Station #" + checkout.getID() + " is low on paper!";
 		activeIssues.remove(issueText);
 		populateActiveIssuesPane();
 	}
@@ -1020,14 +1020,14 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that ink is low.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
 	 * @param printer
 	 * 			ReceiptPrinterController with the issue.
 	 */
-	public void notifyLowInk(CustomerIOController cioc, ReceiptPrinterController printer) {
+	public void notifyLowInk(CheckoutController checkout, ReceiptPrinterController printer) {
 		// Create notification data.
-		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
+		String issueText = "Station #" + checkout.getID() + " is low on ink!";
 		JLabel label = new JLabel(issueText);
 		JButton button = new JButton("Acknowledge");
 		JComponent[] data = new JComponent[] {label, button};
@@ -1044,7 +1044,7 @@ public class AttendantOperationPane extends JPanel {
             	populateActiveIssuesPane();
 
             	// Send acknowledgement
-            	aioc.receiveLowInkAcknowledgement(cioc, printer);
+            	aioc.receiveLowInkAcknowledgement(checkout, printer);
             }
 		});
 		notificationsData.add(data);
@@ -1055,12 +1055,12 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a low ink issue has been resolved.
 	 *
-	 * @param cioc
-	 * 			CustomerIOController with the resolved issue.
+	 * @param checkout
+	 * 			CheckoutController with the resolved issue.
 	 */
-	public void notifyLowInkResolved(CustomerIOController cioc) {
+	public void notifyLowInkResolved(CheckoutController checkout) {
 		// Remove issue text from activeIssues.
-		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
+		String issueText = "Station #" + checkout.getID() + " is low on ink!";
 		activeIssues.remove(issueText);
 		populateActiveIssuesPane();
 	}
@@ -1093,8 +1093,8 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant about a no bag request.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param checkout
+	 * 			CheckoutController requesting confirmation.
 	 */
 	public void notifyNoBag(CheckoutController checkout) {
 		// Create notification data.
