@@ -17,14 +17,11 @@ Amasil Rahim Zihad 30164830
 
 package com.autovend.software.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
+import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.ReceiptPrinterController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,8 +33,8 @@ import com.autovend.devices.ReceiptPrinter;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.controllers.CheckoutController;
-import com.autovend.software.controllers.ReceiptPrinterController;
+
+import static org.junit.Assert.*;
 
 public class TestPrintReceipt {
 	ReceiptPrinter testPrinter;
@@ -47,6 +44,7 @@ public class TestPrintReceipt {
 	BarcodedProduct testItem1;
 	BarcodedProduct testItem2;
 	BarcodedProduct testItem3;
+	BarcodedProduct testItem4;
 
 	LinkedHashMap<Product, Number[]> order;
 	BigDecimal totalCost;
@@ -70,6 +68,8 @@ public class TestPrintReceipt {
 				BigDecimal.valueOf(9.29), 169.0);
 		testItem3 = new BarcodedProduct(new Barcode(Numeral.nine, Numeral.two), "test item 3",
 				BigDecimal.valueOf(32.79), 245.0);
+		testItem4 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.seven), "test item 4",
+				BigDecimal.valueOf(21), 10.0);
 
 		// Enters the 3 test items int othe Product Database
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(testItem1.getBarcode(), testItem1);
@@ -92,7 +92,7 @@ public class TestPrintReceipt {
 	/**
 	 * Creates an order using the test items and checks to see if printReceipt()
 	 * properly prints out the order.
-	 * 
+	 *
 	 * @throws OverloadException
 	 */
 	@Test
@@ -130,7 +130,7 @@ public class TestPrintReceipt {
 	/**
 	 * Ensures a no paper/ink message is received when the printer has ink but no
 	 * paper
-	 * 
+	 *
 	 * @throws OverloadException
 	 */
 	@Test
@@ -155,7 +155,7 @@ public class TestPrintReceipt {
 	/**
 	 * Ensures a no paper/ink message is received when the printer has paper but no
 	 * ink
-	 * 
+	 *
 	 * @throws OverloadException
 	 */
 	@Test
@@ -181,7 +181,7 @@ public class TestPrintReceipt {
 	 * Checks that if a receipt is too long message is received when there is an
 	 * overload of characters/the receipt is too long. ***I BELIEVE THIS IS AN ERROR
 	 * IN THE HARDWARE CODE***
-	 * 
+	 *
 	 * @throws OverloadException
 	 */
 	@Test
@@ -244,25 +244,25 @@ public class TestPrintReceipt {
 
 	/**
 	 * If you try to print while the printer is disabled, expect a DisabledException
-	 * 
+	 *
 	 * @throws OverloadException This is a bug in the hardware code.
 	 */
 	/*
 	 * @Test(expected = DisabledException.class) public void testDisabledPrinter()
 	 * throws OverloadException { // Disabling ReceiptPrinterController
 	 * testReceiptPrinterController.disableDevice();
-	 * 
+	 *
 	 * // Creating first parameter HashMap<Product, Number[]> in printReceipt()
 	 * Number[] quantityItem1 = {2, (2*83.29)}; order.put(testItem1, quantityItem1);
-	 * 
+	 *
 	 * // Computing total cost totalCost = BigDecimal.valueOf(2*83.29);
-	 * 
+	 *
 	 * // Adding ink and paper into machine testPrinter.addInk(100);
 	 * testPrinter.addPaper(100);
-	 * 
+	 *
 	 * // Call printReceipt() testReceiptPrinterController.printReceipt(order,
 	 * totalCost); }
-	 * 
+	 *
 	 */
 
 	@Test
@@ -299,4 +299,47 @@ public class TestPrintReceipt {
 			fail("Exception incorrectly thrown");
 		}
 	}
+
+	@Test
+	public void testAddedInk_negative() {
+		int initial = testReceiptPrinterController.estimatedInk;
+		testReceiptPrinterController.addedInk(-50);
+		assertEquals(initial, testReceiptPrinterController.estimatedInk);
+	}
+	@Test
+	public void testAddedInk() {
+		int initial = testReceiptPrinterController.estimatedInk;
+		testReceiptPrinterController.addedInk(100);
+		assertEquals(initial+100, testReceiptPrinterController.estimatedInk);
+	}
+
+	@Test
+	public void testAddedInk_highAmount() {
+		int initialInk = testReceiptPrinterController.estimatedInk;
+		testReceiptPrinterController.addedInk(1000);
+		assertEquals(initialInk + 1000, testReceiptPrinterController.estimatedInk);
+		assertFalse(testReceiptPrinterController.inkLow);
+	}
+
+	@Test
+	public void testAddedPaper_negative() {
+		int initial = testReceiptPrinterController.estimatedPaper;
+		testReceiptPrinterController.addedPaper(-50);
+		assertEquals(initial, testReceiptPrinterController.estimatedPaper);
+	}
+	@Test
+	public void testAddedPaper() {
+		int initial = testReceiptPrinterController.estimatedPaper;
+		testReceiptPrinterController.addedPaper(100);
+		assertEquals(initial+100, testReceiptPrinterController.estimatedPaper);
+	}
+
+	@Test
+	public void testAddedPaper_highAmount() {
+		int initial = testReceiptPrinterController.estimatedPaper;
+		testReceiptPrinterController.addedPaper(1000);
+		assertEquals(initial + 1000, testReceiptPrinterController.estimatedPaper);
+		assertFalse(testReceiptPrinterController.paperLow);
+	}
 }
+
