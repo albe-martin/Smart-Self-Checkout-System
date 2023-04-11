@@ -345,4 +345,8 @@ public class AttendantStationController {
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
+	
+	public HashMap getUsers() {
+		return credentials;
+	}
 }

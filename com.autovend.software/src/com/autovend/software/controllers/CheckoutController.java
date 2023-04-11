@@ -342,7 +342,7 @@ public class CheckoutController {
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice().multiply(count));
 
 			// Add the cost of the new item to the current cost.
-			this.cost = this.cost.add(newItem.getPrice());
+			this.cost = this.cost.add(newItem.getPrice().multiply(count));
 		} else {
 			ArrayList<DeviceController> scaleController = registeredControllers.get("ScanningScaleController");
 			weight = ((ScanningScaleController) scaleController.get(0)).getCurrentWeight();
@@ -354,6 +354,7 @@ public class CheckoutController {
 
 			// Add the cost of the new item to the current cost.
 			this.cost = this.cost.add(newItem.getPrice().multiply(BigDecimal.valueOf(weight)));
+
 		}
 		this.order.put(newItem, currentItemInfo);
 		this.latestItem.clear();
@@ -623,13 +624,15 @@ public class CheckoutController {
 	public void removeItemFromOrder(Product item, BigDecimal amount) {
 		if (order.containsKey(item)) {
 			Number[] currentItemInfo = order.get(item);
-			amount = amount.min((BigDecimal) currentItemInfo[0]);
-			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).subtract(amount);
-			if (((BigDecimal) currentItemInfo[0]).compareTo(BigDecimal.ZERO) == 1) {
+			amount = amount.min(BigDecimal.valueOf(currentItemInfo[0].doubleValue()));
+			currentItemInfo[0] = (BigDecimal.valueOf(currentItemInfo[0].doubleValue())).subtract(amount);
+			if ((BigDecimal.valueOf(currentItemInfo[0].doubleValue())).compareTo(BigDecimal.ZERO) == 1) {
 				currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).subtract(item.getPrice().multiply(amount));
 				order.put(item, currentItemInfo);
+				this.cost = this.cost.subtract(item.getPrice().multiply(amount));
 			} else {
 				order.remove(item);
+				this.cost = this.cost.subtract(item.getPrice().multiply(amount));
 			}
 			double weight = amount.doubleValue();
 			if (item.isPerUnit()) {
