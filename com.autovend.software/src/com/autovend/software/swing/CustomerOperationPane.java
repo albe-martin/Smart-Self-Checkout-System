@@ -17,7 +17,10 @@ import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.controllers.CardReaderController;
+import com.autovend.software.controllers.CardReaderControllerState;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.DeviceController;
 import com.autovend.software.utils.MiscProductsDatabase;
 
 /**
@@ -288,6 +291,7 @@ public class CustomerOperationPane extends JPanel {
 		JButton cashButton = new JButton("Pay with Cash");
 		cashButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//TODO: pay with cash
 			}
 		});
 		cashButton.setBounds(490, 351, 173, 60);
@@ -299,7 +303,7 @@ public class CustomerOperationPane extends JPanel {
 		JButton cashButton = new JButton("Pay with Credit");
 		cashButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: pay with credit
+				cioc.choosePayByBankCard(CardReaderControllerState.PAYINGBYCREDIT, null, cioc.getMainController().getRemainingAmount());
 			}
 		});
 		cashButton.setBounds(490, 411, 173, 60);
@@ -311,7 +315,7 @@ public class CustomerOperationPane extends JPanel {
 		JButton cashButton = new JButton("Pay with Debit");
 		cashButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: pay with debit
+				cioc.choosePayByBankCard(CardReaderControllerState.PAYINGBYDEBIT, null, cioc.getMainController().getRemainingAmount());
 			}
 		});
 		cashButton.setBounds(490, 471, 173, 60);
