@@ -275,7 +275,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton reprint1 = new JButton("Create Receipt Reprint Notification (1)");
 		reprint1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyReceiptRePrint(checkout2, new StringBuilder("receipt"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyReceiptRePrint(checkout1, new StringBuilder("receipt"));
 			}
 		});
 		GridBagConstraints gbcreprint1 = new GridBagConstraints();

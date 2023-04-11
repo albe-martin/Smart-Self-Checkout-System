@@ -55,15 +55,6 @@ public class AttendantLoginPane extends JPanel {
 	 * Quick GUI Launcher. Used to allow window builder to work.
 	 */
 	public static void main(String[] args) {
-		// Add French language.
-		HashMap<String, String> french = new HashMap<>();
-		french.put("Username:", "Le username:");
-		french.put("Password:", "Le password:");
-		french.put("Log In", "Le log in");
-		french.put("Change Language", "Le Change Language");
-		french.put("START", "LE START");
-		Language.addLanguage("French", french);
-		
 		// Create attendant station.
 		SupervisionStation attendantStation = new SupervisionStation();
 		
