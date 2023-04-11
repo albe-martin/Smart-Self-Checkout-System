@@ -1,6 +1,7 @@
 package com.autovend.software.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -26,6 +27,9 @@ public class StartupShutdownStationTest {
 	String password;
 	public HashMap<String, String> credentials;
 	
+	/**
+	 * Set up of objects and variables, this happens before tests
+	 */
 	@Before
 	public void setup() {
 		su = new SupervisionStation();
@@ -43,6 +47,9 @@ public class StartupShutdownStationTest {
 		credentials.put("Steve", "steve*123");
 	}
 	
+	/**
+	 * Tears down objects so they can be initialized again with setup
+	 */
 	@After
 	public void teardown() {
 		checkoutController = null;
@@ -52,23 +59,25 @@ public class StartupShutdownStationTest {
 	}
 	
 	/**
-	 * Tess startup station when a user is logged in
-	 * @throws SimulationException
-	 * 		If there is no user logged in
+	 * Test startup station when a user is logged in
 	 */
-	@Test (expected = SimulationException.class)
+	@Test
 	public void testStartupStationLoggedIn() {
 		username = "Ana";
 		password = "seng123";
 		credentials.put(username, password);
 		asc.registerUser(username, password);
 		asc.login(username, password);
-		
 		aioc.startupStation(checkoutController);
+		
+		assertFalse(checkoutController.isShutdown());
 		
 	}
 	
-	@Test (expected = SimulationException.class)
+	/**
+	 * Tests startup station when a user is not logged in
+	 */
+	@Test
 	public void testStartupStationNotLoggedIn() {
 		username = "Ana";
 		password = "seng123";
@@ -78,9 +87,15 @@ public class StartupShutdownStationTest {
 		asc.logout();
 		
 		aioc.startupStation(checkoutController);
+		assertFalse(checkoutController.isShutdown());
+
 		
 	}
-	@Test (expected = SimulationException.class)
+	
+	/**
+	 * Tests shut down station
+	 */
+	@Test
 	public void testShutdownStation() {
 		username = "Ana";
 		password = "seng123";
@@ -89,19 +104,30 @@ public class StartupShutdownStationTest {
 		asc.login(username, password);
 		
 		aioc.shutdownStation(checkoutController);
+		
+		assertTrue(checkoutController.isShutdown());
 	}
 	
-	@Test (expected = SimulationException.class)
+	/**
+	 * Tests shut down station when it is still in use
+	 */
+	@Test
 	public void testShutdownStationUse() {
 		username = "Ana";
 		password = "seng123";
 		credentials.put(username, password);
 		asc.registerUser(username, password);
 		asc.login(username, password);
-		System.out.println(checkoutController.isInUse());
+		checkoutController.setInUse(true);
+		aioc.shutdownStation(checkoutController);
+		
+		assertTrue(checkoutController.isInUse());
 	}
 	
-	@Test (expected = SimulationException.class)
+	/**
+	 * Tests force shut down station when logged in
+	 */
+	@Test
 	public void testForceShutdownStation() {
 		username = "Ana";
 		password = "seng123";
@@ -111,5 +137,23 @@ public class StartupShutdownStationTest {
 		
 		aioc.forceShutDownStation(checkoutController);
 		
+		assertTrue(checkoutController.isShutdown());
+		
+	}
+	
+	/**
+	 * Tests force shut down station when not logged in
+	 */
+	@Test
+	public void testForceShutdownStationNotLoggedIn() {
+		username = "Ana";
+		password = "seng123";
+		credentials.put(username, password);
+		asc.registerUser(username, password);
+		asc.login(username, password);
+		asc.logout();
+		aioc.forceShutDownStation(checkoutController);
+		
+		assertFalse(checkoutController.isShutdown());
 	}
 }

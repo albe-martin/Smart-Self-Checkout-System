@@ -346,6 +346,11 @@ public class AttendantStationController {
 		return loggedIn;
 	}
 	
+	/**
+	 * Getter for getting all users in credentials hash map
+	 * @return
+	 * 		usernames of all credentials in station
+	 */
 	public HashMap getUsers() {
 		return credentials;
 	}
