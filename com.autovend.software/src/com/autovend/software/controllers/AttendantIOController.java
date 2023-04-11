@@ -239,22 +239,22 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
 
     /**
-     * Simple method that will return the checkout station list from this IO's main
-     * attendant station in the form of IO controllers
+     * Simple method that will return the checkout station list 
+     * attendant station
      * 
      */
-    public List<CustomerIOController> getAllStationsIOControllers() {
-        return mainController.getAllStationsIOControllers();
+    public List<CheckoutController> getAllStationControllers() {
+        return mainController.getAllStationControllers();
     }
 
     /**
-     * Simple method that will return a list of disabled station io controllers
+     * Simple method that will return a list of disabled station controllers
      * 
      * @return
-     *         List of disabled station IO controllers
+     *         List of disabled stations
      */
-    public List<CustomerIOController> getDisabledStationsIOControllers() {
-        return mainController.getDisabledStationsIOControllers();
+    public List<CheckoutController> getDisabledStationControllers() {
+        return mainController.getDisabledStationControllers();
     }
 
     /**
@@ -454,4 +454,24 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
     	pane.notifyLowInkResolved(customerIOController);
     }
+
+
+    /**
+     * Notify the GUI that if ink or paper is low
+     * 
+     * 
+     */
+    void notifyLowPaperInk(CustomerIOController customerIOController, ReceiptPrinterController controller) {
+        AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
+        if (controller.inkLow && !controller.paperLow)
+            pane.notifyLowInk(customerIOController, controller);
+        else if (!controller.inkLow &&  controller.paperLow)
+            pane.notifyLowPaper(customerIOController, controller);
+
+    }
+    
+    void rePrintReceipt (StringBuilder receipt){
+        mainController.printReceipt(receipt);
+    }
+   
 }

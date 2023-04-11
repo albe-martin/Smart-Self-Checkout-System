@@ -1,9 +1,9 @@
 package com.autovend.software.swing;
 
 import javax.swing.*;
-import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.autovend.devices.TouchScreen;
 import com.autovend.software.controllers.CustomerIOController;
 
 import java.awt.*;
@@ -16,7 +16,8 @@ public class CustomerEventSimulator extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
 
-    public void customerEventSimulator(JFrame customerFrame, CustomerIOController cioc1, CustomerIOController cioc2) {
+
+	public CustomerEventSimulator(JFrame attendantFrame, CustomerIOController cioc1, CustomerIOController cioc2) {
 
         setTitle("Customer Event Simulator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,11 +43,11 @@ public class CustomerEventSimulator extends JFrame {
                 
            }
         });
-//        GridBagConstraints gbcBag1 = new GridBagConstraints();
-//        gbcBag1.fill = GridBagConstraints.BOTH;
-//        gbcBag1.gridx = 0;
-//        gbcBag1.gridy = 0;
-//        contentPane.add(bagRequest1, gbcBag1);
+        GridBagConstraints gbcBag1 = new GridBagConstraints();
+        gbcBag1.fill = GridBagConstraints.BOTH;
+        gbcBag1.gridx = 0;
+        gbcBag1.gridy = 0;
+        contentPane.add(scanItem, gbcBag1);
 //
 //
 //        // Low coins events
@@ -63,4 +64,3 @@ public class CustomerEventSimulator extends JFrame {
 //        contentPane.add(lowChange1, gbcChange1);
     }
 }
-

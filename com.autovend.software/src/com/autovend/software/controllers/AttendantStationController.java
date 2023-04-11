@@ -282,12 +282,12 @@ public class AttendantStationController {
 	 * 		immutable list  of checkout stations.
 	 * 		Returns null if not logged in
 	 */
-	public List<CustomerIOController> getAllStationsIOControllers() {
-		List<CustomerIOController> controllers = new ArrayList<>();
+	public List<CheckoutController> getAllStationControllers() {
+		List<CheckoutController> controllers = new ArrayList<>();
 		if(loggedIn) {
 			//Loop through Customer IO Controllers and add
 			for(DeviceController io : this.registeredIOControllers.get("CustomerIOController")) {
-				controllers.add((CustomerIOController) io);
+				controllers.add(((CustomerIOController) io).getMainController());
 			}
 			return controllers;
 		}
@@ -300,17 +300,17 @@ public class AttendantStationController {
 	 * A simple method that will return a list of disabled stations monitored by this attendant station.
 	 * 
 	 * @return 
-	 * 		List of disabled checkout station IO controllers.
+	 * 		List of disabled checkout station controllers.
 	 * 		Returns null if not logged in.
 	 */
-	public List<CustomerIOController> getDisabledStationsIOControllers() {
-		List<CustomerIOController> disabledControllers = new ArrayList<>();
+	public List<CheckoutController> getDisabledStationControllers() {
+		List<CheckoutController> disabledControllers = new ArrayList<>();
 		if(loggedIn) {
 			//Loop through Customer IO Controllers
 			//If main controller of that io controller is disabled, add io controller to disabled controllers
 			for(DeviceController io : this.registeredIOControllers.get("CustomerIOController")) {
 				if(((CustomerIOController)io).getMainController().isDisabled()) {
-					disabledControllers.add((CustomerIOController) io);
+					disabledControllers.add(((CustomerIOController) io).getMainController());
 				}
 			}
 			return disabledControllers;
@@ -345,8 +345,24 @@ public class AttendantStationController {
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
+
+
+	/**
+	 * Methods for printing receipt in the case that the checkout station is low on ink or paper
+	 */
+	public void printReceipt(StringBuilder receipt) {
+		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
+		printerController.printReceipt(receipt);
+	}
+
 	
+	/**
+	 * Getter for getting all users in credentials hash map
+	 * @return
+	 * 		usernames of all credentials in station
+	 */
 	public HashMap getUsers() {
 		return credentials;
+
 	}
 }
