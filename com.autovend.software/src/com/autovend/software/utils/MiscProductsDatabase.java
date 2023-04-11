@@ -1,6 +1,8 @@
 package com.autovend.software.utils;
 
+import com.autovend.Barcode;
 import com.autovend.Numeral;
+import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
 
 import java.math.BigDecimal;
@@ -13,7 +15,7 @@ import java.util.Map;
 public class MiscProductsDatabase {
     public static Numeral[] bagNumb = BarcodeUtils.stringToNumeralArray("000000000000");
 
-    public static class Bag extends Product{
+    public static class Bag extends BarcodedProduct {
         private double expectedWeight = 0.008;
         //average plastic bag is 8 grams so this checks out
         /**
@@ -22,7 +24,7 @@ public class MiscProductsDatabase {
          * @param price     The price per unit or per kilogram.
          */
         protected Bag(BigDecimal price) {
-            super(price, true);
+            super(new Barcode(bagNumb), "A reusable bag", price, 0.5);
         }
         public double getExpectedWeight() {
             return expectedWeight;

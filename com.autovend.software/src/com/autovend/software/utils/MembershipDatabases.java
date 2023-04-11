@@ -15,6 +15,6 @@ public class MembershipDatabases {
     /**
      * Just a simple example of a membership database used for validating members
      */
-    public static final Map<Numeral[], String> MEMBERSHIP_DATABASE = new HashMap<>();
+    public static final Map<String, String> MEMBERSHIP_DATABASE = new HashMap<>();
 
 }

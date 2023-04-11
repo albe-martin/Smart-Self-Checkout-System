@@ -46,8 +46,10 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         for (int ii=0;ii<pluCode.length();ii++) {
             code[ii] = Numeral.valueOf((byte)Integer.parseInt(String.valueOf(pluCode.charAt(ii))));
         }
+
         PriceLookUpCode plu = new PriceLookUpCode(code);
         PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
+
         if (product!=null){
             this.getMainController().addItem(product);
             return true;
@@ -164,7 +166,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     void deregisterAttendant(AttendantIOController IOController) throws IllegalStateException{
     	if(this.getMainController().getSupervisor() != 0) {
-    		if(this.getMainController().getControllersByType("AttendantIOControllers").contains(IOController)) {
+    		if(this.getMainController().getControllersByType("AttendantIOController").contains(IOController)) {
     	    	this.getMainController().deregisterController("AttendantIOController", IOController);
         		this.getMainController().setSupervisor(0);
     		}

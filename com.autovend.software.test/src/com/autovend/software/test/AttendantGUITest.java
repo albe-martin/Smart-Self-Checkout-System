@@ -283,6 +283,7 @@ public class AttendantGUITest {
 		assert(enabledEventOccurred && disabledEventOccurred);
 	}
 	
+
 	/**
 	 * Tests the functionality of the change language use case in the login screen
 	 */
@@ -442,6 +443,7 @@ public class AttendantGUITest {
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
 		
+
 		usernameTF.setText("abc"); // Correct login credentials
 		passwordTF.setText("123");	
 		loginButton.doClick();
@@ -457,6 +459,7 @@ public class AttendantGUITest {
         JButton loginButton = attendantPane.loginButton;
 		JTextField usernameTF = attendantPane.usernameTextField;
 		JPasswordField passwordTF = attendantPane.passwordTextField;
+
 		
 		usernameTF.setText("abc"); // Correct login credentials
 		passwordTF.setText("123");	

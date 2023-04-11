@@ -35,7 +35,7 @@ public class BarcodeScannerController extends ItemAdderController<BarcodeScanner
 	private boolean isScanningItems;
 
 	void setScanningItems(boolean val){isScanningItems=val;}
-	boolean getScanningItems(){return isScanningItems;}
+	public boolean getScanningItems(){return isScanningItems;}
 
 	public BarcodeScannerController(BarcodeScanner scanner) {
 		super(scanner);
