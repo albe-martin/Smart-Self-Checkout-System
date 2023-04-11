@@ -453,9 +453,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     void notifyLowPaperInk(CustomerIOController customerIOController, ReceiptPrinterController controller) {
         AttendantOperationPane pane = (AttendantOperationPane) getDevice().getFrame().getContentPane();
         if (controller.inkLow && !controller.paperLow)
-            pane.notifyLowInk(customerIOController);
+            pane.notifyLowInk(customerIOController, controller);
         else if (!controller.inkLow &&  controller.paperLow)
-            pane.notifyLowPaper(customerIOController);
+            pane.notifyLowPaper(customerIOController, controller);
 
     }
     
