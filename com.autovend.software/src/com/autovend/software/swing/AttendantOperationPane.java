@@ -188,7 +188,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the language selection dialog and get the selected language
-                if (optionDialogPopup(panel) == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel, "Language Selection") == JOptionPane.OK_OPTION) {
                     String newLanguage = null;
                     // Determine selected button's text
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -218,8 +218,8 @@ public class AttendantOperationPane extends JPanel {
         this.add(languageSelectButton);
 	}
 	
-	public int optionDialogPopup(JPanel panel) {
-		return JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+	public int optionDialogPopup(JPanel panel, String header) {
+		return JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, header, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 
 	/**
@@ -428,7 +428,7 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available actions.
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Startup Station")}) {
                     JRadioButton radioButton = new JRadioButton(action);
                     radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -437,8 +437,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel, "Action Selection") == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -456,6 +455,7 @@ public class AttendantOperationPane extends JPanel {
         });
 		
 	}
+	
 	
 	/**
 	 * Adds the action pop-up menu for a disabled station.

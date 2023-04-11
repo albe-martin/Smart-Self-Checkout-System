@@ -107,15 +107,28 @@ public class AttendantGUITest {
 		}
 		
 		@Override
-		public int optionDialogPopup(JPanel panel) {
-            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
-                AbstractButton button = buttons.nextElement();
-                if (button.getText() == "English") {
-                    button.setSelected(true);
-                    break;
-                }
-            }
-            
+		public int optionDialogPopup(JPanel panel, String header) {
+			
+			if (header == "Language Selection") {
+	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
+	                if (button.getText() == "English") {
+	                    button.setSelected(true);
+	                    break;
+	                }
+	            }
+			} else if (header == "Action Selection") {
+	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
+	                if (button.getText() == "Startup Station") {
+	                    button.setSelected(true);
+	                    break;
+	                }
+	            }
+			}
+			
+
+         
 			return 0;
 		}
 		
@@ -585,21 +598,27 @@ public class AttendantGUITest {
 		assert(newCount == oldCount + 1); // assert that the new message is showing up in the GUI
 	}
 	
-//	/**
-//	 * 
-//	 */
-//	@Test
-//	public void Test() {
-//        JButton loginButton = attendantPane.loginButton;
-//		JTextField usernameTF = attendantPane.usernameTextField;
-//		JPasswordField passwordTF = attendantPane.passwordTextField;
-//		
-//		usernameTF.setText("abc"); // Correct login credentials
-//		passwordTF.setText("123");	
-//		loginButton.doClick();
-//		
-//		AttendantOperationPane operationPane = (AttendantOperationPane) screen.getFrame().getContentPane();
-//
-//		
-//	}
+	/**
+	 * Tests the functionality of the addShutdownActionPopop case in the operation screen
+	 */
+	@Test
+	public void shutdownActionPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		JButton btn = new JButton();
+		aop.add(btn);
+		aop.addShutdownActionPopup(btn, cioc.getMainController());
+		btn.doClick();
+	}
 }
