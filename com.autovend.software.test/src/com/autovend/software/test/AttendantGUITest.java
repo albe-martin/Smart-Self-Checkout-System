@@ -120,7 +120,7 @@ public class AttendantGUITest {
 			} else if (header == "Action Selection") {
 	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
 	                AbstractButton button = buttons.nextElement();
-	                if (button.getText() == "Startup Station") {
+	                if (button.getText() == "Startup Station" || button.getText() == "Disable Station" || button.getText() == "Enable Station") {
 	                    button.setSelected(true);
 	                    break;
 	                }
@@ -619,6 +619,59 @@ public class AttendantGUITest {
 		JButton btn = new JButton();
 		aop.add(btn);
 		aop.addShutdownActionPopup(btn, cioc.getMainController());
+		btn.doClick();
+	}
+	
+	/**
+	 * Tests the functionality of the addDisabledActionPopup case in the operation screen
+	 */
+	@Test
+	public void disabledActionPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		
+		
+		JButton btn = new JButton();
+		aop.add(btn);
+		aop.addEnabledActionPopup(btn, cioc.getMainController()); // disabling the station to so I can test enabling it
+		btn.doClick();
+		
+		aop.addDisabledActionPopup(btn, cioc.getMainController());
+		btn.doClick();
+	}
+	
+	/**
+	 * Tests the functionality of the addensabledActionPopup case in the operation screen
+	 */
+	@Test
+	public void enabledActionPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
+
+		frame.setContentPane(aop);
+		
+		JButton btn = new JButton();
+		aop.add(btn);
+		aop.addEnabledActionPopup(btn, cioc.getMainController());
 		btn.doClick();
 	}
 }

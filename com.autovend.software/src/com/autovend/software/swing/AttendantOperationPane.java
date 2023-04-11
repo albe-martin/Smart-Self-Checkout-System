@@ -479,7 +479,7 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available actions.
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Enable Station"),
                 		Language.translate(language, "Shutdown Station")}) {
                     JRadioButton radioButton = new JRadioButton(action);
@@ -489,8 +489,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, "Action Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel, "Action Selection") == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -531,7 +530,7 @@ public class AttendantOperationPane extends JPanel {
                 panel.add(label);
                 
                 // Create a group of radio buttons for the available actions.
-                ButtonGroup group = new ButtonGroup();
+                group = new ButtonGroup();
                 for (String action : new String[] {Language.translate(language, "Disable Station"),
                 		Language.translate(language, "Shutdown Station"),
                 		Language.translate(language,  "Add Item By Text Search"),
@@ -543,8 +542,7 @@ public class AttendantOperationPane extends JPanel {
                 }
 
                 // Show the action pop-up and get the selected action.
-                int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Action Selection"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-                if (result == JOptionPane.OK_OPTION) {
+                if (optionDialogPopup(panel, "Action Selection") == JOptionPane.OK_OPTION) {
                     String chosenAction = null;
                     // Determine selected action's text.
                     for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
