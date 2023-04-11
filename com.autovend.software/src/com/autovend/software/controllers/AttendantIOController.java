@@ -2,7 +2,6 @@ package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -363,7 +362,13 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     // todo: add methods which let this controller modify the GUI on the screen
 
+    /**
+     * Send any given message to the attendant screen.
+     * @param message
+     * 			Message to be sent.
+     */
     void displayMessage(String message) {
+    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).receiveMessage(message);
     }
     
     /**

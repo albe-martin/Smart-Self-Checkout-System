@@ -39,11 +39,10 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.ReceiptPrinterController;
 import com.autovend.software.utils.MiscProductsDatabase;
-
-import javax.swing.JTextPane;
 
 /**
  * A class for the attendant operation pane.
@@ -1064,5 +1063,59 @@ public class AttendantOperationPane extends JPanel {
 		String issueText = "Station #" + cioc.getMainController().getID() + " is low on ink!";
 		activeIssues.remove(issueText);
 		populateActiveIssuesPane();
+	}
+	
+	/**
+	 * Receive a message.
+	 * 
+	 * @param message
+	 * 			Message being received.
+	 */
+	public void receiveMessage(String message) {
+		// Create notification data.
+		JLabel label = new JLabel(message);
+		JButton button = new JButton("Resolve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification resolved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
+	}
+	
+	/**
+	 * Notify the attendant about a no bag request.
+	 * 
+	 * @param cioc
+	 * 			CustomerIOController requesting confirmation.
+	 */
+	public void notifyNoBag(CheckoutController checkout) {
+		// Create notification data.
+		String issueText = "Station #" + checkout.getID() + " made a no bag request!";
+		JLabel label = new JLabel(issueText);
+		JButton button = new JButton("Approve");
+		JComponent[] data = new JComponent[] {label, button};
+		button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	// Notification approved.
+            	
+            	// Remove notification.
+            	notificationsData.remove(data);
+            	populateNotificationsPane();
+
+            	// Send approval.
+            	aioc.approveNoBagRequest(checkout);
+            }
+		});
+		notificationsData.add(data);
+		
+		populateNotificationsPane();
 	}
 }
