@@ -75,7 +75,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowChange1 = new JButton("Create Low Coin Notification (1)");
 		lowChange1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(cioc1, new BigDecimal("0.25"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(cioc1.getMainController(), new BigDecimal("0.25"));
 			}
 		});
 		GridBagConstraints gbcChange1 = new GridBagConstraints();
@@ -87,7 +87,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowChange2 = new JButton("Create Low Coin Notification (2)");
 		lowChange2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(cioc2, new BigDecimal("0.10"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(cioc2.getMainController(), new BigDecimal("0.10"));
 			}
 		});
 		GridBagConstraints gbcCoin2 = new GridBagConstraints();
@@ -100,7 +100,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowBill1 = new JButton("Create Low Bill Notification (1)");
 		lowBill1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(cioc1, new BigDecimal("5"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(cioc1.getMainController(), new BigDecimal("5"));
 			}
 		});
 		GridBagConstraints gbcBill1 = new GridBagConstraints();
@@ -112,7 +112,7 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowBill2 = new JButton("Create Low Bill Notification (2)");
 		lowBill2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(cioc2, new BigDecimal("20"));
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(cioc2.getMainController(), new BigDecimal("20"));
 			}
 		});
 		GridBagConstraints gbcBill2 = new GridBagConstraints();

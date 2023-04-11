@@ -352,12 +352,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller,
             BigDecimal denom) {
-        // TODO: Signal GUI
+    	// Notify GUI about low bill.
+		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowBillDenomination(checkout, denom);
     }
 
     void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller,
             BigDecimal denom) {
-        // TODO: Signal GUI
+    	// Notify GUI about low coin.
+    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowCoinDenomination(checkout, denom);
     }
 
     // todo: add methods which let this controller modify the GUI on the screen

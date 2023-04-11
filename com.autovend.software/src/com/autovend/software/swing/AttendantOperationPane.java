@@ -922,12 +922,12 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a bill denomination is low.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param checkout
+	 * 			CheckoutController making request.
 	 */
-	public void notifyLowBillDenomination(CustomerIOController cioc, BigDecimal denom) {
+	public void notifyLowBillDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.
-		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " low bills: ($" + denom + ")");
+		JLabel label = new JLabel("Station #" + checkout.getID() + " low bills: ($" + denom + ")");
 		JButton button = new JButton("Refilled");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
@@ -947,12 +947,12 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a coin denomination is low.
 	 * 
-	 * @param cioc
-	 * 			CustomerIOController requesting confirmation.
+	 * @param chekout
+	 * 			CheckoutController making request.
 	 */
-	public void notifyLowCoinDenomination(CustomerIOController cioc, BigDecimal denom) {
+	public void notifyLowCoinDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.
-		JLabel label = new JLabel("Station #" + cioc.getMainController().getID() + " low coins: ($" + denom + ")");
+		JLabel label = new JLabel("Station #" + checkout.getID() + " low coins: ($" + denom + ")");
 		JButton button = new JButton("Refilled");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
