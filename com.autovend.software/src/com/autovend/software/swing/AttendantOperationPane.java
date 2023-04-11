@@ -764,7 +764,7 @@ public class AttendantOperationPane extends JPanel {
         panel.add(label);
         
         // Create a group of radio buttons for the available items to remove.
-        ButtonGroup group = new ButtonGroup();
+        group = new ButtonGroup();
 
         // Loop through each item in customer's cart.
         for (Map.Entry<Product, Number[]> entry : aioc.getCart(checkout).entrySet()) {
@@ -792,8 +792,7 @@ public class AttendantOperationPane extends JPanel {
 		}
 
         // Show pop-up.
-        int result = JOptionPane.showOptionDialog(aioc.getDevice().getFrame(), panel, Language.translate(language, "Remove Item"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-        if (result == JOptionPane.OK_OPTION) {
+        if (optionDialogPopup(panel, Language.translate(language, "Remove Item")) == JOptionPane.OK_OPTION) {
         	String selectedProductDescription = null;
             // Determine selected button's text
             for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {

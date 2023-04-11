@@ -145,9 +145,13 @@ public class AttendantGUITest {
 	                System.out.println(button.getText());
 	                break;
 	            }
-
-
-
+	            
+			} else if (header == "Remove Item") {
+	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
+                    button.setSelected(true);
+                    break;
+	            }
 			}
 			
 			return 0;
@@ -775,10 +779,28 @@ public class AttendantGUITest {
 
 		frame.setContentPane(aop);
 		
-
 		aop.createTextSearchPopup(cioc.getMainController());
+	}
+	
+	/**
+	 * Tests the functionality of the createRemoveItemPopup case in the operation screen
+	 */
+	@Test
+	public void createRemoveItemPopupTest() {
+        JButton loginButton = attendantPane.loginButton;
+		JTextField usernameTF = attendantPane.usernameTextField;
+		JPasswordField passwordTF = attendantPane.passwordTextField;
+		
+		usernameTF.setText("abc"); // Correct login credentials
+		passwordTF.setText("123");	
+		loginButton.doClick();
+		
+		JFrame frame = screen.getFrame();
+		AttendantOperationPaneTest aop = new AttendantOperationPaneTest(aioc);
 
-
-
+		frame.setContentPane(aop);
+		
+		aop.createTextSearchPopup(cioc.getMainController()); // Add an item by PLU code
+		aop.createRemoveItemPopup(cioc.getMainController()); // Remove the item
 	}
 }
