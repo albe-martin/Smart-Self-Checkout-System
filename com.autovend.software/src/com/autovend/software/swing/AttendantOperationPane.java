@@ -72,35 +72,36 @@ public class AttendantOperationPane extends JPanel {
 	private JLabel manageNotificationsLabel;
     public ButtonGroup group;
     public JTextField searchField;
+    public JButton button;
 
 
-	/**
-	 * TODO: Delete for final submission.
-	 * 
-	 * Quick GUI Launcher. Used to allow window builder to work.
-	 */
-	public static void main(String[] args) {
-		// Create attendant station.
-		SupervisionStation attendantStation = new SupervisionStation();
-		
-		// Get and set up screen
-		JFrame attendantScreen = attendantStation.screen.getFrame();
-		attendantScreen.setExtendedState(0);
-		attendantScreen.setSize(800, 800);
-		attendantScreen.setUndecorated(false);
-		attendantScreen.setResizable(false);
-		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
-		attendantScreen.setContentPane(new AttendantOperationPane(aioc));
-		
-		AttendantStationController asc = new AttendantStationController();
-		aioc.setMainAttendantController(asc);
-		asc.registerController(aioc);
-		
-		// Add valid username and password.
-		asc.registerUser("abc", "123");
-		
-		attendantScreen.setVisible(true);	
-	}
+//	/**
+//	 * TODO: Delete for final submission.
+//	 * 
+//	 * Quick GUI Launcher. Used to allow window builder to work.
+//	 */
+//	public static void main(String[] args) {
+//		// Create attendant station.
+//		SupervisionStation attendantStation = new SupervisionStation();
+//		
+//		// Get and set up screen
+//		JFrame attendantScreen = attendantStation.screen.getFrame();
+//		attendantScreen.setExtendedState(0);
+//		attendantScreen.setSize(800, 800);
+//		attendantScreen.setUndecorated(false);
+//		attendantScreen.setResizable(false);
+//		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
+//		attendantScreen.setContentPane(new AttendantOperationPane(aioc));
+//		
+//		AttendantStationController asc = new AttendantStationController();
+//		aioc.setMainAttendantController(asc);
+//		asc.registerController(aioc);
+//		
+//		// Add valid username and password.
+//		asc.registerUser("abc", "123");
+//		
+//		attendantScreen.setVisible(true);	
+//	}
 	
 	/**
 	 * Basic constructor.
@@ -890,7 +891,7 @@ public class AttendantOperationPane extends JPanel {
 	public void notifyConfirmAddedBags(CheckoutController checkout) {
 		// Create notification data.
 		JLabel label = new JLabel("Station #" + checkout.getID() + " needs bag confirmation!");
-		JButton button = new JButton("Confirm");
+		button = new JButton("Confirm");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -915,7 +916,7 @@ public class AttendantOperationPane extends JPanel {
 	public void notifyLowBillDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.
 		JLabel label = new JLabel("Station #" + checkout.getID() + " low bills: ($" + denom + ")");
-		JButton button = new JButton("Refilled");
+		button = new JButton("Refilled");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -939,7 +940,7 @@ public class AttendantOperationPane extends JPanel {
 	public void notifyLowCoinDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.
 		JLabel label = new JLabel("Station #" + checkout.getID() + " low coins: ($" + denom + ")");
-		JButton button = new JButton("Refilled");
+		button = new JButton("Refilled");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -967,7 +968,7 @@ public class AttendantOperationPane extends JPanel {
 		// Create notification data.
 		String issueText = "Station #" + checkout.getID() + " is low on paper!";
 		JLabel label = new JLabel(issueText);
-		JButton button = new JButton("Acknowledge");
+		button = new JButton("Acknowledge");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -1015,7 +1016,7 @@ public class AttendantOperationPane extends JPanel {
 		// Create notification data.
 		String issueText = "Station #" + checkout.getID() + " is low on ink!";
 		JLabel label = new JLabel(issueText);
-		JButton button = new JButton("Acknowledge");
+		button = new JButton("Acknowledge");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -1060,7 +1061,7 @@ public class AttendantOperationPane extends JPanel {
 	public void receiveMessage(String message) {
 		// Create notification data.
 		JLabel label = new JLabel(message);
-		JButton button = new JButton("Resolve");
+		button = new JButton("Resolve");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -1086,7 +1087,7 @@ public class AttendantOperationPane extends JPanel {
 		// Create notification data.
 		String issueText = "Station #" + checkout.getID() + " made a no bag request!";
 		JLabel label = new JLabel(issueText);
-		JButton button = new JButton("Approve");
+		button = new JButton("Approve");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -1115,7 +1116,7 @@ public class AttendantOperationPane extends JPanel {
 		// Create notification data.
 		String issueText = "Station #" + checkout.getID() + " has a weight discrepancy!";
 		JLabel label = new JLabel(issueText);
-		JButton button = new JButton("Approve");
+		button = new JButton("Approve");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -1144,7 +1145,7 @@ public class AttendantOperationPane extends JPanel {
 		// Create notification data.
 		String issueText = "Station #" + checkout.getID() + " needs a receipt reprint!";
 		JLabel label = new JLabel(issueText);
-		JButton button = new JButton("Reprint");
+		button = new JButton("Reprint");
 		JComponent[] data = new JComponent[] {label, button};
 		button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

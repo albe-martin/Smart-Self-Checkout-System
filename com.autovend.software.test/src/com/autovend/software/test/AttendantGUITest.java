@@ -426,7 +426,9 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyConfirmAddedBags(cioc.getMainController());
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyConfirmAddedBags(cioc.getMainController());
+		aop.button.doClick();		
 	}
 	
 	/**
@@ -442,7 +444,9 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowCoinDenomination(cioc.getMainController(), new BigDecimal("0.25"));
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyLowCoinDenomination(cioc.getMainController(), new BigDecimal("0.25"));
+		aop.button.doClick();	
 	}
 	
 	/**
@@ -458,7 +462,9 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowBillDenomination(cioc.getMainController(), new BigDecimal("5"));
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyLowBillDenomination(cioc.getMainController(), new BigDecimal("5"));
+		aop.button.doClick();		
 	}
 	
 	/**
@@ -474,7 +480,9 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowInk(cioc.getMainController(), null);
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyLowInk(cioc.getMainController(), null);
+		aop.button.doClick();	
 	}
 	
 	/**
@@ -507,8 +515,9 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyLowPaper(cioc.getMainController(), null);
-	}
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyLowPaper(cioc.getMainController(), null);
+		aop.button.doClick();	}
 	
 	/**
 	 * Tests the resolution of a no bag event in the GUI
@@ -523,7 +532,9 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyNoBag(cioc.getMainController());
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyNoBag(cioc.getMainController());
+		aop.button.doClick();
 	}
 	
 	/**
@@ -539,8 +550,9 @@ public class AttendantGUITest {
 		passwordTF.setText("123");	
 		loginButton.doClick();
 				
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyWeightDiscrepancy(cioc.getMainController());
-	}
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyWeightDiscrepancy(cioc.getMainController());
+		aop.button.doClick();	}
 	
 	/**
 	 * Tests the resolution of a receipt reprint event in the GUI
@@ -556,7 +568,9 @@ public class AttendantGUITest {
 		loginButton.doClick();
 		
 		StringBuilder receipt = new StringBuilder();
-		((AttendantOperationPane) screen.getFrame().getContentPane()).notifyReceiptRePrint(cioc.getMainController(), receipt);
+		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
+		aop.notifyReceiptRePrint(cioc.getMainController(), receipt);
+		aop.button.doClick();	
 	}
 	
 	/**
@@ -658,9 +672,10 @@ public class AttendantGUITest {
 		
 		operationPane.receiveMessage("message");
 		int newCount = operationPane.notificationsData.size();
-
 		
 		assert(newCount == oldCount + 1); // assert that the new message is showing up in the GUI
+		
+		operationPane.button.doClick();
 	}
 	
 	/**
