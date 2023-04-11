@@ -68,7 +68,7 @@ public class AttendantOperationPane extends JPanel {
 	public JPanel activeIssuesPane;
 	// Array of [label, button] for notifications.
 	ArrayList<JComponent[]> notificationsData;
-	ArrayList<String> activeIssues;
+	public ArrayList<String> activeIssues;
 	private JLabel manageNotificationsLabel;
     public ButtonGroup group;
 
