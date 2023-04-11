@@ -1,7 +1,6 @@
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,13 +19,10 @@ import com.autovend.software.swing.AttendantOperationPane;
 //might be excessive to be honest, but it would be consistent....
 public class AttendantIOController extends DeviceController<TouchScreen, TouchScreenObserver>
         implements TouchScreenObserver {
+	
     public AttendantIOController(TouchScreen newDevice) {
         super(newDevice);
     }
-
-    // I don't like that we have to maintain 2 arraylists for controllers
-    // but this will be necessary, annoyingly.
-    private ArrayList<CheckoutController> controllers;
 
     // mainController changed to AttendantStatioNController instead.
     private AttendantStationController mainController;
@@ -230,22 +226,22 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
 
     /**
-     * Simple method that will return the checkout station list from this IO's main
-     * attendant station in the form of IO controllers
+     * Simple method that will return the checkout station list 
+     * attendant station
      * 
      */
     public List<CheckoutController> getAllStationsControllers() {
-        return mainController.getAllStationsControllers();
+        return mainController.getAllStationControllers();
     }
 
     /**
-     * Simple method that will return a list of disabled station io controllers
+     * Simple method that will return a list of disabled station controllers
      * 
      * @return
-     *         List of disabled station IO controllers
+     *         List of disabled stations
      */
     public List<CheckoutController> getDisabledStationsControllers() {
-        return mainController.getDisabledStationsControllers();
+        return mainController.getDisabledStationControllers();
     }
 
     /**
@@ -315,39 +311,12 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         return checkout.getOrder();
     }
 
-    // TODO: Delete these notify low ink/paper, as they are a repeat of the better version below that passes the printer.
-    
-    /**
-     * This method notifies the AttendantIO GUI that this station's receipt printer
-     * is low on ink
-     * 
-     * @param checkout
-     *                 The checkout station controller whose ink is low
-     */
-    void notifyLowInk(CheckoutController checkout) {
-        // TODO: signal GUI
-    }
-
-    /**
-     * This method notifies the AttendantIO GUI that this station's receipt printer
-     * is low on paper
-     * 
-     * @param checkout
-     *                 The checkout station controller whose ink is low
-     */
-    void notifyLowPaper(CheckoutController checkout) {
-        // TODO: signal GUI
-    }
-
-
-    void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller,
-            BigDecimal denom) {
+    void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
     	// Notify GUI about low bill.
 		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowBillDenomination(checkout, denom);
     }
 
-    void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller,
-            BigDecimal denom) {
+    void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
     	// Notify GUI about low coin.
     	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowCoinDenomination(checkout, denom);
     }
@@ -434,4 +403,23 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     	// Notify GUI about low ink resolved.
     	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowInkResolved(checkout);
     }
+    
+    /**
+     * Notify the GUI that a receipt reprint is necessary.
+     * @param receipt
+     * 			Receipt to be reprinted.
+     */
+    void notifyRePrintReceipt(CheckoutController checkout, StringBuilder receipt) {
+    	//TODO: Connect to GUI
+    }
+    
+    /**
+     * Called by GUI to reprint the receipt.
+     * @param receipt
+     * 			Receipt to be reprinted.
+     */
+    void rePrintReceipt (CheckoutController checkout, StringBuilder receipt){
+        mainController.printReceipt(receipt);
+    }
+   
 }

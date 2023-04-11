@@ -207,7 +207,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 14.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.printReceipt(order, totalCost);
+		receiptPrinterController.createReceipt(order, totalCost);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -236,7 +236,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 178.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.printReceipt(order, totalCost);
+		receiptPrinterController.createReceipt(order, totalCost);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -265,7 +265,8 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 1686.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.printReceipt(order, totalCost);
+		StringBuilder receiptString = receiptPrinterController.createReceipt(order, totalCost);
+		receiptPrinterController.printReceipt(receiptString);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -292,7 +293,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 13 * 189.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.printReceipt(order, totalCost);
+		receiptPrinterController.createReceipt(order, totalCost);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -320,7 +321,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 14.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.printReceipt(order, totalCost);
+		receiptPrinterController.createReceipt(order, totalCost);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -348,7 +349,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 14.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.printReceipt(order, totalCost);
+		receiptPrinterController.createReceipt(order, totalCost);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -369,7 +370,7 @@ public class LowInkPaperTest {
 		Number[] qItem1 = { Integer.MAX_VALUE, (Double.MAX_VALUE) };
 		order.put(firstTestItem, qItem1);
 		totalCost = BigDecimal.valueOf(Double.MAX_VALUE);
-		receiptPrinterController.printReceipt(order, totalCost);
+		receiptPrinterController.createReceipt(order, totalCost);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -395,7 +396,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 178.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.printReceipt(order, totalCost);
+		receiptPrinterController.createReceipt(order, totalCost);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);

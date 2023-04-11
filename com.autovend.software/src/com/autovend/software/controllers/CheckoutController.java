@@ -59,6 +59,7 @@ public class CheckoutController {
 		clearOrder();
 	}
 
+
 	private void initControllers() {
 		registeredControllers = new HashMap<>();
 		registeredControllers.put("BaggingAreaController", new ArrayList<>());
@@ -71,6 +72,7 @@ public class CheckoutController {
 		registeredControllers.put("AttendantIOController", new ArrayList<>());
 		registeredControllers.put("CustomerIOController", new ArrayList<>());
 		registeredControllers.put("ScanningScaleController", new ArrayList<>());
+
 	}
 
 	public CheckoutController(SelfCheckoutStation checkout) {
@@ -281,10 +283,7 @@ public class CheckoutController {
 
 	public void notifyAddBags() {
 		ArrayList<DeviceController> io = registeredControllers.get("AttendantIOController");
-		ArrayList<DeviceController> io2 = registeredControllers.get("CustomerIOController");
-		// I really don't get why the GUI team designed it like this, passing around an
-		// IO controller
-		((AttendantIOController) io.get(0)).notifyAddBags(((CustomerIOController) io2.get(0)));
+		((AttendantIOController) io.get(0)).notifyAddBags(this);
 	}
 
 	/**
@@ -441,10 +440,27 @@ public class CheckoutController {
 	public void printReceipt() {
 		// print receipt
 		if (!registeredControllers.get("ReceiptPrinterController").isEmpty()) {
+			StringBuilder receipt = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).createReceipt(this.order, this.cost);
 			// call print receipt method in the ReceiptPrinterController class with the
 			// order details and cost
-			((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0))
-					.printReceipt(this.order, this.cost);
+
+
+			//check ink and paper level after printing
+			boolean lowInk = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).lowInk();
+			boolean lowPaper = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).lowPaper();
+			if (lowInk || lowPaper) {
+				// if either ink or paper is low then the station will be disabled
+				for(DeviceController io : this.registeredControllers.get("CustomerIOController")) {
+					((AttendantIOController) io).disableStation(this);
+					((AttendantIOController) io).rePrintReceipt(this, receipt);
+				}
+
+			}
+			else {
+				((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).printReceipt(receipt);
+			}
+			
+
 		}
 		clearOrder();
 	}
@@ -469,6 +485,10 @@ public class CheckoutController {
 			this.cost = this.cost.add(product.getPrice());
 		}
 	}
+
+	
+
+
 
 	/**
 	 * Methods to control the PaymentController
@@ -504,9 +524,9 @@ public class CheckoutController {
 
 	void dispenseChange() {
 		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
-			ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredControllers
-					.get("ReceiptPrinterController").get(0);
-			printerController.printReceipt(this.order, this.cost);
+
+			printReceipt();
+
 		} else {
 			TreeSet<ChangeDispenserController> controllers = new TreeSet<>();
 			for (DeviceController devControl : registeredControllers.get("ChangeDispenserController")) {
