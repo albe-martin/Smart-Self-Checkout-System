@@ -222,8 +222,8 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(lowPaperResolve2, gbcPaperResolve2);
 		
 		// No bag request events.
-		JButton noBga1 = new JButton("Create No Bag Request (1)");
-		noBga1.addActionListener(new ActionListener() {
+		JButton noBag1 = new JButton("Create No Bag Request (1)");
+		noBag1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyNoBag(cioc1.getMainController());
 			}
@@ -232,7 +232,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcnoBag1.fill = GridBagConstraints.BOTH;
 		gbcnoBag1.gridx = 0;
 		gbcnoBag1.gridy = 7;
-		contentPane.add(noBga1, gbcnoBag1);
+		contentPane.add(noBag1, gbcnoBag1);
 		
 		JButton noBag2 = new JButton("Create No Bag Request (2)");
 		noBag2.addActionListener(new ActionListener() {
@@ -245,6 +245,31 @@ public class AttendantEventSimulator extends JFrame {
 		gbcnoBag2.gridx = 1;
 		gbcnoBag2.gridy = 7;
 		contentPane.add(noBag2, gbcnoBag2);
+		
+		// Weight discrepancy events.
+		JButton weight1 = new JButton("Create Weight Discrepancy (1)");
+		weight1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyWeightDiscrepancy(cioc1.getMainController());
+			}
+		});
+		GridBagConstraints gbcweight1 = new GridBagConstraints();
+		gbcweight1.fill = GridBagConstraints.BOTH;
+		gbcweight1.gridx = 0;
+		gbcweight1.gridy = 8;
+		contentPane.add(weight1, gbcweight1);
+		
+		JButton weight2 = new JButton("Create Weight Discrepancy (2)");
+		weight2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((AttendantOperationPane) attendantFrame.getContentPane()).notifyWeightDiscrepancy(cioc2.getMainController());
+			}
+		});
+		GridBagConstraints gbcweight2 = new GridBagConstraints();
+		gbcweight2.fill = GridBagConstraints.BOTH;
+		gbcweight2.gridx = 1;
+		gbcweight2.gridy = 8;
+		contentPane.add(weight2, gbcweight2);
+		
 	}
-
 }
