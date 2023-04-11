@@ -114,7 +114,7 @@ public class CustomerOperationPane extends JPanel {
 
 		initializeLanguageSelectButton();
 
-		initializeCallAttendantButton();
+		// initializeCallAttendantButton();
 
 		// initializeLanguageSelectButton();
 
@@ -222,21 +222,6 @@ public class CustomerOperationPane extends JPanel {
 		totalCostLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		add(totalCostLabel);
 	}
-
-//	private void addItemToGrid(String itemName, BigDecimal itemPrice) {
-//		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
-//		model.addRow(new Object[]{itemName, itemPrice});
-//		updateTotalCost();
-//	}
-//
-//	private void removeItemFromGrid(int rowIndex) {
-//		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
-//		if (rowIndex >= 0 && rowIndex < model.getRowCount()) {
-//			model.removeRow(rowIndex);
-//			updateTotalCost();
-//		}
-//	}
-
 	private void updateTotalCost() {
 //		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
 //		int rowCount = model.getRowCount();
@@ -283,17 +268,6 @@ public class CustomerOperationPane extends JPanel {
 		add(addItemByLookupButton);
 	}
 
-//	private void initializePayForItemsButton() {
-//		JButton payForItemsButton = new JButton("Pay for Items");
-//		payForItemsButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				cioc.payPressed();
-//			}
-//		});
-//		payForItemsButton.setBounds(490, 351, 173, 60);
-//		add(payForItemsButton);
-//	}
-
 	private void initializePurchaseBagsButton() {
 		JButton purchaseBagsButton = new JButton("Purchase Bags");
 		purchaseBagsButton.addActionListener(new ActionListener() {
@@ -317,16 +291,63 @@ public class CustomerOperationPane extends JPanel {
 		add(purchaseBagsButton);
 	}
 
-	private void initializeCallAttendantButton() {
-		JButton callAttendantButton = new JButton("Call For Attendant");
-		callAttendantButton.addActionListener(new ActionListener() {
+	private void initializeCashButton() {
+		// Create pay with cash button.
+		JButton cashButton = new JButton("Pay with Cash");
+		cashButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 			}
 		});
-		callAttendantButton.setBounds(83, 671, 173, 60);
-		add(callAttendantButton);
+		cashButton.setBounds(490, 351, 173, 60);
+		add(cashButton);
 	}
+
+	private void initializeCreditButton() {
+		// Create pay with credit button.
+		JButton cashButton = new JButton("Pay with Credit");
+		cashButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO: pay with credit
+			}
+		});
+		cashButton.setBounds(490, 411, 173, 60);
+		add(cashButton);
+	}
+
+	private void initializeDebitButton() {
+		// Create pay with debit button.
+		JButton cashButton = new JButton("Pay with Debit");
+		cashButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO: pay with debit
+			}
+		});
+		cashButton.setBounds(490, 471, 173, 60);
+		add(cashButton);
+	}
+
+	private void initializeGiftCardButton() {
+		// Create pay with gift card button.
+		JButton cashButton = new JButton("Pay with Gift Card");
+		cashButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cioc.choosePayByGiftCard();
+			}
+		});
+		cashButton.setBounds(490, 531, 173, 60);
+		add(cashButton);
+	}
+
+//	private void initializeCallAttendantButton() {
+//		JButton callAttendantButton = new JButton("Call For Attendant");
+//		callAttendantButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//
+//			}
+//		});
+//		callAttendantButton.setBounds(83, 671, 173, 60);
+//		add(callAttendantButton);
+//	}
 
 	private void initializeLanguageSelectButton() {
 
@@ -381,6 +402,95 @@ public class CustomerOperationPane extends JPanel {
 		});
 		selectLanguageButton.setBounds(589, 663, 173, 76);
 		add(selectLanguageButton);
+	}
+
+	private void initializeTransparentPane() {
+		glassPane = new JPanel(new GridBagLayout()) {
+			@Override
+			protected void paintComponent(Graphics g) {
+				g.setColor(new Color(128, 128, 128, 128)); // Semi-transparent gray
+				g.fillRect(0, 0, getWidth(), getHeight());
+				super.paintComponent(g);
+			}
+		};
+		glassPane.setOpaque(false);
+		glassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
+		glassPane.setVisible(false);
+
+		JLabel disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
+		disabledMessage.setFont(new Font("Tahoma", Font.BOLD, 20));
+		glassPane.add(disabledMessage);
+
+		// Make the glass pane "absorb" the mouse events, so that nothing behind it (the buttons) can be clicked while it is displayed
+		glassPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				e.consume();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				e.consume();
+			}
+		});
+
+	}
+
+	private void showAddItemByPLUCodePane() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(new JLabel("Please enter the PLU code:"), gbc);
+
+		JTextField pluCodeTextField = new JTextField(10);
+		gbc.gridx = 1;
+		panel.add(pluCodeTextField, gbc);
+
+		JButton enterButton = new JButton("Enter");
+		enterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String pluCode = pluCodeTextField.getText();
+
+				if (pluCode.length() < 4 || pluCode.length() > 5) {
+					JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				//System.out.println("1" + cioc.getCart());
+				boolean itemAddedSuccessfully = cioc.addItemByPLU(pluCode);
+				//System.out.println("2" + cioc.getCart());
+
+				if (itemAddedSuccessfully) {
+					//System.out.println("ehre");
+					refreshOrderGrid();
+					//System.out.println("aawdawd");
+
+					Window window = SwingUtilities.getWindowAncestor(enterButton);
+					if (window != null) {
+						window.dispose();
+					}
+
+					// cioc.promptAddItemToBaggingArea();
+					showPlaceInBaggingAreaPane();
+				} else {
+					JOptionPane.showMessageDialog(null, "That item was not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		panel.add(enterButton, gbc);
+
+		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
 	private void showPurchaseBagsPane() {
@@ -475,158 +585,63 @@ public class CustomerOperationPane extends JPanel {
 		dialog.setVisible(true);
 	}
 
-	private void showAddItemByPLUCodePane() {
+	public void showPlaceInBaggingAreaPane() {
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please enter the PLU code:"), gbc);
+		panel.add(new JLabel("Please add that item to the bagging area."), gbc);
 
-		JTextField pluCodeTextField = new JTextField(10);
-		gbc.gridx = 1;
-		panel.add(pluCodeTextField, gbc);
-
-		JButton enterButton = new JButton("Enter");
-		enterButton.addActionListener(new ActionListener() {
+		JButton finishedButton = new JButton("Finished");
+		finishedButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String pluCode = pluCodeTextField.getText();
+				cioc.itemWasAddedToTheBaggingArea();
 
-				if (pluCode.length() < 4 || pluCode.length() > 5) {
-					JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
+				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+				if (window1 != null) {
+					window1.dispose();
 				}
+			}
+		});
 
-				//System.out.println("1" + cioc.getCart());
-				boolean itemAddedSuccessfully = cioc.addItemByPLU(pluCode);
-				//System.out.println("2" + cioc.getCart());
+		JButton doNotBagButton = new JButton("Do not bag this item");
+		doNotBagButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// System.out.println("Do not bag this item pressed");
+				cioc.selectDoNotBag();
 
-				if (itemAddedSuccessfully) {
-					//System.out.println("ehre");
-					refreshOrderGrid();
-					//System.out.println("aawdawd");
-
-					Window window = SwingUtilities.getWindowAncestor(enterButton);
-					if (window != null) {
-						window.dispose();
-					}
-				} else {
-					JOptionPane.showMessageDialog(null, "That item was not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+				Window window1 = SwingUtilities.getWindowAncestor(doNotBagButton);
+				if (window1 != null) {
+					window1.dispose();
 				}
 			}
 		});
 
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridwidth = 2;
-		panel.add(enterButton, gbc);
+		gbc.gridwidth = 1;
+		panel.add(finishedButton, gbc);
 
-		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
-	}
+		gbc.gridx = 1;
+		panel.add(doNotBagButton, gbc);
 
-	private void initializeTransparentPane() {
-		glassPane = new JPanel(new GridBagLayout()) {
+		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Place Item In Bagging Area");
+
+		dialog.addWindowListener(new WindowAdapter() {
 			@Override
-			protected void paintComponent(Graphics g) {
-				g.setColor(new Color(128, 128, 128, 128)); // Semi-transparent gray
-				g.fillRect(0, 0, getWidth(), getHeight());
-				super.paintComponent(g);
-			}
-		};
-		glassPane.setOpaque(false);
-		glassPane.setBounds(0, 0, 31, 35); // Set the bounds to match the size of the CustomerStartPane
-		glassPane.setVisible(false);
-
-		JLabel disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
-		disabledMessage.setFont(new Font("Tahoma", Font.BOLD, 20));
-		glassPane.add(disabledMessage);
-
-		// Make the glass pane "absorb" the mouse events, so that nothing behind it (the buttons) can be clicked while it is displayed
-		glassPane.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-				e.consume();
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				e.consume();
+			public void windowClosing(WindowEvent e) {
+				// Code to run when the JOptionPane is closed
+				System.out.println("JOptionPane closed");
+				cioc.cancelAddOwnBags();
 			}
 		});
 
-	}
-	
-	private void initializeCashButton() {
-		// Create pay with cash button.
-		JButton cashButton = new JButton("Pay with Cash");
-		cashButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
-		cashButton.setBounds(490, 351, 173, 60);
-        add(cashButton);
+		dialog.setVisible(true);
 	}
 
-	private void initializeCreditButton() {
-		// Create pay with credit button.
-		JButton cashButton = new JButton("Pay with Credit");
-		cashButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // TODO: pay with credit
-            }
-        });
-		cashButton.setBounds(490, 411, 173, 60);
-        add(cashButton);
-	}
-
-	private void initializeDebitButton() {
-		// Create pay with debit button.
-		JButton cashButton = new JButton("Pay with Debit");
-		cashButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // TODO: pay with debit
-            }
-        });
-		cashButton.setBounds(490, 471, 173, 60);
-        add(cashButton);
-	}
-
-	private void initializeGiftCardButton() {
-		// Create pay with gift card button.
-		JButton cashButton = new JButton("Pay with Gift Card");
-		cashButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-        		cioc.choosePayByGiftCard();
-            }
-        });
-		cashButton.setBounds(490, 531, 173, 60);
-        add(cashButton);
-	}
-
-
-//	/**
-//	 * Initialize the exit button.
-//	 */
-//	private void initializeExitButton() {
-//		// Create exit button.
-//		logoutButton = new JButton("Exit");
-//        logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
-//        logoutButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                // Logout button pressed.
-//
-//                // Notify controller that logout is requested.
-//                cioc.logoutPressed();
-//            }
-//        });
-//        logoutButton.setBounds(511, 503, 120, 63);
-//        this.add(logoutButton);
-//	}
 
 	public void enableStation() {
 		glassPane.setVisible(false);

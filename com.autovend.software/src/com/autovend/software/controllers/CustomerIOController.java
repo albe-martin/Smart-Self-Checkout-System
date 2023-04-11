@@ -88,6 +88,13 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public void addItemByBrowsing(Product selectedProduct) {addProduct(selectedProduct);}
 
     /**
+     * Called when an item has been added, and now needs to go to the bagging area
+     */
+    public void promptAddItemToBaggingArea() {
+
+    }
+
+    /**
      * Methods for membership sign-in and stuff
      */
     
@@ -142,12 +149,26 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
     //todo: more substance
 
-    void selectDoNotBag(Product product){
+    public void itemWasAddedToTheBaggingArea() {
+        //todo: either make this work, or tell Colton how it is meant to work
+    }
+
+    public void selectDoNotBag(Product product){
         this.getMainController().notifyAttendantNoBagRequest();
         /* todo: update UI so it goes back to the normal order, also make the do not bag code
          * not trash you idiot
          */
     }
+
+    /**
+     * Same thing as above with no product param, as the gui does not have the current product added when
+     * the customer chooses to not bag that item
+     */
+    public void selectDoNotBag() {
+        this.getMainController().notifyAttendantNoBagRequest();
+        // todo: either make this work or tell Colton how it is meant to work with a product param
+    }
+
     
     /**
      * Registers an Attendant's IO Controller into CustomerIO Controller if not already assigned one.
