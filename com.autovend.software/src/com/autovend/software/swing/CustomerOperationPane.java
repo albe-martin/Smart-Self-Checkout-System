@@ -440,6 +440,12 @@ public class CustomerOperationPane extends JPanel {
 		enterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String pluCode = pluCodeTextField.getText();
+
+				if (pluCode.length() < 4 || pluCode.length() > 5) {
+					JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
 				//System.out.println("1" + cioc.getCart());
 				boolean itemAddedSuccessfully = cioc.addItemByPLU(pluCode);
 				//System.out.println("2" + cioc.getCart());
@@ -454,7 +460,7 @@ public class CustomerOperationPane extends JPanel {
 						window.dispose();
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Item not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "That item was not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
