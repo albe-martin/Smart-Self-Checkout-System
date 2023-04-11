@@ -88,6 +88,7 @@ public class CheckoutController {
 		registeredControllers.put("ChangeDispenserController", new HashSet<DeviceController>());
 		registeredControllers.put("ValidPaymentControllers", new HashSet<DeviceController>());
 		registeredControllers.put("AttendantIOController", new HashSet<DeviceController>());
+		registeredControllers.put("AttendantStationController", new HashSet<DeviceController>());
 		registeredControllers.put("CustomerIOController", new HashSet<DeviceController>());
 	}
 	public CheckoutController(SelfCheckoutStation checkout) {
@@ -405,9 +406,25 @@ public class CheckoutController {
 	public void printReceipt() {
 		// print receipt
 		if (!registeredControllers.get("ReceiptPrinterController").isEmpty()) {
+			StringBuilder receipt = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).createReceipt(this.order, this.cost);
 			// call print receipt method in the ReceiptPrinterController class with the
 			// order details and cost
-			((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).printReceipt(this.order, this.cost);
+
+			//check ink and paper level after printing
+			boolean lowInk = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).lowInk();
+			boolean lowPaper = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).lowPaper();
+			if (lowInk || lowPaper) {
+				// if either ink or paper is low then the station will be disabled
+				for(DeviceController io : this.registeredControllers.get("CustomerIOController")) {
+					((AttendantIOController) io).disableStation(this);
+					((AttendantIOController) io).rePrintReceipt(receipt);
+				}
+
+			}
+			else {
+				((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).printReceipt(receipt);
+			}
+			
 		}
 		clearOrder();
 	}
@@ -427,6 +444,8 @@ public class CheckoutController {
 	}
 
 	
+
+
 
 	/**
 	 * Methods to control the PaymentController
@@ -461,7 +480,8 @@ public class CheckoutController {
 	void dispenseChange() {
 		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
 			ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next();
-			printerController.printReceipt(this.order, this.cost);
+			StringBuilder receipt = printerController.createReceipt(order, cost);
+			printerController.printReceipt(receipt);
 		} else {
 			TreeSet<ChangeDispenserController> controllers = new TreeSet<>();
 			for (DeviceController devControl : registeredControllers.get("ChangeDispenserController")) {

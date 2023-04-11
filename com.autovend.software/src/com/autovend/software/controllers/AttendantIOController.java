@@ -364,4 +364,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
             pane.notifyLowPaper(customerIOController);
 
     }
+    
+    void rePrintReceipt (StringBuilder receipt){
+        mainController.printReceipt(receipt);
+    }
+   
 }

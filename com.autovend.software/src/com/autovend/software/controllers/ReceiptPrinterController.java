@@ -64,8 +64,15 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	 * @param inkAmount: amount of ink added to printer
 	 */
 	public void addedInk(int inkAmount) {
-		if (inkAmount > 0)
+		if (inkAmount > 0) {
 			estimatedInk += inkAmount;
+			try{
+				printer.addInk(inkAmount);
+			} catch (OverloadException e) {
+				System.out.println(e);
+			}
+			
+		}
 		else
 			System.out.println("Negative Ink Not Allowed to be Added");
 	}
@@ -78,8 +85,14 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	 * @param paperAmount: amount of paper added to printer
 	 */
 	public void addedPaper(int paperAmount) {
-		if (paperAmount > 0)
+		if (paperAmount > 0){ 
 			estimatedPaper += paperAmount;
+			try{
+				printer.addPaper(paperAmount);
+			} catch (OverloadException e) {
+				System.out.println(e);
+			}
+		}
 		else
 			System.out.println("Negative Paper Not Allowed to be Added");
 	}
@@ -112,19 +125,13 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 		return paperLow;
 	}
 
-
 	/**
-	 * Responsible for printing out a properly formatted Receipt using the list of
-	 * Products and total cost. The receipt will contain a numbered list containing
-	 * the price of each product.
-	 * 
-	 * @param order: HashMap of Products on the order
-	 * @param cost:  total cost of the order
+	 * Method for creating a receipt
+	 * @param order
+	 * @param cost
+	 * @return
 	 */
-	public void printReceipt(LinkedHashMap<Product, Number[]> order, BigDecimal cost) {
-
-		printer = getDevice();
-
+	public StringBuilder createReceipt(LinkedHashMap<Product, Number[]> order, BigDecimal cost) {
 		// initialize String Builder to build the receipt
 		StringBuilder receipt = new StringBuilder();
 		receipt.append("Purchase Details:\n");
@@ -158,6 +165,20 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 		}
 		// append total cost at the end of the receipt
 		receipt.append(String.format("Total: $%.2f\n", cost));
+		return receipt;
+	}
+
+	/**
+	 * Responsible for printing out a properly formatted Receipt using the list of
+	 * Products and total cost. The receipt will contain a numbered list containing
+	 * the price of each product.
+	 * 
+	 * @param order: HashMap of Products on the order
+	 * @param cost:  total cost of the order
+	 */
+	public void printReceipt(StringBuilder receipt) {
+
+		printer = getDevice();
 
 		if (lowInk() && lowPaper()) {
 			try {

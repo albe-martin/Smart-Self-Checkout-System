@@ -54,7 +54,7 @@ public class AttendantStationController {
 	
 	/**
 	 * Constructor to assign this controller a station.
-	 * @param tation
+	 * @param station
 	 * 		The supervision station to assign this controller to.
 	 * 		
 	 */
@@ -334,5 +334,13 @@ public class AttendantStationController {
 	 */
 	public boolean isLoggedIn() {
 		return loggedIn;
+	}
+
+	/**
+	 * Methods for printing receipt in the case that the checkout station is low on ink or paper
+	 */
+	public void printReceipt(StringBuilder receipt) {
+		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
+		printerController.printReceipt(receipt);
 	}
 }
