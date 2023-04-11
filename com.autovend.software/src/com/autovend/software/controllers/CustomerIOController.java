@@ -219,6 +219,21 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     }
     
     /**
+     * Signals GUI that station is enabled.
+     */
+    void notifyEnabled() {
+    	enablePanel((JPanel) getDevice().getFrame().getContentPane());
+    }
+    
+    /**
+     * Signals GUI that station is disabled.
+     */
+    void notifyDisabled() {
+		disablePanel((JPanel) getDevice().getFrame().getContentPane());
+
+    }
+    
+    /**
      * Signals GUI to terminate (since it is turning off).
      */
     void notifyShutdown() {

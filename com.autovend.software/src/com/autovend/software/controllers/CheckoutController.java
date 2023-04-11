@@ -780,6 +780,11 @@ public class CheckoutController {
 			clearOrder();
 			this.isDisabled = true;
 			inUse = false;
+			
+			// Notify customerIO
+			for (DeviceController io : registeredControllers.get("CustomerIOController")) {
+				((CustomerIOController) io).notifyDisabled();
+			}
 		}
 	}
 
@@ -788,6 +793,11 @@ public class CheckoutController {
 			enableAllDevices();
 			clearOrder();
 			this.isDisabled = false;
+			
+			// Notify customerIO
+			for (DeviceController io : registeredControllers.get("CustomerIOController")) {
+				((CustomerIOController) io).notifyEnabled();
+			}
 		}
 	}
 	

@@ -587,19 +587,11 @@ public class AttendantOperationPane extends JPanel {
 		if (action.equalsIgnoreCase("Enable Station")) {
 			// Enable station.
 			aioc.enableStation(checkout);
-
-			// TODO: Investigate. Braedon please check if this is the right spot to call this
-			// checkout.enablePanel((JPanel) checkout.getDevice().getFrame().getContentPane());
-
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Disable Station")) {
 			// Disable station.
 			aioc.disableStation(checkout);
-
-			// TODO: Investigate again.
-			// checkout.disablePanel((JPanel) checkout.getDevice().getFrame().getContentPane());
-
 			// Repopulate management panes.
 			populateManagementPanes();
 		} else if (action.equalsIgnoreCase("Shutdown Station")) {
