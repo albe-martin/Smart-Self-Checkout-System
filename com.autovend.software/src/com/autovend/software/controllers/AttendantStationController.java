@@ -345,6 +345,16 @@ public class AttendantStationController {
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
+
+
+	/**
+	 * Methods for printing receipt in the case that the checkout station is low on ink or paper
+	 */
+	public void printReceipt(StringBuilder receipt) {
+		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
+		printerController.printReceipt(receipt);
+	}
+
 	
 	/**
 	 * Getter for getting all users in credentials hash map
@@ -353,5 +363,6 @@ public class AttendantStationController {
 	 */
 	public HashMap getUsers() {
 		return credentials;
+
 	}
 }
