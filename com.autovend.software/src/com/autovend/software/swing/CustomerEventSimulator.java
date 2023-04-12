@@ -158,6 +158,7 @@ public class CustomerEventSimulator extends JFrame {
         input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
            checkout.checkoutStation.billValidator.accept(new Bill(5, Currency.getInstance("USD")));
+           
            }
         });
         GridBagConstraints gbcInput5Bill = new GridBagConstraints();
