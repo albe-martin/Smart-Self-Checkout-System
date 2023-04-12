@@ -593,7 +593,8 @@ public class CustomerOperationPane extends JPanel {
 					int bagQuantity = Integer.parseInt(bagQuantityTextField.getText());
 
 					if (bagQuantity < 0) {
-						JOptionPane.showMessageDialog(null, "Invalid quantity. Please enter a non-negative integer.", "Error", JOptionPane.ERROR_MESSAGE);
+						showErrorMessage("Invalid quantity. Please enter a non-negative integer.");
+						//JOptionPane.showMessageDialog(null, "Invalid quantity. Please enter a non-negative integer.", "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						// Add the purchased bags to the order.
 						cioc.purchaseBags(bagQuantity);
@@ -611,7 +612,8 @@ public class CustomerOperationPane extends JPanel {
 						System.out.println("Bags purchased: " + bagQuantity);
 					}
 				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, "Invalid input. Please enter a non-negative integer.", "Error", JOptionPane.ERROR_MESSAGE);
+					showErrorMessage("Invalid input. Please enter a non-negative integer.");
+					//JOptionPane.showMessageDialog(null, "Invalid input. Please enter a non-negative integer.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});

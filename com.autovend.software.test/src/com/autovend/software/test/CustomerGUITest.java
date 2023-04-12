@@ -64,6 +64,8 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
 	
 	public boolean invalidPLUDetected = false;
 	public boolean PLUNotFound = false;
+	public boolean negativeBagNumber = false;
+	public boolean invalidBagNumber = false;
 	
  	public class CustomerStartPaneTest extends CustomerStartPane {
  		private static final long serialVersionUID = 1L;
@@ -115,9 +117,14 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  			if (message.equals("PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.")) {
  				invalidPLUDetected = true;
  			}
- 			
  			else if (message.equals("That item was not found. Please enter a valid PLU code.")) {
  				PLUNotFound = true;
+ 			}
+ 			else if (message.equals("Invalid quantity. Please enter a non-negative integer.")) {
+ 				negativeBagNumber = true;
+ 			}
+ 			else if (message.equals("Invalid input. Please enter a non-negative integer.")) {
+ 				invalidBagNumber = true;
  			}
  		}
  	}
@@ -437,6 +444,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  		JButton purchaseBagsEnterButton = cop.purchaseBagsEnterButton;
  		
  		bagQuantityTextField.setText("1");
+ 		purchaseBagsEnterButton.doClick();
  		
  		cop.refreshOrderGrid();
  		
@@ -452,6 +460,44 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  		assertEquals(expDescription, actualDescription);
  		assertEquals(expPrice, actualPrice);
  		assertEquals(expQuantity, actualQuantity);
+ 	}
+ 	
+ 	@Test
+ 	public void testPurchaseBags_numberLessThanZero() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton purchaseBagsButton = cop.purchaseBagsButton;
+ 		purchaseBagsButton.doClick();
+ 		
+ 		JPanel purchaseBagsPanel = cop.purchaseBagsPanel;
+ 		JTextField bagQuantityTextField = cop.bagQuantityTextField;
+ 		JButton purchaseBagsEnterButton = cop.purchaseBagsEnterButton;
+ 		
+ 		bagQuantityTextField.setText("-1");
+ 		purchaseBagsEnterButton.doClick();
+ 		
+ 		assertTrue(negativeBagNumber);
+ 	}
+ 	
+ 	@Test
+ 	public void testPurchaseBags_invalidInput() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton purchaseBagsButton = cop.purchaseBagsButton;
+ 		purchaseBagsButton.doClick();
+ 		
+ 		JPanel purchaseBagsPanel = cop.purchaseBagsPanel;
+ 		JTextField bagQuantityTextField = cop.bagQuantityTextField;
+ 		JButton purchaseBagsEnterButton = cop.purchaseBagsEnterButton;
+ 		
+ 		bagQuantityTextField.setText("a");
+ 		purchaseBagsEnterButton.doClick();
+ 		
+ 		assertTrue(invalidBagNumber);
  	}
 
  	@After
