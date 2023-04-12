@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -156,23 +157,23 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(scanMembership, gbcMembership);
         
         
-        JButton input5Bill = new JButton("Input 5$ Bill");
-        input5Bill.addActionListener(new ActionListener() {
+        JButton inputBill = new JButton("Input 1$ Bill");
+        inputBill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
         	checkout.checkoutStation.billInput.removeDanglingBill();
         	try {
-        		checkout.checkoutStation.billInput.accept(new Bill(5, Currency.getInstance("CAD")));
+        		checkout.checkoutStation.billInput.accept(new Bill(1, Currency.getInstance(Locale.CANADA)));
 			} catch (DisabledException | OverloadException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-        	System.out.println(checkout.getRemainingAmount());
+        	((CustomerOperationPane)(checkout.checkoutStation.screen.getFrame().getContentPane())).updateAmountPaid();;
            }
         });
-        GridBagConstraints gbcInput5Bill = new GridBagConstraints();
-        gbcInput5Bill.fill = GridBagConstraints.BOTH;
-        gbcInput5Bill.gridx = 0;
-        gbcInput5Bill.gridy = 3;
-        contentPane.add(input5Bill, gbcInput5Bill);  
+        GridBagConstraints gbcInputBill = new GridBagConstraints();
+        gbcInputBill.fill = GridBagConstraints.BOTH;
+        gbcInputBill.gridx = 0;
+        gbcInputBill.gridy = 3;
+        contentPane.add(inputBill, gbcInputBill);  
     }
 }

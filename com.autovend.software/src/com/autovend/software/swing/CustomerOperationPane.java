@@ -63,7 +63,8 @@ public class CustomerOperationPane extends JPanel {
 
 	public JButton logoutButton;
 	private JTable orderItemsTable;
-	private JLabel totalCostLabel, amountPaidLabel;
+	private JLabel totalCostLabel;
+	public JLabel amountPaidLabel;
 	public JButton languageSelectButton;
 	private JPanel glassPane;
 
@@ -248,8 +249,9 @@ public class CustomerOperationPane extends JPanel {
 		amountPaidLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		add(amountPaidLabel);
 	}
-	private void updateAmountPaid() {
-		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())));
+    
+	public void updateAmountPaid() {
+		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())).toString());
 	}
 
 	private void initializeEnterMembershipNumberButton() {
