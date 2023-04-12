@@ -194,6 +194,15 @@ import com.autovend.software.swing.CustomerStartPane;
  	
  	@Test
  	public void transparentPaneTest() {
+ 		customerPane.initializeTransparentPane();
+ 		JLabel message = customerPane.disabledMessage;
+ 		String messageText = message.getText();
+ 		
+ 		assertEquals("Station disabled: waiting for attendant to enable", messageText);
+ 	}
+ 	
+ 	@Test
+ 	public void operationTransparentPaneTest() {
  		JButton startButton = customerPane.startButton;
  		startButton.doClick();
  		
