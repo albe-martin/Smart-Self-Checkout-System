@@ -268,8 +268,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      *                             wants to add bags.
      */
     void notifyAddBags(CheckoutController checkout) {
-        // Notify GUI to approve added bags.
+      // Notify GUI to approve added bags.
     	((AttendantOperationPane)screen.getContentPane()).notifyConfirmAddedBags(checkout);
+
     }
     
     void notifyNoBagRequest(CheckoutController checkout) {
@@ -335,7 +336,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 			Message to be sent.
      */
     void displayMessage(String message) {
-        System.out.println(screen.getContentPane().toString());
+      System.out.println(screen.getContentPane().toString());
     	((AttendantOperationPane) screen.getContentPane()).receiveMessage(message);
     }
     
