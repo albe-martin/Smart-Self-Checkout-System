@@ -65,8 +65,8 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	 */
 	public void addedInk(int inkAmount) {
 		if (inkAmount > 0) {
-			estimatedInk += inkAmount;
-			
+			estimatedInk += inkAmount;	
+			lowInk();	
 		}
 		else
 			System.out.println("Negative Ink Not Allowed to be Added");
@@ -82,6 +82,7 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	public void addedPaper(int paperAmount) {
 		if (paperAmount > 0){ 
 			estimatedPaper += paperAmount;
+			lowPaper();
 		}
 		else
 			System.out.println("Negative Paper Not Allowed to be Added");
@@ -167,10 +168,8 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	 * @param cost:  total cost of the order
 	 */
 	public void printReceipt(StringBuilder receipt) {
-
 		printer = getDevice();
-
-		if (lowInk() && lowPaper()) {
+		if (!lowInk() && !lowPaper()) {
 			try {
 				for (char c : receipt.toString().toCharArray()) {
 					if (c == '\n') {
@@ -178,7 +177,6 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 					} else if (!Character.isWhitespace(c)) {
 						estimatedInk--;
 					}
-	
 					printer.print(c);
 				}
 				printer.cutPaper();
@@ -189,21 +187,31 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 				this.getMainController().printerOutOfResources();
 			}
 		}
-		
-		else if (!lowInk() && lowPaper()) {
+
+		else if (lowInk() && !lowPaper()) {
 			// Inform the I/O for attendant from the error message about low ink
 			inkLow = true;
+			this.getMainController().printerOutOfResources();
+
 		} 
-		else if (lowInk() && !lowPaper()) {
+		else if (!lowInk() && lowPaper()) {
+
 			// Inform the I/O for attendant from the error message about low paper
 			paperLow = true;
+			this.getMainController().printerOutOfResources();
+
+
 		}
-		else if (!lowInk() && !lowPaper()) {
+		else if (lowInk() && lowPaper()) {
+
 			//inform the I/O for attendant from the error message about low ink and paper
 			inkLow = true;
 			paperLow = true;
-			
+			this.getMainController().printerOutOfResources();
+
 		}
+		lowInk();
+		lowPaper();
 	}
 
 	@Override
@@ -224,12 +232,12 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	@Override
 	public void reactToPaperAddedEvent(ReceiptPrinter printer) {
 		this.getMainController().printerRefilled();
-
+		lowPaper();
 	}
 
 	@Override
 	public void reactToInkAddedEvent(ReceiptPrinter printer) {
 		this.getMainController().printerRefilled();
+		lowInk();
 	}
-
 }

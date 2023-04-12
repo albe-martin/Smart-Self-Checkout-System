@@ -133,7 +133,8 @@ public class AddItemTest {
 		
 		attendantController = new AttendantIOController(stubDevice);
 		attendantController.setMainAttendantController(stationController);
-		
+		stationController.getAttendantIOControllers();
+
 		customerController = new CustomerIOController(stubDevice);
 		customerController.setMainController(checkoutController);
 		
@@ -142,6 +143,10 @@ public class AddItemTest {
 		
 		//Register the attendant to this customer checkout station
 		customerController.registerAttendant(attendantController);
+
+
+		stationController.registerUser("TestUser", "TestPass");
+		stationController.login("TestUser", "TestPass");
 
 	}
 

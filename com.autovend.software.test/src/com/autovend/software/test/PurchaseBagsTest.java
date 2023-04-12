@@ -17,6 +17,8 @@ Amasil Rahim Zihad 30164830
 
 package com.autovend.software.test;
 
+import static com.autovend.software.utils.MiscProductsDatabase.MISC_DATABASE;
+import static com.autovend.software.utils.MiscProductsDatabase.bagNumb;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
@@ -26,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import com.autovend.*;
 import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.BaggingScaleController;
@@ -33,10 +36,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.autovend.Barcode;
-import com.autovend.BarcodedUnit;
-import com.autovend.Numeral;
-import com.autovend.ReusableBag;
 import com.autovend.devices.BarcodeScanner;
 import com.autovend.devices.ElectronicScale;
 import com.autovend.devices.OverloadException;
@@ -49,7 +48,7 @@ import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.ReusableBagDispenserController;
-import com.autovend.software.utils.MiscProductsDatabase;
+import com.autovend.software.utils.MiscProductsDatabase.Bag;
 
 public class PurchaseBagsTest {
 
@@ -57,7 +56,7 @@ public class PurchaseBagsTest {
 	BarcodeScanner stubScanner;
 	BaggingScaleController scaleController;
 	ElectronicScale stubScale;
-	BarcodedProduct newBag;
+	Bag newBag;
 
 	BarcodedUnit validUnit;
 	CheckoutController checkoutController;
@@ -76,8 +75,7 @@ public class PurchaseBagsTest {
 
 	@Before
 	public void setup() {
-		newBag = new BarcodedProduct(new Barcode(Numeral.one, Numeral.zero), "new bag", BigDecimal.valueOf(2.50),
-				500.0);
+		newBag = new Bag(BigDecimal.valueOf(0.5));
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(newBag.getBarcode(), newBag);
 		
 		
@@ -121,7 +119,7 @@ public class PurchaseBagsTest {
 		
 		
 		
-		reusableBag = (BarcodedProduct) MiscProductsDatabase.MISC_DATABASE.get(MiscProductsDatabase.bagNumb);
+		reusableBag = (BarcodedProduct) MISC_DATABASE.get(bagNumb);
 		
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(reusableBag.getBarcode(), reusableBag);
 
@@ -258,7 +256,6 @@ public class PurchaseBagsTest {
 
 		// create the variable to calculate the cost of the bags in total
 		BigDecimal expectedPrice = BigDecimal.ZERO;
-		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Add the bag to the order
 		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), numBags);
@@ -266,11 +263,16 @@ public class PurchaseBagsTest {
 
 		// Unblocks the station and lets a new item be scanned
 		checkoutController.baggedItemsValid();
+		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Check that the bag number and cost in the order were updated correctly
-		assertEquals(numBags, order.get(newBag)[0]);
-		assertEquals(expectedPrice, checkoutController.getCost());
 
+		checkoutController.purchaseBags(numBags);
+		assertEquals(order.size(),1);
+		Product bagProd = order.keySet().iterator().next();
+		assertEquals(numBags, order.get(bagProd)[0]);
+		assertEquals(expectedPrice, checkoutController.getCost());
+		assertEquals( ((BarcodedProduct)bagProd).getBarcode(), newBag.getBarcode());
 	}
 
 	/**
@@ -285,7 +287,6 @@ public class PurchaseBagsTest {
 		// Set the number of bags to 4 bags;
 		int numBags = 4;
 
-		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Purchase 2 bags
 		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), 2);
@@ -298,9 +299,6 @@ public class PurchaseBagsTest {
 		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), 1);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(1)));
 
-		// Unblocks the station and lets a new bag be scanned
-		checkoutController.baggedItemsValid();
-
 		// Purchase 1 bag
 		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), 1);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(1)));
@@ -310,8 +308,13 @@ public class PurchaseBagsTest {
 
 		// Checking that the bags were added to the order with correct bag numbers and
 		// cost
-		assertEquals(numBags, order.get(newBag)[0]);
+		HashMap<Product, Number[]> order = checkoutController.getOrder();
+		checkoutController.purchaseBags(numBags);
+		assertEquals(order.size(),1);
+		Product bagProd = order.keySet().iterator().next();
+		assertEquals(numBags, order.get(bagProd)[0]);
 		assertEquals(expectedPrice, checkoutController.getCost());
+		assertEquals( ((BarcodedProduct)bagProd).getBarcode(), newBag.getBarcode());
 	}
 
 	/**
