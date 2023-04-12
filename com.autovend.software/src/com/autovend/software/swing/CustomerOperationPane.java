@@ -47,8 +47,8 @@ public class CustomerOperationPane extends JPanel {
 
 	public JButton logoutButton;
 	private JTable orderItemsTable;
-	private JLabel totalCostLabel, amountPaidLabel;
-	public JLabel totalCostLabel;
+	public JLabel totalCostLabel, amountPaidLabel;
+	//public JLabel totalCostLabel;
 	public JButton languageSelectButton;
 	private JPanel glassPane;
 	private JPanel cashGlassPane;
