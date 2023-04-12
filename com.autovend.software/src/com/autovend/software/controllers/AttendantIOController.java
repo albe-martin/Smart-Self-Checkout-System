@@ -85,7 +85,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * enabled.
      */
     void notifyStartup(CheckoutController checkout) {
-        ((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyStartup(checkout);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyStartup(checkout);
+    	}
     }
 
     /**
@@ -263,12 +265,16 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void notifyAddBags(CheckoutController checkout) {
         // Notify GUI to approve added bags.
-    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyConfirmAddedBags(checkout);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyConfirmAddedBags(checkout);
+    	}
     }
     
     void notifyNoBagRequest(CheckoutController checkout) {
     	// Notify GUI.
-    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyNoBag(checkout);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyNoBag(checkout);
+    	}
     }
     
     public void approveNoBagRequest(CheckoutController checkout){
@@ -276,7 +282,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
     }
     
     void notifyWeightDiscrepancy(CheckoutController checkout) {
-    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyWeightDiscrepancy(checkout);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyWeightDiscrepancy(checkout);
+    	}
     }
     
     public void approveWeightDiscrepancy(CheckoutController checkout) {
@@ -313,12 +321,16 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
     void notifyLowBillDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
     	// Notify GUI about low bill.
-		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowBillDenomination(checkout, denom);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowBillDenomination(checkout, denom);
+    	}
     }
 
     void notifyLowCoinDenomination(CheckoutController checkout, ChangeDispenserController controller, BigDecimal denom) {
     	// Notify GUI about low coin.
-    	((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowCoinDenomination(checkout, denom);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane) getDevice().getFrame().getContentPane()).notifyLowCoinDenomination(checkout, denom);
+    	}
     }
 
     // todo: add methods which let this controller modify the GUI on the screen
@@ -329,7 +341,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 			Message to be sent.
      */
     void displayMessage(String message) {
-    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).receiveMessage(message);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane)getDevice().getFrame().getContentPane()).receiveMessage(message);
+    	}
     }
     
     /**
@@ -342,7 +356,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void notifyLowPaper(CheckoutController checkout, ReceiptPrinterController printer) {
     	// Notify GUI about low paper.
-    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowPaper(checkout, printer);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowPaper(checkout, printer);
+    	}
     }
 
     /**
@@ -365,7 +381,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void notifyLowPaperResolved(CheckoutController checkout) {
     	// Notify GUI about low paper resolved.
-    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowPaperResolved(checkout);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowPaperResolved(checkout);
+    	}
     }
     
     /**
@@ -378,7 +396,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void notifyLowInk(CheckoutController checkout, ReceiptPrinterController printer) {
     	// Notify GUI about low ink.
-    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowInk(checkout, printer);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowInk(checkout, printer);
+    	}
     }
 
     /**
@@ -401,7 +421,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void notifyLowInkResolved(CheckoutController checkout) {
     	// Notify GUI about low ink resolved.
-    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowInkResolved(checkout);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyLowInkResolved(checkout);
+    	}
     }
     
     /**
@@ -411,7 +433,9 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      */
     void notifyRePrintReceipt(CheckoutController checkout, StringBuilder receipt) {
     	// Notify GUI about reprint needed.
-    	((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyReceiptRePrint(checkout, receipt);
+    	if (this.mainController.isLoggedIn()) {
+    		((AttendantOperationPane)getDevice().getFrame().getContentPane()).notifyReceiptRePrint(checkout, receipt);
+    	}
     }
     
     /**
