@@ -67,6 +67,15 @@ public class CustomerOperationPane extends JPanel {
 	public JTextField bagQuantityTextField;
 	public JButton purchaseBagsEnterButton;
 	
+	public JButton enterMembershipNumberButton;
+	
+	public JButton addItemByLookupButton;
+	public DefaultListModel<String> listModel;
+	public JList<String> productList;
+	public JScrollPane productScrollPane;
+	
+	public Product selectedProduct;
+	
 	public DefaultTableModel model;
 
 
@@ -247,7 +256,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeEnterMembershipNumberButton() {
-		JButton enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
+		enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
 		enterMembershipNumberButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cioc.beginSignInAsMember();
@@ -269,7 +278,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeAddItemByLookupCodeButton() {
-		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
+		addItemByLookupButton = new JButton("Add Item by Lookup");
 		addItemByLookupButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showAddItemByLookup();
@@ -546,7 +555,7 @@ public class CustomerOperationPane extends JPanel {
 		allProducts.addAll(PLU_PRODUCT_DATABASE.values());
 
 		// Create a JList to display product descriptions
-		DefaultListModel<String> listModel = new DefaultListModel<>();
+		listModel = new DefaultListModel<>();
 		for (Product product : allProducts) {
 			if (product instanceof BarcodedProduct) {
 				listModel.addElement(((BarcodedProduct) product).getDescription());
@@ -554,17 +563,18 @@ public class CustomerOperationPane extends JPanel {
 				listModel.addElement(((PLUCodedProduct) product).getDescription());
 			}
 		}
-		JList<String> productList = new JList<>(listModel);
+		productList = new JList<>(listModel);
 		productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		// Show a scrollable popup with the list of product descriptions
-		JScrollPane scrollPane = new JScrollPane(productList);
-		JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, "Select a product", JOptionPane.PLAIN_MESSAGE);
+		productScrollPane = new JScrollPane(productList);
+		showMessageDialog (productScrollPane, "Select a product");
+		//JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, "Select a product", JOptionPane.PLAIN_MESSAGE);
 
 		// Get the selected product and add it to the transaction
 		int selectedIndex = productList.getSelectedIndex();
 		if (selectedIndex != -1) {
-			Product selectedProduct = allProducts.get(selectedIndex);
+			selectedProduct = allProducts.get(selectedIndex);
 			cioc.addItemByBrowsing(selectedProduct);
 
 			// Prompt the user to bag the item
@@ -573,6 +583,10 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 
+
+	public void showMessageDialog(JScrollPane scrollPane, String header) {
+		JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, header, JOptionPane.PLAIN_MESSAGE);
+	}
 
 	private void showPurchaseBagsPane() {
 		purchaseBagsPanel = new JPanel(new GridBagLayout());

@@ -22,7 +22,8 @@ package com.autovend.software.test;
  import javax.swing.JPanel;
  import javax.swing.JPasswordField;
  import javax.swing.JRadioButton;
- import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import org.junit.After;
@@ -41,6 +42,7 @@ import com.autovend.devices.AbstractDevice;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
  import com.autovend.software.controllers.AttendantStationController;
  import com.autovend.software.controllers.CheckoutController;
@@ -52,20 +54,22 @@ import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.utils.MiscProductsDatabase.Bag;
 
 
- public class CustomerGUITest {
- 	TouchScreen screen;
- 	boolean enabledEventOccurred = false;
- 	boolean disabledEventOccurred = false;
- 	CustomerIOController cioc;
- 	CustomerStartPaneTest customerPane;
- 	JFrame customerScreen;
-	PLUCodedProduct pluCodedProduct1;
-	BarcodedProduct bcproduct1;
+ @SuppressWarnings("serial")
+public class CustomerGUITest {
+ 	private TouchScreen screen;
+ 	private boolean enabledEventOccurred = false;
+ 	private boolean disabledEventOccurred = false;
+ 	private CustomerIOController cioc;
+ 	private CustomerStartPaneTest customerPane;
+ 	private JFrame customerScreen;
+	private PLUCodedProduct pluCodedProduct1;
+	private BarcodedProduct bcproduct1;
 	
-	public boolean invalidPLUDetected = false;
-	public boolean PLUNotFound = false;
-	public boolean negativeBagNumber = false;
-	public boolean invalidBagNumber = false;
+	private boolean invalidPLUDetected = false;
+	private boolean PLUNotFound = false;
+	private boolean negativeBagNumber = false;
+	private boolean invalidBagNumber = false;
+	
 	
  	public class CustomerStartPaneTest extends CustomerStartPane {
  		private static final long serialVersionUID = 1L;
@@ -126,6 +130,11 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  			else if (message.equals("Invalid input. Please enter a non-negative integer.")) {
  				invalidBagNumber = true;
  			}
+ 		}
+ 		
+ 		@Override
+ 		public void showMessageDialog(JScrollPane scrollPane, String header) {
+ 			productList.setSelectedIndex(0);
  		}
  	}
  	@Before
@@ -498,6 +507,37 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  		purchaseBagsEnterButton.doClick();
  		
  		assertTrue(invalidBagNumber);
+ 	}
+ 	
+ 	@Test
+ 	public void testMembershipButton() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton enterMembershipNumberButton = cop.enterMembershipNumberButton;
+ 		enterMembershipNumberButton.doClick();
+ 	}
+ 	
+ 	@Test
+ 	public void AddItemByLookupTest() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton addItemByLookupButton = cop.addItemByLookupButton;
+ 		addItemByLookupButton.doClick();
+ 		cop.refreshOrderGrid();
+ 		
+ 		DefaultTableModel model = cop.model;
+ 		String actualDescription = (String) model.getValueAt(0, 0);
+ 		BigDecimal actualPrice = (BigDecimal) model.getValueAt(0, 1);
+ 		Number actualQuantity = (Number) model.getValueAt(0, 2);
+ 		
+ 		Product selectedProduct = cop.selectedProduct;
+ 		BigDecimal expPrice = selectedProduct.getPrice();
+ 		
+ 		assertEquals(expPrice, actualPrice);
  	}
 
  	@After
