@@ -5,11 +5,13 @@ import javax.swing.border.EmptyBorder;
 
 import com.autovend.devices.TouchScreen;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.DeviceController;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class CustomerEventSimulator extends JFrame {
 
@@ -89,6 +91,23 @@ public class CustomerEventSimulator extends JFrame {
         gbcAddOwnBag.gridx = 1;
         gbcAddOwnBag.gridy = 1;
         contentPane.add(addOwnBag, gbcAddOwnBag);
+        
+        
+        JButton input5Bill = new JButton("Input 5$ Bill");
+        input5Bill.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            cioc1.getMainController().addToAmountPaid(BigDecimal.valueOf(5));
+        	ArrayList<DeviceController> bpcs = cioc1.getMainController().getControllersByType("BillPaymentController");
+            for (DeviceController bpc : bpcs) {
+				
+			}
+           }
+        });
+        GridBagConstraints gbcInput5Bill = new GridBagConstraints();
+        gbcInput5Bill.fill = GridBagConstraints.BOTH;
+        gbcInput5Bill.gridx = 0;
+        gbcInput5Bill.gridy = 2;
+        contentPane.add(input5Bill, gbcInput5Bill);
        
             	
                 
