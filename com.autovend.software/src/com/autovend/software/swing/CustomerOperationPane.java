@@ -64,6 +64,8 @@ public class CustomerOperationPane extends JPanel {
 	private JLabel totalCostLabel;
 	public JButton languageSelectButton;
 	private JPanel glassPane;
+	public ButtonGroup group;
+	public JLabel disabledMessage;
 
 	/**
 	 * TODO: Delete for final submission.
@@ -387,7 +389,7 @@ public class CustomerOperationPane extends JPanel {
 				panel.add(label);
 
 				// Create a group of radio buttons for the available languages
-				ButtonGroup group = new ButtonGroup();
+				group = new ButtonGroup();
 				for (String language : languages) {
 					JRadioButton radioButton = new JRadioButton(language);
 					radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -396,8 +398,7 @@ public class CustomerOperationPane extends JPanel {
 				}
 
 				// Show the language selection dialog and get the selected language
-				int result = JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-				if (result == JOptionPane.OK_OPTION) {
+				if (showPopup(panel, "Language Selection") == JOptionPane.OK_OPTION) {
 					String newLanguage = null;
 					// Determine selected button's text
 					for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements(); ) {
@@ -427,7 +428,7 @@ public class CustomerOperationPane extends JPanel {
 		add(languageSelectButton);
 	}
 
-	private void initializeTransparentPane() {
+	public void initializeTransparentPane() {
 		glassPane = new JPanel(new GridBagLayout()) {
 			@Override
 			protected void paintComponent(Graphics g) {
@@ -440,7 +441,7 @@ public class CustomerOperationPane extends JPanel {
 		glassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
 		glassPane.setVisible(false);
 
-		JLabel disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
+		disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
 		disabledMessage.setFont(new Font("Tahoma", Font.BOLD, 20));
 		glassPane.add(disabledMessage);
 
@@ -677,5 +678,9 @@ public class CustomerOperationPane extends JPanel {
 	public void notifyItemAdded() {
 		refreshOrderGrid();
 		showPlaceInBaggingAreaPane();
+	}
+	
+	public int showPopup(JPanel panel, String header) {
+		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 }

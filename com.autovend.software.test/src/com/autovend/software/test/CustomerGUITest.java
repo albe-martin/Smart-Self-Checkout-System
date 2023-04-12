@@ -77,6 +77,20 @@ import com.autovend.software.swing.CustomerStartPane;
  		public CustomerOperationPaneTest(CustomerIOController cioc) {
  			super(cioc);
  		}
+ 		
+ 		@Override
+ 		public int showPopup(JPanel panel, String header) {
+ 			if (header == "Language Selection") {
+ 				for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+	                AbstractButton button = buttons.nextElement();
+	                if (button.getText() == "English") {
+	                    button.setSelected(true);
+	                    break;
+	                }
+	            }
+ 			}
+ 			return 0;
+ 		}
  	}
  	@Before
  	public void setup() {
@@ -176,6 +190,22 @@ import com.autovend.software.swing.CustomerStartPane;
  		
  		assert(language == "English");
  		
+ 	}
+ 	
+ 	@Test
+ 	public void transparentPaneTest() {
+ 		JButton startButton = customerPane.startButton;
+ 		startButton.doClick();
+ 		
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		cop.initializeTransparentPane();
+ 		JLabel message = cop.disabledMessage;
+ 		String messageText = message.getText();
+ 		
+ 		assertEquals("Station disabled: waiting for attendant to enable", messageText);
  	}
 
  	@After
