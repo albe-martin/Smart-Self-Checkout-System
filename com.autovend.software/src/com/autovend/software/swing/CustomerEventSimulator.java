@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.autovend.Barcode;
+import com.autovend.Bill;
 import com.autovend.Numeral;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
@@ -155,7 +157,7 @@ public class CustomerEventSimulator extends JFrame {
         JButton input5Bill = new JButton("Input 5$ Bill");
         input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            checkout.addToAmountPaid(BigDecimal.valueOf(5));
+           checkout.checkoutStation.billValidator.accept(new Bill(5, Currency.getInstance("USD")));
            }
         });
         GridBagConstraints gbcInput5Bill = new GridBagConstraints();

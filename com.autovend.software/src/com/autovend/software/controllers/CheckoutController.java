@@ -48,7 +48,7 @@ public class CheckoutController {
 	// Supervisor Station ID. 0 = not supervised
 	private int supervisorID = 0;
 
-	private SelfCheckoutStation checkoutStation;
+	public SelfCheckoutStation checkoutStation;
 	private boolean requireAdjustment;
 
 	/**

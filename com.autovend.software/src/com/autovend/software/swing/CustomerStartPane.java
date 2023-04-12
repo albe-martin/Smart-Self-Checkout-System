@@ -25,6 +25,7 @@ public class CustomerStartPane extends JPanel {
 	public JButton startButton;
 	public JButton languageSelectButton;
 	public ButtonGroup group;
+	public JLabel disabledMessage;
 
 	private JPanel glassPane;
 
@@ -138,7 +139,7 @@ public class CustomerStartPane extends JPanel {
 		return JOptionPane.showOptionDialog(null, panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 
-	private void initializeTransparentPane() {
+	public void initializeTransparentPane() {
 		glassPane = new JPanel(new GridBagLayout()) {
 			@Override
 			protected void paintComponent(Graphics g) {
@@ -151,7 +152,7 @@ public class CustomerStartPane extends JPanel {
 		glassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
 		glassPane.setVisible(false);
 
-		JLabel disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
+		disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
 		disabledMessage.setFont(new Font("Tahoma", Font.BOLD, 20));
 		glassPane.add(disabledMessage);
 
