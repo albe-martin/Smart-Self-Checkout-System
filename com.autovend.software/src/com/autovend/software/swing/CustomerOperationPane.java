@@ -70,6 +70,8 @@ public class CustomerOperationPane extends JPanel {
 	private JPanel baggingGlassPane;
 	public ButtonGroup group;
 	public JLabel disabledMessage;
+	
+	public DefaultTableModel model;
 
 
 	/**
@@ -197,7 +199,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	public void refreshOrderGrid() {
-		DefaultTableModel model = (DefaultTableModel) orderItemsTable.getModel();
+		model = (DefaultTableModel) orderItemsTable.getModel();
 		model.setRowCount(0);
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
