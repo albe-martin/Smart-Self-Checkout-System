@@ -98,7 +98,13 @@ public class CustomerEventSimulator extends JFrame {
         JButton addWeight = new JButton("Add item to bagging area");
         addWeight.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-                checkout.scale.remove(latestUnit[0]);
+                try {
+                    if (checkout.scale.getCurrentWeight()>0) {
+                        checkout.scale.remove(latestUnit[0]);
+                    }
+                } catch (OverloadException ex) {
+
+                }
                 checkout.baggingArea.add(latestUnit[0]);
                 latestUnit[0] = null;
                 numbAdded[0]=0;
