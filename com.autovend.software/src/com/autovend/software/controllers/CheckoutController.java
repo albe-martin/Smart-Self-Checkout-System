@@ -319,7 +319,7 @@ public class CheckoutController {
 	}
 
 	public void addItem(Product newItem, BigDecimal count) {
-		if (baggingItemLock || systemProtectionLock || isDisabled || newItem == null) {
+		if (baggingItemLock || systemProtectionLock || isDisabled || count.compareTo(BigDecimal.ZERO) <= 0 || newItem == null) {
 			return;
 		}
 		// then go through the item and get its weight, either expected weight if it
@@ -355,6 +355,11 @@ public class CheckoutController {
 			} catch (IndexOutOfBoundsException e) {
 				weight = 0;
 			}
+
+			if (weight <= 0) {
+				return;
+			}
+
 			// adding the recorded weight on the current scale to the current item
 			// information
 			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).add(BigDecimal.valueOf(weight));
@@ -415,7 +420,9 @@ public class CheckoutController {
 				break;
 			}
 		}
-		baggingItemLock = unlockStation;
+		baggingItemLock = !unlockStation;
+		System.out.println(unlockStation);
+		System.out.println("Your a moron Arie");
 	}
 
 	void baggedItemsInvalid() {
@@ -481,6 +488,8 @@ public class CheckoutController {
 
 		}
 		clearOrder();
+		CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
+		cioc.startMenu();
 	}
 
 	public boolean needPrinterRefill = false;
@@ -496,7 +505,8 @@ public class CheckoutController {
 		else {
 			alertAttendant("Printing Error at station, no receipt contents");
 		}
-		// todo: GUI and better information
+		CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
+		cioc.notifyEnabled();
 		disableStation();
 	}
 
@@ -527,24 +537,27 @@ public class CheckoutController {
 		return getCost().subtract(amountPaid);
 	}
 
-	public void completePayment() {
+	public enum completePaymentErrorEnum {LOCKED, DUE, EMPTYORDER, CHANGE, RECEIPT}
+	public completePaymentErrorEnum completePayment() {
 		if (this.baggingItemLock || this.systemProtectionLock || isDisabled) {
-			return;
+			return completePaymentErrorEnum.LOCKED;
 		}
 		if (this.cost.compareTo(this.amountPaid) > 0) {
 			System.out.println("You haven't paid enough money yet.");
-			return;
+			return completePaymentErrorEnum.DUE;
 		}
 		if (this.order.keySet().size() == 0) {
 			System.out.println("Your order is empty.");
-			return;
+			return completePaymentErrorEnum.EMPTYORDER;
 		}
 		if (this.cost.compareTo(this.amountPaid) < 0) {
 			this.payingChangeLock = true;
 			// This code is inefficient and could be better, too bad!
 			dispenseChange();
+			return completePaymentErrorEnum.CHANGE;
 		} else {
 			printReceipt();
+			return completePaymentErrorEnum.RECEIPT;
 		}
 	}
 
@@ -566,6 +579,7 @@ public class CheckoutController {
 				if ((getRemainingAmount().negate()).compareTo(dispenser.getDenom()) >= 0) {
 					amountPaid = amountPaid.subtract((dispenser.getDenom()));
 					dispenser.emitChange();
+					System.out.println(amountPaid);
 					break;
 				} else {
 					if (controllers.lower(dispenser) != null) {

@@ -16,6 +16,7 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.controllers.CheckoutController.completePaymentErrorEnum;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 
@@ -29,9 +30,7 @@ import javax.swing.*;
 /**
  *
  */
-public class
-
-CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
+public class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
@@ -88,7 +87,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     /**
      * Methods for membership sign-in and stuff
      */
-    
     public void beginSignInAsMember(){
         this.getMainController().signingInAsMember();
         //todo: Stuff with the GUI
@@ -117,11 +115,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         this.getMainController().payByGiftCard();
     }
 
-    void finalizeOrder(){
-        this.getMainController().completePayment();
-        //todo:
-        // add stuff for GUI here, also modify that method to return stuff so we can
-        // react to that to modify the GUI
+    public void finalizeOrder() {
+    	completePaymentErrorEnum e = this.getMainController().completePayment();
+    	//while (this.getMainController().checkoutStation.billInput.removeDanglingBill() != null);
+		//((CustomerOperationPane)getDevice().getFrame().getContentPane()).showPaymentErrorPane(e);
+    	//((CustomerOperationPane)getDevice().getFrame().getContentPane()).updateAmountPaid();
     }
 
     public void purchaseBags(int amountOfBagsToAdd) {
@@ -140,11 +138,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
     //todo: more substance
-
-
-    public void itemWasAddedToTheBaggingArea() {
-        //todo: either make this work, or tell Colton how it is meant to work
-    }
 
     /**
      * Same thing as above with no product param, as the gui does not have the current product added when
@@ -255,13 +248,20 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * Signals GUI to start GUI.
      */
     void notifyStartup() {
-        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
-        getDevice().getFrame().revalidate();
-        getDevice().getFrame().repaint();
+        startMenu();
 
         disablePanel((JPanel) getDevice().getFrame().getContentPane());
     }
-    
+
+    void startMenu(){
+        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
+        disablePanel((JPanel) getDevice().getFrame().getContentPane());
+        enablePanel((JPanel) getDevice().getFrame().getContentPane());
+
+    }
+
     /**
      * Signals start button was pressed.
      */
