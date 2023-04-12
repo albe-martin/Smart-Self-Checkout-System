@@ -646,4 +646,8 @@ public class CustomerOperationPane extends JPanel {
 	public void disableStation() {
 		glassPane.setVisible(true);
 	}
+	
+	public void notifyItemAdded() {
+		refreshOrderGrid();
+	}
 }

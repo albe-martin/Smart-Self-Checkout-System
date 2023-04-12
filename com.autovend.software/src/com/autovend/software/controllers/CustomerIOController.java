@@ -345,6 +345,14 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         }
         
     }
-
+    
+    /**
+     * Notify the customer that an item was added.
+     */
+    void notifyItemAdded() {
+    	if (getMainController().isInUse()) {
+    		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyItemAdded();
+    	}
+    }
 
 }

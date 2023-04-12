@@ -370,6 +370,10 @@ public class CheckoutController {
 		for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newItem, weight, true);
 		}
+		// Notify customerIO
+		for (DeviceController customerIOController : registeredControllers.get("CustomerIOController")) {
+			((CustomerIOController) customerIOController).notifyItemAdded();
+		}
 		baggingItemLock = true;
 	}
 

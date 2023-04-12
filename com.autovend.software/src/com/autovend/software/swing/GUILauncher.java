@@ -124,25 +124,26 @@ public class GUILauncher {
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
 
+		// Need scale set when added
 		PLUCodedProduct pluCodedProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four), "apple" , BigDecimal.valueOf(0.89));
 		PLUCodedProduct pluCodedProduct2 = new PLUCodedProduct(new PriceLookUpCode(Numeral.four, Numeral.three, Numeral.two, Numeral.one), "banana" , BigDecimal.valueOf(0.82));
 		PLUCodedProduct pluCodedProduct3 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.one, Numeral.one, Numeral.one), "bunch of jabuticaba" , BigDecimal.valueOf(17.38));
 
-		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct1.getPLUCode(), pluCodedProduct1);
-		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct2.getPLUCode(), pluCodedProduct2);
-		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
+		//ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct1.getPLUCode(), pluCodedProduct1);
+		//ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct2.getPLUCode(), pluCodedProduct2);
+		//ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
 		
 		// TODO: Can be removed if it conflicts with the customer testing. Just used for testing attendantIO.
-		ciocs.get(0).addProduct(bcproduct1);
-		ciocs.get(0).addProduct(bcproduct1);
-		ciocs.get(0).addProduct(bcproduct1);
-		ciocs.get(0).addProduct(bcproduct1);
-		ciocs.get(0).addProduct(bcproduct1);
-		ciocs.get(0).addProduct(bcproduct2);
-		ciocs.get(0).addProduct(pluCodedProduct1);
+		//ciocs.get(0).addProduct(bcproduct1);
+	    //ciocs.get(0).addProduct(bcproduct1);
+		//ciocs.get(0).addProduct(bcproduct1);
+		//ciocs.get(0).addProduct(bcproduct1);
+		//ciocs.get(0).addProduct(bcproduct1);
+		//ciocs.get(0).addProduct(bcproduct2);
+		//ciocs.get(0).addProduct(pluCodedProduct1);
 		
 		// Run customer event simulator. 
-		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0),ciocs.get(1));
+		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController(),ciocs.get(1).getMainController());
 		customerEventSimulatorFrame.setVisible(true);
 		customerEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -150,5 +151,6 @@ public class GUILauncher {
 		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0).getMainController(), ciocs.get(1).getMainController());
 		attendantEventSimulatorFrame.setVisible(true);
 		attendantEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
 	}
 }

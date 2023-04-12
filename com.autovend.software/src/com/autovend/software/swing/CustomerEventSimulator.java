@@ -3,8 +3,15 @@ package com.autovend.software.swing;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import com.autovend.Barcode;
+import com.autovend.Numeral;
 import com.autovend.devices.TouchScreen;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.software.controllers.BarcodeScannerController;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.DeviceController;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,8 +24,15 @@ public class CustomerEventSimulator extends JFrame {
     private JPanel contentPane;
 
 
-	public CustomerEventSimulator(JFrame attendantFrame, CustomerIOController cioc1, CustomerIOController cioc2) {
+	public CustomerEventSimulator(JFrame attendantFrame, CheckoutController checkout1, CheckoutController checkout2) {
 
+		// Create sample items
+		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.seven), "toy car",
+				BigDecimal.valueOf(83.29), 359.0);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
+		
+		
+		
         setTitle("Customer Event Simulator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -36,11 +50,16 @@ public class CustomerEventSimulator extends JFrame {
 
 
          
-        JButton scanItem = new JButton("Scan item");
+        JButton scanItem = new JButton("Scan Item (Station 1)");
         scanItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	for (DeviceController<?, ?> controller : checkout1.getControllersByType("ItemAdderController")) {
+            		if (controller instanceof BarcodeScannerController barcodeScanner) {
+            			System.out.println("trying scan");
+            			barcodeScanner.reactToBarcodeScannedEvent(barcodeScanner.getDevice(), bcproduct1.getBarcode());
+            		}
+            	}
             	
-                
            }
         });
         GridBagConstraints gbcScan = new GridBagConstraints();
