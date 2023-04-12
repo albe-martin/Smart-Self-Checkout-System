@@ -69,6 +69,7 @@ public class CustomerGUITest {
 	private boolean PLUNotFound = false;
 	private boolean negativeBagNumber = false;
 	private boolean invalidBagNumber = false;
+	private boolean weightDiscrepancy = false;
 	
 	
  	public class CustomerStartPaneTest extends CustomerStartPane {
@@ -135,6 +136,16 @@ public class CustomerGUITest {
  		@Override
  		public void showMessageDialog(JScrollPane scrollPane, String header) {
  			productList.setSelectedIndex(0);
+ 		}
+ 		
+ 		@Override
+ 		public void addOwnBagsOptionPane(JPanel panel) {
+ 			finishedAddOwnBagsButton.doClick();
+ 		}
+ 		
+ 		@Override
+ 		public void BaggingWeightProblemDialog(JPanel panel, String header) {
+ 			weightDiscrepancy = true;
  		}
  	}
  	@Before
@@ -232,13 +243,13 @@ public class CustomerGUITest {
  	}
 
  	@Test
- 	public void pressStartButtonTest() {
+ 	public void pressStartButton() {
  		JButton startButton = customerPane.startButton;
  		startButton.doClick();
  	}
  	
  	@Test
- 	public void operationLanguageSelectTest() {
+ 	public void operationLanguageSelect() {
 // 		JButton startButton = customerPane.startButton;
 // 		startButton.doClick();
  		
@@ -256,7 +267,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void transparentPaneTest() {
+ 	public void transparentPane() {
  		customerPane.initializeTransparentPane();
  		JLabel message = customerPane.disabledMessage;
  		String messageText = message.getText();
@@ -265,7 +276,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void operationTransparentPaneTest() {
+ 	public void operationTransparentPane() {
 // 		JButton startButton = customerPane.startButton;
 // 		startButton.doClick();
  		
@@ -281,7 +292,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testRefreshOrderGrid_AddByPLU() {
+ 	public void RefreshOrderGrid_AddByPLU() {
 // 		JButton startButton = customerPane.startButton;
 // 		startButton.doClick();
  		
@@ -308,7 +319,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testRefreshOrderGrid_AddByBarcode() {
+ 	public void RefreshOrderGrid_AddByBarcode() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -331,7 +342,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testRefreshOrderGrid_AddBags() {
+ 	public void RefreshOrderGrid_AddBags() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -355,7 +366,7 @@ public class CustomerGUITest {
  	
  	
  	@Test
- 	public void testUpdateTotalCost() {
+ 	public void UpdateTotalCost() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -372,7 +383,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testAddItemByPLUCodeButton_ValidPLU() {
+ 	public void AddItemByPLUCodeButton_ValidPLU() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -402,7 +413,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testAddItemByPLUCodeButton_InvalidPLU() {
+ 	public void AddItemByPLUCodeButton_InvalidPLU() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -421,7 +432,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testAddItemByPLUCodeButton_PLUNotFound() {
+ 	public void AddItemByPLUCodeButton_PLUNotFound() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -440,7 +451,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testPurchaseBags() {
+ 	public void PurchaseBags() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -472,7 +483,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testPurchaseBags_numberLessThanZero() {
+ 	public void PurchaseBags_numberLessThanZero() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -491,7 +502,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testPurchaseBags_invalidInput() {
+ 	public void PurchaseBags_invalidInput() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -510,7 +521,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void testMembershipButton() {
+ 	public void MembershipButton() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -520,7 +531,7 @@ public class CustomerGUITest {
  	}
  	
  	@Test
- 	public void AddItemByLookupTest() {
+ 	public void AddItemByLookup() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -538,6 +549,43 @@ public class CustomerGUITest {
  		BigDecimal expPrice = selectedProduct.getPrice();
  		
  		assertEquals(expPrice, actualPrice);
+ 	}
+ 	
+ 	@Test
+ 	public void addOwnBags() {
+		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton purchaseBagsButton = cop.addOwnBagsButton;
+ 		purchaseBagsButton.doClick();
+ 	}
+ 	
+ 	@Test
+ 	public void baggingPrompt() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 	}
+ 	
+ 	@Test
+ 	public void pay() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton cashButton = cop.cashButton;
+ 		cashButton.doClick();
+ 	}
+ 	
+ 	@Test
+ 	public void BaggingWeightProblem() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		cop.createBaggingWeightProblemPopup();
+ 		assertTrue(weightDiscrepancy);
  	}
 
  	@After

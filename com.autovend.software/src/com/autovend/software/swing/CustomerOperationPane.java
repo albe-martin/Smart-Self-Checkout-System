@@ -76,6 +76,13 @@ public class CustomerOperationPane extends JPanel {
 	
 	public Product selectedProduct;
 	
+	public JButton addOwnBagsButton;
+	public JPanel addOwnBagsPanel;
+	public JButton finishedAddOwnBagsButton;
+	
+	public JButton cashButton;
+	
+	
 	public DefaultTableModel model;
 
 
@@ -300,20 +307,20 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeAddOwnBagsButton() {
-		JButton purchaseBagsButton = new JButton("Add Own Bags");
-		purchaseBagsButton.addActionListener(new ActionListener() {
+		addOwnBagsButton = new JButton("Add Own Bags");
+		addOwnBagsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cioc.addOwnBags();
 				showAddOwnBagsPane();
 			}
 		});
-		purchaseBagsButton.setBounds(388, 230, 173, 60);
-		add(purchaseBagsButton);
+		addOwnBagsButton.setBounds(388, 230, 173, 60);
+		add(addOwnBagsButton);
 	}
 
 	private void initializePayForItemsButton() {
 		// Create pay with cash button.
-		JButton cashButton = new JButton("Complete Payment");
+		cashButton = new JButton("Complete Payment");
 		cashButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cioc.finalizeOrder();
@@ -643,20 +650,20 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void showAddOwnBagsPane() {
-		JPanel panel = new JPanel(new GridBagLayout());
+		addOwnBagsPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please add your own bags to the bagging area, and press \"Finished\" when you are done."), gbc);
+		addOwnBagsPanel.add(new JLabel("Please add your own bags to the bagging area, and press \"Finished\" when you are done."), gbc);
 
-		JButton finishedButton = new JButton("Finished");
-		finishedButton.addActionListener(new ActionListener() {
+		finishedAddOwnBagsButton = new JButton("Finished");
+		finishedAddOwnBagsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cioc.notifyAttendantBagsAdded();
 
-				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+				Window window1 = SwingUtilities.getWindowAncestor(finishedAddOwnBagsButton);
 				if (window1 != null) {
 					window1.dispose();
 				}
@@ -666,11 +673,27 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 2;
-		panel.add(finishedButton, gbc);
+		addOwnBagsPanel.add(finishedAddOwnBagsButton, gbc);
+		
+		addOwnBagsOptionPane(addOwnBagsPanel);
 
+//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Add Own Bags");
+
+//		dialog.addWindowListener(new WindowAdapter() {
+//			@Override
+//			public void windowClosing(WindowEvent e) {
+//				// Code to run when the JOptionPane is closed
+//				cioc.cancelAddOwnBags();
+//			}
+//		});
+//
+//		dialog.setVisible(true);
+	}
+
+	public void addOwnBagsOptionPane(JPanel panel) {
 		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Add Own Bags");
-
 		dialog.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -823,7 +846,12 @@ public class CustomerOperationPane extends JPanel {
 		panel.add(label);
 		
 		// Show pop-up.
-		optionDialogPopup(panel, Language.translate(language, "Bagging Area Weight Discrepancy"));
+		BaggingWeightProblemDialog(panel, "Bagging Area Weight Discrepancy");
+		//optionDialogPopup(panel, Language.translate(language, "Bagging Area Weight Discrepancy"));
+	}
+	
+	public void BaggingWeightProblemDialog(JPanel panel, String header) {
+		optionDialogPopup(panel, Language.translate(language, header));
 	}
 	
 	/**
