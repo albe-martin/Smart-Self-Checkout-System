@@ -318,6 +318,57 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  		assertEquals(expPrice, actualPrice);
  		assertEquals(expQuantity, actualQuantity);
  	}
+ 	
+ 	
+ 	@Test
+ 	public void testUpdateTotalCost() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		cioc.addProduct(bcproduct1);
+ 		cioc.addItemByPLU("1234");
+ 		
+ 		cop.refreshOrderGrid();
+ 		JLabel totalCostLabel = cop.totalCostLabel;
+ 		String actualCost = totalCostLabel.getText();
+ 		String expCost = "Total Cost: $" + bcproduct1.getPrice().add(pluCodedProduct1.getPrice());
+ 		
+ 		assertEquals(expCost, actualCost);
+ 	}
+ 	
+ 	@Test
+ 	public void testAddItemByPLUCodeButton_ValidPLU() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton addItemByPLUCodeButton = cop.addItemByPluCodeButton;
+ 		addItemByPLUCodeButton.doClick();
+ 		
+ 		JPanel PluCodePanel = cop.PluCodePanel;
+ 		JTextField pluCodeTextField = cop.pluCodeTextField;
+ 		JButton PLUenterButton = cop.PLUenterButton;
+ 		
+ 		pluCodeTextField.setText("1234");
+ 		PLUenterButton.doClick();
+ 		
+ 		cop.refreshOrderGrid();
+ 		
+ 		DefaultTableModel model = cop.model;
+ 		String actualDescription = (String) model.getValueAt(0, 0);
+ 		BigDecimal actualPrice = (BigDecimal) model.getValueAt(0, 1);
+ 		Number actualQuantity = (Number) model.getValueAt(0, 2);
+ 		
+ 		String expDescription = "apple";
+ 		BigDecimal expPrice = BigDecimal.valueOf(0.89);
+ 		Number expQuantity = (Number) 1.0;
+ 		
+ 		assertEquals(expDescription, actualDescription);
+ 		assertEquals(expPrice, actualPrice);
+ 		assertEquals(expQuantity, actualQuantity);
+ 	}
+ 	
 
  	@After
  	public void tearDown() {

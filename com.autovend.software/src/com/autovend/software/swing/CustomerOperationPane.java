@@ -63,13 +63,18 @@ public class CustomerOperationPane extends JPanel {
 
 	public JButton logoutButton;
 	private JTable orderItemsTable;
-	private JLabel totalCostLabel;
+	public JLabel totalCostLabel;
 	public JButton languageSelectButton;
 	private JPanel glassPane;
 
 	private JPanel baggingGlassPane;
 	public ButtonGroup group;
 	public JLabel disabledMessage;
+	
+	public JButton addItemByPluCodeButton;
+	public JPanel PluCodePanel;
+	public JTextField pluCodeTextField;
+	public JButton PLUenterButton;
 	
 	public DefaultTableModel model;
 
@@ -276,7 +281,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeAddItemByPLUCodeButton() {
-		JButton addItemByPluCodeButton = new JButton("Add Item by PLU Code");
+		addItemByPluCodeButton = new JButton("Add Item by PLU Code");
 		addItemByPluCodeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showAddItemByPLUCodePane();
@@ -509,20 +514,20 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void showAddItemByPLUCodePane() {
-		JPanel panel = new JPanel(new GridBagLayout());
+		PluCodePanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please enter the PLU code:"), gbc);
+		PluCodePanel.add(new JLabel("Please enter the PLU code:"), gbc);
 
-		JTextField pluCodeTextField = new JTextField(10);
+		pluCodeTextField = new JTextField(10);
 		gbc.gridx = 1;
-		panel.add(pluCodeTextField, gbc);
+		PluCodePanel.add(pluCodeTextField, gbc);
 
-		JButton enterButton = new JButton("Enter");
-		enterButton.addActionListener(new ActionListener() {
+		PLUenterButton = new JButton("Enter");
+		PLUenterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String pluCode = pluCodeTextField.getText();
 
@@ -538,7 +543,7 @@ public class CustomerOperationPane extends JPanel {
 				if (itemAddedSuccessfully) {
 					refreshOrderGrid();
 
-					Window window = SwingUtilities.getWindowAncestor(enterButton);
+					Window window = SwingUtilities.getWindowAncestor(PLUenterButton);
 					if (window != null) {
 						window.dispose();
 					}
@@ -554,9 +559,11 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 2;
-		panel.add(enterButton, gbc);
-
-		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+		PluCodePanel.add(PLUenterButton, gbc);
+		
+		
+		showPopup(PluCodePanel, "Add Item by PLU Code");
+		//JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), PluCodePanel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
 	private void showPurchaseBagsPane() {
