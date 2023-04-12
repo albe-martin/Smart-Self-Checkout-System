@@ -301,70 +301,70 @@ public class CustomerOperationPane extends JPanel {
 		cashButton.setBounds(490, 351, 173, 60);
 		add(cashButton);
 	}
-	public void showPayWithCashPane() {
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please insert cash into the machine."), gbc);
-
-		JButton finishedButton = new JButton("Finished");
-		finishedButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
-				if (window1 != null) {
-					window1.dispose();
-				}
-			}
-		});
-
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		panel.add(finishedButton, gbc);
-
-		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
-
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// Code to run when the JOptionPane is closed
-			}
-		});
-
-		dialog.setVisible(true);
-	}
-
-		JButton finishedButton = new JButton("OK");
-		finishedButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
-				if (window1 != null) {
-					window1.dispose();
-				}
-			}
-		});
-
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		panel.add(finishedButton, gbc);
-
-		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
-
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// Code to run when the JOptionPane is closed
-			}
-		});
-
-		dialog.setVisible(true);
-	}
+//	public void showPayWithCashPane() {
+//		JPanel panel = new JPanel(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		gbc.insets = new Insets(5, 5, 5, 5);
+//		panel.add(new JLabel("Please insert cash into the machine."), gbc);
+//
+//		JButton finishedButton = new JButton("Finished");
+//		finishedButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+//				if (window1 != null) {
+//					window1.dispose();
+//				}
+//			}
+//		});
+//
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		gbc.gridwidth = 1;
+//		panel.add(finishedButton, gbc);
+//
+//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
+//
+//		dialog.addWindowListener(new WindowAdapter() {
+//			@Override
+//			public void windowClosing(WindowEvent e) {
+//				// Code to run when the JOptionPane is closed
+//			}
+//		});
+//
+//		dialog.setVisible(true);
+//
+//
+//		JButton finishedButton = new JButton("OK");
+//		finishedButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+//				if (window1 != null) {
+//					window1.dispose();
+//				}
+//			}
+//		});
+//
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		gbc.gridwidth = 1;
+//		panel.add(finishedButton, gbc);
+//
+//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
+//
+//		dialog.addWindowListener(new WindowAdapter() {
+//			@Override
+//			public void windowClosing(WindowEvent e) {
+//				// Code to run when the JOptionPane is closed
+//			}
+//		});
+//
+//		dialog.setVisible(true);
+//	}
 
 //	private void initializeCallAttendantButton() {
 //		JButton callAttendantButton = new JButton("Call For Attendant");
