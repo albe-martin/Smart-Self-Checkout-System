@@ -229,7 +229,7 @@ public class CustomerOperationPane extends JPanel {
 		add(amountPaidLabel);
 	}
 
-	void updateAmountPaid() {
+	public void updateAmountPaid() {
 		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())));
 	}
 

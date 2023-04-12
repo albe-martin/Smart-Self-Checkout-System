@@ -63,9 +63,6 @@ public class CustomerEventSimulator extends JFrame {
         si1_contentPane.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         si1_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         contentPane.setLayout(si1_contentPane);
-
-
-         
         JButton scanItem = new JButton("Scan Item #1");
         scanItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -126,7 +123,7 @@ public class CustomerEventSimulator extends JFrame {
                     checkout.scale.remove(latestUnit[0]);
                 }
                 numbAdded[0]++;
-                PriceLookUpCodedUnit pluItem1 = new PriceLookUpCodedUnit(new PriceLookUpCode(Numeral.one,Numeral.three,Numeral.three,Numeral.four),20.0*numbAdded[0]);
+                PriceLookUpCodedUnit pluItem1 = new PriceLookUpCodedUnit(new PriceLookUpCode(Numeral.one,Numeral.three,Numeral.three,Numeral.four),1.0*numbAdded[0]);
                 latestUnit[0]=pluItem1;
                 checkout.scale.add(latestUnit[0]);
             }
@@ -154,7 +151,7 @@ public class CustomerEventSimulator extends JFrame {
         input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
         	try {
-        		checkout.billInput.accept(new Bill(1, Currency.getInstance(Locale.CANADA)));
+        		checkout.billInput.accept(new Bill(5, Currency.getInstance(Locale.CANADA)));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

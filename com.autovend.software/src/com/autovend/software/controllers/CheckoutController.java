@@ -483,6 +483,8 @@ public class CheckoutController {
 
 		}
 		clearOrder();
+		CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
+		cioc.startMenu();
 	}
 
 	public boolean needPrinterRefill = false;
@@ -498,7 +500,8 @@ public class CheckoutController {
 		else {
 			alertAttendant("Printing Error at station, no receipt contents");
 		}
-		// todo: GUI and better information
+		CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
+		cioc.notifyEnabled();
 		disableStation();
 	}
 

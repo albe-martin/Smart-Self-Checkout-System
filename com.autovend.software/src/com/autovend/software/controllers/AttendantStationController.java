@@ -353,6 +353,7 @@ public class AttendantStationController {
 //		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
 //		printerController.printReceipt(receipt);
 		// TODO We don't have a ReceiptPrinter at the AttendantStation
+		System.out.println("In ASOC");
 		System.out.println(receipt.toString());
 	}
 

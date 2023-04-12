@@ -92,7 +92,7 @@ public class GUILauncher {
 			
 			for (int j = 0; j < SelfCheckoutStation.BILL_DISPENSER_CAPACITY-1; j++) {
 				try {
-					customerStation.billDispensers.get(1).load(new Bill(1, Currency.getInstance(Locale.CANADA)));
+					customerStation.billDispensers.get(5).load(new Bill(5, Currency.getInstance(Locale.CANADA)));
 				} catch (SimulationException | OverloadException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

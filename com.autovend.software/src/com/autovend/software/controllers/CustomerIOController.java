@@ -117,9 +117,9 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
 
     public void finalizeOrder() {
     	completePaymentErrorEnum e = this.getMainController().completePayment();
-    	while (this.getMainController().checkoutStation.billInput.removeDanglingBill() != null);
-		((CustomerOperationPane)getDevice().getFrame().getContentPane()).showPaymentErrorPane(e);
-    	((CustomerOperationPane)getDevice().getFrame().getContentPane()).updateAmountPaid();
+    	//while (this.getMainController().checkoutStation.billInput.removeDanglingBill() != null);
+		//((CustomerOperationPane)getDevice().getFrame().getContentPane()).showPaymentErrorPane(e);
+    	//((CustomerOperationPane)getDevice().getFrame().getContentPane()).updateAmountPaid();
     }
 
     public void purchaseBags(int amountOfBagsToAdd) {
@@ -248,13 +248,20 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
      * Signals GUI to start GUI.
      */
     void notifyStartup() {
-        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
-        getDevice().getFrame().revalidate();
-        getDevice().getFrame().repaint();
+        startMenu();
 
         disablePanel((JPanel) getDevice().getFrame().getContentPane());
     }
-    
+
+    void startMenu(){
+        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
+        disablePanel((JPanel) getDevice().getFrame().getContentPane());
+        enablePanel((JPanel) getDevice().getFrame().getContentPane());
+
+    }
+
     /**
      * Signals start button was pressed.
      */
