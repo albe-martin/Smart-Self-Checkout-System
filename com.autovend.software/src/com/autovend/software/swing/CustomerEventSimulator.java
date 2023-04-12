@@ -161,10 +161,6 @@ public class CustomerEventSimulator extends JFrame {
         input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             checkout.addToAmountPaid(BigDecimal.valueOf(5));
-        	ArrayList<DeviceController> bpcs = checkout.getControllersByType("BillPaymentController");
-            for (DeviceController bpc : bpcs) {
-				
-			}
            }
         });
         GridBagConstraints gbcInput5Bill = new GridBagConstraints();
