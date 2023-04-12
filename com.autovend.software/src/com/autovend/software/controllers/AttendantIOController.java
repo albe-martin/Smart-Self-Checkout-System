@@ -37,7 +37,7 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 
 
     @Override
-    String getTypeName() {
+    public String getTypeName() {
         return "AttendantIOController";
     }
 

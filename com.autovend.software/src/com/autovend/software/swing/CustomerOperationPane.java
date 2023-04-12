@@ -63,32 +63,14 @@ public class CustomerOperationPane extends JPanel {
 
 	public JButton logoutButton;
 	private JTable orderItemsTable;
-	private JLabel totalCostLabel;
-	private JButton languageSelectButton;
+	private JLabel totalCostLabel, amountPaidLabel;
+	public JButton languageSelectButton;
 	private JPanel glassPane;
+
 	private JPanel baggingGlassPane;
+	public ButtonGroup group;
+	public JLabel disabledMessage;
 
-	/**
-	 * TODO: Delete for final submission.
-	 * <p>
-	 * Quick GUI launcher. Used to allow window builder to work.
-	 */
-	public static void main(String[] args) {
-		// Create checkout station.
-		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA),
-				new int[]{1}, new BigDecimal[]{new BigDecimal(0.25)}, 100, 1);
-
-		// Get and set up screen
-		JFrame customerScreen = customerStation.screen.getFrame();
-		customerScreen.setExtendedState(0);
-		customerScreen.setSize(800, 800);
-		customerScreen.setUndecorated(false);
-		customerScreen.setResizable(false);
-		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
-		customerScreen.setContentPane(new CustomerOperationPane(cioc));
-
-		customerScreen.setVisible(true);
-	}
 
 	/**
 	 * Basic constructor.
@@ -122,6 +104,7 @@ public class CustomerOperationPane extends JPanel {
 		initializeCartItemsGrid();
 
 		initializeTotalCostLabel();
+		initializeAmountPaidLabel();
 
 		initializeAddItemByPLUCodeButton();
 
@@ -265,6 +248,17 @@ public class CustomerOperationPane extends JPanel {
 		totalCostLabel.setText(String.format("Total Cost: $%,.2f", cioc.getMainController().getCost().doubleValue()));
 	}
 
+	private void initializeAmountPaidLabel() {
+		amountPaidLabel = new JLabel("Amount Paid: $0.00");
+		amountPaidLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		amountPaidLabel.setBounds(83, 676, 188, 30);
+		amountPaidLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(amountPaidLabel);
+	}
+	private void updateAmountPaid() {
+		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())));
+	}
+
 	private void initializeEnterMembershipNumberButton() {
 		JButton enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
 		enterMembershipNumberButton.addActionListener(new ActionListener() {
@@ -345,8 +339,6 @@ public class CustomerOperationPane extends JPanel {
 		JButton finishedButton = new JButton("Finished");
 		finishedButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: figure out what to do here
-
 				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
 				if (window1 != null) {
 					window1.dispose();
@@ -421,8 +413,8 @@ public class CustomerOperationPane extends JPanel {
 
 	private void initializeLanguageSelectButton() {
 
-		JButton selectLanguageButton = new JButton("Select Language");
-		selectLanguageButton.addActionListener(new ActionListener() {
+		languageSelectButton = new JButton("Select Language");
+		languageSelectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -434,7 +426,7 @@ public class CustomerOperationPane extends JPanel {
 				panel.add(label);
 
 				// Create a group of radio buttons for the available languages
-				ButtonGroup group = new ButtonGroup();
+				group = new ButtonGroup();
 				for (String language : languages) {
 					JRadioButton radioButton = new JRadioButton(language);
 					radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -443,8 +435,7 @@ public class CustomerOperationPane extends JPanel {
 				}
 
 				// Show the language selection dialog and get the selected language
-				int result = JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-				if (result == JOptionPane.OK_OPTION) {
+				if (showPopup(panel, "Language Selection") == JOptionPane.OK_OPTION) {
 					String newLanguage = null;
 					// Determine selected button's text
 					for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements(); ) {
@@ -470,11 +461,11 @@ public class CustomerOperationPane extends JPanel {
 				}
 			}
 		});
-		selectLanguageButton.setBounds(589, 663, 173, 76);
-		add(selectLanguageButton);
+		languageSelectButton.setBounds(589, 663, 173, 76);
+		add(languageSelectButton);
 	}
 
-	private void initializeTransparentPane() {
+	public void initializeTransparentPane() {
 		glassPane = new JPanel(new GridBagLayout()) {
 			@Override
 			protected void paintComponent(Graphics g) {
@@ -487,7 +478,7 @@ public class CustomerOperationPane extends JPanel {
 		glassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
 		glassPane.setVisible(false);
 
-		JLabel disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
+		disabledMessage = new JLabel("Station disabled: waiting for attendant to enable");
 		disabledMessage.setFont(new Font("Tahoma", Font.BOLD, 20));
 		glassPane.add(disabledMessage);
 
@@ -777,5 +768,9 @@ public class CustomerOperationPane extends JPanel {
 	
 	public void notifyItemRemoved() {
 		refreshOrderGrid();
+	}
+	
+	public int showPopup(JPanel panel, String header) {
+		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
 }

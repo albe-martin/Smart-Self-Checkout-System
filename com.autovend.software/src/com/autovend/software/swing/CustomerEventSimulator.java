@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,7 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.autovend.Barcode;
+import com.autovend.Bill;
 import com.autovend.Numeral;
+import com.autovend.devices.DisabledException;
+import com.autovend.devices.OverloadException;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.software.controllers.BaggingScaleController;
@@ -155,7 +159,14 @@ public class CustomerEventSimulator extends JFrame {
         JButton input5Bill = new JButton("Input 5$ Bill");
         input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            checkout.addToAmountPaid(BigDecimal.valueOf(5));
+        	checkout.checkoutStation.billInput.removeDanglingBill();
+        	try {
+        		checkout.checkoutStation.billInput.accept(new Bill(5, Currency.getInstance("CAD")));
+			} catch (DisabledException | OverloadException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	System.out.println(checkout.getRemainingAmount());
            }
         });
         GridBagConstraints gbcInput5Bill = new GridBagConstraints();

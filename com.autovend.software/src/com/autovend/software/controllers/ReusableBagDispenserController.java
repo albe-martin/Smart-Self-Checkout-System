@@ -1,8 +1,6 @@
 package com.autovend.software.controllers;
 
-import com.autovend.devices.AbstractDevice;
 import com.autovend.devices.ReusableBagDispenser;
-import com.autovend.devices.observers.AbstractDeviceObserver;
 import com.autovend.devices.observers.ReusableBagDispenserObserver;
 
 public class ReusableBagDispenserController extends DeviceController<ReusableBagDispenser, ReusableBagDispenserObserver> implements ReusableBagDispenserObserver {
@@ -11,7 +9,7 @@ public class ReusableBagDispenserController extends DeviceController<ReusableBag
     }
 
     @Override
-    String getTypeName() {
+    public String getTypeName() {
         return "ReusableBagDispenserController";
     }
 
