@@ -151,7 +151,7 @@ public class CustomerOperationPane extends JPanel {
 
 		// initializeExitButton();
 
-		refreshOrderGrid();
+		// refreshOrderGrid();
 
 	}
 
@@ -197,16 +197,19 @@ public class CustomerOperationPane extends JPanel {
 		model.setRowCount(0);
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
-//		System.out.println("\n\n" + orderItems.entrySet());
+		System.out.println("\n\n" + orderItems.entrySet());
+		System.out.println(orderItems.keySet());
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
+			System.out.println(product.getPrice());
 			if (product instanceof PLUCodedProduct pluProduct) {
-				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
+				updateGrid(model, entry, pluProduct.getDescription());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
-				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
-			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
-				updateGrid(model, entry, "bag(s)", bagProduct.getPrice());
+				updateGrid(model, entry, barcodeProduct.getDescription());
 			}
+//			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+//				updateGrid(model, entry, "bag(s)", bagProduct.getPrice());
+//			}
 
 		}
 
@@ -225,11 +228,12 @@ public class CustomerOperationPane extends JPanel {
 		updateTotalCost();
 	}
 
-	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
+	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description) {
 		Number[] quantities = entry.getValue();
 		Number quantity = quantities[0];
+		String formattedPrice = String.format("%.2f", quantities[1].doubleValue());
 
-		model.addRow(new Object[]{description, price, quantity});
+		model.addRow(new Object[]{description, formattedPrice, quantity});
 
 //		for (int i = 0; i < quantities.length; i++) {
 //			int quantity = quantities[i].intValue();
@@ -255,7 +259,10 @@ public class CustomerOperationPane extends JPanel {
 //			totalCost = totalCost.add(itemPrice);
 //		}
 
-		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
+		//totalCostLabel.setText("Total Cost: $%.2f" + (cioc.getMainController().getCost().toString()));
+		System.out.println("cost: " + cioc.getMainController().getCost());
+		System.out.println(cioc.getCart());
+		totalCostLabel.setText(String.format("Total Cost: $%,.2f", cioc.getMainController().getCost().doubleValue()));
 	}
 
 	private void initializeEnterMembershipNumberButton() {
@@ -531,7 +538,7 @@ public class CustomerOperationPane extends JPanel {
 				//System.out.println("2" + cioc.getCart());
 
 				if (itemAddedSuccessfully) {
-					refreshOrderGrid();
+					// refreshOrderGrid();
 
 					Window window = SwingUtilities.getWindowAncestor(enterButton);
 					if (window != null) {
@@ -580,7 +587,7 @@ public class CustomerOperationPane extends JPanel {
 						cioc.purchaseBags(bagQuantity);
 
 						// Update the order grid to display the bags.
-						refreshOrderGrid();
+						// refreshOrderGrid();
 
 						//System.out.println("here");
 
@@ -623,6 +630,8 @@ public class CustomerOperationPane extends JPanel {
 				if (window1 != null) {
 					window1.dispose();
 				}
+
+				refreshOrderGrid();
 			}
 		});
 
@@ -654,7 +663,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 	
 	public void notifyItemAdded() {
-		refreshOrderGrid();
+		// refreshOrderGrid();
 
 		baggingGlassPane.setVisible(true);
 	}
@@ -706,6 +715,7 @@ public class CustomerOperationPane extends JPanel {
 				if (cioc.isItemBagged()) {
 					// Close pane
 					baggingGlassPane.setVisible(false);
+					refreshOrderGrid();
 				} else {
 					createBaggingWeightProblemPopup();
 				}
