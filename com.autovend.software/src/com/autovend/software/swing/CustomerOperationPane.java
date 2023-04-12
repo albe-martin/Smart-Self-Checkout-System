@@ -414,6 +414,10 @@ public class CustomerOperationPane extends JPanel {
 			);
 		}
 	}
+	
+	public void showMessageDialog(JScrollPane scrollPane, String header) {
+		JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, header, JOptionPane.PLAIN_MESSAGE);
+	}
 
 	private void payByDebitPane() {
 		JPanel debitPanel = new JPanel(new GridBagLayout());
