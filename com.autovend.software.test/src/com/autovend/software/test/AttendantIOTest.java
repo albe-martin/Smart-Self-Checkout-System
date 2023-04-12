@@ -1,13 +1,10 @@
 package com.autovend.software.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.math.BigDecimal;
 import java.util.Currency;
 
+import com.autovend.BarcodedUnit;
+import com.autovend.IBarcoded;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,6 +21,8 @@ import com.autovend.software.controllers.CardReaderControllerState;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.DeviceController;
+
+import static org.junit.Assert.*;
 
 public class AttendantIOTest {
 	CheckoutController checkoutController;
@@ -45,6 +44,7 @@ public class AttendantIOTest {
 	BigDecimal[] coinDenominations;
 	
 	BarcodedProduct product1;
+	BarcodedUnit item1;
 	
 	@Before
 	public void setup() {
@@ -76,9 +76,10 @@ public class AttendantIOTest {
 		
 		asc.registerUser("test", "test");
 		asc.login("test", "test");
-		
+
 		product1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1", BigDecimal.valueOf(83.29), 359.0);
-		
+		item1 = new BarcodedUnit(new Barcode(Numeral.three, Numeral.three),359.0);
+
 	}
 	
 	/**
@@ -88,13 +89,12 @@ public class AttendantIOTest {
 	@Test
 	public void testPreventStationUse_TryAddItem() {
 		for (DeviceController io : asc.getAttendantIOControllers()) {
-			((AttendantIOController)io).disableStation(checkoutController1);
+			((AttendantIOController) io).disableStation(checkoutController1);
 		}
-		
 		checkoutController1.addItem(product1);
-		
+
 		// Item should not be added, and order size should be 0
-		assertEquals(1, checkoutController1.getOrder().size());
+		assertEquals(0, checkoutController1.getOrder().size());
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public class AttendantIOTest {
 			if (controller instanceof CardReaderController) {
 				// payByCard should not go through, 
 				// so that the controller would not set the bank to be the cardIssuer
-				assertTrue(((CardReaderController) controller).bank == cardIssuer);
+				assertNotSame(((CardReaderController) controller).bank, cardIssuer);
 			}
 		}		
 	}
@@ -166,8 +166,8 @@ public class AttendantIOTest {
 		for (DeviceController io : asc.getAttendantIOControllers()) {
 			((AttendantIOController)io).disableStation(checkoutController1);
 		}
-		
-		checkoutController1.addItem(product1);
+		station1.mainScanner.enable();
+		station1.mainScanner.scan(item1);
 		
 		// Item should not be added, and order size should be 0
 		assertEquals(0, checkoutController1.getOrder().size());

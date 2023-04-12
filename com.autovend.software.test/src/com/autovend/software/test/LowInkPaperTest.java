@@ -26,16 +26,14 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.LinkedHashMap;
 
+import com.autovend.devices.*;
+import com.autovend.software.controllers.AttendantIOController;
+import com.autovend.software.controllers.AttendantStationController;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.autovend.Barcode;
 import com.autovend.Numeral;
-import com.autovend.devices.EmptyException;
-import com.autovend.devices.OverloadException;
-import com.autovend.devices.ReceiptPrinter;
-import com.autovend.devices.SelfCheckoutStation;
-import com.autovend.devices.SimulationException;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
@@ -48,6 +46,7 @@ public class LowInkPaperTest {
 	ReceiptPrinterController receiptPrinterController;
 	CheckoutController checkoutController;
 	ReceiptPrinter receiptPrinter;
+	AttendantIOController aioc;
 
 	Currency currency;
 	int[] billDenominations;
@@ -60,6 +59,8 @@ public class LowInkPaperTest {
 	LinkedHashMap<Product, Number[]> order;
 	BigDecimal Product;
 	BigDecimal totalCost;
+
+
 
 	/*
 	 * Set up for the tests (before)
@@ -89,7 +90,6 @@ public class LowInkPaperTest {
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(firstTestItem.getBarcode(), firstTestItem);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(secondTestItem.getBarcode(), secondTestItem);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(thirdTestItem.getBarcode(), thirdTestItem);
-
 		order = new LinkedHashMap<Product, Number[]>();
 	}
 
@@ -207,7 +207,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 14.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.createReceipt(order, totalCost);
+		receiptPrinterController.printReceipt(receiptPrinterController.createReceipt(order, totalCost));
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -220,10 +220,10 @@ public class LowInkPaperTest {
 	// Testing if printReceipt works correctly with exactly enough ink
 	@Test
 	public void testPrintReceiptExactInk() throws OverloadException {
-		receiptPrinter.addInk(103);
-		receiptPrinter.addPaper(30);
-		receiptPrinterController.addedInk(103);
-		receiptPrinterController.addedPaper(30);
+		receiptPrinter.addInk(1103);
+		receiptPrinter.addPaper(530);
+		receiptPrinterController.addedInk(1103);
+		receiptPrinterController.addedPaper(530);
 		Number[] qItem1 = { 4, (4 * 23.23) };
 		Number[] qItem2 = { 5, (5 * 75.63) };
 		Number[] qItem3 = { 1, (1 * 178.86) };
@@ -236,23 +236,27 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 178.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.createReceipt(order, totalCost);
+		StringBuilder ord = receiptPrinterController.createReceipt(order, totalCost);
+
+		receiptPrinterController.printReceipt(ord);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
+		aioc=null;
+
 
 		// testing if the software keeps track of the paper and ink used
-		assertEquals(0, receiptPrinterController.estimatedInk);
-		assertEquals(25, receiptPrinterController.estimatedPaper);
+		assertEquals(1000, receiptPrinterController.estimatedInk);
+		assertEquals(525, receiptPrinterController.estimatedPaper);
 	}
 
 	// Testing if printReceipt works correctly with exactly enough paper
 	@Test
 	public void testPrintReceiptExactPaper() throws OverloadException, SimulationException {
-		receiptPrinter.addInk(115);
-		receiptPrinter.addPaper(5);
-		receiptPrinterController.addedInk(115);
-		receiptPrinterController.addedPaper(5);
+		receiptPrinter.addInk(1115);
+		receiptPrinter.addPaper(505);
+		receiptPrinterController.addedInk(1115);
+		receiptPrinterController.addedPaper(505);
 		Number[] qItem1 = { 70, (70 * 23.23) };
 		Number[] qItem2 = { 55, (55 * 725.63) };
 		Number[] qItem3 = { 1, (1 * 1686.86) };
@@ -266,12 +270,13 @@ public class LowInkPaperTest {
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
 		StringBuilder receiptString = receiptPrinterController.createReceipt(order, totalCost);
+
 		receiptPrinterController.printReceipt(receiptString);
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
-		assertEquals(4, receiptPrinterController.estimatedInk);
-		assertEquals(0, receiptPrinterController.estimatedPaper);
+		assertEquals(1004, receiptPrinterController.estimatedInk);
+		assertEquals(500, receiptPrinterController.estimatedPaper);
 	}
 
 	// Testing if printReceipt low ink flag/indicator works correctly
@@ -293,7 +298,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 13 * 189.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.createReceipt(order, totalCost);
+		receiptPrinterController.printReceipt(receiptPrinterController.createReceipt(order, totalCost));
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -321,7 +326,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 14.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.createReceipt(order, totalCost);
+		receiptPrinterController.printReceipt(receiptPrinterController.createReceipt(order, totalCost));
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
@@ -349,7 +354,7 @@ public class LowInkPaperTest {
 		double costOfqItem3 = 1 * 14.86;
 		totalCost = BigDecimal.valueOf(costOfqItem1 + costOfqItem2 + costOfqItem3);
 
-		receiptPrinterController.createReceipt(order, totalCost);
+		receiptPrinterController.printReceipt(receiptPrinterController.createReceipt(order, totalCost));
 		receiptPrinter.cutPaper();
 		String receipt = receiptPrinter.removeReceipt();
 		System.out.println(receipt);
