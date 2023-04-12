@@ -1,42 +1,38 @@
 package com.autovend.software.swing;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
-import com.autovend.Barcode;
-import com.autovend.Numeral;
-import com.autovend.devices.TouchScreen;
-import com.autovend.external.ProductDatabases;
-import com.autovend.products.BarcodedProduct;
-import com.autovend.software.controllers.AttendantIOController;
-import com.autovend.software.controllers.BarcodeScannerController;
-import com.autovend.software.controllers.CheckoutController;
-import com.autovend.software.controllers.CustomerIOController;
-import com.autovend.software.controllers.DeviceController;
-
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import com.autovend.Barcode;
+import com.autovend.Numeral;
+import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.software.controllers.BarcodeScannerController;
+import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.DeviceController;
+
 public class CustomerEventSimulator extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-	public CustomerIOController cioc1;
-	public CustomerIOController cioc2;
+	public CustomerIOController cioc;
 
 
-	public CustomerEventSimulator(JFrame attendantFrame, CheckoutController checkout1, CheckoutController checkout2) {
+	public CustomerEventSimulator(JFrame attendantFrame, CheckoutController checkout) {
 
 
-		for (DeviceController<?, ?> controller : checkout1.getControllersByType("CustomerIOController")) {
-    		cioc1 = (CustomerIOController) controller;
-    	}
-		
-		for (DeviceController<?, ?> controller : checkout2.getControllersByType("CustomerIOController")) {
-    		cioc2 = (CustomerIOController) controller;
+		for (DeviceController<?, ?> controller : checkout.getControllersByType("CustomerIOController")) {
+    		cioc = (CustomerIOController) controller;
     	}
 		
 		// Create sample items
@@ -46,7 +42,7 @@ public class CustomerEventSimulator extends JFrame {
 		
 		
 		
-        setTitle("Customer Event Simulator");
+        setTitle("Customer #" + checkout.getID() + " Event Simulator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setBounds(100, 100, 600, 400);
@@ -63,10 +59,10 @@ public class CustomerEventSimulator extends JFrame {
 
 
          
-        JButton scanItem = new JButton("Scan Item (Station 1)");
+        JButton scanItem = new JButton("Scan Item");
         scanItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	for (DeviceController<?, ?> controller : checkout1.getControllersByType("ItemAdderController")) {
+            	for (DeviceController<?, ?> controller : checkout.getControllersByType("ItemAdderController")) {
             		if (controller instanceof BarcodeScannerController barcodeScanner) {
             			barcodeScanner.reactToBarcodeScannedEvent(barcodeScanner.getDevice(), bcproduct1.getBarcode());
             		}
@@ -125,8 +121,8 @@ public class CustomerEventSimulator extends JFrame {
         JButton input5Bill = new JButton("Input 5$ Bill");
         input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            checkout1.addToAmountPaid(BigDecimal.valueOf(5));
-        	ArrayList<DeviceController> bpcs = checkout1.getControllersByType("BillPaymentController");
+            checkout.addToAmountPaid(BigDecimal.valueOf(5));
+        	ArrayList<DeviceController> bpcs = checkout.getControllersByType("BillPaymentController");
             for (DeviceController bpc : bpcs) {
 				
 			}
@@ -142,7 +138,7 @@ public class CustomerEventSimulator extends JFrame {
         JButton addItemToBaggingArea = new JButton("Add item to bagging area");
         addItemToBaggingArea.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            cioc1.itemWasAddedToTheBaggingArea();
+            cioc.itemWasAddedToTheBaggingArea();
            }
         });
         GridBagConstraints gbcAddItemToBaggingArea = new GridBagConstraints();

@@ -133,10 +133,13 @@ public class GUILauncher {
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct2.getPLUCode(), pluCodedProduct2);
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
 		
-		// Run customer event simulator. 
-		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController(),ciocs.get(1).getMainController());
+		// Run customer event simulators.
+		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController());
 		customerEventSimulatorFrame.setVisible(true);
 		customerEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		CustomerEventSimulator customerEventSimulatorFrame2 = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(1).getMainController());
+		customerEventSimulatorFrame2.setVisible(true);
+		customerEventSimulatorFrame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		// Run attendant event simulator.
 		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0).getMainController(), ciocs.get(1).getMainController());
