@@ -319,7 +319,7 @@ public class CheckoutController {
 	}
 
 	public void addItem(Product newItem, BigDecimal count) {
-		if (baggingItemLock || systemProtectionLock || isDisabled || newItem == null || count.compareTo(BigDecimal.ZERO)<=0) {
+		if (baggingItemLock || systemProtectionLock || isDisabled || count.compareTo(BigDecimal.ZERO) <= 0 || newItem == null) {
 			return;
 		}
 		// then go through the item and get its weight, either expected weight if it
