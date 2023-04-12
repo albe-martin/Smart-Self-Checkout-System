@@ -10,9 +10,13 @@ import java.util.Locale;
 import javax.swing.JFrame;
 
 import com.autovend.Barcode;
+import com.autovend.Bill;
+import com.autovend.Coin;
 import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
+import com.autovend.devices.OverloadException;
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.devices.SimulationException;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
@@ -85,6 +89,23 @@ public class GUILauncher {
 		for (int i = 0; i < num_stations; i++) {
 			SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
 					new int[] {5}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+			
+			for (int j = 0; j < SelfCheckoutStation.BILL_DISPENSER_CAPACITY-1; j++) {
+				try {
+					customerStation.billDispensers.get(1).load(new Bill(1, Currency.getInstance(Locale.CANADA)));
+				} catch (SimulationException | OverloadException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			for (int j = 0; j < SelfCheckoutStation.COIN_DISPENSER_CAPACITY-1; j++) {
+				try {
+					customerStation.coinDispensers.get(BigDecimal.valueOf(0.25)).load(new Coin(BigDecimal.valueOf(0.25), Currency.getInstance(Locale.CANADA)));
+				} catch (SimulationException | OverloadException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			
 			// Get and set up screen
 			JFrame customerScreen = customerStation.screen.getFrame();

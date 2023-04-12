@@ -153,18 +153,36 @@ public class CustomerEventSimulator extends JFrame {
         JButton input5Bill = new JButton("Input 5$ Bill");
         input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            try {
-                checkout.billInput.accept(new Bill(5, Currency.getInstance(Locale.CANADA)));
-            } catch (OverloadException ex) {
-                throw new RuntimeException(ex);
-            }
-
-        }
+        	try {
+        		checkout.checkoutStation.billInput.accept(new Bill(1, Currency.getInstance(Locale.CANADA)));
+			} catch (DisabledException | OverloadException e1) {
+				e1.printStackTrace();
+			}
+        	((CustomerOperationPane)(checkout.checkoutStation.screen.getFrame().getContentPane())).updateAmountPaid();;
+           }
+        });
+        GridBagConstraints gbcInputBill = new GridBagConstraints();
+        gbcInputBill.fill = GridBagConstraints.BOTH;
+        gbcInputBill.gridx = 0;
+        gbcInputBill.gridy = 3;
+        contentPane.add(inputBill, gbcInputBill);  
+        
+        
+        JButton inputCoin = new JButton("Input 0.25$ Coin");
+        inputCoin.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	try {
+        		checkout.checkoutStation.coinSlot.accept(new Coin(BigDecimal.valueOf(0.25), Currency.getInstance(Locale.CANADA)));
+			} catch (DisabledException e1) {
+				e1.printStackTrace();
+			}
+        	((CustomerOperationPane)(checkout.checkoutStation.screen.getFrame().getContentPane())).updateAmountPaid();;
+           }
         });
         GridBagConstraints gbcInput5Bill = new GridBagConstraints();
         gbcInput5Bill.fill = GridBagConstraints.BOTH;
         gbcInput5Bill.gridx = 0;
         gbcInput5Bill.gridy = 3;
-        contentPane.add(input5Bill, gbcInput5Bill);  
+        contentPane.add(input5Bill, gbcInput5Bill);
     }
 }
