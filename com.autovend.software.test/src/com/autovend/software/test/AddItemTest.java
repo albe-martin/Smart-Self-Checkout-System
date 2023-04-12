@@ -489,8 +489,9 @@ public class AddItemTest {
 		// Checks that the total cost was updated
 		assertEquals(total, checkoutController.getCost());
 
+		
 		// Unblocks the station and lets a new item be scanned
-		checkoutController.baggedItemsValid();
+		stubScale.add(validUnit1);
 
 		// Adds a second item
 		checkoutController.addItem(databaseItem2);
@@ -499,7 +500,7 @@ public class AddItemTest {
 		total = total.add(databaseItem2.getPrice());
 
 		// Rounds the value to 2 decimal places
-		total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
+		total = total.setScale(2, RoundingMode.HALF_UP);
 
 		// Checks that the item was added and the order was updated to 2
 		assertEquals(2, checkoutController.getOrder().size());
@@ -556,7 +557,7 @@ public class AddItemTest {
 
 		// Simulates the item being put on the bagging area and lets us scan another
 		// item.
-		checkoutController.baggedItemsValid();
+		stubScale.add(validUnit1);
 
 		// First item is added
 		checkoutController.addItem(databaseItem2);
@@ -565,7 +566,7 @@ public class AddItemTest {
 		total = total.add(databaseItem2.getPrice());
 
 		// Rounds the value to 2 decimal places
-		total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
+		total = total.setScale(2, RoundingMode.HALF_UP);
 
 		// Amount paid is updated
 		checkoutController.addToAmountPaid(BigDecimal.valueOf(50));
@@ -574,7 +575,7 @@ public class AddItemTest {
 		total = total.subtract(BigDecimal.valueOf(50));
 
 		// Rounds the value to 2 decimal places
-		total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
+		total = total.setScale(2, RoundingMode.HALF_UP);
 
 		// Checks that amount to be paid is the total unpaid amount
 		assertEquals(total, checkoutController.getRemainingAmount());
@@ -673,8 +674,8 @@ public class AddItemTest {
 		assertEquals(1, order.get(databaseItem1)[0]);
 		assertEquals(total, checkoutController.getCost());
 
-		// Unblocks the station and lets a new item be scanned
-		checkoutController.baggedItemsValid();
+		// Unblocks the station and lets a new item be scanned by simulating putting an item on scale
+		stubScale.add(validUnit1);
 
 		// Add another of the same item to the order
 		checkoutController.addItem(databaseItem1);

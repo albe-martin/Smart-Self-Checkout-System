@@ -16,6 +16,7 @@ import com.autovend.Coin;
 import com.autovend.Numeral;
 import com.autovend.devices.CoinDispenser;
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.devices.TouchScreen;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
@@ -25,11 +26,14 @@ import com.autovend.software.controllers.ChangeDispenserController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CoinDispenserController;
 import com.autovend.software.controllers.CoinPaymentController;
+import com.autovend.software.controllers.CustomerIOController;
 
 public class CoinPaymentTest {
 	SelfCheckoutStation selfCheckoutStation;
 	CheckoutController checkoutControllerStub;
+	CustomerIOController customerController;
 	CoinPaymentController coinPaymentControllerStub;
+	TouchScreen stubDevice;
 	Currency currency;
 	int[] billDenominations;
 	BigDecimal[] coinDenominations;
@@ -47,6 +51,11 @@ public class CoinPaymentTest {
 		coinPaymentControllerStub = new CoinPaymentController(selfCheckoutStation.coinValidator);
 		coinPaymentControllerStub.setMainController(checkoutControllerStub);
 		checkoutControllerStub.registerController("PaymentController", coinPaymentControllerStub);
+		
+		stubDevice = new TouchScreen(); 
+		
+		customerController = new CustomerIOController(stubDevice);
+		customerController.setMainController(checkoutControllerStub);
 
 		BarcodedProduct barcodedProduct;
 		barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.one), "test item 1",
