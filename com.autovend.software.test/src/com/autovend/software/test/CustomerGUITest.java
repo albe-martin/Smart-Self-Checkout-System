@@ -22,7 +22,8 @@ package com.autovend.software.test;
  import javax.swing.JPanel;
  import javax.swing.JPasswordField;
  import javax.swing.JRadioButton;
- import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import org.junit.After;
@@ -41,6 +42,7 @@ import com.autovend.devices.AbstractDevice;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.controllers.AttendantIOController;
  import com.autovend.software.controllers.AttendantStationController;
  import com.autovend.software.controllers.CheckoutController;
@@ -52,20 +54,23 @@ import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.utils.MiscProductsDatabase.Bag;
 
 
- public class CustomerGUITest {
- 	TouchScreen screen;
- 	boolean enabledEventOccurred = false;
- 	boolean disabledEventOccurred = false;
- 	CustomerIOController cioc;
- 	CustomerStartPaneTest customerPane;
- 	JFrame customerScreen;
-	PLUCodedProduct pluCodedProduct1;
-	BarcodedProduct bcproduct1;
+ @SuppressWarnings("serial")
+public class CustomerGUITest {
+ 	private TouchScreen screen;
+ 	private boolean enabledEventOccurred = false;
+ 	private boolean disabledEventOccurred = false;
+ 	private CustomerIOController cioc;
+ 	private CustomerStartPaneTest customerPane;
+ 	private JFrame customerScreen;
+	private PLUCodedProduct pluCodedProduct1;
+	private BarcodedProduct bcproduct1;
 	
-	public boolean invalidPLUDetected = false;
-	public boolean PLUNotFound = false;
-	public boolean negativeBagNumber = false;
-	public boolean invalidBagNumber = false;
+	private boolean invalidPLUDetected = false;
+	private boolean PLUNotFound = false;
+	private boolean negativeBagNumber = false;
+	private boolean invalidBagNumber = false;
+	private boolean weightDiscrepancy = false;
+	
 	
  	public class CustomerStartPaneTest extends CustomerStartPane {
  		private static final long serialVersionUID = 1L;
@@ -127,6 +132,21 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  				invalidBagNumber = true;
  			}
  		}
+ 		
+ 		@Override
+ 		public void showMessageDialog(JScrollPane scrollPane, String header) {
+ 			productList.setSelectedIndex(0);
+ 		}
+ 		
+ 		@Override
+ 		public void addOwnBagsOptionPane(JPanel panel) {
+ 			finishedAddOwnBagsButton.doClick();
+ 		}
+ 		
+ 		@Override
+ 		public void BaggingWeightProblemDialog(JPanel panel, String header) {
+ 			weightDiscrepancy = true;
+ 		}
  	}
  	@Before
  	public void setup() {
@@ -159,11 +179,17 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  		customerScreen.setSize(800, 800);
  		customerScreen.setUndecorated(false);
  		customerScreen.setResizable(false);
-
+ 		
+ 		SupervisionStation supStation = new SupervisionStation();
+ 		AttendantStationController attendantController = new AttendantStationController(supStation);
+ 		AttendantIOController aioc = new AttendantIOController(screen);
+ 		aioc.setMainAttendantController(attendantController);
+ 		
  		cioc = new CustomerIOController(customerStation.screen);
+ 		CheckoutController checkoutController = new CheckoutController();
+ 		cioc.setMainController(checkoutController);
+ 		checkoutController.setSupervisor(attendantController.getID());
 
- 		CheckoutController controller = new CheckoutController();
- 		cioc.setMainController(controller);
  		customerPane = new CustomerStartPaneTest(cioc);
  		customerScreen.setContentPane(customerPane);
  		
@@ -223,13 +249,13 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
 
  	@Test
- 	public void pressStartButtonTest() {
+ 	public void pressStartButton() {
  		JButton startButton = customerPane.startButton;
  		startButton.doClick();
  	}
  	
  	@Test
- 	public void operationLanguageSelectTest() {
+ 	public void operationLanguageSelect() {
 // 		JButton startButton = customerPane.startButton;
 // 		startButton.doClick();
  		
@@ -247,7 +273,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void transparentPaneTest() {
+ 	public void transparentPane() {
  		customerPane.initializeTransparentPane();
  		JLabel message = customerPane.disabledMessage;
  		String messageText = message.getText();
@@ -256,7 +282,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void operationTransparentPaneTest() {
+ 	public void operationTransparentPane() {
 // 		JButton startButton = customerPane.startButton;
 // 		startButton.doClick();
  		
@@ -272,7 +298,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testRefreshOrderGrid_AddByPLU() {
+ 	public void RefreshOrderGrid_AddByPLU() {
 // 		JButton startButton = customerPane.startButton;
 // 		startButton.doClick();
  		
@@ -299,7 +325,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testRefreshOrderGrid_AddByBarcode() {
+ 	public void RefreshOrderGrid_AddByBarcode() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -322,7 +348,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testRefreshOrderGrid_AddBags() {
+ 	public void RefreshOrderGrid_AddBags() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -346,7 +372,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	
  	
  	@Test
- 	public void testUpdateTotalCost() {
+ 	public void UpdateTotalCost() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -363,7 +389,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testAddItemByPLUCodeButton_ValidPLU() {
+ 	public void AddItemByPLUCodeButton_ValidPLU() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -393,7 +419,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testAddItemByPLUCodeButton_InvalidPLU() {
+ 	public void AddItemByPLUCodeButton_InvalidPLU() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -412,7 +438,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testAddItemByPLUCodeButton_PLUNotFound() {
+ 	public void AddItemByPLUCodeButton_PLUNotFound() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -431,7 +457,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testPurchaseBags() {
+ 	public void PurchaseBags() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -463,7 +489,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testPurchaseBags_numberLessThanZero() {
+ 	public void PurchaseBags_numberLessThanZero() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -482,7 +508,7 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  	}
  	
  	@Test
- 	public void testPurchaseBags_invalidInput() {
+ 	public void PurchaseBags_invalidInput() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
@@ -498,6 +524,76 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  		purchaseBagsEnterButton.doClick();
  		
  		assertTrue(invalidBagNumber);
+ 	}
+ 	
+ 	@Test
+ 	public void MembershipButton() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton enterMembershipNumberButton = cop.enterMembershipNumberButton;
+ 		enterMembershipNumberButton.doClick();
+ 	}
+ 	
+ 	@Test
+ 	public void AddItemByLookup() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton addItemByLookupButton = cop.addItemByLookupButton;
+ 		addItemByLookupButton.doClick();
+ 		cop.refreshOrderGrid();
+ 		
+ 		DefaultTableModel model = cop.model;
+ 		String actualDescription = (String) model.getValueAt(0, 0);
+ 		BigDecimal actualPrice = (BigDecimal) model.getValueAt(0, 1);
+ 		Number actualQuantity = (Number) model.getValueAt(0, 2);
+ 		
+ 		Product selectedProduct = cop.selectedProduct;
+ 		BigDecimal expPrice = selectedProduct.getPrice();
+ 		
+ 		assertEquals(expPrice, actualPrice);
+ 	}
+ 	
+ 	@Test
+ 	public void addOwnBags() {
+		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton purchaseBagsButton = cop.addOwnBagsButton;
+ 		purchaseBagsButton.doClick();
+ 	}
+ 	
+ 	@Test
+ 	public void baggingPrompt() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		
+ 	}
+ 	
+ 	@Test
+ 	public void pay() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton cashButton = cop.cashButton;
+ 		cashButton.doClick();
+ 	}
+ 	
+ 	@Test
+ 	public void BaggingWeightProblem() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		cop.createBaggingWeightProblemPopup();
+ 		assertTrue(weightDiscrepancy);
  	}
 
  	@After

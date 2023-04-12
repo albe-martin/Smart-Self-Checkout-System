@@ -44,8 +44,10 @@ public class CustomerOperationPane extends JPanel {
 
 	public JButton logoutButton;
 	private JTable orderItemsTable;
-	private JLabel amountPaidLabel;
-	public JLabel totalCostLabel;
+
+	public JLabel totalCostLabel, amountPaidLabel;
+
+
 	public JButton languageSelectButton;
 	private JPanel glassPane;
 	private JPanel cashGlassPane;
@@ -68,6 +70,22 @@ public class CustomerOperationPane extends JPanel {
 	public JPanel purchaseBagsPanel;
 	public JTextField bagQuantityTextField;
 	public JButton purchaseBagsEnterButton;
+	
+	public JButton enterMembershipNumberButton;
+	
+	public JButton addItemByLookupButton;
+	public DefaultListModel<String> listModel;
+	public JList<String> productList;
+	public JScrollPane productScrollPane;
+	
+	public Product selectedProduct;
+	
+	public JButton addOwnBagsButton;
+	public JPanel addOwnBagsPanel;
+	public JButton finishedAddOwnBagsButton;
+	
+	public JButton cashButton;
+	
 	
 	public DefaultTableModel model;
 
@@ -282,6 +300,7 @@ public class CustomerOperationPane extends JPanel {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
 
 		// Create a label for the language selection
 		JLabel label = new JLabel("Select a language:");
@@ -515,7 +534,7 @@ public class CustomerOperationPane extends JPanel {
 		allProducts.addAll(PLU_PRODUCT_DATABASE.values());
 
 		// Create a JList to display product descriptions
-		DefaultListModel<String> listModel = new DefaultListModel<>();
+		listModel = new DefaultListModel<>();
 		for (Product product : allProducts) {
 			if (product instanceof BarcodedProduct) {
 				listModel.addElement(((BarcodedProduct) product).getDescription());
@@ -523,23 +542,25 @@ public class CustomerOperationPane extends JPanel {
 				listModel.addElement(((PLUCodedProduct) product).getDescription());
 			}
 		}
-		JList<String> productList = new JList<>(listModel);
+		productList = new JList<>(listModel);
 		productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		// Show a scrollable popup with the list of product descriptions
-		JScrollPane scrollPane = new JScrollPane(productList);
-		JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, "Select a product", JOptionPane.PLAIN_MESSAGE);
+		productScrollPane = new JScrollPane(productList);
+		showMessageDialog (productScrollPane, "Select a product");
+		//JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, "Select a product", JOptionPane.PLAIN_MESSAGE);
 
 		// Get the selected product and add it to the transaction
 		int selectedIndex = productList.getSelectedIndex();
 		if (selectedIndex != -1) {
-			Product selectedProduct = allProducts.get(selectedIndex);
+			selectedProduct = allProducts.get(selectedIndex);
 			cioc.addItemByBrowsing(selectedProduct);
 
 			// Prompt the user to bag the item
 			// JOptionPane.showMessageDialog(null, "Please bag the item", "Bagging", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+
 
 	private void showPurchaseBagsPane() {
 		purchaseBagsPanel = new JPanel(new GridBagLayout());
@@ -596,20 +617,20 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void showAddOwnBagsPane() {
-		JPanel panel = new JPanel(new GridBagLayout());
+		addOwnBagsPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please add your own bags to the bagging area, and press \"Finished\" when you are done."), gbc);
+		addOwnBagsPanel.add(new JLabel("Please add your own bags to the bagging area, and press \"Finished\" when you are done."), gbc);
 
-		JButton finishedButton = new JButton("Finished");
-		finishedButton.addActionListener(new ActionListener() {
+		finishedAddOwnBagsButton = new JButton("Finished");
+		finishedAddOwnBagsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cioc.notifyAttendantBagsAdded();
 
-				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+				Window window1 = SwingUtilities.getWindowAncestor(finishedAddOwnBagsButton);
 				if (window1 != null) {
 					window1.dispose();
 				}
@@ -619,11 +640,27 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 2;
-		panel.add(finishedButton, gbc);
+		addOwnBagsPanel.add(finishedAddOwnBagsButton, gbc);
+		
+		addOwnBagsOptionPane(addOwnBagsPanel);
 
+//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Add Own Bags");
+
+//		dialog.addWindowListener(new WindowAdapter() {
+//			@Override
+//			public void windowClosing(WindowEvent e) {
+//				// Code to run when the JOptionPane is closed
+//				cioc.cancelAddOwnBags();
+//			}
+//		});
+//
+//		dialog.setVisible(true);
+	}
+
+	public void addOwnBagsOptionPane(JPanel panel) {
 		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
 		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Add Own Bags");
-
 		dialog.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -774,7 +811,12 @@ public class CustomerOperationPane extends JPanel {
 		panel.add(label);
 		
 		// Show pop-up.
-		optionDialogPopup(panel, Language.translate(language, "Bagging Area Weight Discrepancy"));
+		BaggingWeightProblemDialog(panel, "Bagging Area Weight Discrepancy");
+		//optionDialogPopup(panel, Language.translate(language, "Bagging Area Weight Discrepancy"));
+	}
+	
+	public void BaggingWeightProblemDialog(JPanel panel, String header) {
+		optionDialogPopup(panel, Language.translate(language, header));
 	}
 
 	/**
