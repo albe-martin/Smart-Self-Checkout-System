@@ -355,6 +355,11 @@ public class CheckoutController {
 			} catch (IndexOutOfBoundsException e) {
 				weight = 0;
 			}
+
+			if (weight <= 0) {
+				return;
+			}
+
 			// adding the recorded weight on the current scale to the current item
 			// information
 			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).add(BigDecimal.valueOf(weight));
