@@ -676,5 +676,6 @@ public class CustomerOperationPane extends JPanel {
 	
 	public void notifyItemAdded() {
 		refreshOrderGrid();
+		showPlaceInBaggingAreaPane();
 	}
 }
