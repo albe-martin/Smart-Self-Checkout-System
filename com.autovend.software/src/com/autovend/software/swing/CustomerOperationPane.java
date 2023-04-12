@@ -15,20 +15,38 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.CardReaderControllerState;
+
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CheckoutController.completePaymentErrorEnum;
+
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.utils.MiscProductsDatabase;
 
@@ -46,11 +64,10 @@ public class CustomerOperationPane extends JPanel {
 
 	public JButton logoutButton;
 	private JTable orderItemsTable;
-	private JLabel totalCostLabel;
-	public JLabel amountPaidLabel;
+	private JLabel totalCostLabel, amountPaidLabel;
 	public JButton languageSelectButton;
-	private JPanel cashGlassPane;
 	private JPanel glassPane;
+
 	private JPanel baggingGlassPane;
 	public ButtonGroup group;
 	public JLabel disabledMessage;
@@ -81,8 +98,6 @@ public class CustomerOperationPane extends JPanel {
 		
 		// Create pane for bagging prompt
 		initializeBaggingPromptGlassPane();
-
-		initializeCashPromptGlassPane();
 
 		initializeHeader();
 
@@ -115,7 +130,7 @@ public class CustomerOperationPane extends JPanel {
 
 		// initializeExitButton();
 
-		// refreshOrderGrid();
+		refreshOrderGrid();
 
 	}
 
@@ -161,20 +176,17 @@ public class CustomerOperationPane extends JPanel {
 		model.setRowCount(0);
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
-		System.out.println("\n\n" + orderItems.entrySet());
-		System.out.println(orderItems.keySet());
+
+//		System.out.println("\n\n" + orderItems.entrySet());
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
-			System.out.println(product.getPrice());
 			if (product instanceof PLUCodedProduct pluProduct) {
 				updateGrid(model, entry, pluProduct.getDescription());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
 				updateGrid(model, entry, barcodeProduct.getDescription());
+			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
+				updateGrid(model, entry, "bag(s)");
 			}
-//			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
-//				updateGrid(model, entry, "bag(s)", bagProduct.getPrice());
-//			}
-
 		}
 
 		// todo: actually get the right bag number and not reading the console??? (???) ((???))
@@ -195,9 +207,8 @@ public class CustomerOperationPane extends JPanel {
 	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description) {
 		Number[] quantities = entry.getValue();
 		Number quantity = quantities[0];
-		String formattedPrice = String.format("%.2f", quantities[1].doubleValue());
 
-		model.addRow(new Object[]{description, formattedPrice, quantity});
+		model.addRow(new Object[]{description, quantities[1], quantity});
 
 //		for (int i = 0; i < quantities.length; i++) {
 //			int quantity = quantities[i].intValue();
@@ -223,10 +234,7 @@ public class CustomerOperationPane extends JPanel {
 //			totalCost = totalCost.add(itemPrice);
 //		}
 
-		//totalCostLabel.setText("Total Cost: $%.2f" + (cioc.getMainController().getCost().toString()));
-		System.out.println("cost: " + cioc.getMainController().getCost());
-		System.out.println(cioc.getCart());
-		totalCostLabel.setText(String.format("Total Cost: $%,.2f", cioc.getMainController().getCost().doubleValue()));
+		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
 	private void initializeAmountPaidLabel() {
@@ -236,9 +244,9 @@ public class CustomerOperationPane extends JPanel {
 		amountPaidLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		add(amountPaidLabel);
 	}
-    
-	public void updateAmountPaid() {
-		amountPaidLabel.setText(String.format("Amount Due: $%,.2f", cioc.getMainController().getRemainingAmount().doubleValue()));
+
+	private void updateAmountPaid() {
+		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())));
 	}
 
 	private void initializeEnterMembershipNumberButton() {
@@ -309,32 +317,42 @@ public class CustomerOperationPane extends JPanel {
 		cashButton.setBounds(490, 351, 173, 60);
 		add(cashButton);
 	}
-
-	public void showPaymentErrorPane(completePaymentErrorEnum e) {
+	public void showPayWithCashPane() {
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		
-		switch (e) {
-		case DUE:
-			panel.add(new JLabel("You have not paid enough!"), gbc);
-			break;
-		case EMPTYORDER:
-			panel.add(new JLabel("Your order is empty."), gbc);
-			break;
-		case CHANGE:
-			panel.add(new JLabel("Change is being dispensed..."), gbc);
-			break;
-		case RECEIPT:
-			panel.add(new JLabel("Payment complete; receipt has been printed. Thank you for shopping with us!"), gbc);
-			break;
-		default:
-			panel.add(new JLabel("Something went wrong..."), gbc);
-			break;
-		}
+		panel.add(new JLabel("Please insert cash into the machine."), gbc);
+
+		JButton finishedButton = new JButton("Finished");
+		finishedButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+				if (window1 != null) {
+					window1.dispose();
+				}
+			}
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		panel.add(finishedButton, gbc);
+
+		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
+
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Code to run when the JOptionPane is closed
+			}
+		});
+
+		dialog.setVisible(true);
+	}
 
 		JButton finishedButton = new JButton("OK");
 		finishedButton.addActionListener(new ActionListener() {
@@ -493,7 +511,7 @@ public class CustomerOperationPane extends JPanel {
 				//System.out.println("2" + cioc.getCart());
 
 				if (itemAddedSuccessfully) {
-					// refreshOrderGrid();
+					refreshOrderGrid();
 
 					Window window = SwingUtilities.getWindowAncestor(enterButton);
 					if (window != null) {
@@ -581,7 +599,7 @@ public class CustomerOperationPane extends JPanel {
 						cioc.purchaseBags(bagQuantity);
 
 						// Update the order grid to display the bags.
-						// refreshOrderGrid();
+						refreshOrderGrid();
 
 						//System.out.println("here");
 
@@ -624,8 +642,6 @@ public class CustomerOperationPane extends JPanel {
 				if (window1 != null) {
 					window1.dispose();
 				}
-
-				refreshOrderGrid();
 			}
 		});
 
@@ -657,7 +673,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 	
 	public void notifyItemAdded() {
-		// refreshOrderGrid();
+		refreshOrderGrid();
 
 		baggingGlassPane.setVisible(true);
 	}
@@ -697,6 +713,7 @@ public class CustomerOperationPane extends JPanel {
 		add(cashGlassPane);
 
 	}
+
 	
 	public void initializeBaggingPromptGlassPane() {
 		baggingGlassPane = new JPanel(new GridBagLayout()) {
@@ -745,9 +762,9 @@ public class CustomerOperationPane extends JPanel {
 				if (cioc.isItemBagged()) {
 					// Close pane
 					baggingGlassPane.setVisible(false);
-					refreshOrderGrid();
 				} else {
 					createBaggingWeightProblemPopup();
+
 				}
 			}
 		});
@@ -775,7 +792,6 @@ public class CustomerOperationPane extends JPanel {
 	
 	/**
 	 * Creates a pop-up indicating that the bagging area weight is incorrect.
-	 * 			CheckoutController to add an item to. (When trying again).
 	 */
 	public void createBaggingWeightProblemPopup() {
 		// Create panel for the pop-up.

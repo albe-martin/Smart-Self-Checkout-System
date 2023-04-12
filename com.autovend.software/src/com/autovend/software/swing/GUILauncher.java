@@ -75,7 +75,7 @@ public class GUILauncher {
 		asc.registerController(aioc);
 		
 		// Add valid username and password.
-		asc.registerUser("abc", "123");
+		asc.registerUser("a", "a");
 		
 		attendantScreen.setVisible(true);
 		
@@ -84,7 +84,7 @@ public class GUILauncher {
 		ArrayList<CustomerIOController> ciocs = new ArrayList<>();
 		for (int i = 0; i < num_stations; i++) {
 			SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
-					new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+					new int[] {5}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
 			
 			// Get and set up screen
 			JFrame customerScreen = customerStation.screen.getFrame();
@@ -123,21 +123,19 @@ public class GUILauncher {
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
 
 		// Need scale set when added
-		PLUCodedProduct pluCodedProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four), "apple" , BigDecimal.valueOf(0.75));
-		PLUCodedProduct pluCodedProduct2 = new PLUCodedProduct(new PriceLookUpCode(Numeral.four, Numeral.three, Numeral.two, Numeral.one), "banana" , BigDecimal.valueOf(1.25));
-		PLUCodedProduct pluCodedProduct3 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.one, Numeral.one, Numeral.one), "bunch of jabuticaba" , BigDecimal.valueOf(4.5));
+		PLUCodedProduct pluCodedProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four), "apple" , BigDecimal.valueOf(1.00));
+		PLUCodedProduct pluCodedProduct2 = new PLUCodedProduct(new PriceLookUpCode(Numeral.four, Numeral.three, Numeral.two, Numeral.one), "banana" , BigDecimal.valueOf(0.75));
+		PLUCodedProduct pluCodedProduct3 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.one, Numeral.one, Numeral.one), "bunch of jabuticaba" , BigDecimal.valueOf(15.00));
 
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct1.getPLUCode(), pluCodedProduct1);
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct2.getPLUCode(), pluCodedProduct2);
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
 		
 		// Run customer event simulators.
-		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController());
+		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController().checkoutStation);
 		customerEventSimulatorFrame.setVisible(true);
 		customerEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		CustomerEventSimulator customerEventSimulatorFrame2 = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(1).getMainController());
-		customerEventSimulatorFrame2.setVisible(true);
-		customerEventSimulatorFrame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 		
 		// Run attendant event simulator.
 		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0).getMainController(), ciocs.get(1).getMainController());

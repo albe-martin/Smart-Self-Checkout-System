@@ -14,14 +14,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import com.autovend.Barcode;
-import com.autovend.Bill;
-import com.autovend.Coin;
-import com.autovend.Numeral;
-import com.autovend.devices.DisabledException;
+
+import com.autovend.*;
 import com.autovend.devices.OverloadException;
+import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
+import com.autovend.products.PLUCodedProduct;
 import com.autovend.software.controllers.BaggingScaleController;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
@@ -33,28 +32,24 @@ public class CustomerEventSimulator extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-	public CustomerIOController cioc;
 
 
-	public CustomerEventSimulator(JFrame attendantFrame, CheckoutController checkout) {
+	public CustomerEventSimulator(JFrame attendantFrame, SelfCheckoutStation checkout) {
 
-
-		for (DeviceController<?, ?> controller : checkout.getControllersByType("CustomerIOController")) {
-    		cioc = (CustomerIOController) controller;
-    	}
-		
 		// Create sample items
 		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.seven), "toy car",
-				BigDecimal.valueOf(83.29), 3.0);
+				BigDecimal.valueOf(20.25), 3.0);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
 		
-		BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.eight), "lamp",
-				BigDecimal.valueOf(50.29), 10.0);
-		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
-		
-		
-		
-        setTitle("Customer #" + checkout.getID() + " Event Simulator");
+		//BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.eight), "lamp",
+		//		BigDecimal.valueOf(10.50), 10.0);
+		//ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
+
+        final int[] numbAdded = {0};
+        final SellableUnit[] latestUnit = {null};
+
+
+        setTitle("Customer # 1 Event Simulator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setBounds(100, 100, 600, 400);
@@ -74,13 +69,11 @@ public class CustomerEventSimulator extends JFrame {
         JButton scanItem = new JButton("Scan Item #1");
         scanItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	for (DeviceController<?, ?> controller : checkout.getControllersByType("ItemAdderController")) {
-            		if (controller instanceof BarcodeScannerController barcodeScanner) {
-            			barcodeScanner.reactToBarcodeScannedEvent(barcodeScanner.getDevice(), bcproduct1.getBarcode());
-            		}
-            	}
-            	
-           }
+                BarcodedUnit bcItem1 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.seven), 3.0);
+                checkout.mainScanner.scan(bcItem1);
+                latestUnit[0] =bcItem1;
+                numbAdded[0]=1;
+            }
         });
         GridBagConstraints gbcScan = new GridBagConstraints();
         gbcScan.fill = GridBagConstraints.BOTH;
@@ -91,20 +84,11 @@ public class CustomerEventSimulator extends JFrame {
         JButton scanItem2 = new JButton("Scan Item #2");
         scanItem2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	for (DeviceController<?, ?> controller : checkout.getControllersByType("ItemAdderController")) {
-            		if (controller instanceof BarcodeScannerController barcodeScanner) {
-            			barcodeScanner.reactToBarcodeScannedEvent(barcodeScanner.getDevice(), bcproduct2.getBarcode());
-            		}
-            	}
-            	// Clear weighting scale weight
-            	for (DeviceController<?, ?> controller : checkout.getControllersByType("ScanningScaleController")) {
-	        		if (controller instanceof ScanningScaleController ssc) {
-	        			double expWeight = ssc.getCurrentWeight();
-	        			ssc.reactToWeightChangedEvent(ssc.getDevice(), 0);
-	        		}
-	        	}
-            	
-           }
+                BarcodedUnit bcItem2 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.eight), 10.0);
+                checkout.mainScanner.scan(bcItem2);
+                latestUnit[0] = bcItem2;
+                numbAdded[0]=1;
+            }
         });
         GridBagConstraints gbcScan2 = new GridBagConstraints();
         gbcScan2.fill = GridBagConstraints.BOTH;
@@ -115,13 +99,18 @@ public class CustomerEventSimulator extends JFrame {
         JButton addWeight = new JButton("Add item to bagging area");
         addWeight.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-	        	for (DeviceController<?, ?> controller : checkout.getControllersByType("BaggingAreaController")) {
-	        		if (controller instanceof BaggingScaleController bsc) {
-	        			double expWeight = bsc.getExpectedWeight();
-	        			bsc.reactToWeightChangedEvent(bsc.getDevice(), expWeight);
-	        		}
-	        	}
-           }
+                try {
+                    if (checkout.scale.getCurrentWeight()>0) {
+                        checkout.scale.remove(latestUnit[0]);
+                    }
+                } catch (OverloadException ex) {
+
+                }
+                checkout.baggingArea.add(latestUnit[0]);
+                latestUnit[0] = null;
+                numbAdded[0]=0;
+
+            }
         });
         GridBagConstraints gbcaddWeight = new GridBagConstraints();
         gbcaddWeight.fill = GridBagConstraints.BOTH;
@@ -132,12 +121,15 @@ public class CustomerEventSimulator extends JFrame {
         JButton addItemToBaggingArea = new JButton("Add Weight To Weighing Scale");
         addItemToBaggingArea.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-	        	for (DeviceController<?, ?> controller : checkout.getControllersByType("ScanningScaleController")) {
-	        		if (controller instanceof ScanningScaleController ssc) {
-	        			ssc.reactToWeightChangedEvent(ssc.getDevice(), 1);
-	        		}
-	        	}
-           }
+                System.out.println();
+                if (numbAdded[0]>0) {
+                    checkout.scale.remove(latestUnit[0]);
+                }
+                numbAdded[0]++;
+                PriceLookUpCodedUnit pluItem1 = new PriceLookUpCodedUnit(new PriceLookUpCode(Numeral.one,Numeral.three,Numeral.three,Numeral.four),20.0*numbAdded[0]);
+                latestUnit[0]=pluItem1;
+                checkout.scale.add(latestUnit[0]);
+            }
         });
         GridBagConstraints gbcAddItemToBaggingArea = new GridBagConstraints();
         gbcAddItemToBaggingArea.fill = GridBagConstraints.BOTH;
@@ -158,40 +150,21 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(scanMembership, gbcMembership);
         
         
-        JButton inputBill = new JButton("Input 1$ Bill");
-        inputBill.addActionListener(new ActionListener() {
+        JButton input5Bill = new JButton("Input 5$ Bill");
+        input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-//        	checkout.checkoutStation.billInput.removeDanglingBill();
-        	try {
-        		checkout.checkoutStation.billInput.accept(new Bill(1, Currency.getInstance(Locale.CANADA)));
-			} catch (DisabledException | OverloadException e1) {
-				e1.printStackTrace();
-			}
-        	((CustomerOperationPane)(checkout.checkoutStation.screen.getFrame().getContentPane())).updateAmountPaid();;
-           }
+            try {
+                checkout.billInput.accept(new Bill(5, Currency.getInstance(Locale.CANADA)));
+            } catch (OverloadException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        }
         });
-        GridBagConstraints gbcInputBill = new GridBagConstraints();
-        gbcInputBill.fill = GridBagConstraints.BOTH;
-        gbcInputBill.gridx = 0;
-        gbcInputBill.gridy = 3;
-        contentPane.add(inputBill, gbcInputBill);  
-        
-        
-        JButton inputCoin = new JButton("Input 0.25$ Coin");
-        inputCoin.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-        	try {
-        		checkout.checkoutStation.coinSlot.accept(new Coin(BigDecimal.valueOf(0.25), Currency.getInstance(Locale.CANADA)));
-			} catch (DisabledException e1) {
-				e1.printStackTrace();
-			}
-        	((CustomerOperationPane)(checkout.checkoutStation.screen.getFrame().getContentPane())).updateAmountPaid();;
-           }
-        });
-        GridBagConstraints gbcInputCoin = new GridBagConstraints();
-        gbcInputCoin.fill = GridBagConstraints.BOTH;
-        gbcInputCoin.gridx = 1;
-        gbcInputCoin.gridy = 3;
-        contentPane.add(inputCoin, gbcInputCoin);  
+        GridBagConstraints gbcInput5Bill = new GridBagConstraints();
+        gbcInput5Bill.fill = GridBagConstraints.BOTH;
+        gbcInput5Bill.gridx = 0;
+        gbcInput5Bill.gridy = 3;
+        contentPane.add(input5Bill, gbcInput5Bill);  
     }
 }

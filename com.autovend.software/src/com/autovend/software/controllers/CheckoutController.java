@@ -415,7 +415,9 @@ public class CheckoutController {
 				break;
 			}
 		}
-		baggingItemLock = unlockStation;
+		baggingItemLock = !unlockStation;
+		System.out.println(unlockStation);
+		System.out.println("Your a moron Arie");
 	}
 
 	void baggedItemsInvalid() {
