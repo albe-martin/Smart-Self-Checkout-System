@@ -62,7 +62,7 @@ public class CustomerOperationPane extends JPanel {
 	public JButton logoutButton;
 	private JTable orderItemsTable;
 	private JLabel totalCostLabel;
-	private JButton languageSelectButton;
+	public JButton languageSelectButton;
 	private JPanel glassPane;
 
 	/**
@@ -374,8 +374,8 @@ public class CustomerOperationPane extends JPanel {
 
 	private void initializeLanguageSelectButton() {
 
-		JButton selectLanguageButton = new JButton("Select Language");
-		selectLanguageButton.addActionListener(new ActionListener() {
+		languageSelectButton = new JButton("Select Language");
+		languageSelectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -423,8 +423,8 @@ public class CustomerOperationPane extends JPanel {
 				}
 			}
 		});
-		selectLanguageButton.setBounds(589, 663, 173, 76);
-		add(selectLanguageButton);
+		languageSelectButton.setBounds(589, 663, 173, 76);
+		add(languageSelectButton);
 	}
 
 	private void initializeTransparentPane() {
