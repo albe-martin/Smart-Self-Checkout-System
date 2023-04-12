@@ -20,7 +20,10 @@ package com.autovend.software.test;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
+import com.autovend.software.controllers.AttendantIOController;
+import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.ReceiptPrinterController;
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +33,7 @@ import com.autovend.Barcode;
 import com.autovend.Numeral;
 import com.autovend.devices.OverloadException;
 import com.autovend.devices.ReceiptPrinter;
+import com.autovend.devices.TouchScreen;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
@@ -41,10 +45,17 @@ public class TestPrintReceipt {
 	ReceiptPrinterController testReceiptPrinterController;
 	CheckoutController checkoutController;
 
+	private AttendantIOController attendantController;
+	private AttendantStationController stationController;
+	private CustomerIOController customerController;
+
 	BarcodedProduct testItem1;
 	BarcodedProduct testItem2;
 	BarcodedProduct testItem3;
 	BarcodedProduct testItem4;
+
+	StringBuilder receipt;
+	TouchScreen stubDevice;
 
 	LinkedHashMap<Product, Number[]> order;
 	BigDecimal totalCost;
@@ -56,10 +67,23 @@ public class TestPrintReceipt {
 	public void setup() {
 		// Create a test receipt printer and its controllers
 		testPrinter = new ReceiptPrinter();
-		testReceiptPrinterController = new ReceiptPrinterController(testPrinter);
 		checkoutController = new CheckoutController();
+		testReceiptPrinterController = new ReceiptPrinterController(testPrinter);
+		stationController = new AttendantStationController();
+		stubDevice = new TouchScreen();
+		receipt = new StringBuilder();
+		
+			
 		checkoutController.registerController("ReceiptPrinterController", testReceiptPrinterController);
 		testReceiptPrinterController.setMainController(checkoutController);
+		attendantController = new AttendantIOController(stubDevice);
+		attendantController.setMainAttendantController(stationController);
+		checkoutController.registerController("AttendantIOController", attendantController);
+		customerController = new CustomerIOController(stubDevice);
+		customerController.setMainController(checkoutController);
+
+
+		
 
 		// Create 3 test items
 		testItem1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1",
@@ -87,6 +111,7 @@ public class TestPrintReceipt {
 	public void teardown() {
 		// Readability
 		System.out.println();
+		receipt = null;
 	}
 
 	/**
@@ -116,10 +141,10 @@ public class TestPrintReceipt {
 			testPrinter.addPaper(1000);
 
 			// Call printReceipt()
-			testReceiptPrinterController.printReceipt(order, totalCost);
-
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
 			// Cut the paper to finalize the output string
-			testPrinter.cutPaper();
 			String result = testPrinter.removeReceipt();
 			assertEquals(expectedOutput, result);
 		} catch (Exception ex) {
@@ -145,7 +170,9 @@ public class TestPrintReceipt {
 			// Add ink into printer
 			testPrinter.addInk(5);
 			// Call printReceipt()
-			testReceiptPrinterController.printReceipt(order, totalCost);
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
 		} catch (OverloadException ex) {
 			fail("Overload Exception Unexpectedly Thrown");
 		}
@@ -170,7 +197,9 @@ public class TestPrintReceipt {
 			// Add ink into printer
 			testPrinter.addPaper(5);
 			// Call printReceipt()
-			testReceiptPrinterController.printReceipt(order, totalCost);
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
 		} catch (OverloadException ex) {
 			fail("Overload Exception Unexpectedly Thrown");
 		}
@@ -201,8 +230,9 @@ public class TestPrintReceipt {
 			testPrinter.addPaper(1000);
 
 			// Call printReceipt()
-			testReceiptPrinterController.printReceipt(order, totalCost);
-			testPrinter.cutPaper();
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
 			String result = testPrinter.removeReceipt();
 			assertEquals(expectedOutput, result);
 		} catch (Exception ex) {
@@ -318,7 +348,7 @@ public class TestPrintReceipt {
 		int initialInk = testReceiptPrinterController.estimatedInk;
 		testReceiptPrinterController.addedInk(1000);
 		assertEquals(initialInk + 1000, testReceiptPrinterController.estimatedInk);
-		assertFalse(testReceiptPrinterController.inkLow);
+		assertEquals(false, testReceiptPrinterController.inkLow);
 	}
 
 	@Test
