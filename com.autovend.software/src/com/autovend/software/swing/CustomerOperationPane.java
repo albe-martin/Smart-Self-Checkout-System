@@ -764,4 +764,8 @@ public class CustomerOperationPane extends JPanel {
 	public void notifyNoBagApproved() {
 		baggingGlassPane.setVisible(false);
 	}
+	
+	public void notifyItemRemoved() {
+		refreshOrderGrid();
+	}
 }

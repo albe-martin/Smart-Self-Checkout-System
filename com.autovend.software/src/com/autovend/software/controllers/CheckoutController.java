@@ -682,6 +682,9 @@ public class CheckoutController {
 			for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 				((BaggingAreaController) baggingController).updateExpectedBaggingArea(item, weight, false);
 			}
+			for (DeviceController cioc : registeredControllers.get("CustomerIOController")) {
+				((CustomerIOController) cioc).notifyItemRemoved();
+			}
 
 		}
 	}

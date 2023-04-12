@@ -367,4 +367,10 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyNoBagApproved();
     	}
     }
+    
+    void notifyItemRemoved() {
+    	if (getMainController().isInUse()) {
+    		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyItemRemoved();
+    	}
+    }
 }
