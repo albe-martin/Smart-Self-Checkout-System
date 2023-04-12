@@ -336,6 +336,11 @@ public class CoinPaymentTest {
 		AttendantStationController attendant = new AttendantStationController();
 		AttendantIOController attendantIO = new AttendantIOController(selfCheckoutStation.screen);
 		attendantIO.setMainAttendantController(attendant);
+		attendant.registerUser("test", "test");
+
+
+		attendantIO.login("test", "test");
+
 		checkoutControllerStub.registerController("AttendantIOController", attendantIO);
 		checkoutControllerStub.completePayment();
 	}
@@ -366,7 +371,18 @@ public class CoinPaymentTest {
 		AttendantStationController attendant = new AttendantStationController();
 		AttendantIOController attendantIO = new AttendantIOController(selfCheckoutStation.screen);
 		attendantIO.setMainAttendantController(attendant);
+
+
+
+
 		checkoutControllerStub.registerController("AttendantIOController", attendantIO);
+
+
+
+		attendant.registerUser("test", "test");
+
+
+		attendantIO.login("test", "test");
 		checkoutControllerStub.changeDenomLow(coinController, new BigDecimal(1));
 		checkoutControllerStub.completePayment();
 	}

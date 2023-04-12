@@ -64,7 +64,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
             this.getMainController().addItem(product);
             return true;
         } else {
-            System.out.println("Product not in database");
+            // System.out.println("Product not in database");
 
             //stuff to the scale first before they do stuff for the PLU code
             return false;
@@ -354,5 +354,23 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyItemAdded();
     	}
     }
-
+    
+    /**
+     * Check if bagging area matches expected weight.
+     */
+    public boolean isItemBagged() {
+    	return !getMainController().baggingItemLock;
+    }
+    
+    void notifyNoBagApproved() {
+    	if (getMainController().isInUse()) {
+    		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyNoBagApproved();
+    	}
+    }
+    
+    void notifyItemRemoved() {
+    	if (getMainController().isInUse()) {
+    		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyItemRemoved();
+    	}
+    }
 }

@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -47,6 +48,7 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.CardReaderControllerState;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.utils.MiscProductsDatabase;
 
@@ -64,8 +66,11 @@ public class CustomerOperationPane extends JPanel {
 	private JLabel totalCostLabel;
 	public JButton languageSelectButton;
 	private JPanel glassPane;
+
+	private JPanel baggingGlassPane;
 	public ButtonGroup group;
 	public JLabel disabledMessage;
+
 
 	/**
 	 * TODO: Delete for final submission.
@@ -111,6 +116,9 @@ public class CustomerOperationPane extends JPanel {
 		initializeTransparentPane();
 
 		this.add(glassPane);
+		
+		// Create pane for bagging prompt
+		initializeBaggingPromptGlassPane();
 
 		initializeHeader();
 
@@ -194,10 +202,8 @@ public class CustomerOperationPane extends JPanel {
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
 //		System.out.println("\n\n" + orderItems.entrySet());
-		System.out.println(cioc.getMainController().getOrder());
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
-			System.out.println("refresh loop product: " + product);
 			if (product instanceof PLUCodedProduct pluProduct) {
 				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
@@ -226,8 +232,6 @@ public class CustomerOperationPane extends JPanel {
 	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
 		Number[] quantities = entry.getValue();
 		Number quantity = quantities[0];
-//		System.out.println(description);
-//		System.out.println(Arrays.toString(quantities));
 
 		model.addRow(new Object[]{description, price, quantity});
 
@@ -255,7 +259,6 @@ public class CustomerOperationPane extends JPanel {
 //			totalCost = totalCost.add(itemPrice);
 //		}
 
-		//System.out.println(cioc.getCart());
 		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
@@ -320,11 +323,50 @@ public class CustomerOperationPane extends JPanel {
 		JButton cashButton = new JButton("Pay with Cash");
 		cashButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO: pay with cash
+				showPayWithCashPane();
 			}
 		});
 		cashButton.setBounds(490, 351, 173, 60);
 		add(cashButton);
+	}
+
+	public void showPayWithCashPane() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(new JLabel("Please insert cash into the machine."), gbc);
+
+		JButton finishedButton = new JButton("Finished");
+		finishedButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO: figure out what to do here
+
+				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+				if (window1 != null) {
+					window1.dispose();
+				}
+			}
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		panel.add(finishedButton, gbc);
+
+		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
+
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Code to run when the JOptionPane is closed
+			}
+		});
+
+		dialog.setVisible(true);
 	}
 
 	private void initializeCreditButton() {
@@ -492,9 +534,7 @@ public class CustomerOperationPane extends JPanel {
 				//System.out.println("2" + cioc.getCart());
 
 				if (itemAddedSuccessfully) {
-					//System.out.println("ehre");
 					refreshOrderGrid();
-					//System.out.println("aawdawd");
 
 					Window window = SwingUtilities.getWindowAncestor(enterButton);
 					if (window != null) {
@@ -502,7 +542,7 @@ public class CustomerOperationPane extends JPanel {
 					}
 
 					// cioc.promptAddItemToBaggingArea();
-					showPlaceInBaggingAreaPane();
+					baggingGlassPane.setVisible(true);
 				} else {
 					JOptionPane.showMessageDialog(null, "That item was not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -601,71 +641,12 @@ public class CustomerOperationPane extends JPanel {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// Code to run when the JOptionPane is closed
-				System.out.println("JOptionPane closed");
 				cioc.cancelAddOwnBags();
 			}
 		});
 
 		dialog.setVisible(true);
 	}
-
-	public void showPlaceInBaggingAreaPane() {
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please add that item to the bagging area."), gbc);
-
-		JButton finishedButton = new JButton("Finished");
-		finishedButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.itemWasAddedToTheBaggingArea();
-
-				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
-				if (window1 != null) {
-					window1.dispose();
-				}
-			}
-		});
-
-		JButton doNotBagButton = new JButton("Do not bag this item");
-		doNotBagButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// System.out.println("Do not bag this item pressed");
-				cioc.selectDoNotBag();
-
-				Window window1 = SwingUtilities.getWindowAncestor(doNotBagButton);
-				if (window1 != null) {
-					window1.dispose();
-				}
-			}
-		});
-
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		panel.add(finishedButton, gbc);
-
-		gbc.gridx = 1;
-		panel.add(doNotBagButton, gbc);
-
-		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Place Item In Bagging Area");
-
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// Code to run when the JOptionPane is closed
-				System.out.println("JOptionPane closed");
-				cioc.cancelAddOwnBags();
-			}
-		});
-
-		dialog.setVisible(true);
-	}
-
 
 	public void enableStation() {
 		glassPane.setVisible(false);
@@ -677,7 +658,118 @@ public class CustomerOperationPane extends JPanel {
 	
 	public void notifyItemAdded() {
 		refreshOrderGrid();
-		showPlaceInBaggingAreaPane();
+
+		baggingGlassPane.setVisible(true);
+	}
+	
+	public void initializeBaggingPromptGlassPane() {
+		baggingGlassPane = new JPanel(new GridBagLayout()) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				g.setColor(new Color(0, 0, 0, 0)); // transparent
+				g.fillRect(0, 0, getWidth(), getHeight());
+				super.paintComponent(g);
+			}
+		};
+		baggingGlassPane.setOpaque(false);
+		baggingGlassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
+		baggingGlassPane.setVisible(false);
+
+		// Make the glass pane "absorb" the mouse events, so that nothing behind it (the buttons) can be clicked while it is displayed
+		baggingGlassPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				e.consume();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				e.consume();
+			}
+		});
+		
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(new JLabel("Please add that item to the bagging area."), gbc);
+
+		JButton finishedButton = new JButton("Finished");
+		finishedButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Check if item was bagged
+				if (cioc.isItemBagged()) {
+					// Close pane
+					baggingGlassPane.setVisible(false);
+				} else {
+					createBaggingWeightProblemPopup();
+				}
+			}
+		});
+
+		JButton doNotBagButton = new JButton("Do not bag this item");
+		doNotBagButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// System.out.println("Do not bag this item pressed");
+				cioc.selectDoNotBag();
+			}
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		panel.add(finishedButton, gbc);
+
+		gbc.gridx = 1;
+		panel.add(doNotBagButton, gbc);
+		
+		panel.setBackground(new Color(227, 241, 241, 255)); // light blue
+		baggingGlassPane.add(panel);
+		add(baggingGlassPane);
+	}
+	
+	/**
+	 * Creates a pop-up indicating that the bagging area weight is incorrect.
+	 * 
+	 * @param checkout
+	 * 			CheckoutController to add an item to. (When trying again).
+	 */
+	public void createBaggingWeightProblemPopup() {
+		// Create panel for the pop-up.
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		// Create a label indicating no items found.
+		JLabel label = new JLabel(Language.translate(language, "The bagging area weight does not match!"));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(label);
+		
+		// Show pop-up.
+		optionDialogPopup(panel, Language.translate(language, "Bagging Area Weight Discrepancy"));
+	}
+	
+	/**
+	 * Simple pop-up.
+	 */
+	public int optionDialogPopup(JPanel panel, String header) {
+		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, header, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+	}
+	
+	public void notifyNoBagApproved() {
+		baggingGlassPane.setVisible(false);
+	}
+	
+	public void notifyItemRemoved() {
+		refreshOrderGrid();
 	}
 	
 	public int showPopup(JPanel panel, String header) {

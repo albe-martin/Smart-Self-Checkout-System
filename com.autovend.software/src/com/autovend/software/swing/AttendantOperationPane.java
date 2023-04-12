@@ -69,35 +69,6 @@ public class AttendantOperationPane extends JPanel {
     public ButtonGroup group;
     public JTextField searchField;
     public JButton button;
-
-
-//	/**
-//	 * TODO: Delete for final submission.
-//	 * 
-//	 * Quick GUI Launcher. Used to allow window builder to work.
-//	 */
-//	public static void main(String[] args) {
-//		// Create attendant station.
-//		SupervisionStation attendantStation = new SupervisionStation();
-//		
-//		// Get and set up screen
-//		JFrame attendantScreen = attendantStation.screen.getFrame();
-//		attendantScreen.setExtendedState(0);
-//		attendantScreen.setSize(800, 800);
-//		attendantScreen.setUndecorated(false);
-//		attendantScreen.setResizable(false);
-//		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
-//		attendantScreen.setContentPane(new AttendantOperationPane(aioc));
-//		
-//		AttendantStationController asc = new AttendantStationController();
-//		aioc.setMainAttendantController(asc);
-//		asc.registerController(aioc);
-//		
-//		// Add valid username and password.
-//		asc.registerUser("abc", "123");
-//		
-//		attendantScreen.setVisible(true);	
-//	}
 	
 	/**
 	 * Basic constructor.
@@ -931,7 +902,7 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a coin denomination is low.
 	 * 
-	 * @param chekout CheckoutController making request.
+	 * @param checkout CheckoutController making request.
 	 */
 	public void notifyLowCoinDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.

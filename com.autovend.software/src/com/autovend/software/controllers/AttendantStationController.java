@@ -62,13 +62,11 @@ public class AttendantStationController {
 		initControllers();
 		attendantStation = station;
 		
-		Set<DeviceController> attendantIOControllers = registeredIOControllers.get("AttendantIOController");
-		
+
 		//Creates IO controller for attendant and adds it to the list
 		AttendantIOController controller = new AttendantIOController(attendantStation.screen);
 		controller.setMainAttendantController(this);
-		
-		attendantIOControllers.add(controller);
+		registerController(controller);
 		
 		//Ensure logged out
 		logout();
@@ -83,6 +81,7 @@ public class AttendantStationController {
 		registeredIOControllers = new HashMap<String, Set<DeviceController>>();
 		registeredIOControllers.put("AttendantIOController", new HashSet<DeviceController>());
 		registeredIOControllers.put("CustomerIOController", new HashSet<DeviceController>());
+		registeredIOControllers.put("ReceiptPrinterController", new HashSet<DeviceController>());
 	}
 	
 	/**
@@ -110,10 +109,13 @@ public class AttendantStationController {
 		} 
 		else if(controller.getTypeName().equals("CustomerIOController")) {
 			Set<DeviceController> customerIoControllers = registeredIOControllers.get("CustomerIOController");
-			if(!customerIoControllers.contains(controller))
+			if (!customerIoControllers.contains(controller))
 				customerIoControllers.add(controller);
+		}	else if(controller.getTypeName().equals("ReceiptPrinterController")) {
+			Set<DeviceController> receiptPrinter = registeredIOControllers.get("ReceiptPrinterController");
+			if (!receiptPrinter.contains(controller))
+				receiptPrinter.add(controller);
 		}
-		
 		return;
 	}
 	
@@ -200,6 +202,7 @@ public class AttendantStationController {
 				loggedIn = true;
 				currentUser = username;
 				//Signals AttendantIOController of success
+
 				for(DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
 					((AttendantIOController) io).loginValidity(true, username);
 				}
@@ -210,9 +213,8 @@ public class AttendantStationController {
 		//Signals AttendantIOController of failure
 		for(DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
 			((AttendantIOController) io).loginValidity(false, "");
+			System.out.println(io);
 		}
-		
-		return;
 	}
 	
 	/**
@@ -246,10 +248,6 @@ public class AttendantStationController {
 	public void registerUser(String username, String password) {
 		if(!credentials.containsKey(username)) {
 			credentials.put(username, password);
-			System.out.println("SUCCESS: User added.");
-		}
-		else {
-			System.out.println("ERROR: Username already exists.");
 		}
 		return;
 	}

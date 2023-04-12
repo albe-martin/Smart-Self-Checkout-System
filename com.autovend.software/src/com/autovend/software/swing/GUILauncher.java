@@ -34,32 +34,32 @@ public class GUILauncher {
 		// Add French language.
 		// TODO: This is just a demo. The submission will only be in english.
 		// TODO: However, testing will need to create and use a french demo (just for a couple labels to ensure it works).
-		HashMap<String, String> french = new HashMap<>();
-		french.put("Username:", "Le username:");
-		french.put("Password:", "Le password:");
-		french.put("Log In", "Le log in");
-		french.put("Change Language", "Le Change Language");
-		french.put("START", "LE START");
-		french.put("Station Notifications:", "Le Station Notifications:");
-		french.put("Active Issues:", "Le Active Issues:");
-		french.put("Manage Enabled Stations:", "Le Manage Enabled Stations");
-		french.put("Manage Disabled Stations:", "Le Manage Disabled Stations:");
-		french.put("Log Out", "Le Log Out");
-		french.put("Station", "Le Station");
-		french.put("Self Checkout Station #", "Le Self Checkout Station #");
-		french.put("Item", "Le Item");
-		french.put("Price", "Le Price");
-		french.put("Qty", "Le Qty");
-		french.put("Item", "Le Item");
-		french.put("Item", "Le Item");
-		french.put("Item", "Le Item");
-		french.put("Item", "Le Item");
-		french.put("Item", "Le Item");
-		french.put("Item", "Le Item");
-		french.put("Item", "Le Item");
+//		HashMap<String, String> french = new HashMap<>();
+//		french.put("Username:", "Le username:");
+//		french.put("Password:", "Le password:");
+//		french.put("Log In", "Le log in");
+//		french.put("Change Language", "Le Change Language");
+//		french.put("START", "LE START");
+//		french.put("Station Notifications:", "Le Station Notifications:");
+//		french.put("Active Issues:", "Le Active Issues:");
+//		french.put("Manage Enabled Stations:", "Le Manage Enabled Stations");
+//		french.put("Manage Disabled Stations:", "Le Manage Disabled Stations:");
+//		french.put("Log Out", "Le Log Out");
+//		french.put("Station", "Le Station");
+//		french.put("Self Checkout Station #", "Le Self Checkout Station #");
+//		french.put("Item", "Le Item");
+//		french.put("Price", "Le Price");
+//		french.put("Qty", "Le Qty");
+//		french.put("Item", "Le Item");
+//		french.put("Item", "Le Item");
+//		french.put("Item", "Le Item");
+//		french.put("Item", "Le Item");
+//		french.put("Item", "Le Item");
+//		french.put("Item", "Le Item");
+//		french.put("Item", "Le Item");
 
-		Language.addLanguage("French", french);
-		Language.languages.add("French");
+//		Language.addLanguage("French", french);
+//		Language.languages.add("French");
 
 		// Create attendant station.
 		SupervisionStation attendantStation = new SupervisionStation();
@@ -113,6 +113,7 @@ public class GUILauncher {
 		
 		// Shut down one station.
 		ciocs.get(1).getMainController().shutDown();
+		ciocs.get(0).getMainController().shutDown();
 		
 		// Create demo products.
 		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",
