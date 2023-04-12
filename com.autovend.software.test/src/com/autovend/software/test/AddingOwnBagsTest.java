@@ -71,4 +71,33 @@ public class AddingOwnBagsTest {
         cioc.cancelAddOwnBags();
         assertFalse(checkoutController.addingBagsLock);
     }
+    
+    @Test
+    public void testAttendantApproveWithoutAddingBagsLock() {
+    	aioc.approveAddedBags(checkoutController);
+        assertFalse(checkoutController.addingBagsLock);
+    }
+    
+    @Test
+    public void testCancelAddBagsWithoutBagsAdded() {
+    	cioc.cancelAddOwnBags();
+    	assertFalse(checkoutController.addingBagsLock);
+    	assertFalse(checkoutController.baggingItemLock);
+    }
+    
+    @Test
+    public void testCancelAddBagsNoBagController() {
+    	checkoutController.deregisterController("BaggingAreaController", bagControl);
+    	cioc.cancelAddOwnBags();
+    	assertFalse(checkoutController.addingBagsLock);
+    	assertTrue(checkoutController.baggingItemLock);
+    }
+    
+    @Test
+    public void testCancelAddBagsBaggingValid() {
+    	bagControl.setBaggingValid(true);
+    	cioc.cancelAddOwnBags();
+    	assertFalse(checkoutController.addingBagsLock);
+    	assertTrue(checkoutController.baggingItemLock);
+    }
 }

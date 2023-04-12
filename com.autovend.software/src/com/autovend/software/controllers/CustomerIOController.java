@@ -329,6 +329,32 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         }
         
     }
-
-
+    
+    /**
+     * Notify the customer that an item was added.
+     */
+    void notifyItemAdded() {
+    	if (getMainController().isInUse()) {
+    		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyItemAdded();
+    	}
+    }
+    
+    /**
+     * Check if bagging area matches expected weight.
+     */
+    public boolean isItemBagged() {
+    	return !getMainController().baggingItemLock;
+    }
+    
+    void notifyNoBagApproved() {
+    	if (getMainController().isInUse()) {
+    		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyNoBagApproved();
+    	}
+    }
+    
+    void notifyItemRemoved() {
+    	if (getMainController().isInUse()) {
+    		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyItemRemoved();
+    	}
+    }
 }

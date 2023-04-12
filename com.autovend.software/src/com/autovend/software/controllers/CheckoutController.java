@@ -371,6 +371,10 @@ public class CheckoutController {
 		for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 			((BaggingAreaController) baggingController).updateExpectedBaggingArea(newItem, weight, true);
 		}
+		// Notify customerIO
+		for (DeviceController customerIOController : registeredControllers.get("CustomerIOController")) {
+			((CustomerIOController) customerIOController).notifyItemAdded();
+		}
 		baggingItemLock = true;
 	}
 
@@ -386,6 +390,9 @@ public class CheckoutController {
 				this.latestItem.clear();
 				this.baggingItemLock = false;
 				// todo: this is a bad way to handle this
+			}
+			for (DeviceController customerIOController : registeredControllers.get("CustomerIOController")) {
+				((CustomerIOController) customerIOController).notifyNoBagApproved();
 			}
 		}
 	}
@@ -683,6 +690,9 @@ public class CheckoutController {
 			for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 				((BaggingAreaController) baggingController).updateExpectedBaggingArea(item, weight, false);
 			}
+			for (DeviceController cioc : registeredControllers.get("CustomerIOController")) {
+				((CustomerIOController) cioc).notifyItemRemoved();
+			}
 
 		}
 	}
@@ -826,7 +836,7 @@ public class CheckoutController {
 	 */
 	public void notifyAttendantNoBagRequest() {
 		baggingItemLock = true;
-		for(DeviceController io: this.registeredControllers.get("attendantIOController")) {
+		for(DeviceController io: this.registeredControllers.get("AttendantIOController")) {
 			((AttendantIOController) io).notifyNoBagRequest(this);
 		}
 	}
