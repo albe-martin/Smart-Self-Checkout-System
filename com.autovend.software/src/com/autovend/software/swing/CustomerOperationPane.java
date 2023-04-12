@@ -15,30 +15,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -51,6 +30,9 @@ import com.autovend.software.controllers.CardReaderControllerState;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.utils.MiscProductsDatabase;
+
+import static com.autovend.external.ProductDatabases.BARCODED_PRODUCT_DATABASE;
+import static com.autovend.external.ProductDatabases.PLU_PRODUCT_DATABASE;
 
 /**
  * A class for  the customer start pane.
@@ -289,7 +271,7 @@ public class CustomerOperationPane extends JPanel {
 		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
 		addItemByLookupButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//cioc.addProduct();
+				showAddItemByLookup();
 			}
 		});
 		addItemByLookupButton.setBounds(388, 112, 173, 60);
@@ -559,6 +541,45 @@ public class CustomerOperationPane extends JPanel {
 
 		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
+
+	private void showAddItemByLookup() {
+		// Create a list to hold all products
+		List<Product> allProducts = new ArrayList<>();
+
+		// Add all barcoded products to the list
+		allProducts.addAll(BARCODED_PRODUCT_DATABASE.values());
+
+		// Add all PLU coded products to the list
+		allProducts.addAll(PLU_PRODUCT_DATABASE.values());
+
+		// Create a JList to display product descriptions
+		DefaultListModel<String> listModel = new DefaultListModel<>();
+		for (Product product : allProducts) {
+			if (product instanceof BarcodedProduct) {
+				listModel.addElement(((BarcodedProduct) product).getDescription());
+			} else if (product instanceof PLUCodedProduct) {
+				listModel.addElement(((PLUCodedProduct) product).getDescription());
+			}
+		}
+		JList<String> productList = new JList<>(listModel);
+		productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		// Show a scrollable popup with the list of product descriptions
+		JScrollPane scrollPane = new JScrollPane(productList);
+		JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, "Select a product", JOptionPane.PLAIN_MESSAGE);
+
+		// Get the selected product and add it to the transaction
+		int selectedIndex = productList.getSelectedIndex();
+		if (selectedIndex != -1) {
+			Product selectedProduct = allProducts.get(selectedIndex);
+			cioc.addItemByBrowsing(selectedProduct);
+
+			// Prompt the user to bag the item
+			// JOptionPane.showMessageDialog(null, "Please bag the item", "Bagging", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
 
 	private void showPurchaseBagsPane() {
 		JPanel panel = new JPanel(new GridBagLayout());
