@@ -138,7 +138,7 @@ public class AttendantGUITest {
 	                break;
 	            }
 	            
-			} else if (header == "Remove Item") {
+			} else if (header == Language.translate(language, "Remove Item")) {
 	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
 	                AbstractButton button = buttons.nextElement();
                     button.setSelected(true);
@@ -238,7 +238,7 @@ public class AttendantGUITest {
 		// Add valid username and password.
 		asc.registerUser("abc", "123");
 		
-		attendantScreen.setVisible(true);
+//		attendantScreen.setVisible(true);
 		
 		// Create list of checkout stations
 		int num_stations = 2;
@@ -262,7 +262,7 @@ public class AttendantGUITest {
 			ciocs.add(cioc);
 			
 			customerScreen.setContentPane(new CustomerStartPane(cioc));
-			customerScreen.setVisible(true);
+//			customerScreen.setVisible(true);
 			
 			// Register customer to attendant
 			asc.registerController(cioc);
