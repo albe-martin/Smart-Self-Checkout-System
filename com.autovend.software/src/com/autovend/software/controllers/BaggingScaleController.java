@@ -60,6 +60,7 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		if (scale != this.getDevice()) {return;}
 		this.currentWeight = weightInGrams;
 		if (this.currentWeight == this.expectedWeight) {
+			this.setBaggingValid(true);
 			this.getMainController().baggedItemsValid();
 
 		}
@@ -67,6 +68,8 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 			this.getMainController().baggedItemsInvalid();
 			this.setBaggingValid(false);
 		}
+		System.out.println(currentWeight);
+		System.out.println(expectedWeight);
 	}
 	@Override
 	public void reactToOverloadEvent(ElectronicScale scale) {

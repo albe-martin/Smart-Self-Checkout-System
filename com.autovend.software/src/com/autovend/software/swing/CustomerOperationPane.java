@@ -16,10 +16,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
@@ -28,12 +26,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -43,12 +39,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.CardReaderControllerState;
-import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.utils.MiscProductsDatabase;
 
@@ -180,17 +174,17 @@ public class CustomerOperationPane extends JPanel {
 		model.setRowCount(0);
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
+
 //		System.out.println("\n\n" + orderItems.entrySet());
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
 			if (product instanceof PLUCodedProduct pluProduct) {
-				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
+				updateGrid(model, entry, pluProduct.getDescription());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
-				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
+				updateGrid(model, entry, barcodeProduct.getDescription());
 			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
-				updateGrid(model, entry, "bag(s)", bagProduct.getPrice());
+				updateGrid(model, entry, "bag(s)");
 			}
-
 		}
 
 		// todo: actually get the right bag number and not reading the console??? (???) ((???))
@@ -208,11 +202,11 @@ public class CustomerOperationPane extends JPanel {
 		updateTotalCost();
 	}
 
-	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
+	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description) {
 		Number[] quantities = entry.getValue();
 		Number quantity = quantities[0];
 
-		model.addRow(new Object[]{description, price, quantity});
+		model.addRow(new Object[]{description, quantities[1], quantity});
 
 //		for (int i = 0; i < quantities.length; i++) {
 //			int quantity = quantities[i].intValue();
@@ -699,6 +693,7 @@ public class CustomerOperationPane extends JPanel {
 					baggingGlassPane.setVisible(false);
 				} else {
 					createBaggingWeightProblemPopup();
+
 				}
 			}
 		});
@@ -726,9 +721,6 @@ public class CustomerOperationPane extends JPanel {
 	
 	/**
 	 * Creates a pop-up indicating that the bagging area weight is incorrect.
-	 * 
-	 * @param checkout
-	 * 			CheckoutController to add an item to. (When trying again).
 	 */
 	public void createBaggingWeightProblemPopup() {
 		// Create panel for the pop-up.

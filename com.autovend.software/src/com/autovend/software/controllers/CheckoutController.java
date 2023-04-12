@@ -319,7 +319,7 @@ public class CheckoutController {
 	}
 
 	public void addItem(Product newItem, BigDecimal count) {
-		if (baggingItemLock || systemProtectionLock || isDisabled || newItem == null) {
+		if (baggingItemLock || systemProtectionLock || isDisabled || newItem == null || count.compareTo(BigDecimal.ZERO)<=0) {
 			return;
 		}
 		// then go through the item and get its weight, either expected weight if it
@@ -415,7 +415,9 @@ public class CheckoutController {
 				break;
 			}
 		}
-		baggingItemLock = unlockStation;
+		baggingItemLock = !unlockStation;
+		System.out.println(unlockStation);
+		System.out.println("Your a moron Arie");
 	}
 
 	void baggedItemsInvalid() {

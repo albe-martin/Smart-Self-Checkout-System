@@ -29,9 +29,7 @@ import javax.swing.*;
 /**
  *
  */
-public class
-
-CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
+public class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
@@ -88,7 +86,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     /**
      * Methods for membership sign-in and stuff
      */
-    
     public void beginSignInAsMember(){
         this.getMainController().signingInAsMember();
         //todo: Stuff with the GUI
@@ -140,11 +137,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
     //todo: more substance
-
-
-    public void itemWasAddedToTheBaggingArea() {
-        //todo: either make this work, or tell Colton how it is meant to work
-    }
 
     /**
      * Same thing as above with no product param, as the gui does not have the current product added when
