@@ -83,7 +83,10 @@ public class TestPrintReceipt {
 		customerController.setMainController(checkoutController);
 
 
-		
+
+		stationController.registerUser("TestUser", "TestPass");
+		stationController.login("TestUser", "TestPass");
+
 
 		// Create 3 test items
 		testItem1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 1",
@@ -139,6 +142,8 @@ public class TestPrintReceipt {
 			// Add ink and paper into printer
 			testPrinter.addInk(1000);
 			testPrinter.addPaper(1000);
+			testReceiptPrinterController.addedInk(1000);
+			testReceiptPrinterController.addedPaper(1000);
 
 			// Call printReceipt()
 			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
@@ -228,6 +233,8 @@ public class TestPrintReceipt {
 			// Add paper and ink into printer
 			testPrinter.addInk(1000);
 			testPrinter.addPaper(1000);
+			testReceiptPrinterController.addedInk(1000);
+			testReceiptPrinterController.addedPaper(1000);
 
 			// Call printReceipt()
 			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
@@ -314,6 +321,8 @@ public class TestPrintReceipt {
 			// Add ink and paper into printer
 			testPrinter.addInk(1000);
 			testPrinter.addPaper(1000);
+			testReceiptPrinterController.addedInk(1000);
+			testReceiptPrinterController.addedPaper(1000);
 
 			// Call printReceipt()
 
@@ -322,10 +331,11 @@ public class TestPrintReceipt {
 			checkoutController.printReceipt();
 
 			// Cut the paper to finalize the output string
-			testPrinter.cutPaper();
+
 			String result = testPrinter.removeReceipt();
 			assertEquals(expectedOutput, result);
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			fail("Exception incorrectly thrown");
 		}
 	}
