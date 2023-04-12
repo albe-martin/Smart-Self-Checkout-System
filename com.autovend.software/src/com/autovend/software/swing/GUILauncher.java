@@ -26,11 +26,11 @@ import com.autovend.software.controllers.CustomerIOController;
  * Launches the customer and attendant GUIs.
  */
 public class GUILauncher {
-	
+		
 	/**
 	 * Main runner.
 	 */
-	public static void main(String[] args) {
+	public static void launchGUI(SupervisionStation attendantStation) {
 		// Add French language.
 		// TODO: This is just a demo. The submission will only be in english.
 		// TODO: However, testing will need to create and use a french demo (just for a couple labels to ensure it works).
@@ -60,9 +60,6 @@ public class GUILauncher {
 
 //		Language.addLanguage("French", french);
 //		Language.languages.add("French");
-
-		// Create attendant station.
-		SupervisionStation attendantStation = new SupervisionStation();
 		
 		// Get and set up screen
 		JFrame attendantScreen = attendantStation.screen.getFrame();
@@ -147,5 +144,10 @@ public class GUILauncher {
 		attendantEventSimulatorFrame.setVisible(true);
 		attendantEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+	}
+	
+	public static void main(String[] args) {
+		SupervisionStation attendantStation = new SupervisionStation();
+		launchGUI(attendantStation);
 	}
 }

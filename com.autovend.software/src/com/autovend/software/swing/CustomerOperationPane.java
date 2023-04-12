@@ -73,28 +73,6 @@ public class CustomerOperationPane extends JPanel {
 
 
 	/**
-	 * TODO: Delete for final submission.
-	 * <p>
-	 * Quick GUI launcher. Used to allow window builder to work.
-	 */
-	public static void main(String[] args) {
-		// Create checkout station.
-		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA),
-				new int[]{1}, new BigDecimal[]{new BigDecimal(0.25)}, 100, 1);
-
-		// Get and set up screen
-		JFrame customerScreen = customerStation.screen.getFrame();
-		customerScreen.setExtendedState(0);
-		customerScreen.setSize(800, 800);
-		customerScreen.setUndecorated(false);
-		customerScreen.setResizable(false);
-		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
-		customerScreen.setContentPane(new CustomerOperationPane(cioc));
-
-		customerScreen.setVisible(true);
-	}
-
-	/**
 	 * Basic constructor.
 	 *
 	 * @param cioc Linked CustomerIOController.

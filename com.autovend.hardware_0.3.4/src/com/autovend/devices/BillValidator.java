@@ -87,7 +87,7 @@ public final class BillValidator extends AbstractDevice<BillValidatorObserver>
 	}
 
 	private final Random pseudoRandomNumberGenerator = new Random();
-	private static final int PROBABILITY_OF_FALSE_REJECTION = 1; /* out of 100 */
+	private static final int PROBABILITY_OF_FALSE_REJECTION = 0; /* out of 100 */
 
 	private boolean isValid(Bill bill) {
 		if(currency.equals(bill.getCurrency()))
