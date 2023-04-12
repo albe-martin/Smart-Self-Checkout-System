@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Set;
 
 import com.autovend.*;
 import com.autovend.software.controllers.AttendantIOController;
@@ -47,6 +48,7 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.controllers.DeviceController;
 import com.autovend.software.controllers.ReusableBagDispenserController;
 import com.autovend.software.utils.MiscProductsDatabase.Bag;
 
@@ -69,19 +71,21 @@ public class PurchaseBagsTest {
 	
 	private ReusableBagDispenserController bagDispenserController;
 
-	private Scanner scan;
 	TouchScreen stubDevice;
 	private ReusableBagDispenser stubBagDispenser;
 
 	@Before
 	public void setup() {
+		
+		//Bag Dispenser set up and fill
+		ReusableBag bagArray[] = new ReusableBag[100];
 		newBag = new Bag(BigDecimal.valueOf(0.5));
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(newBag.getBarcode(), newBag);
+		stubBagDispenser = new ReusableBagDispenser(500);
 		
-		
+		//Create controllers and devices
 		
 		checkoutController = new CheckoutController();
-		stubBagDispenser = new ReusableBagDispenser(500);
 
 		validUnit = new BarcodedUnit(new Barcode(Numeral.three, Numeral.three), 500.0);
 
@@ -100,14 +104,16 @@ public class PurchaseBagsTest {
 		attendantController = new AttendantIOController(stubDevice);
 		attendantController.setMainAttendantController(stationController);
 		
+		
 		customerController = new CustomerIOController(stubDevice);
 		customerController.setMainController(checkoutController);
+		customerController.registerAttendant(attendantController);
 		
 		bagDispenserController = new ReusableBagDispenserController(stubBagDispenser);
 		bagDispenserController.setMainController(checkoutController);
 		
-		ReusableBag bagArray[] = new ReusableBag[100];
 		
+		//Fill bags
 		Arrays.fill(bagArray, new ReusableBag());
 		
 		try {
@@ -117,13 +123,15 @@ public class PurchaseBagsTest {
 			e.printStackTrace();
 		}
 		
-		
+		//create bag in database
 		
 		reusableBag = (BarcodedProduct) MISC_DATABASE.get(bagNumb);
 		
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(reusableBag.getBarcode(), reusableBag);
-
-		//scan = new Scanner(System.in);
+		
+		//Force login the attendant for test
+		stationController.registerUser("abc", "123");
+		stationController.login("abc", "123");
 	}
 
 	/**
@@ -137,7 +145,6 @@ public class PurchaseBagsTest {
 		scannerController = null;
 		scaleController = null;
 		stubScale = null;
-		//scan.close();
 		
 		stationController = null;
 		stubDevice = null;
@@ -148,6 +155,56 @@ public class PurchaseBagsTest {
 		bagDispenserController = null;
 		stubBagDispenser = null;
 		
+	}/**
+	 * METHODS TO TEST REGISTRATION FOR ADD ITEM DEVICE CONTROLLERS
+	 */
+
+	/**
+	 * Testing that the checkout station is configured correctly for this test classes.
+	 * It should have a scanner controller, bagging scale controller, bag Dispenser Controller, 
+	 * customer controller and assigned an attendant controller.
+	 */
+	@Test
+	public void testCorrectRegistrationControllersForAddItemTest() {
+		Set<DeviceController> controllers = checkoutController.getAllDeviceControllers();
+		assertTrue("BaggingScaleController should be registered.", controllers.contains(scaleController));
+		assertTrue("BarcodeScannerController should be registered.", controllers.contains(scannerController));
+		assertTrue("ReusableBagController should be registered.", controllers.contains(bagDispenserController));
+		assertTrue("CustomerIOController should be registered.", controllers.contains(customerController));
+		assertTrue("AttendantIOController should be registered.", controllers.contains(attendantController));
+		assertEquals("The above 5 controllers should be registered", controllers.size(), 5);
+
+	}
+	
+	/**
+	 * Testing appropriate behaviour of assigning a new main controller to the hardware device controllers used by addItem such as:
+	 * 	BaggingScaleController, ScanningScaleController and BarcodeScannerController, 
+	 *  Expected Results:
+	 *  	- All three controllers should not still be in the old checkout controller's list of device controllers.
+	 *  	- All three controllers should point to the new checkoutController as their main controller.
+	 *  	- All three controllers should be in the new checkout controller's list of devices
+	 */
+	@Test
+	public void testNewMainControllers() {
+		CheckoutController newMainController = new CheckoutController();
+		
+		scaleController.setMainController(newMainController);
+
+		assertNotSame("New checkout controller should be set in BaggingScaleController field", checkoutController,
+				scaleController.getMainController());
+		assertTrue("BaggingScaleController should be in the new checkout controller's item adder list",
+				newMainController.getAllDeviceControllers().contains(scaleController));
+		assertFalse("BaggingScaleController should not be in the old checkout controller's item adder list",
+				checkoutController.getAllDeviceControllers().contains(scaleController));
+		
+		bagDispenserController.setMainController(newMainController);
+
+		assertNotSame("New checkout controller should be set in ScanningScaleController field", checkoutController,
+				bagDispenserController.getMainController());
+		assertTrue("ScanningScaleController should be in the new checkout controller's item adder list",
+				newMainController.getAllDeviceControllers().contains(bagDispenserController));
+		assertFalse("ScanningScaleController should not be in the old checkout controller's item adder list",
+				checkoutController.getAllDeviceControllers().contains(bagDispenserController));
 	}
 
 	/**
@@ -160,7 +217,7 @@ public class PurchaseBagsTest {
 	@Test
 	public void testPurchaseBags_oneBag_inOrder() {
 		
-		checkoutController.purchaseBags(1);//Check order
+		customerController.purchaseBags(1);//Check order
 		
 		LinkedHashMap<Product,Number[]> order = scannerController.getMainController().getOrder();
 		assertTrue("Only one reusable bag should be in the order.", order.keySet().size() == 1);
@@ -188,7 +245,7 @@ public class PurchaseBagsTest {
 	@Test
 	public void testPurchaseBags_multipleBags_inOrder() {
 		
-		checkoutController.purchaseBags(50);//Check order
+		customerController.purchaseBags(50);//Check order
 		
 		LinkedHashMap<Product,Number[]> order = scannerController.getMainController().getOrder();
 		assertTrue("Only reusable bag should be in the order.", order.keySet().size() == 1);
@@ -205,217 +262,132 @@ public class PurchaseBagsTest {
 		assertEquals("Reusable bag's weight should be added to expected weight of bagging area.", (reusableBag.getExpectedWeight() * 50), scaleController.getExpectedWeight(), 0.01d);
 		
 	}
-	
-	//BELOW TESTS ARE NOT FIXED - Christian
-	
-	
 
 	/**
-	 * Test to check the method with valid inputs
-	 */
-	@Test
-	public void testGetBagNumber_validInput() {
-	}
-
-	/**
-	 * Test to check the method with invalid inputs
-	 */
-	@Test
-	public void testGetBagNumber_invalidInput() {
-	}
-
-	/**
-	 * Test to check the method with empty input
-	 */
-	@Test
-	public void testGetBagNumber_emptyInput() {
-	}
-
-	/**
-	 * Test to check if the method returns if the number of bags is 0
+	 * Simple test to see that purchasing 0 bags will not add anything to the order.
+	 * Expected Results:
+	 * 		- Nothing is in order
+	 * 		- Cost is 0
+	 * 		- Expected Weight is 0
 	 */
 	@Test
 	public void testPurchaseBags_0Bags() {
-
-
-		// Unblocks the station and lets a new item be scanned
-		checkoutController.baggedItemsValid();
-
-		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
+		
+		customerController.purchaseBags(0);
+		
+		LinkedHashMap<Product,Number[]> order = scannerController.getMainController().getOrder();
+		
+		assertTrue("Order should be empty", order.keySet().isEmpty());
+		
+		assertEquals("Total cost should be 0", BigDecimal.ZERO, checkoutController.getCost());
+		
+		assertEquals("Expected Weight should be 0", 0, scaleController.getExpectedWeight(), 0.01d);
 	}
 
 	/**
-	 * Test to check if the bags get added to the order correctly and the cost is
-	 * calculated correctly
+	 * Simple test to see that purchasing 2 bags will not add anything to the order when the station is disabled.
+	 * Expected Results:
+	 * 		- Nothing is in order
+	 * 		- Cost is 0
+	 * 		- Expected Weight is 0
 	 */
 	@Test
-	public void testPurchaseBags_checkOrder() {
-
-		// Set the number of bags to 3 bags;
-		int numBags = 3;
-
-		// create the variable to calculate the cost of the bags in total
-		BigDecimal expectedPrice = BigDecimal.ZERO;
-
-		// Add the bag to the order
-		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), numBags);
-		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(numBags)));
-
-		// Unblocks the station and lets a new item be scanned
-		checkoutController.baggedItemsValid();
-		HashMap<Product, Number[]> order = checkoutController.getOrder();
-
-		// Check that the bag number and cost in the order were updated correctly
-
-		checkoutController.purchaseBags(numBags);
-		assertEquals(order.size(),1);
-		Product bagProd = order.keySet().iterator().next();
-		assertEquals(numBags, order.get(bagProd)[0]);
-		assertEquals(expectedPrice, checkoutController.getCost());
-		assertEquals( ((BarcodedProduct)bagProd).getBarcode(), newBag.getBarcode());
+	public void testPurchaseBags_disabled() {
+		
+		attendantController.disableStation(checkoutController);
+		
+		customerController.purchaseBags(2);
+		
+		LinkedHashMap<Product,Number[]> order = scannerController.getMainController().getOrder();
+		
+		assertTrue("Order should be empty", order.keySet().isEmpty());
+		
+		assertEquals("Total cost should be 0", BigDecimal.ZERO, checkoutController.getCost());
+		
+		assertEquals("Expected Weight should be 0", 0, scaleController.getExpectedWeight(), 0.01d);
 	}
 
 	/**
-	 * Test to check if the bags get added correctly after the bag addition prompt is used multiple times 
-	 * Also checks if the cost is getting calculated correctly
+	 * Simple test to see that purchasing 2 bags will not add anything to the order when the station is under a protection lock.
+	 * Expected Results:
+	 * 		- Nothing is in order
+	 * 		- Cost is 0
+	 * 		- Expected Weight is 0
 	 */
 	@Test
-	public void testPurchaseBags_multipleBags() {
-
-		// create the variable to calculate the cost of the bags in total
-		BigDecimal expectedPrice = BigDecimal.ZERO;
-		// Set the number of bags to 4 bags;
-		int numBags = 4;
-
-
-		// Purchase 2 bags
-		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), 2);
-		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(2)));
-
-		// Unblocks the station and lets a new bag be scanned
-		checkoutController.baggedItemsValid();
-
-		// Purchase 1 bag
-		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), 1);
-		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(1)));
-
-		// Purchase 1 bag
-		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), 1);
-		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(1)));
-
-		// Unblocks the station and lets a new bag be scanned
-		checkoutController.baggedItemsValid();
-
-		// Checking that the bags were added to the order with correct bag numbers and
-		// cost
-		HashMap<Product, Number[]> order = checkoutController.getOrder();
-		checkoutController.purchaseBags(numBags);
-		assertEquals(order.size(),1);
-		Product bagProd = order.keySet().iterator().next();
-		assertEquals(numBags, order.get(bagProd)[0]);
-		assertEquals(expectedPrice, checkoutController.getCost());
-		assertEquals( ((BarcodedProduct)bagProd).getBarcode(), newBag.getBarcode());
-	}
-
-	/**
-	 * A method to test that bag is not added when baggingItemLock or systemProtectionLock are true
-	 */
-	@Test
-	public void testDisabledLocks() {
-		// Set the number of bags
-		int numBags = 2;
-
-		// Enables baggingItemLock
-		checkoutController.baggingItemLock = true;
-
-		// Adds Bag
-		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), numBags);
-
-		// Bag should not be added, order size should be 0
-		assertEquals(0, checkoutController.getOrder().size());
-
-		// Bag should not be added, and the cost should be 0
-		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
-
-		// Disables baggingItemLock
-		checkoutController.baggingItemLock = false;
-
-		// Enables systemProtectionLock
+	public void testPurchaseBags_systemProtectionLocked() {
+		
 		checkoutController.systemProtectionLock = true;
-
-		// Adds the bag
-		//checkoutController.purchaseBags(newBag, validUnit.getWeight(), numBags);
-
-		// Bag should not be added, order size should be 0
-		assertEquals(0, checkoutController.getOrder().size());
-
-		// Bag should not be added, and the cost should be 0
-		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
-	}
-
-	/**
-	 * A method to test that bag is not added when the ItemAdderController is null
-	 */
-	@Test
-	public void testPurchaseBags_invalidItemControllerAdder() {
-		// Set the number of bags
-		int numBags = 2;
-
-		// purchaseBags is called with an invalid ItemControllerAdder
-		//checkoutController.purchaseBags(null, validUnit.getWeight(), numBags);
-
-		// Bag should not be added, order size should be 0
-		assertEquals(0, checkoutController.getOrder().size());
-
-		// Bag should not be added, and the cost should be 0
-		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
-
-	}
-
-	/**
-	 * Tests purchaseBags with an bag that has an invalid weight, and bag that is null
-	 */
-	@Test
-	public void testPurchaseBags_invalidParameters() {
-		// set the number of bags
-		int numBags = 2;
-
-		// Scan bag with negative weight
-		//checkoutController.purchaseBags(newBag, -1, numBags);
-
-		// Bag should not be added, and order size should be 0
-		assertEquals(0, checkoutController.getOrder().size());
-
-		// Bag should not be added, and the cost should be 0
-		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
-
-		// Scan null bag
-		//checkoutController.purchaseBags(null, validUnit.getWeight(), numBags);
-
-		// Bag should not be added, and order size should be 0
-		assertEquals(0, checkoutController.getOrder().size());
-
-		// Bag should not be added, and the cost should be 0
-		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
+		
+		customerController.purchaseBags(2);
+		
+		LinkedHashMap<Product,Number[]> order = scannerController.getMainController().getOrder();
+		
+		assertTrue("Order should be empty", order.keySet().isEmpty());
+		
+		assertEquals("Total cost should be 0", BigDecimal.ZERO, checkoutController.getCost());
+		
+		assertEquals("Expected Weight should be 0", 0, scaleController.getExpectedWeight(), 0.01d);
 	}
 	
 	/**
-	 * Tests purchaseBags with an invalid ItemAdderController, and bag that is null
+	 * Simple test to see that purchasing 1 bag, then purchasing another bag despite the hardware not simulating
+	 * the first bag going onto the bagging area, a second purchased bag will not be added.
+	 * Expected Results:
+	 * 		- One bag is in order
+	 * 		- Cost is of a single bag
+	 * 		- Expected Weight is is of a single bag
 	 */
 	@Test
-	public void testPurchaseBags_nullAdder_nullBag() {
-		// Set the number of bags
-		int numBags = 2;
-
-		// purchaseBags is called with an invalid ItemControllerAdder and null bag
-		//checkoutController.purchaseBags(null, validUnit.getWeight(), numBags);
-
-		// Bag should not be added, order size should be 0
-		assertEquals(0, checkoutController.getOrder().size());
-
-		// Bag should not be added, and the cost should be 0
-		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
-
+	public void testPurchaseBags_baggingAreaLocked() {
+		
+		//Purchasing 1 bag
+		customerController.purchaseBags(1);
+		
+		//Purchasing a bag without resolving discrepancy.
+		customerController.purchaseBags(1);
+		
+		LinkedHashMap<Product,Number[]> order = scannerController.getMainController().getOrder();
+		
+		Product equivalentItem = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(reusableBag.getBarcode());
+		
+		assertTrue("Order should have one item and it should be a bag", order.keySet().size() == 1 && order.containsKey(equivalentItem));
+		
+		assertEquals("Total cost should be a single bag", reusableBag.getPrice(), checkoutController.getCost());
+		
+		assertEquals("Expected Weight should be a single bag", reusableBag.getExpectedWeight(), scaleController.getExpectedWeight(), 0.01d);
+	}
+	
+	/**
+	 * Simple test to see that purchasing 1 bag, simulating placing a bag onto the bagging area after,
+	 * then purchasing another bag, that second bag is added to the order
+	 * Expected Results:
+	 * 		- Bag is the only type in order
+	 * 		- Cost is of two bags
+	 * 		- Expected Weight is of two bags
+	 */
+	@Test
+	public void testPurchaseBags_purchaseBagsAfterValidPurchasBag() {
+		
+		Product equivalentItem = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(reusableBag.getBarcode());
+		
+		//Purchasing 1 bag
+		customerController.purchaseBags(10);
+		
+		//Simulate placing that product in the 
+		stubScale.add(new BarcodedUnit(reusableBag.getBarcode(), reusableBag.getExpectedWeight() * 10));
+		
+		//Purchasing a bag without resolving discrepancy.
+		customerController.purchaseBags(10);
+		
+		LinkedHashMap<Product,Number[]> order = scannerController.getMainController().getOrder();
+		
+		
+		assertTrue("Order should have one type of item and it should be a bag", order.keySet().size() == 1 && order.containsKey(equivalentItem));
+		
+		assertEquals("Total cost should be of two bags", reusableBag.getPrice().multiply(BigDecimal.valueOf(10)), checkoutController.getCost());
+		
+		assertEquals("Expected Weight should be of two bags", reusableBag.getExpectedWeight() * 10, scaleController.getExpectedWeight(), 0.01d);
 	}
 
 }
