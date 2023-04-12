@@ -15,42 +15,26 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.CardReaderControllerState;
+
 import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.CheckoutController.completePaymentErrorEnum;
+
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.utils.MiscProductsDatabase;
+
+import static com.autovend.external.ProductDatabases.BARCODED_PRODUCT_DATABASE;
+import static com.autovend.external.ProductDatabases.PLU_PRODUCT_DATABASE;
 
 /**
  * A class for  the customer start pane.
@@ -63,9 +47,11 @@ public class CustomerOperationPane extends JPanel {
 
 	public JButton logoutButton;
 	private JTable orderItemsTable;
+	private JLabel totalCostLabel, amountPaidLabel;
 	public JLabel totalCostLabel;
 	public JButton languageSelectButton;
 	private JPanel glassPane;
+	private JPanel cashGlassPane;
 
 	private JPanel baggingGlassPane;
 	public ButtonGroup group;
@@ -83,28 +69,6 @@ public class CustomerOperationPane extends JPanel {
 	
 	public DefaultTableModel model;
 
-
-	/**
-	 * TODO: Delete for final submission.
-	 * <p>
-	 * Quick GUI launcher. Used to allow window builder to work.
-	 */
-	public static void main(String[] args) {
-		// Create checkout station.
-		SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA),
-				new int[]{1}, new BigDecimal[]{new BigDecimal(0.25)}, 100, 1);
-
-		// Get and set up screen
-		JFrame customerScreen = customerStation.screen.getFrame();
-		customerScreen.setExtendedState(0);
-		customerScreen.setSize(800, 800);
-		customerScreen.setUndecorated(false);
-		customerScreen.setResizable(false);
-		CustomerIOController cioc = new CustomerIOController(customerStation.screen);
-		customerScreen.setContentPane(new CustomerOperationPane(cioc));
-
-		customerScreen.setVisible(true);
-	}
 
 	/**
 	 * Basic constructor.
@@ -138,6 +102,7 @@ public class CustomerOperationPane extends JPanel {
 		initializeCartItemsGrid();
 
 		initializeTotalCostLabel();
+		initializeAmountPaidLabel();
 
 		initializeAddItemByPLUCodeButton();
 
@@ -147,12 +112,7 @@ public class CustomerOperationPane extends JPanel {
 
 		initializeAddOwnBagsButton();
 
-//		initializePayForItemsButton();
-        
-        initializeCashButton();
-        initializeCreditButton();
-        initializeDebitButton();
-        initializeGiftCardButton();
+		initializePayForItemsButton();
 
 		initializeEnterMembershipNumberButton();
 
@@ -213,17 +173,17 @@ public class CustomerOperationPane extends JPanel {
 		model.setRowCount(0);
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
+
 //		System.out.println("\n\n" + orderItems.entrySet());
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
 			if (product instanceof PLUCodedProduct pluProduct) {
-				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
+				updateGrid(model, entry, pluProduct.getDescription());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
-				updateGrid(model, entry, barcodeProduct.getDescription(), barcodeProduct.getPrice());
+				updateGrid(model, entry, barcodeProduct.getDescription());
 			} else if (product instanceof MiscProductsDatabase.Bag bagProduct){
-				updateGrid(model, entry, "bag(s)", bagProduct.getPrice());
+				updateGrid(model, entry, "bag(s)");
 			}
-
 		}
 
 		// todo: actually get the right bag number and not reading the console??? (???) ((???))
@@ -241,11 +201,11 @@ public class CustomerOperationPane extends JPanel {
 		updateTotalCost();
 	}
 
-	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
+	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description) {
 		Number[] quantities = entry.getValue();
 		Number quantity = quantities[0];
 
-		model.addRow(new Object[]{description, price, quantity});
+		model.addRow(new Object[]{description, quantities[1], quantity});
 
 //		for (int i = 0; i < quantities.length; i++) {
 //			int quantity = quantities[i].intValue();
@@ -274,6 +234,18 @@ public class CustomerOperationPane extends JPanel {
 		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
+	private void initializeAmountPaidLabel() {
+		amountPaidLabel = new JLabel("Amount Paid: $0.00");
+		amountPaidLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		amountPaidLabel.setBounds(83, 676, 188, 30);
+		amountPaidLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(amountPaidLabel);
+	}
+
+	public void updateAmountPaid() {
+		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())));
+	}
+
 	private void initializeEnterMembershipNumberButton() {
 		JButton enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
 		enterMembershipNumberButton.addActionListener(new ActionListener() {
@@ -300,7 +272,7 @@ public class CustomerOperationPane extends JPanel {
 		JButton addItemByLookupButton = new JButton("Add Item by Lookup");
 		addItemByLookupButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//cioc.addProduct();
+				showAddItemByLookup();
 			}
 		});
 		addItemByLookupButton.setBounds(388, 112, 173, 60);
@@ -330,92 +302,82 @@ public class CustomerOperationPane extends JPanel {
 		add(purchaseBagsButton);
 	}
 
-	private void initializeCashButton() {
+	private void initializePayForItemsButton() {
 		// Create pay with cash button.
-		JButton cashButton = new JButton("Pay with Cash");
+		JButton cashButton = new JButton("Complete Payment");
 		cashButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showPayWithCashPane();
+				cioc.finalizeOrder();
+				//showPayWithCashPane();
 			}
 		});
 		cashButton.setBounds(490, 351, 173, 60);
 		add(cashButton);
 	}
-
-	public void showPayWithCashPane() {
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please insert cash into the machine."), gbc);
-
-		JButton finishedButton = new JButton("Finished");
-		finishedButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO: figure out what to do here
-
-				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
-				if (window1 != null) {
-					window1.dispose();
-				}
-			}
-		});
-
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		panel.add(finishedButton, gbc);
-
-		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
-
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// Code to run when the JOptionPane is closed
-			}
-		});
-
-		dialog.setVisible(true);
-	}
-
-	private void initializeCreditButton() {
-		// Create pay with credit button.
-		JButton cashButton = new JButton("Pay with Credit");
-		cashButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.choosePayByBankCard(CardReaderControllerState.PAYINGBYCREDIT, null, cioc.getMainController().getRemainingAmount());
-			}
-		});
-		cashButton.setBounds(490, 411, 173, 60);
-		add(cashButton);
-	}
-
-	private void initializeDebitButton() {
-		// Create pay with debit button.
-		JButton cashButton = new JButton("Pay with Debit");
-		cashButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.choosePayByBankCard(CardReaderControllerState.PAYINGBYDEBIT, null, cioc.getMainController().getRemainingAmount());
-			}
-		});
-		cashButton.setBounds(490, 471, 173, 60);
-		add(cashButton);
-	}
-
-	private void initializeGiftCardButton() {
-		// Create pay with gift card button.
-		JButton cashButton = new JButton("Pay with Gift Card");
-		cashButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.choosePayByGiftCard();
-			}
-		});
-		cashButton.setBounds(490, 531, 173, 60);
-		add(cashButton);
-	}
+//	public void showPayWithCashPane() {
+//		JPanel panel = new JPanel(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		gbc.insets = new Insets(5, 5, 5, 5);
+//		panel.add(new JLabel("Please insert cash into the machine."), gbc);
+//
+//		JButton finishedButton = new JButton("Finished");
+//		finishedButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+//				if (window1 != null) {
+//					window1.dispose();
+//				}
+//			}
+//		});
+//
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		gbc.gridwidth = 1;
+//		panel.add(finishedButton, gbc);
+//
+//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
+//
+//		dialog.addWindowListener(new WindowAdapter() {
+//			@Override
+//			public void windowClosing(WindowEvent e) {
+//				// Code to run when the JOptionPane is closed
+//			}
+//		});
+//
+//		dialog.setVisible(true);
+//
+//
+//		JButton finishedButton = new JButton("OK");
+//		finishedButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+//				if (window1 != null) {
+//					window1.dispose();
+//				}
+//			}
+//		});
+//
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		gbc.gridwidth = 1;
+//		panel.add(finishedButton, gbc);
+//
+//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
+//
+//		dialog.addWindowListener(new WindowAdapter() {
+//			@Override
+//			public void windowClosing(WindowEvent e) {
+//				// Code to run when the JOptionPane is closed
+//			}
+//		});
+//
+//		dialog.setVisible(true);
+//	}
 
 //	private void initializeCallAttendantButton() {
 //		JButton callAttendantButton = new JButton("Call For Attendant");
@@ -573,6 +535,45 @@ public class CustomerOperationPane extends JPanel {
 		//JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), PluCodePanel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
+	private void showAddItemByLookup() {
+		// Create a list to hold all products
+		List<Product> allProducts = new ArrayList<>();
+
+		// Add all barcoded products to the list
+		allProducts.addAll(BARCODED_PRODUCT_DATABASE.values());
+
+		// Add all PLU coded products to the list
+		allProducts.addAll(PLU_PRODUCT_DATABASE.values());
+
+		// Create a JList to display product descriptions
+		DefaultListModel<String> listModel = new DefaultListModel<>();
+		for (Product product : allProducts) {
+			if (product instanceof BarcodedProduct) {
+				listModel.addElement(((BarcodedProduct) product).getDescription());
+			} else if (product instanceof PLUCodedProduct) {
+				listModel.addElement(((PLUCodedProduct) product).getDescription());
+			}
+		}
+		JList<String> productList = new JList<>(listModel);
+		productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		// Show a scrollable popup with the list of product descriptions
+		JScrollPane scrollPane = new JScrollPane(productList);
+		JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, "Select a product", JOptionPane.PLAIN_MESSAGE);
+
+		// Get the selected product and add it to the transaction
+		int selectedIndex = productList.getSelectedIndex();
+		if (selectedIndex != -1) {
+			Product selectedProduct = allProducts.get(selectedIndex);
+			cioc.addItemByBrowsing(selectedProduct);
+
+			// Prompt the user to bag the item
+			// JOptionPane.showMessageDialog(null, "Please bag the item", "Bagging", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
+
 	private void showPurchaseBagsPane() {
 		purchaseBagsPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -680,6 +681,43 @@ public class CustomerOperationPane extends JPanel {
 
 		baggingGlassPane.setVisible(true);
 	}
+
+	public void initializeCashPromptGlassPane() {
+		cashGlassPane = new JPanel(new GridBagLayout()) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				g.setColor(new Color(0, 0, 0, 0)); // transparent
+				g.fillRect(0, 0, getWidth(), getHeight());
+				super.paintComponent(g);
+			}
+		};
+		cashGlassPane.setOpaque(false);
+		cashGlassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
+		cashGlassPane.setVisible(false);
+
+		// Make the glass pane "absorb" the mouse events, so that nothing behind it (the buttons) can be clicked while it is displayed
+		cashGlassPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				e.consume();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				e.consume();
+			}
+		});
+
+		add(cashGlassPane);
+
+	}
+
 	
 	public void initializeBaggingPromptGlassPane() {
 		baggingGlassPane = new JPanel(new GridBagLayout()) {
@@ -730,6 +768,7 @@ public class CustomerOperationPane extends JPanel {
 					baggingGlassPane.setVisible(false);
 				} else {
 					createBaggingWeightProblemPopup();
+
 				}
 			}
 		});
@@ -757,9 +796,6 @@ public class CustomerOperationPane extends JPanel {
 	
 	/**
 	 * Creates a pop-up indicating that the bagging area weight is incorrect.
-	 * 
-	 * @param checkout
-	 * 			CheckoutController to add an item to. (When trying again).
 	 */
 	public void createBaggingWeightProblemPopup() {
 		// Create panel for the pop-up.

@@ -31,7 +31,7 @@ abstract class PaymentController<D extends AbstractDevice<O>, O extends Abstract
 		super(newDevice);
 	}
 
-	final String getTypeName(){
+	public final String getTypeName(){
 		return "PaymentController";
 	}
 

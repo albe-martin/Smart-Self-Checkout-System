@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.Map.Entry;
 
 
@@ -17,7 +16,7 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.swing.AttendantOperationPane;
+import com.autovend.software.controllers.CheckoutController.completePaymentErrorEnum;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 
@@ -31,14 +30,12 @@ import javax.swing.*;
 /**
  *
  */
-public class
-
-CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
+public class CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver{
 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
     }
-    final String getTypeName(){
+    public final String getTypeName(){
         return "CustomerIOController";
     }
 
@@ -64,16 +61,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
             this.getMainController().addItem(product);
             return true;
         } else {
-            // System.out.println("Product not in database");
-
+            System.out.println("Product not in database");
             //stuff to the scale first before they do stuff for the PLU code
             return false;
-
-
             //todo: please figure out why calling addItemByPLU and subsequently calling getCart() does not have
             // an updated cart (GUI team request)
-
-
         }
     }
     //this is also used for adding by browsing!!!!!
@@ -90,14 +82,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     /**
      * Called when an item has been added, and now needs to go to the bagging area
      */
-    public void promptAddItemToBaggingArea() {
-
-    }
+    public void promptAddItemToBaggingArea() {}
 
     /**
      * Methods for membership sign-in and stuff
      */
-    
     public void beginSignInAsMember(){
         this.getMainController().signingInAsMember();
         //todo: Stuff with the GUI
@@ -126,11 +115,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         this.getMainController().payByGiftCard();
     }
 
-    void finalizeOrder(){
-        this.getMainController().completePayment();
-        //todo:
-        // add stuff for GUI here, also modify that method to return stuff so we can
-        // react to that to modify the GUI
+    public void finalizeOrder() {
+    	completePaymentErrorEnum e = this.getMainController().completePayment();
+    	//while (this.getMainController().checkoutStation.billInput.removeDanglingBill() != null);
+		//((CustomerOperationPane)getDevice().getFrame().getContentPane()).showPaymentErrorPane(e);
+    	//((CustomerOperationPane)getDevice().getFrame().getContentPane()).updateAmountPaid();
     }
 
     public void purchaseBags(int amountOfBagsToAdd) {
@@ -149,18 +138,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      */
     public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
     //todo: more substance
-
-
-    public void itemWasAddedToTheBaggingArea() {
-        //todo: either make this work, or tell Colton how it is meant to work
-    }
-
-    public void selectDoNotBag(Product product){
-        this.getMainController().notifyAttendantNoBagRequest();
-        /* todo: update UI so it goes back to the normal order, also make the do not bag code
-         * not trash you idiot
-         */
-    }
 
     /**
      * Same thing as above with no product param, as the gui does not have the current product added when
@@ -271,13 +248,20 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
      * Signals GUI to start GUI.
      */
     void notifyStartup() {
-        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
-        getDevice().getFrame().revalidate();
-        getDevice().getFrame().repaint();
+        startMenu();
 
         disablePanel((JPanel) getDevice().getFrame().getContentPane());
     }
-    
+
+    void startMenu(){
+        getDevice().getFrame().setContentPane(new CustomerStartPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
+        disablePanel((JPanel) getDevice().getFrame().getContentPane());
+        enablePanel((JPanel) getDevice().getFrame().getContentPane());
+
+    }
+
     /**
      * Signals start button was pressed.
      */

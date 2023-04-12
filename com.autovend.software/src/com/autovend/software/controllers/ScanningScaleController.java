@@ -1,7 +1,6 @@
 package com.autovend.software.controllers;
 
 import com.autovend.devices.ElectronicScale;
-import com.autovend.devices.OverloadException;
 import com.autovend.devices.observers.ElectronicScaleObserver;
 
 /**
@@ -17,7 +16,7 @@ public class ScanningScaleController extends DeviceController<ElectronicScale, E
 		this.currentWeight = 0;
     }
 
-    final String getTypeName(){
+    public final String getTypeName(){
         return "ScanningScaleController";
     }
     
@@ -31,15 +30,12 @@ public class ScanningScaleController extends DeviceController<ElectronicScale, E
     public void reactToWeightChangedEvent(ElectronicScale scale, double weightInGrams) {
 		if (scale != this.getDevice()) {return;}
 		this.currentWeight = weightInGrams;
+        System.out.println(this.currentWeight);
     }
 
     @Override
-    public void reactToOverloadEvent(ElectronicScale scale) {
-
-    }
+    public void reactToOverloadEvent(ElectronicScale scale) {}
 
     @Override
-    public void reactToOutOfOverloadEvent(ElectronicScale scale) {
-
-    }
+    public void reactToOutOfOverloadEvent(ElectronicScale scale) {}
 }

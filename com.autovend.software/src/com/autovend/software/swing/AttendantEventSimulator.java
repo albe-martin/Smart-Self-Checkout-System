@@ -11,7 +11,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.autovend.devices.OverloadException;
 import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.ReceiptPrinterController;
 
 /**
  * GUI used to simulate events related to the Attendant.
@@ -30,7 +32,8 @@ public class AttendantEventSimulator extends JFrame {
 	 * Create the frame.
 	 */      
 	public AttendantEventSimulator(JFrame attendantFrame, CheckoutController checkout1, CheckoutController checkout2) {
-		
+
+
 		setTitle("Attendant Event Simulator");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
@@ -150,6 +153,12 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowinkResolve1 = new JButton("Resolve Low Ink Issue (1)");
 		lowinkResolve1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					checkout1.checkoutStation.printer.addInk(1000);
+					((ReceiptPrinterController)checkout1.getControllersByType("ReceiptPrinterController").get(0)).addedInk(1000);
+				} catch (OverloadException ex) {
+					throw new RuntimeException(ex);
+				}
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInkResolved(checkout1);
 			}
 		});
@@ -162,6 +171,12 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowinkResolve2 = new JButton("Resolve Low Ink Issue (2)");
 		lowinkResolve2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					checkout2.checkoutStation.printer.addInk(1000);
+					((ReceiptPrinterController)checkout2.getControllersByType("ReceiptPrinterController").get(0)).addedInk(1000);
+				} catch (OverloadException ex) {
+					throw new RuntimeException(ex);
+				}
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInkResolved(checkout2);
 			}
 		});
@@ -199,7 +214,14 @@ public class AttendantEventSimulator extends JFrame {
 		// Resolve low paper events.
 		JButton lowPaperResolve1 = new JButton("Resolve Low Paper Issue (1)");
 		lowPaperResolve1.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
+				try {
+					checkout1.checkoutStation.printer.addPaper(1000);
+					((ReceiptPrinterController)checkout1.getControllersByType("ReceiptPrinterController").get(0)).addedPaper(1000);
+				} catch (OverloadException ex) {
+					throw new RuntimeException(ex);
+				}
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaperResolved(checkout1);
 			}
 		});
@@ -212,6 +234,12 @@ public class AttendantEventSimulator extends JFrame {
 		JButton lowPaperResolve2 = new JButton("Resolve Low Paper Issue (2)");
 		lowPaperResolve2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					checkout2.checkoutStation.printer.addPaper(1000);
+					((ReceiptPrinterController)checkout2.getControllersByType("ReceiptPrinterController").get(0)).addedPaper(1000);
+				} catch (OverloadException ex) {
+					throw new RuntimeException(ex);
+				}
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaperResolved(checkout2);
 			}
 		});

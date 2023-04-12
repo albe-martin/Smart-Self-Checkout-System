@@ -10,9 +10,13 @@ import java.util.Locale;
 import javax.swing.JFrame;
 
 import com.autovend.Barcode;
+import com.autovend.Bill;
+import com.autovend.Coin;
 import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
+import com.autovend.devices.OverloadException;
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.devices.SimulationException;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
@@ -26,11 +30,11 @@ import com.autovend.software.controllers.CustomerIOController;
  * Launches the customer and attendant GUIs.
  */
 public class GUILauncher {
-	
+		
 	/**
 	 * Main runner.
 	 */
-	public static void main(String[] args) {
+	public static void launchGUI(SupervisionStation attendantStation) {
 		// Add French language.
 		// TODO: This is just a demo. The submission will only be in english.
 		// TODO: However, testing will need to create and use a french demo (just for a couple labels to ensure it works).
@@ -60,9 +64,6 @@ public class GUILauncher {
 
 //		Language.addLanguage("French", french);
 //		Language.languages.add("French");
-
-		// Create attendant station.
-		SupervisionStation attendantStation = new SupervisionStation();
 		
 		// Get and set up screen
 		JFrame attendantScreen = attendantStation.screen.getFrame();
@@ -78,7 +79,7 @@ public class GUILauncher {
 		asc.registerController(aioc);
 		
 		// Add valid username and password.
-		asc.registerUser("abc", "123");
+		asc.registerUser("a", "a");
 		
 		attendantScreen.setVisible(true);
 		
@@ -87,7 +88,24 @@ public class GUILauncher {
 		ArrayList<CustomerIOController> ciocs = new ArrayList<>();
 		for (int i = 0; i < num_stations; i++) {
 			SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
-					new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+					new int[] {5}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+			
+			for (int j = 0; j < SelfCheckoutStation.BILL_DISPENSER_CAPACITY-1; j++) {
+				try {
+					customerStation.billDispensers.get(5).load(new Bill(5, Currency.getInstance(Locale.CANADA)));
+				} catch (SimulationException | OverloadException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			for (int j = 0; j < SelfCheckoutStation.COIN_DISPENSER_CAPACITY-1; j++) {
+				try {
+					customerStation.coinDispensers.get(BigDecimal.valueOf(0.25)).load(new Coin(BigDecimal.valueOf(0.25), Currency.getInstance(Locale.CANADA)));
+				} catch (SimulationException | OverloadException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			
 			// Get and set up screen
 			JFrame customerScreen = customerStation.screen.getFrame();
@@ -126,26 +144,29 @@ public class GUILauncher {
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
 
 		// Need scale set when added
-		PLUCodedProduct pluCodedProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four), "apple" , BigDecimal.valueOf(0.89));
-		PLUCodedProduct pluCodedProduct2 = new PLUCodedProduct(new PriceLookUpCode(Numeral.four, Numeral.three, Numeral.two, Numeral.one), "banana" , BigDecimal.valueOf(0.82));
-		PLUCodedProduct pluCodedProduct3 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.one, Numeral.one, Numeral.one), "bunch of jabuticaba" , BigDecimal.valueOf(17.38));
+		PLUCodedProduct pluCodedProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four), "apple" , BigDecimal.valueOf(1.00));
+		PLUCodedProduct pluCodedProduct2 = new PLUCodedProduct(new PriceLookUpCode(Numeral.four, Numeral.three, Numeral.two, Numeral.one), "banana" , BigDecimal.valueOf(0.75));
+		PLUCodedProduct pluCodedProduct3 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.one, Numeral.one, Numeral.one), "bunch of jabuticaba" , BigDecimal.valueOf(15.00));
 
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct1.getPLUCode(), pluCodedProduct1);
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct2.getPLUCode(), pluCodedProduct2);
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
 		
 		// Run customer event simulators.
-		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController());
+		CustomerEventSimulator customerEventSimulatorFrame = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController().checkoutStation);
 		customerEventSimulatorFrame.setVisible(true);
 		customerEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		CustomerEventSimulator customerEventSimulatorFrame2 = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(1).getMainController());
-		customerEventSimulatorFrame2.setVisible(true);
-		customerEventSimulatorFrame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 		
 		// Run attendant event simulator.
 		AttendantEventSimulator attendantEventSimulatorFrame = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0).getMainController(), ciocs.get(1).getMainController());
 		attendantEventSimulatorFrame.setVisible(true);
 		attendantEventSimulatorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+	}
+	
+	public static void main(String[] args) {
+		SupervisionStation attendantStation = new SupervisionStation();
+		launchGUI(attendantStation);
 	}
 }

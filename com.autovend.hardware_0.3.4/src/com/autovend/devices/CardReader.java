@@ -25,9 +25,9 @@ public class CardReader extends AbstractDevice<CardReaderObserver> {
 	public CardReader() {}
 
 	private final static ThreadLocalRandom random = ThreadLocalRandom.current();
-	private final static double PROBABILITY_OF_TAP_FAILURE = 0.01;
-	private final static double PROBABILITY_OF_INSERT_FAILURE = 0.01;
-	private final static double PROBABILITY_OF_SWIPE_FAILURE = 0.1;
+	private final static double PROBABILITY_OF_TAP_FAILURE = 0;
+	private final static double PROBABILITY_OF_INSERT_FAILURE = 0;
+	private final static double PROBABILITY_OF_SWIPE_FAILURE = 0;
 
 	/**
 	 * Tap the card. Announces a "cardTapped" event when successful. Announces a

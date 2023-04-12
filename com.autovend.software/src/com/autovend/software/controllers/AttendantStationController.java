@@ -162,6 +162,7 @@ public class AttendantStationController {
 		}
 		return;
 	}
+
 	
 	/**
 	 * A simple method to remove  a station to this attendant station's list of stations along with its controller.
@@ -349,8 +350,11 @@ public class AttendantStationController {
 	 * Methods for printing receipt in the case that the checkout station is low on ink or paper
 	 */
 	public void printReceipt(StringBuilder receipt) {
-		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
-		printerController.printReceipt(receipt);
+//		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
+//		printerController.printReceipt(receipt);
+		// TODO We don't have a ReceiptPrinter at the AttendantStation
+		System.out.println("In ASOC");
+		System.out.println(receipt.toString());
 	}
 
 	
