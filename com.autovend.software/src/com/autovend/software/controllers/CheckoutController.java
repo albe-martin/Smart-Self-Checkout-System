@@ -569,6 +569,7 @@ public class CheckoutController {
 				if ((getRemainingAmount().negate()).compareTo(dispenser.getDenom()) >= 0) {
 					amountPaid = amountPaid.subtract((dispenser.getDenom()));
 					dispenser.emitChange();
+					System.out.println(amountPaid);
 					break;
 				} else {
 					if (controllers.lower(dispenser) != null) {

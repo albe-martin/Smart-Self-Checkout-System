@@ -135,10 +135,10 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 			String productName = product.getClass().getSimpleName();
 			String productString;
 			if (product.isPerUnit()) {
-				productString = String.format("%d $%.2f %dx %s\n", i, productInfo[1], productInfo[0],
+				productString = String.format("%d $%.2f %dx %s\n", i, productInfo[1].doubleValue(), productInfo[0].intValue(),
 						productName);
 			} else {
-				productString = String.format("%d $%.2f %dkg %s\n", i, productInfo[1], productInfo[0],
+				productString = String.format("%d $%.2f %.3fkg %s\n", i, productInfo[1].doubleValue(), productInfo[0].doubleValue(),
 						productName);
 			}
 			int splitPos = 59;

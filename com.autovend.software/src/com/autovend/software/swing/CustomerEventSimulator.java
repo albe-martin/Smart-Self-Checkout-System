@@ -161,7 +161,6 @@ public class CustomerEventSimulator extends JFrame {
         JButton inputBill = new JButton("Input 1$ Bill");
         inputBill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-//        	checkout.checkoutStation.billInput.removeDanglingBill();
         	try {
         		checkout.checkoutStation.billInput.accept(new Bill(1, Currency.getInstance(Locale.CANADA)));
 			} catch (DisabledException | OverloadException e1) {

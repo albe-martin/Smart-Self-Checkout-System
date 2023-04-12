@@ -120,6 +120,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
     public void finalizeOrder() {
     	completePaymentErrorEnum e = this.getMainController().completePayment();
+    	while (this.getMainController().checkoutStation.billInput.removeDanglingBill() != null);
 		((CustomerOperationPane)getDevice().getFrame().getContentPane()).showPaymentErrorPane(e);
     	((CustomerOperationPane)getDevice().getFrame().getContentPane()).updateAmountPaid();
     }
