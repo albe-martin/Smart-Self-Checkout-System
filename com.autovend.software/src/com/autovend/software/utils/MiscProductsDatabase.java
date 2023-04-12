@@ -23,7 +23,7 @@ public class MiscProductsDatabase {
          *
          * @param price     The price per unit or per kilogram.
          */
-        protected Bag(BigDecimal price) {
+        public Bag(BigDecimal price) {
             super(new Barcode(bagNumb), "A reusable bag", price, 0.5);
         }
         public double getExpectedWeight() {

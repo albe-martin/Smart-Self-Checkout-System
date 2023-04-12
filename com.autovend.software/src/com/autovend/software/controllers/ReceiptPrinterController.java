@@ -168,10 +168,8 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	 * @param cost:  total cost of the order
 	 */
 	public void printReceipt(StringBuilder receipt) {
-
 		printer = getDevice();
-
-		if (lowInk() && lowPaper()) {
+		if (!lowInk() && !lowPaper()) {
 			try {
 				for (char c : receipt.toString().toCharArray()) {
 					if (c == '\n') {
@@ -179,7 +177,6 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 					} else if (!Character.isWhitespace(c)) {
 						estimatedInk--;
 					}
-	
 					printer.print(c);
 				}
 				printer.cutPaper();
@@ -190,21 +187,31 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 				this.getMainController().printerOutOfResources();
 			}
 		}
-		
-		else if (!lowInk() && lowPaper()) {
+
+		else if (lowInk() && !lowPaper()) {
 			// Inform the I/O for attendant from the error message about low ink
 			inkLow = true;
+			this.getMainController().printerOutOfResources();
+
 		} 
-		else if (lowInk() && !lowPaper()) {
+		else if (!lowInk() && lowPaper()) {
+
 			// Inform the I/O for attendant from the error message about low paper
 			paperLow = true;
+			this.getMainController().printerOutOfResources();
+
+
 		}
-		else if (!lowInk() && !lowPaper()) {
+		else if (lowInk() && lowPaper()) {
+
 			//inform the I/O for attendant from the error message about low ink and paper
 			inkLow = true;
 			paperLow = true;
-			
+			this.getMainController().printerOutOfResources();
+
 		}
+		lowInk();
+		lowPaper();
 	}
 
 	@Override
@@ -233,5 +240,4 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 		this.getMainController().printerRefilled();
 		lowInk();
 	}
-
 }

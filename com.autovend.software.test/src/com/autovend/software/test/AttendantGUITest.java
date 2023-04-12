@@ -25,6 +25,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import com.autovend.devices.*;
+import com.autovend.software.controllers.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,24 +35,12 @@ import com.autovend.Barcode;
 import com.autovend.BarcodedUnit;
 import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
-import com.autovend.devices.AbstractDevice;
-import com.autovend.devices.BarcodeScanner;
-import com.autovend.devices.ElectronicScale;
-import com.autovend.devices.SelfCheckoutStation;
-import com.autovend.devices.SupervisionStation;
-import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.AbstractDeviceObserver;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.controllers.AttendantIOController;
-import com.autovend.software.controllers.AttendantStationController;
-import com.autovend.software.controllers.BaggingScaleController;
-import com.autovend.software.controllers.BarcodeScannerController;
-import com.autovend.software.controllers.CheckoutController;
-import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.swing.AttendantLoginPane;
 import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
@@ -59,12 +49,14 @@ import com.autovend.software.swing.Language;
 public class AttendantGUITest {
 
 	TouchScreen screen;
+
+	AttendantStationController asc;
+	SupervisionStation attendantStation;
 	AttendantIOController aioc;
 	CustomerIOController cioc;
 	AttendantLoginPaneTest attendantPane;
-	
 	PLUCodedProduct pluCodedProduct1;
-	
+
 	boolean enabledEventOccurred = false;
 	boolean disabledEventOccurred = false;
 	
@@ -220,7 +212,7 @@ public class AttendantGUITest {
 		Language.addLanguage("French", french);
 		
 		// Create attendant station.
-		SupervisionStation attendantStation = new SupervisionStation();
+		attendantStation = new SupervisionStation();
 		
 		// Get and set up screen
 		
@@ -231,15 +223,18 @@ public class AttendantGUITest {
 		attendantScreen.setSize(800, 800);
 		attendantScreen.setUndecorated(false);
 		attendantScreen.setResizable(false);
-		
-		aioc = new AttendantIOController(attendantStation.screen);
+		asc = new AttendantStationController(attendantStation);
+
+		aioc = (AttendantIOController) asc.getAttendantIOControllers().iterator().next();
 		attendantPane = new AttendantLoginPaneTest(aioc);
 		attendantScreen.setContentPane(attendantPane);
 		
-		AttendantStationController asc = new AttendantStationController();
-		aioc.setMainAttendantController(asc);
-		asc.registerController(aioc);
-		
+
+		System.out.println(asc.getAttendantIOControllers().size());
+
+
+
+
 		// Add valid username and password.
 		asc.registerUser("abc", "123");
 		
@@ -298,6 +293,12 @@ public class AttendantGUITest {
     @After
     public void tearDown() {
 		screen.disable();
+		screen=null;
+		asc=null;
+		attendantStation=null;
+		aioc=null;
+		cioc=null;
+		attendantPane=null;
     }
     
 
@@ -341,7 +342,6 @@ public class AttendantGUITest {
 		loginButton.doClick();
 		
 		int numberOfComponents = screen.getFrame().getContentPane().getComponentCount();
-		
 		// If the number of components is not greater than 7, that is evidence that the pane is still the login screen
 		assert(numberOfComponents <= 7);
 	}
@@ -566,7 +566,20 @@ public class AttendantGUITest {
 		usernameTF.setText("abc"); // Correct login credentials
 		passwordTF.setText("123");	
 		loginButton.doClick();
-		
+
+		ReceiptPrinter testPrinter = new ReceiptPrinter();
+		try {
+			testPrinter.addInk(1000);
+			testPrinter.addPaper(1000);
+		} catch (OverloadException e) {
+			throw new RuntimeException(e);
+		}
+		ReceiptPrinterController testPrinterController = new ReceiptPrinterController(testPrinter);
+		asc.registerController(testPrinterController);
+		testPrinterController.addedPaper(1000);
+		testPrinterController.addedInk(1000);
+
+
 		StringBuilder receipt = new StringBuilder();
 		AttendantOperationPane aop = (AttendantOperationPane) screen.getFrame().getContentPane();
 		aop.notifyReceiptRePrint(cioc.getMainController(), receipt);

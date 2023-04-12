@@ -250,7 +250,7 @@ public class CheckoutController {
 	 * @param numBags The number of bags getting added
 	 */
 	public void purchaseBags(int numBags) {
-		if (baggingItemLock || systemProtectionLock) {
+		if (baggingItemLock || systemProtectionLock || isDisabled) {
 			return;
 		}
 		ArrayList<DeviceController> bagDispenserController = registeredControllers
@@ -318,7 +318,7 @@ public class CheckoutController {
 	}
 
 	public void addItem(Product newItem, BigDecimal count) {
-		if (baggingItemLock || systemProtectionLock || newItem == null) {
+		if (baggingItemLock || systemProtectionLock || isDisabled || newItem == null) {
 			return;
 		}
 		// then go through the item and get its weight, either expected weight if it
@@ -456,26 +456,27 @@ public class CheckoutController {
 	public void printReceipt() {
 		// print receipt
 		if (!registeredControllers.get("ReceiptPrinterController").isEmpty()) {
-			StringBuilder receipt = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).createReceipt(this.order, this.cost);
+			StringBuilder receipt = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0)).createReceipt(this.order, this.cost);
 			// call print receipt method in the ReceiptPrinterController class with the
 			// order details and cost
+			System.out.println(receipt.toString());
 
 
 			//check ink and paper level after printing
-			boolean lowInk = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).lowInk();
-			boolean lowPaper = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).lowPaper();
+			boolean lowInk = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0)).lowInk();
+			boolean lowPaper = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0)).lowPaper();
 			if (lowInk || lowPaper) {
 				// if either ink or paper is low then the station will be disabled
-				for(DeviceController io : this.registeredControllers.get("CustomerIOController")) {
+				for(DeviceController io : this.registeredControllers.get("AttendantIOController")) {
 					((AttendantIOController) io).disableStation(this);
 					((AttendantIOController) io).rePrintReceipt(this, receipt);
 				}
 
 			}
 			else {
-				((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").iterator().next()).printReceipt(receipt);
+				((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0)).printReceipt(receipt);
 			}
-			
+
 
 		}
 		clearOrder();
@@ -507,7 +508,7 @@ public class CheckoutController {
 		}
 	}
 
-	
+
 
 
 
@@ -523,7 +524,7 @@ public class CheckoutController {
 	}
 
 	public void completePayment() {
-		if (this.baggingItemLock || this.systemProtectionLock) {
+		if (this.baggingItemLock || this.systemProtectionLock || isDisabled) {
 			return;
 		}
 		if (this.cost.compareTo(this.amountPaid) > 0) {
@@ -625,7 +626,7 @@ public class CheckoutController {
 
 	// generic method used to control how payment by credit/debit card is handled.
 	public void payByBankCard(CardReaderControllerState state, CardIssuer source, BigDecimal payAmount) {
-		if (baggingItemLock || systemProtectionLock || payingChangeLock || source == null) {
+		if (baggingItemLock || systemProtectionLock || payingChangeLock || isDisabled || source == null) {
 			return;
 		}
 		if (payAmount.compareTo(getRemainingAmount()) > 0) {
@@ -643,7 +644,7 @@ public class CheckoutController {
 	}
 
 	public void payByGiftCard() {
-		if (baggingItemLock || systemProtectionLock || payingChangeLock) {
+		if (baggingItemLock || systemProtectionLock || payingChangeLock || isDisabled) {
 			return;
 		}
 		ArrayList<DeviceController> controllers = this.registeredControllers.get("PaymentController");
@@ -658,7 +659,7 @@ public class CheckoutController {
 	/**
 	 * A method used to remove an item from a customers order of some given
 	 * quantity.
-	 * 
+	 *
 	 * @param item
 	 * @param amount
 	 */
@@ -764,11 +765,12 @@ public class CheckoutController {
 	public void shutDown() {
 		setShutdown(true);
 		clearOrder();
-		disableAllDevices();
 
 		for (DeviceController io : registeredControllers.get("CustomerIOController")) {
 			((CustomerIOController) io).notifyShutdown();
 		}
+		disableAllDevices();
+
 	}
 
 	/**
@@ -794,8 +796,8 @@ public class CheckoutController {
 	}
 
 	public void disableStation() {
+
 		if (!isShutdown && !inUse) {
-			disableAllDevices();
 			clearOrder();
 			this.isDisabled = true;
 			inUse = false;
@@ -804,6 +806,8 @@ public class CheckoutController {
 			for (DeviceController io : registeredControllers.get("CustomerIOController")) {
 				((CustomerIOController) io).notifyDisabled();
 			}
+			disableAllDevices();
+		} else {
 		}
 	}
 

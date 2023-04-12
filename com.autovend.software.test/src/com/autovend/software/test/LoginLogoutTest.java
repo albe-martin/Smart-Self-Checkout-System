@@ -142,7 +142,10 @@ public class LoginLogoutTest {
 		String password = "seng123";
 		credentials.put(username, password);
 		attendantStationController.registerUser(username, password);
+		attendantIOController.login(username, password); //initializing login screen by logging in then out
+		attendantIOController.logout();
 		attendantStationController.login("Karen", password);
+
 		assertEquals("", attendantStationController.getCurrentUser());
 	}
 	

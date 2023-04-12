@@ -902,7 +902,7 @@ public class AttendantOperationPane extends JPanel {
 	/**
 	 * Notify the attendant that a coin denomination is low.
 	 * 
-	 * @param chekout CheckoutController making request.
+	 * @param checkout CheckoutController making request.
 	 */
 	public void notifyLowCoinDenomination(CheckoutController checkout, BigDecimal denom) {
 		// Create notification data.
