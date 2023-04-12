@@ -49,6 +49,7 @@ import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.CardReaderControllerState;
 import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.CheckoutController.completePaymentErrorEnum;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.utils.MiscProductsDatabase;
 
@@ -117,12 +118,7 @@ public class CustomerOperationPane extends JPanel {
 
 		initializeAddOwnBagsButton();
 
-//		initializePayForItemsButton();
-        
-        initializeCashButton();
-        initializeCreditButton();
-        initializeDebitButton();
-        initializeGiftCardButton();
+		initializePayForItemsButton();
 
 		initializeEnterMembershipNumberButton();
 
@@ -260,7 +256,7 @@ public class CustomerOperationPane extends JPanel {
 	}
     
 	public void updateAmountPaid() {
-		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())).toString());
+		amountPaidLabel.setText(String.format("Amount Due: $%,.2f", cioc.getMainController().getRemainingAmount().doubleValue()));
 	}
 
 	private void initializeEnterMembershipNumberButton() {
@@ -319,93 +315,71 @@ public class CustomerOperationPane extends JPanel {
 		add(purchaseBagsButton);
 	}
 
-	private void initializeCashButton() {
+	private void initializePayForItemsButton() {
 		// Create pay with cash button.
-		JButton cashButton = new JButton("Pay with Cash");
+		JButton cashButton = new JButton("Complete Payment");
 		cashButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showPayWithCashPane();
+				cioc.finalizeOrder();
+				//showPayWithCashPane();
 			}
 		});
 		cashButton.setBounds(490, 351, 173, 60);
 		add(cashButton);
 	}
 
-	public void showPayWithCashPane() {
-//		JPanel panel = new JPanel(new GridBagLayout());
-//		GridBagConstraints gbc = new GridBagConstraints();
-//
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		gbc.insets = new Insets(5, 5, 5, 5);
-//		panel.add(new JLabel("Please insert cash into the machine."), gbc);
-//
-//
-//
-//		JButton finishedButton = new JButton("Finished");
-//		finishedButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
-//				if (window1 != null) {
-//					window1.dispose();
-//				}
-//			}
-//		});
-//
-//		gbc.gridx = 0;
-//		gbc.gridy = 1;
-//		gbc.gridwidth = 1;
-//		panel.add(finishedButton, gbc);
-//
-//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
+	public void showPaymentErrorPane(completePaymentErrorEnum e) {
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
 
-		cashGlassPane.setVisible(true);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		
+		switch (e) {
+		case DUE:
+			panel.add(new JLabel("You have not paid enough!"), gbc);
+			break;
+		case EMPTYORDER:
+			panel.add(new JLabel("Your order is empty."), gbc);
+			break;
+		case CHANGE:
+			panel.add(new JLabel("Change is being dispensed..."), gbc);
+			break;
+		case RECEIPT:
+			panel.add(new JLabel("Payment complete; receipt has been printed. Thank you for shopping with us!"), gbc);
+			break;
+		default:
+			panel.add(new JLabel("Something went wrong..."), gbc);
+			break;
+		}
 
-//		dialog.addWindowListener(new WindowAdapter() {
-//			@Override
-//			public void windowClosing(WindowEvent e) {
-//				// Code to run when the JOptionPane is closed
-//			}
-//		});
-//
-//		dialog.setVisible(true);
-	}
-
-	private void initializeCreditButton() {
-		// Create pay with credit button.
-		JButton cashButton = new JButton("Pay with Credit");
-		cashButton.addActionListener(new ActionListener() {
+		JButton finishedButton = new JButton("OK");
+		finishedButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cioc.choosePayByBankCard(CardReaderControllerState.PAYINGBYCREDIT, null, cioc.getMainController().getRemainingAmount());
+				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+				if (window1 != null) {
+					window1.dispose();
+				}
 			}
 		});
-		cashButton.setBounds(490, 411, 173, 60);
-		add(cashButton);
-	}
 
-	private void initializeDebitButton() {
-		// Create pay with debit button.
-		JButton cashButton = new JButton("Pay with Debit");
-		cashButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.choosePayByBankCard(CardReaderControllerState.PAYINGBYDEBIT, null, cioc.getMainController().getRemainingAmount());
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		panel.add(finishedButton, gbc);
+
+		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
+
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Code to run when the JOptionPane is closed
 			}
 		});
-		cashButton.setBounds(490, 471, 173, 60);
-		add(cashButton);
-	}
 
-	private void initializeGiftCardButton() {
-		// Create pay with gift card button.
-		JButton cashButton = new JButton("Pay with Gift Card");
-		cashButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.choosePayByGiftCard();
-			}
-		});
-		cashButton.setBounds(490, 531, 173, 60);
-		add(cashButton);
+		dialog.setVisible(true);
 	}
 
 //	private void initializeCallAttendantButton() {
@@ -699,30 +673,6 @@ public class CustomerOperationPane extends JPanel {
 			}
 		});
 
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please insert cash into the machine."), gbc);
-
-		// JButton finishedButton = new JButton("Finished");
-//		finishedButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				// Check if item was bagged
-//				if (cioc.isItemBagged()) {
-//					// Close pane
-//					baggingGlassPane.setVisible(false);
-//					refreshOrderGrid();
-//				} else {
-//					createBaggingWeightProblemPopup();
-//				}
-//			}
-//		});
-
-		panel.setBackground(new Color(227, 241, 241, 255)); // light blue
-		cashGlassPane.add(panel);
 		add(cashGlassPane);
 
 	}

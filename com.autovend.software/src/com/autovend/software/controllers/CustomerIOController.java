@@ -16,6 +16,7 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.controllers.CheckoutController.completePaymentErrorEnum;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 
@@ -117,11 +118,10 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
         this.getMainController().payByGiftCard();
     }
 
-    void finalizeOrder(){
-        this.getMainController().completePayment();
-        //todo:
-        // add stuff for GUI here, also modify that method to return stuff so we can
-        // react to that to modify the GUI
+    public void finalizeOrder() {
+    	completePaymentErrorEnum e = this.getMainController().completePayment();
+		((CustomerOperationPane)getDevice().getFrame().getContentPane()).showPaymentErrorPane(e);
+    	((CustomerOperationPane)getDevice().getFrame().getContentPane()).updateAmountPaid();
     }
 
     public void purchaseBags(int amountOfBagsToAdd) {
