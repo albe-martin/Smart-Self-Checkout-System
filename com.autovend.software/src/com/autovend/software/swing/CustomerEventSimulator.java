@@ -8,6 +8,7 @@ import com.autovend.Numeral;
 import com.autovend.devices.TouchScreen;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
+import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
@@ -23,10 +24,21 @@ public class CustomerEventSimulator extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
+	public CustomerIOController cioc1;
+	public CustomerIOController cioc2;
 
 
 	public CustomerEventSimulator(JFrame attendantFrame, CheckoutController checkout1, CheckoutController checkout2) {
 
+
+		for (DeviceController<?, ?> controller : checkout1.getControllersByType("CustomerIOController")) {
+    		cioc1 = (CustomerIOController) controller;
+    	}
+		
+		for (DeviceController<?, ?> controller : checkout2.getControllersByType("CustomerIOController")) {
+    		cioc2 = (CustomerIOController) controller;
+    	}
+		
 		// Create sample items
 		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.seven), "toy car",
 				BigDecimal.valueOf(83.29), 359.0);
@@ -56,7 +68,6 @@ public class CustomerEventSimulator extends JFrame {
             public void actionPerformed(ActionEvent e) {
             	for (DeviceController<?, ?> controller : checkout1.getControllersByType("ItemAdderController")) {
             		if (controller instanceof BarcodeScannerController barcodeScanner) {
-            			System.out.println("trying scan");
             			barcodeScanner.reactToBarcodeScannedEvent(barcodeScanner.getDevice(), bcproduct1.getBarcode());
             		}
             	}
@@ -114,8 +125,8 @@ public class CustomerEventSimulator extends JFrame {
         JButton input5Bill = new JButton("Input 5$ Bill");
         input5Bill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            cioc1.getMainController().addToAmountPaid(BigDecimal.valueOf(5));
-        	ArrayList<DeviceController> bpcs = cioc1.getMainController().getControllersByType("BillPaymentController");
+            checkout1.addToAmountPaid(BigDecimal.valueOf(5));
+        	ArrayList<DeviceController> bpcs = checkout1.getControllersByType("BillPaymentController");
             for (DeviceController bpc : bpcs) {
 				
 			}
