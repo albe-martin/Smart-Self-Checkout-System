@@ -179,8 +179,16 @@ public class CustomerGUITest {
  		customerScreen.setSize(800, 800);
  		customerScreen.setUndecorated(false);
  		customerScreen.setResizable(false);
-
+ 		
+ 		SupervisionStation supStation = new SupervisionStation();
+ 		AttendantStationController attendantController = new AttendantStationController(supStation);
+ 		AttendantIOController aioc = new AttendantIOController(screen);
+ 		aioc.setMainAttendantController(attendantController);
+ 		
  		cioc = new CustomerIOController(customerStation.screen);
+ 		CheckoutController checkoutController = new CheckoutController();
+ 		cioc.setMainController(checkoutController);
+ 		checkoutController.setSupervisor(attendantController.getID());
 
  		CheckoutController controller = new CheckoutController();
  		cioc.setMainController(controller);
@@ -566,6 +574,8 @@ public class CustomerGUITest {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
+ 		
+ 		
  	}
  	
  	@Test
