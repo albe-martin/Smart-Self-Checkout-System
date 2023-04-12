@@ -190,8 +190,6 @@ public class CustomerGUITest {
  		cioc.setMainController(checkoutController);
  		checkoutController.setSupervisor(attendantController.getID());
 
- 		CheckoutController controller = new CheckoutController();
- 		cioc.setMainController(controller);
  		customerPane = new CustomerStartPaneTest(cioc);
  		customerScreen.setContentPane(customerPane);
  		
