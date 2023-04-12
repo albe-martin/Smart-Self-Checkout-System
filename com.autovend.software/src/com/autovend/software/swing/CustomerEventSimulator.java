@@ -108,6 +108,19 @@ public class CustomerEventSimulator extends JFrame {
         gbcInput5Bill.gridx = 0;
         gbcInput5Bill.gridy = 2;
         contentPane.add(input5Bill, gbcInput5Bill);
+        
+        
+        JButton addItemToBaggingArea = new JButton("Add item to bagging area");
+        addItemToBaggingArea.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            cioc1.itemWasAddedToTheBaggingArea();
+           }
+        });
+        GridBagConstraints gbcAddItemToBaggingArea = new GridBagConstraints();
+        gbcAddItemToBaggingArea.fill = GridBagConstraints.BOTH;
+        gbcAddItemToBaggingArea.gridx = 0;
+        gbcAddItemToBaggingArea.gridy = 3;
+        contentPane.add(addItemToBaggingArea, gbcAddItemToBaggingArea);
        
             	
                 
