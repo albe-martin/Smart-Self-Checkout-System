@@ -16,6 +16,7 @@ import com.autovend.Barcode;
 import com.autovend.Numeral;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
+import com.autovend.software.controllers.BaggingScaleController;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
@@ -37,8 +38,12 @@ public class CustomerEventSimulator extends JFrame {
 		
 		// Create sample items
 		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.seven), "toy car",
-				BigDecimal.valueOf(83.29), 359.0);
+				BigDecimal.valueOf(83.29), 3.0);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
+		
+		BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.eight), "lamp",
+				BigDecimal.valueOf(50.29), 10.0);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
 		
 		
 		
@@ -59,7 +64,7 @@ public class CustomerEventSimulator extends JFrame {
 
 
          
-        JButton scanItem = new JButton("Scan Item");
+        JButton scanItem = new JButton("Scan Item #1");
         scanItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	for (DeviceController<?, ?> controller : checkout.getControllersByType("ItemAdderController")) {
@@ -75,6 +80,40 @@ public class CustomerEventSimulator extends JFrame {
         gbcScan.gridx = 0;
         gbcScan.gridy = 0;
         contentPane.add(scanItem, gbcScan);
+        
+        JButton scanItem2 = new JButton("Scan Item #2");
+        scanItem2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	for (DeviceController<?, ?> controller : checkout.getControllersByType("ItemAdderController")) {
+            		if (controller instanceof BarcodeScannerController barcodeScanner) {
+            			barcodeScanner.reactToBarcodeScannedEvent(barcodeScanner.getDevice(), bcproduct2.getBarcode());
+            		}
+            	}
+            	
+           }
+        });
+        GridBagConstraints gbcScan2 = new GridBagConstraints();
+        gbcScan2.fill = GridBagConstraints.BOTH;
+        gbcScan2.gridx = 1;
+        gbcScan2.gridy = 0;
+        contentPane.add(scanItem2, gbcScan2);
+        
+        JButton addItemToBaggingArea = new JButton("Add item to bagging area");
+        addItemToBaggingArea.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+	        	for (DeviceController<?, ?> controller : checkout.getControllersByType("BaggingAreaController")) {
+	        		if (controller instanceof BaggingScaleController bsc) {
+	        			double expWeight = bsc.getExpectedWeight();
+	        			bsc.reactToWeightChangedEvent(bsc.getDevice(), expWeight);
+	        		}
+	        	}
+           }
+        });
+        GridBagConstraints gbcAddItemToBaggingArea = new GridBagConstraints();
+        gbcAddItemToBaggingArea.fill = GridBagConstraints.BOTH;
+        gbcAddItemToBaggingArea.gridx = 0;
+        gbcAddItemToBaggingArea.gridy = 1;
+        contentPane.add(addItemToBaggingArea, gbcAddItemToBaggingArea);
 
 
        
@@ -87,7 +126,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcMembership = new GridBagConstraints();
         gbcMembership.fill = GridBagConstraints.BOTH;
         gbcMembership.gridx = 1;
-        gbcMembership.gridy = 0;
+        gbcMembership.gridy = 1;
         contentPane.add(scanMembership, gbcMembership);
         
         JButton doNotBag = new JButton("Do not bag item");
@@ -100,7 +139,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcNoBag = new GridBagConstraints();
         gbcNoBag.fill = GridBagConstraints.BOTH;
         gbcNoBag.gridx = 0;
-        gbcNoBag.gridy = 1;
+        gbcNoBag.gridy = 2;
         contentPane.add(doNotBag, gbcNoBag);
         
         
@@ -114,7 +153,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcAddOwnBag = new GridBagConstraints();
         gbcAddOwnBag.fill = GridBagConstraints.BOTH;
         gbcAddOwnBag.gridx = 1;
-        gbcAddOwnBag.gridy = 1;
+        gbcAddOwnBag.gridy = 2;
         contentPane.add(addOwnBag, gbcAddOwnBag);
         
         
@@ -131,21 +170,11 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcInput5Bill = new GridBagConstraints();
         gbcInput5Bill.fill = GridBagConstraints.BOTH;
         gbcInput5Bill.gridx = 0;
-        gbcInput5Bill.gridy = 2;
+        gbcInput5Bill.gridy = 3;
         contentPane.add(input5Bill, gbcInput5Bill);
         
         
-        JButton addItemToBaggingArea = new JButton("Add item to bagging area");
-        addItemToBaggingArea.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            cioc.itemWasAddedToTheBaggingArea();
-           }
-        });
-        GridBagConstraints gbcAddItemToBaggingArea = new GridBagConstraints();
-        gbcAddItemToBaggingArea.fill = GridBagConstraints.BOTH;
-        gbcAddItemToBaggingArea.gridx = 0;
-        gbcAddItemToBaggingArea.gridy = 3;
-        contentPane.add(addItemToBaggingArea, gbcAddItemToBaggingArea);
+
        
             	
                 
