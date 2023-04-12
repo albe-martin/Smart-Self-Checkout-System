@@ -354,5 +354,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     		((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyItemAdded();
     	}
     }
-
+    
+    /**
+     * Check if bagging area matches expected weight.
+     */
+    public boolean isItemBagged() {
+    	return !getMainController().baggingItemLock;
+    }
 }
