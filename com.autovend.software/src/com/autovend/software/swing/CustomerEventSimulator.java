@@ -19,13 +19,6 @@ import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
-import com.autovend.products.PLUCodedProduct;
-import com.autovend.software.controllers.BaggingScaleController;
-import com.autovend.software.controllers.BarcodeScannerController;
-import com.autovend.software.controllers.CheckoutController;
-import com.autovend.software.controllers.CustomerIOController;
-import com.autovend.software.controllers.DeviceController;
-import com.autovend.software.controllers.ScanningScaleController;
 import com.autovend.software.utils.CardIssuerDatabases;
 
 public class CustomerEventSimulator extends JFrame {
@@ -41,13 +34,13 @@ public class CustomerEventSimulator extends JFrame {
                 BigDecimal.valueOf(20.25), 3.0);
         ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct1.getBarcode(), bcproduct1);
 
-        //BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.eight), "lamp",
-        //		BigDecimal.valueOf(10.50), 10.0);
-        //ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
+        BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.five, Numeral.eight), "lamp",
+        		BigDecimal.valueOf(10.50), 10.0);
+        ProductDatabases.BARCODED_PRODUCT_DATABASE.put(bcproduct2.getBarcode(), bcproduct2);
 
         final int[] numbAdded = {0};
         final SellableUnit[] latestUnit = {null};
-
+        ArrayList<SellableUnit> orderItems = new ArrayList<>();
 
         CardIssuer cibc = new CardIssuer("CIBC");
         CardIssuerDatabases.ISSUER_DATABASE.put("CIBC", cibc);
@@ -73,13 +66,11 @@ public class CustomerEventSimulator extends JFrame {
         si1_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         contentPane.setLayout(si1_contentPane);
         JButton scanItem = new JButton("Scan Item #1");
-        scanItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                BarcodedUnit bcItem1 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.seven), 3.0);
-                checkout.mainScanner.scan(bcItem1);
-                latestUnit[0] = bcItem1;
-                numbAdded[0] = 1;
-            }
+        scanItem.addActionListener(e -> {
+            BarcodedUnit bcItem1 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.seven), 3.0);
+            checkout.mainScanner.scan(bcItem1);
+            latestUnit[0] = bcItem1;
+            numbAdded[0] = 0;
         });
         GridBagConstraints gbcScan = new GridBagConstraints();
         gbcScan.fill = GridBagConstraints.BOTH;
@@ -88,13 +79,11 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(scanItem, gbcScan);
 
         JButton scanItem2 = new JButton("Scan Item #2");
-        scanItem2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                BarcodedUnit bcItem2 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.eight), 10.0);
-                checkout.mainScanner.scan(bcItem2);
-                latestUnit[0] = bcItem2;
-                numbAdded[0] = 1;
-            }
+        scanItem2.addActionListener(e -> {
+            BarcodedUnit bcItem2 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.eight), 10.0);
+            checkout.mainScanner.scan(bcItem2);
+            latestUnit[0] = bcItem2;
+            numbAdded[0] = 0;
         });
 
 
@@ -104,46 +93,37 @@ public class CustomerEventSimulator extends JFrame {
         gbcScan2.gridy = 0;
         contentPane.add(scanItem2, gbcScan2);
 
-        JButton addWeight = new JButton("Add item to bagging area");
-        addWeight.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (checkout.scale.getCurrentWeight() > 0) {
-                        checkout.scale.remove(latestUnit[0]);
-                    }
-                } catch (OverloadException ex) {
-
-                }
-                checkout.baggingArea.add(latestUnit[0]);
-                latestUnit[0] = null;
-                numbAdded[0] = 0;
-
+        JButton addBagging = new JButton("Add item to bagging area");
+        addBagging.addActionListener(e -> {
+            if (numbAdded[0]>0) {
+                checkout.scale.remove(latestUnit[0]);
             }
+            checkout.baggingArea.add(latestUnit[0]);
+            orderItems.add(latestUnit[0]);
+            latestUnit[0] = null;
+            numbAdded[0] = 0;
         });
-        GridBagConstraints gbcaddWeight = new GridBagConstraints();
-        gbcaddWeight.fill = GridBagConstraints.BOTH;
-        gbcaddWeight.gridx = 0;
-        gbcaddWeight.gridy = 1;
-        contentPane.add(addWeight, gbcaddWeight);
+        GridBagConstraints gbcaddBagging = new GridBagConstraints();
+        gbcaddBagging.fill = GridBagConstraints.BOTH;
+        gbcaddBagging.gridx = 0;
+        gbcaddBagging.gridy = 1;
+        contentPane.add(addBagging, gbcaddBagging);
 
-        JButton addItemToBaggingArea = new JButton("Add Weight To Weighing Scale");
-        addItemToBaggingArea.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println();
-                if (numbAdded[0] > 0) {
-                    checkout.scale.remove(latestUnit[0]);
-                }
-                numbAdded[0]++;
-                PriceLookUpCodedUnit pluItem1 = new PriceLookUpCodedUnit(new PriceLookUpCode(Numeral.one, Numeral.three, Numeral.three, Numeral.four), 1.0 * numbAdded[0]);
-                latestUnit[0] = pluItem1;
-                checkout.scale.add(latestUnit[0]);
+        JButton addScale = new JButton("Add Weight To Weighing Scale");
+        addScale.addActionListener(e -> {
+            if (numbAdded[0] > 0) {
+                checkout.scale.remove(latestUnit[0]);
             }
+            numbAdded[0]++;
+            PriceLookUpCodedUnit pluItem1 = new PriceLookUpCodedUnit(new PriceLookUpCode(Numeral.one, Numeral.three, Numeral.three, Numeral.four), 1.0 * numbAdded[0]);
+            latestUnit[0] = pluItem1;
+            checkout.scale.add(latestUnit[0]);
         });
-        GridBagConstraints gbcAddItemToBaggingArea = new GridBagConstraints();
-        gbcAddItemToBaggingArea.fill = GridBagConstraints.BOTH;
-        gbcAddItemToBaggingArea.gridx = 1;
-        gbcAddItemToBaggingArea.gridy = 1;
-        contentPane.add(addItemToBaggingArea, gbcAddItemToBaggingArea);
+        GridBagConstraints gbcaddScale = new GridBagConstraints();
+        gbcaddScale.fill = GridBagConstraints.BOTH;
+        gbcaddScale.gridx = 1;
+        gbcaddScale.gridy = 1;
+        contentPane.add(addScale, gbcaddScale);
 
         JButton scanMembership = new JButton("Scan membership");
         scanMembership.addActionListener(new ActionListener() {
@@ -159,16 +139,14 @@ public class CustomerEventSimulator extends JFrame {
 
 
         JButton input5Bill = new JButton("Input 5$ Bill");
-        input5Bill.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    checkout.billInput.accept(new Bill(5, Currency.getInstance(Locale.CANADA)));
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
-                ;
+        input5Bill.addActionListener(e -> {
+            try {
+                checkout.billInput.accept(new Bill(5, Currency.getInstance(Locale.CANADA)));
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
+            ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
+            ;
         });
         GridBagConstraints gbcInputBill = new GridBagConstraints();
         gbcInputBill.fill = GridBagConstraints.BOTH;
@@ -178,16 +156,14 @@ public class CustomerEventSimulator extends JFrame {
 
 
         JButton inputCoin = new JButton("Input 0.25$ Coin");
-        inputCoin.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    checkout.coinSlot.accept(new Coin(BigDecimal.valueOf(0.25), Currency.getInstance(Locale.CANADA)));
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
-                ;
+        inputCoin.addActionListener(e -> {
+            try {
+                checkout.coinSlot.accept(new Coin(BigDecimal.valueOf(0.25), Currency.getInstance(Locale.CANADA)));
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
+            ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
+            ;
         });
         GridBagConstraints gbcInputCoin = new GridBagConstraints();
         gbcInputCoin.fill = GridBagConstraints.BOTH;
@@ -197,20 +173,51 @@ public class CustomerEventSimulator extends JFrame {
 
 
         JButton tapCard = new JButton("Tap Card");
-        tapCard.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    checkout.cardReader.tap(testCard);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
+        tapCard.addActionListener(e -> {
+            try {
+                checkout.cardReader.tap(testCard);
+                System.out.println("IN");
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
+            ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
         });
         GridBagConstraints gbcTapCard = new GridBagConstraints();
         gbcTapCard.fill = GridBagConstraints.BOTH;
         gbcTapCard.gridx = 0;
         gbcTapCard.gridy = 4;
         contentPane.add(tapCard, gbcTapCard);
+
+        JButton removeItems = new JButton("Remove Items from Bagging Area");
+        removeItems.addActionListener(e -> {
+            try {
+                for (SellableUnit unit : orderItems) {
+                    checkout.baggingArea.remove(unit);
+                }
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
+        GridBagConstraints gbcRemoveItemsFromBaggingArea = new GridBagConstraints();
+        gbcRemoveItemsFromBaggingArea.fill = GridBagConstraints.BOTH;
+        gbcRemoveItemsFromBaggingArea.gridx = 0;
+        gbcRemoveItemsFromBaggingArea.gridy = 5;
+        contentPane.add(removeItems, gbcRemoveItemsFromBaggingArea);
+
+
+
+        JButton removeChange = new JButton("Remove Change");
+        removeChange.addActionListener(e -> {
+            try {
+                while (checkout.billOutput.removeDanglingBill()!=null);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
+        GridBagConstraints gbcremoveChange = new GridBagConstraints();
+        gbcremoveChange.fill = GridBagConstraints.BOTH;
+        gbcremoveChange.gridx = 1;
+        gbcremoveChange.gridy = 5;
+        contentPane.add(removeChange, gbcremoveChange);
     }
 }

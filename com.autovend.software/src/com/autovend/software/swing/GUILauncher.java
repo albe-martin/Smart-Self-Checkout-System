@@ -86,7 +86,7 @@ public class GUILauncher {
 		ArrayList<CustomerIOController> ciocs = new ArrayList<>();
 		for (int i = 0; i < num_stations; i++) {
 			SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
-					new int[] {5}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+					new int[] {5}, new BigDecimal[] {new BigDecimal(0.25)}, 1000, 1);
 			
 			for (int j = 0; j < SelfCheckoutStation.BILL_DISPENSER_CAPACITY-1; j++) {
 				try {
@@ -126,10 +126,7 @@ public class GUILauncher {
 			asc.registerController(cioc);
 			cioc.getMainController().registerController("AttendantIOController", aioc);
 		}
-		
-		// Shut down one station.
-		ciocs.get(1).getMainController().shutDown();
-		ciocs.get(0).getMainController().shutDown();
+		for (int ii=0;ii<num_stations;ii++) {ciocs.get(ii).getMainController().shutDown();}
 		
 		// Create demo products.
 		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",

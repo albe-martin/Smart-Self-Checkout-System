@@ -119,9 +119,9 @@ public class CustomerOperationPane extends JPanel {
 				"Complete Payment",
 				"Select Language",
 				"Pay By Debit",
-				/*	"Pay By Credit",
+				"Pay By Credit",
+				/*
 			"Pay By Gift-Card",
-
 		 */
 
 		};
@@ -134,6 +134,7 @@ public class CustomerOperationPane extends JPanel {
 				()->{cioc.finalizeOrder();},
 				()->{createLangSelectPane();},
 				()->{payByDebitPane();},
+				()->{payByCreditPane();},
 		};
 		int[][] buttonDims = {
 				{370, 663, 188, 76},
@@ -143,8 +144,8 @@ public class CustomerOperationPane extends JPanel {
 				{388, 230, 173, 60},
 				{490, 351, 173, 60},
 				{589, 663, 173, 76},
-				{490, 400, 173, 60},
-
+				{589, 430, 173, 60},
+				{388, 430, 173, 60},
 		};
 		for (int ii=0;ii<buttonText.length;ii++){
 			JButton newButton = new JButton(buttonText[ii]);
@@ -154,17 +155,9 @@ public class CustomerOperationPane extends JPanel {
 			add(newButton);
 		}
 
-
-
-
-
 		// initializeLanguageSelectButton();
-
-
 		// TODO: Should have a confirmation popup (see the one I made for attendant notifyshutdownstationinuse).
-
 		// initializeExitButton();
-
 		refreshOrderGrid();
 
 	}
@@ -353,6 +346,55 @@ public class CustomerOperationPane extends JPanel {
 		});
 
 	}
+	private void payByCreditPane() {
+		JPanel debitPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 10, 5);
+		debitPanel.add(new JLabel("Credit Source Name:"), gbc);
+		bankTextField=new JTextField(12);
+		amountTextField = new JTextField(12);
+		gbc.gridx = 1;
+		debitPanel.add(bankTextField, gbc);
+		gbc.gridy=1;
+		gbc.gridx=0;
+		debitPanel.add(new JLabel("Amount: "), gbc);
+		gbc.gridx = 1;
+		debitPanel.add(amountTextField, gbc);
+
+
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		int opt = optionDialogPopup(debitPanel, "Payment");
+		if (opt==JOptionPane.OK_OPTION){
+			String bankName = bankTextField.getText();
+			String amount = amountTextField.getText();
+			if (CardIssuerDatabases.ISSUER_DATABASE.get(bankName) == null) {
+				showErrorMessage("Bank Not Recognized");
+				//JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			double amntDbl = 0;
+			try {
+				amntDbl = Double.parseDouble(amount);
+			} catch (Exception ex) {
+				showErrorMessage("Amount Not Recognized as a number.");
+				return;
+			}
+
+			if (cioc.getMainController().getRemainingAmount().compareTo(BigDecimal.valueOf(amntDbl)) < 0) {
+				showErrorMessage("You cannot pay more than the remaining amount for the order!");
+				return;
+			}
+			cioc.choosePayByBankCard(
+					CardReaderControllerState.PAYINGBYDEBIT,
+					CardIssuerDatabases.ISSUER_DATABASE.get(bankName),
+					BigDecimal.valueOf(amntDbl)
+			);
+		}
+	}
 
 	private void payByDebitPane() {
 		JPanel debitPanel = new JPanel(new GridBagLayout());
@@ -372,43 +414,40 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridx = 1;
 		debitPanel.add(amountTextField, gbc);
 
-		debitEnterButton = new JButton("Enable Payment Controller");
-		debitEnterButton.addActionListener(e -> {
-					String bankName = bankTextField.getText();
-					String amount = amountTextField.getText();
-					if (CardIssuerDatabases.ISSUER_DATABASE.get(bankName) == null) {
-						showErrorMessage("Bank Not Recognized");
-						//JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					double amntDbl = 0;
-					try {
-						amntDbl = Double.parseDouble(amount);
-					} catch (Exception ex) {
-						showErrorMessage("Amount Not Recognized as a number.");
-						return;
-					}
-
-					if (cioc.getMainController().getRemainingAmount().compareTo(BigDecimal.valueOf(amntDbl)) < 0) {
-						showErrorMessage("You cannot pay more than the remaining amount for the order!");
-						return;
-					}
-					cioc.choosePayByBankCard(
-							CardReaderControllerState.PAYINGBYDEBIT,
-							CardIssuerDatabases.ISSUER_DATABASE.get(bankName),
-							BigDecimal.valueOf(amntDbl)
-					);
-
-				});
 
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.gridwidth = 2;
-		debitPanel.add(debitEnterButton, gbc);
+		int opt = optionDialogPopup(debitPanel, "Payment");
 
-		int res = optionDialogPopup(debitPanel, "Payment");
+		if (opt==JOptionPane.OK_OPTION){
+			System.out.println("Paid");
+			String bankName = bankTextField.getText();
+			String amount = amountTextField.getText();
+			if (CardIssuerDatabases.ISSUER_DATABASE.get(bankName) == null) {
+				showErrorMessage("Bank Not Recognized");
+				//JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			double amntDbl = 0;
+			try {
+				amntDbl = Double.parseDouble(amount);
+			} catch (Exception ex) {
+				showErrorMessage("Amount Not Recognized as a number.");
+				return;
+			}
+
+			if (cioc.getMainController().getRemainingAmount().compareTo(BigDecimal.valueOf(amntDbl)) < 0) {
+				showErrorMessage("You cannot pay more than the remaining amount for the order!");
+				return;
+			}
+			cioc.choosePayByBankCard(
+					CardReaderControllerState.PAYINGBYDEBIT,
+					CardIssuerDatabases.ISSUER_DATABASE.get(bankName),
+					BigDecimal.valueOf(amntDbl)
+			);
+		}
 	}
-
 
 	private void showAddItemByPLUCodePane() {
 		PluCodePanel = new JPanel(new GridBagLayout());
@@ -501,8 +540,6 @@ public class CustomerOperationPane extends JPanel {
 			// JOptionPane.showMessageDialog(null, "Please bag the item", "Bagging", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-
-
 
 	private void showPurchaseBagsPane() {
 		purchaseBagsPanel = new JPanel(new GridBagLayout());
@@ -762,7 +799,6 @@ public class CustomerOperationPane extends JPanel {
 	public int optionDialog(JPanel panel, String header) {
 		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), purchaseBagsPanel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
-	
 	public void showErrorMessage(String message) {
 		JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}

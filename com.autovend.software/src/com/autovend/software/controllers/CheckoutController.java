@@ -420,7 +420,6 @@ public class CheckoutController {
 		}
 		baggingItemLock = !unlockStation;
 		System.out.println(unlockStation);
-		System.out.println("Your a moron Arie");
 	}
 
 	void baggedItemsInvalid() {
@@ -563,7 +562,7 @@ public class CheckoutController {
 		if (!payingChangeLock) {
 			return;
 		}
-		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
+		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock) {
 
 			printReceipt();
 
