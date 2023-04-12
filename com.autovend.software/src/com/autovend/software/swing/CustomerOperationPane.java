@@ -76,6 +76,11 @@ public class CustomerOperationPane extends JPanel {
 	public JTextField pluCodeTextField;
 	public JButton PLUenterButton;
 	
+	public JButton purchaseBagsButton;
+	public JPanel purchaseBagsPanel;
+	public JTextField bagQuantityTextField;
+	public JButton purchaseBagsEnterButton;
+	
 	public DefaultTableModel model;
 
 
@@ -303,7 +308,7 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializePurchaseBagsButton() {
-		JButton purchaseBagsButton = new JButton("Purchase Bags");
+		purchaseBagsButton = new JButton("Purchase Bags");
 		purchaseBagsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showPurchaseBagsPane();
@@ -532,7 +537,8 @@ public class CustomerOperationPane extends JPanel {
 				String pluCode = pluCodeTextField.getText();
 
 				if (pluCode.length() < 4 || pluCode.length() > 5) {
-					JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+					showErrorMessage("PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.");
+					//JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
@@ -551,7 +557,8 @@ public class CustomerOperationPane extends JPanel {
 					// cioc.promptAddItemToBaggingArea();
 					baggingGlassPane.setVisible(true);
 				} else {
-					JOptionPane.showMessageDialog(null, "That item was not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+					showErrorMessage("That item was not found. Please enter a valid PLU code.");
+					//JOptionPane.showMessageDialog(null, "That item was not found. Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -567,20 +574,20 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void showPurchaseBagsPane() {
-		JPanel panel = new JPanel(new GridBagLayout());
+		purchaseBagsPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please enter the number of bags you wish to purchase:"), gbc);
+		purchaseBagsPanel.add(new JLabel("Please enter the number of bags you wish to purchase:"), gbc);
 
-		JTextField bagQuantityTextField = new JTextField(10);
+		bagQuantityTextField = new JTextField(10);
 		gbc.gridx = 1;
-		panel.add(bagQuantityTextField, gbc);
+		purchaseBagsPanel.add(bagQuantityTextField, gbc);
 
-		JButton enterButton = new JButton("Enter");
-		enterButton.addActionListener(new ActionListener() {
+		purchaseBagsEnterButton = new JButton("Enter");
+		purchaseBagsEnterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					int bagQuantity = Integer.parseInt(bagQuantityTextField.getText());
@@ -596,7 +603,7 @@ public class CustomerOperationPane extends JPanel {
 
 						//System.out.println("here");
 
-						Window window = SwingUtilities.getWindowAncestor(enterButton);
+						Window window = SwingUtilities.getWindowAncestor(purchaseBagsEnterButton);
 						if (window != null) {
 							window.dispose();
 						}
@@ -612,9 +619,10 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 2;
-		panel.add(enterButton, gbc);
+		purchaseBagsPanel.add(purchaseBagsEnterButton, gbc);
 
-		JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+		optionDialog(purchaseBagsPanel, "Purchase Bags");
+		//JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), purchaseBagsPanel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
 
 	private void showAddOwnBagsPane() {
@@ -782,6 +790,14 @@ public class CustomerOperationPane extends JPanel {
 	}
 	
 	public int showPopup(JPanel panel, String header) {
-		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, "Language Selection", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, header, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+	}
+	
+	public int optionDialog(JPanel panel, String header) {
+		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), purchaseBagsPanel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+	}
+	
+	public void showErrorMessage(String message) {
+		JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 }

@@ -62,6 +62,9 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
 	PLUCodedProduct pluCodedProduct1;
 	BarcodedProduct bcproduct1;
 	
+	public boolean invalidPLUDetected = false;
+	public boolean PLUNotFound = false;
+	
  	public class CustomerStartPaneTest extends CustomerStartPane {
  		private static final long serialVersionUID = 1L;
 
@@ -101,6 +104,21 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
 	            }
  			}
  			return 0;
+ 		}
+ 		
+ 		@Override
+ 		public int optionDialog(JPanel panel, String header) {
+ 			return 0;
+ 		}
+ 		@Override
+ 		public void showErrorMessage(String message) {
+ 			if (message.equals("PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.")) {
+ 				invalidPLUDetected = true;
+ 			}
+ 			
+ 			else if (message.equals("That item was not found. Please enter a valid PLU code.")) {
+ 				PLUNotFound = true;
+ 			}
  		}
  	}
  	@Before
@@ -353,8 +371,6 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  		pluCodeTextField.setText("1234");
  		PLUenterButton.doClick();
  		
- 		cop.refreshOrderGrid();
- 		
  		DefaultTableModel model = cop.model;
  		String actualDescription = (String) model.getValueAt(0, 0);
  		BigDecimal actualPrice = (BigDecimal) model.getValueAt(0, 1);
@@ -369,9 +385,80 @@ import com.autovend.software.utils.MiscProductsDatabase.Bag;
  		assertEquals(expQuantity, actualQuantity);
  	}
  	
+ 	@Test
+ 	public void testAddItemByPLUCodeButton_InvalidPLU() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton addItemByPLUCodeButton = cop.addItemByPluCodeButton;
+ 		addItemByPLUCodeButton.doClick();
+ 		
+ 		JPanel PluCodePanel = cop.PluCodePanel;
+ 		JTextField pluCodeTextField = cop.pluCodeTextField;
+ 		JButton PLUenterButton = cop.PLUenterButton;
+ 		
+ 		pluCodeTextField.setText("1");
+ 		PLUenterButton.doClick();
+ 		
+ 		assertTrue(invalidPLUDetected);
+ 	}
+ 	
+ 	@Test
+ 	public void testAddItemByPLUCodeButton_PLUNotFound() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton addItemByPLUCodeButton = cop.addItemByPluCodeButton;
+ 		addItemByPLUCodeButton.doClick();
+ 		
+ 		JPanel PluCodePanel = cop.PluCodePanel;
+ 		JTextField pluCodeTextField = cop.pluCodeTextField;
+ 		JButton PLUenterButton = cop.PLUenterButton;
+ 		
+ 		pluCodeTextField.setText("5555");
+ 		PLUenterButton.doClick();
+ 		
+ 		assertTrue(PLUNotFound);
+ 	}
+ 	
+ 	@Test
+ 	public void testPurchaseBags() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton purchaseBagsButton = cop.purchaseBagsButton;
+ 		purchaseBagsButton.doClick();
+ 		
+ 		JPanel purchaseBagsPanel = cop.purchaseBagsPanel;
+ 		JTextField bagQuantityTextField = cop.bagQuantityTextField;
+ 		JButton purchaseBagsEnterButton = cop.purchaseBagsEnterButton;
+ 		
+ 		bagQuantityTextField.setText("1");
+ 		
+ 		cop.refreshOrderGrid();
+ 		
+ 		DefaultTableModel model = cop.model;
+ 		String actualDescription = (String) model.getValueAt(0, 0);
+ 		BigDecimal actualPrice = (BigDecimal) model.getValueAt(0, 1);
+ 		Number actualQuantity = (Number) model.getValueAt(0, 2);
+ 		
+ 		String expDescription = "A reusable bag";
+ 		BigDecimal expPrice = BigDecimal.valueOf(0.5);
+ 		Number expQuantity = 1;
+ 		
+ 		assertEquals(expDescription, actualDescription);
+ 		assertEquals(expPrice, actualPrice);
+ 		assertEquals(expQuantity, actualQuantity);
+ 	}
 
  	@After
  	public void tearDown() {
  		screen.disable();
+ 		screen = null;
+ 		customerPane = null;
+ 		cioc = null;
  	}
  }
