@@ -338,8 +338,6 @@ public class CustomerOperationPane extends JPanel {
 		JButton finishedButton = new JButton("Finished");
 		finishedButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: figure out what to do here
-
 				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
 				if (window1 != null) {
 					window1.dispose();
