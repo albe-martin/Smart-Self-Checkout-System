@@ -66,8 +66,8 @@ public class CustomerOperationPane extends JPanel {
 	private JLabel totalCostLabel;
 	public JLabel amountPaidLabel;
 	public JButton languageSelectButton;
+	private JPanel cashGlassPane;
 	private JPanel glassPane;
-
 	private JPanel baggingGlassPane;
 	public ButtonGroup group;
 	public JLabel disabledMessage;
@@ -98,6 +98,8 @@ public class CustomerOperationPane extends JPanel {
 		
 		// Create pane for bagging prompt
 		initializeBaggingPromptGlassPane();
+
+		initializeCashPromptGlassPane();
 
 		initializeHeader();
 
@@ -330,40 +332,44 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	public void showPayWithCashPane() {
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
+//		JPanel panel = new JPanel(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		gbc.insets = new Insets(5, 5, 5, 5);
+//		panel.add(new JLabel("Please insert cash into the machine."), gbc);
+//
+//
+//
+//		JButton finishedButton = new JButton("Finished");
+//		finishedButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
+//				if (window1 != null) {
+//					window1.dispose();
+//				}
+//			}
+//		});
+//
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		gbc.gridwidth = 1;
+//		panel.add(finishedButton, gbc);
+//
+//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
 
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		panel.add(new JLabel("Please insert cash into the machine."), gbc);
+		cashGlassPane.setVisible(true);
 
-		JButton finishedButton = new JButton("Finished");
-		finishedButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
-				if (window1 != null) {
-					window1.dispose();
-				}
-			}
-		});
-
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		panel.add(finishedButton, gbc);
-
-		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
-
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// Code to run when the JOptionPane is closed
-			}
-		});
-
-		dialog.setVisible(true);
+//		dialog.addWindowListener(new WindowAdapter() {
+//			@Override
+//			public void windowClosing(WindowEvent e) {
+//				// Code to run when the JOptionPane is closed
+//			}
+//		});
+//
+//		dialog.setVisible(true);
 	}
 
 	private void initializeCreditButton() {
@@ -660,6 +666,66 @@ public class CustomerOperationPane extends JPanel {
 
 		baggingGlassPane.setVisible(true);
 	}
+
+	public void initializeCashPromptGlassPane() {
+		cashGlassPane = new JPanel(new GridBagLayout()) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				g.setColor(new Color(0, 0, 0, 0)); // transparent
+				g.fillRect(0, 0, getWidth(), getHeight());
+				super.paintComponent(g);
+			}
+		};
+		cashGlassPane.setOpaque(false);
+		cashGlassPane.setBounds(0, 0, 800, 800); // Set the bounds to match the size of the CustomerStartPane
+		cashGlassPane.setVisible(false);
+
+		// Make the glass pane "absorb" the mouse events, so that nothing behind it (the buttons) can be clicked while it is displayed
+		cashGlassPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				e.consume();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				e.consume();
+			}
+		});
+
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(new JLabel("Please insert cash into the machine."), gbc);
+
+		// JButton finishedButton = new JButton("Finished");
+//		finishedButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				// Check if item was bagged
+//				if (cioc.isItemBagged()) {
+//					// Close pane
+//					baggingGlassPane.setVisible(false);
+//					refreshOrderGrid();
+//				} else {
+//					createBaggingWeightProblemPopup();
+//				}
+//			}
+//		});
+
+		panel.setBackground(new Color(227, 241, 241, 255)); // light blue
+		cashGlassPane.add(panel);
+		add(cashGlassPane);
+
+	}
 	
 	public void initializeBaggingPromptGlassPane() {
 		baggingGlassPane = new JPanel(new GridBagLayout()) {
@@ -738,8 +804,6 @@ public class CustomerOperationPane extends JPanel {
 	
 	/**
 	 * Creates a pop-up indicating that the bagging area weight is incorrect.
-	 * 
-	 * @param checkout
 	 * 			CheckoutController to add an item to. (When trying again).
 	 */
 	public void createBaggingWeightProblemPopup() {
