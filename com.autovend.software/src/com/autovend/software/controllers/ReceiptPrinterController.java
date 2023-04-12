@@ -65,8 +65,8 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	 */
 	public void addedInk(int inkAmount) {
 		if (inkAmount > 0) {
-			estimatedInk += inkAmount;
-			
+			estimatedInk += inkAmount;	
+			lowInk();	
 		}
 		else
 			System.out.println("Negative Ink Not Allowed to be Added");
@@ -82,6 +82,7 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	public void addedPaper(int paperAmount) {
 		if (paperAmount > 0){ 
 			estimatedPaper += paperAmount;
+			lowPaper();
 		}
 		else
 			System.out.println("Negative Paper Not Allowed to be Added");
@@ -224,12 +225,13 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	@Override
 	public void reactToPaperAddedEvent(ReceiptPrinter printer) {
 		this.getMainController().printerRefilled();
-
+		lowPaper();
 	}
 
 	@Override
 	public void reactToInkAddedEvent(ReceiptPrinter printer) {
 		this.getMainController().printerRefilled();
+		lowInk();
 	}
 
 }
