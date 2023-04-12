@@ -527,24 +527,27 @@ public class CheckoutController {
 		return getCost().subtract(amountPaid);
 	}
 
-	public void completePayment() {
+	public enum completePaymentErrorEnum {LOCKED, DUE, EMPTYORDER, CHANGE, RECEIPT}
+	public completePaymentErrorEnum completePayment() {
 		if (this.baggingItemLock || this.systemProtectionLock || isDisabled) {
-			return;
+			return completePaymentErrorEnum.LOCKED;
 		}
 		if (this.cost.compareTo(this.amountPaid) > 0) {
 			System.out.println("You haven't paid enough money yet.");
-			return;
+			return completePaymentErrorEnum.DUE;
 		}
 		if (this.order.keySet().size() == 0) {
 			System.out.println("Your order is empty.");
-			return;
+			return completePaymentErrorEnum.EMPTYORDER;
 		}
 		if (this.cost.compareTo(this.amountPaid) < 0) {
 			this.payingChangeLock = true;
 			// This code is inefficient and could be better, too bad!
 			dispenseChange();
+			return completePaymentErrorEnum.CHANGE;
 		} else {
 			printReceipt();
+			return completePaymentErrorEnum.RECEIPT;
 		}
 	}
 

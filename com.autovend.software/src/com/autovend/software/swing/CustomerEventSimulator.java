@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.autovend.Barcode;
 import com.autovend.Bill;
+import com.autovend.Coin;
 import com.autovend.Numeral;
 import com.autovend.devices.DisabledException;
 import com.autovend.devices.OverloadException;
@@ -160,11 +161,10 @@ public class CustomerEventSimulator extends JFrame {
         JButton inputBill = new JButton("Input 1$ Bill");
         inputBill.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	checkout.checkoutStation.billInput.removeDanglingBill();
+//        	checkout.checkoutStation.billInput.removeDanglingBill();
         	try {
         		checkout.checkoutStation.billInput.accept(new Bill(1, Currency.getInstance(Locale.CANADA)));
 			} catch (DisabledException | OverloadException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
         	((CustomerOperationPane)(checkout.checkoutStation.screen.getFrame().getContentPane())).updateAmountPaid();;
@@ -175,5 +175,23 @@ public class CustomerEventSimulator extends JFrame {
         gbcInputBill.gridx = 0;
         gbcInputBill.gridy = 3;
         contentPane.add(inputBill, gbcInputBill);  
+        
+        
+        JButton inputCoin = new JButton("Input 0.25$ Coin");
+        inputCoin.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	try {
+        		checkout.checkoutStation.coinSlot.accept(new Coin(BigDecimal.valueOf(0.25), Currency.getInstance(Locale.CANADA)));
+			} catch (DisabledException e1) {
+				e1.printStackTrace();
+			}
+        	((CustomerOperationPane)(checkout.checkoutStation.screen.getFrame().getContentPane())).updateAmountPaid();;
+           }
+        });
+        GridBagConstraints gbcInputCoin = new GridBagConstraints();
+        gbcInputCoin.fill = GridBagConstraints.BOTH;
+        gbcInputCoin.gridx = 1;
+        gbcInputCoin.gridy = 3;
+        contentPane.add(inputCoin, gbcInputCoin);  
     }
 }
