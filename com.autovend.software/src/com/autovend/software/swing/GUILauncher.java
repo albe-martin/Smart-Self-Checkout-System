@@ -72,7 +72,6 @@ public class GUILauncher {
 		attendantScreen.setResizable(false);
 		attendantScreen.setTitle("Attendant Screen");
 		AttendantIOController aioc = new AttendantIOController(attendantStation.screen);
-		attendantScreen.setContentPane(new AttendantLoginPane(aioc));
 		
 		AttendantStationController asc = new AttendantStationController();
 		aioc.setMainAttendantController(asc);
