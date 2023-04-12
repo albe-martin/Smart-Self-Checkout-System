@@ -158,12 +158,7 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	}
 
 	/**
-	 * Responsible for printing out a properly formatted Receipt using the list of
-	 * Products and total cost. The receipt will contain a numbered list containing
-	 * the price of each product.
-	 * 
-	 * @param order: HashMap of Products on the order
-	 * @param cost:  total cost of the order
+	 * Responsible for printing out a properly formatted Receipt
 	 */
 	public void printReceipt(StringBuilder receipt) {
 		printer = getDevice();

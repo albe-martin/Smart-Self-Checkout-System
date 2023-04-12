@@ -25,7 +25,7 @@ import com.autovend.devices.observers.AbstractDeviceObserver;
 abstract public class ChangeDispenserController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver>
 		extends DeviceController<D, O> implements Comparable<ChangeDispenserController>{
 
-	private BigDecimal denom;
+	public BigDecimal denom;
 
 	@Override
 	public int compareTo(ChangeDispenserController o) {
@@ -42,7 +42,7 @@ abstract public class ChangeDispenserController<D extends AbstractDevice<O>, O e
 	}
 
 
-	void setDenom(BigDecimal denom) {
+	public void setDenom(BigDecimal denom) {
 		this.denom = denom;
 	}
 

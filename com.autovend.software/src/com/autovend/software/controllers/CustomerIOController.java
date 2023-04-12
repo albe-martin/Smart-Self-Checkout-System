@@ -63,15 +63,10 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
             return true;
         } else {
             System.out.println("Product not in database");
-
             //stuff to the scale first before they do stuff for the PLU code
             return false;
-
-
             //todo: please figure out why calling addItemByPLU and subsequently calling getCart() does not have
             // an updated cart (GUI team request)
-
-
         }
     }
     //this is also used for adding by browsing!!!!!
@@ -88,9 +83,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     /**
      * Called when an item has been added, and now needs to go to the bagging area
      */
-    public void promptAddItemToBaggingArea() {
-
-    }
+    public void promptAddItemToBaggingArea() {}
 
     /**
      * Methods for membership sign-in and stuff
@@ -151,13 +144,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
     public void itemWasAddedToTheBaggingArea() {
         //todo: either make this work, or tell Colton how it is meant to work
-    }
-
-    public void selectDoNotBag(Product product){
-        this.getMainController().notifyAttendantNoBagRequest();
-        /* todo: update UI so it goes back to the normal order, also make the do not bag code
-         * not trash you idiot
-         */
     }
 
     /**

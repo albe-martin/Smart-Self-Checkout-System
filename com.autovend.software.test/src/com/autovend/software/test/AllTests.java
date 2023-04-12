@@ -27,6 +27,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	BillDispenserControllerTest.class, CardPaymentTest.class, CoinDispenserControllerTest.class,
 	CoinPaymentTest.class, LoginLogoutTest.class, LowInkPaperTest.class, MembershipTest.class,
 	PurchaseBagsTest.class, RemoveItemTest.class, StartupShutdownStationTest.class,
-	TestPrintReceipt.class})
+	TestPrintReceipt.class, TestBoilerplateMisc.class})
 public class AllTests {
 }

@@ -542,6 +542,9 @@ public class CheckoutController {
 	}
 
 	void dispenseChange() {
+		if (!payingChangeLock) {
+			return;
+		}
 		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
 
 			printReceipt();
