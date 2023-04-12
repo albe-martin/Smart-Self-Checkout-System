@@ -162,6 +162,7 @@ public class AttendantStationController {
 		}
 		return;
 	}
+
 	
 	/**
 	 * A simple method to remove  a station to this attendant station's list of stations along with its controller.

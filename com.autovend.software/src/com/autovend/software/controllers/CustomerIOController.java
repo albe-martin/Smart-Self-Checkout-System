@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.Map.Entry;
 
 
@@ -17,7 +16,6 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 
@@ -38,7 +36,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
     }
-    final String getTypeName(){
+    public final String getTypeName(){
         return "CustomerIOController";
     }
 
@@ -64,16 +62,11 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
             this.getMainController().addItem(product);
             return true;
         } else {
-            // System.out.println("Product not in database");
-
+            System.out.println("Product not in database");
             //stuff to the scale first before they do stuff for the PLU code
             return false;
-
-
             //todo: please figure out why calling addItemByPLU and subsequently calling getCart() does not have
             // an updated cart (GUI team request)
-
-
         }
     }
     //this is also used for adding by browsing!!!!!
@@ -90,9 +83,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     /**
      * Called when an item has been added, and now needs to go to the bagging area
      */
-    public void promptAddItemToBaggingArea() {
-
-    }
+    public void promptAddItemToBaggingArea() {}
 
     /**
      * Methods for membership sign-in and stuff
@@ -153,13 +144,6 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
 
     public void itemWasAddedToTheBaggingArea() {
         //todo: either make this work, or tell Colton how it is meant to work
-    }
-
-    public void selectDoNotBag(Product product){
-        this.getMainController().notifyAttendantNoBagRequest();
-        /* todo: update UI so it goes back to the normal order, also make the do not bag code
-         * not trash you idiot
-         */
     }
 
     /**

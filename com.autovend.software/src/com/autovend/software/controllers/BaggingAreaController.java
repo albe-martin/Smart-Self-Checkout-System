@@ -32,7 +32,7 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 
 	private boolean orderValidated;
 
-	String getTypeName(){
+	public String getTypeName(){
 		return "BaggingAreaController";
 	}
 
@@ -59,7 +59,7 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 		return orderValidated;
 	}
 
-	void setBaggingValid(boolean validation) {
+	public void setBaggingValid(boolean validation) {
 		this.orderValidated = validation;
 	}
 

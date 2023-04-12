@@ -45,7 +45,7 @@ public abstract class DeviceController<D extends AbstractDevice<O>, O extends Ab
 		}
 	}
 
-	abstract String getTypeName();
+	public abstract String getTypeName();
 	//This is used as an identifier for the type of controller, for a single unified controller
 	//hashset in the checkout controller, which cuts down its length but
 	//around half.
