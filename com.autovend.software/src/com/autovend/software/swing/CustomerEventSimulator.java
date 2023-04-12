@@ -21,6 +21,7 @@ import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.DeviceController;
+import com.autovend.software.controllers.ScanningScaleController;
 
 public class CustomerEventSimulator extends JFrame {
 
@@ -89,6 +90,13 @@ public class CustomerEventSimulator extends JFrame {
             			barcodeScanner.reactToBarcodeScannedEvent(barcodeScanner.getDevice(), bcproduct2.getBarcode());
             		}
             	}
+            	// Clear weighting scale weight
+            	for (DeviceController<?, ?> controller : checkout.getControllersByType("ScanningScaleController")) {
+	        		if (controller instanceof ScanningScaleController ssc) {
+	        			double expWeight = ssc.getCurrentWeight();
+	        			ssc.reactToWeightChangedEvent(ssc.getDevice(), 0);
+	        		}
+	        	}
             	
            }
         });
@@ -98,8 +106,8 @@ public class CustomerEventSimulator extends JFrame {
         gbcScan2.gridy = 0;
         contentPane.add(scanItem2, gbcScan2);
         
-        JButton addItemToBaggingArea = new JButton("Add item to bagging area");
-        addItemToBaggingArea.addActionListener(new ActionListener() {
+        JButton addWeight = new JButton("Add item to bagging area");
+        addWeight.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
 	        	for (DeviceController<?, ?> controller : checkout.getControllersByType("BaggingAreaController")) {
 	        		if (controller instanceof BaggingScaleController bsc) {
@@ -109,13 +117,27 @@ public class CustomerEventSimulator extends JFrame {
 	        	}
            }
         });
+        GridBagConstraints gbcaddWeight = new GridBagConstraints();
+        gbcaddWeight.fill = GridBagConstraints.BOTH;
+        gbcaddWeight.gridx = 0;
+        gbcaddWeight.gridy = 1;
+        contentPane.add(addWeight, gbcaddWeight);
+
+        JButton addItemToBaggingArea = new JButton("Add Weight To Weighing Scale");
+        addItemToBaggingArea.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+	        	for (DeviceController<?, ?> controller : checkout.getControllersByType("ScanningScaleController")) {
+	        		if (controller instanceof ScanningScaleController ssc) {
+	        			ssc.reactToWeightChangedEvent(ssc.getDevice(), 1);
+	        		}
+	        	}
+           }
+        });
         GridBagConstraints gbcAddItemToBaggingArea = new GridBagConstraints();
         gbcAddItemToBaggingArea.fill = GridBagConstraints.BOTH;
-        gbcAddItemToBaggingArea.gridx = 0;
+        gbcAddItemToBaggingArea.gridx = 1;
         gbcAddItemToBaggingArea.gridy = 1;
         contentPane.add(addItemToBaggingArea, gbcAddItemToBaggingArea);
-
-
        
         JButton scanMembership = new JButton("Scan membership");
         scanMembership.addActionListener(new ActionListener() {
@@ -125,36 +147,9 @@ public class CustomerEventSimulator extends JFrame {
         });
         GridBagConstraints gbcMembership = new GridBagConstraints();
         gbcMembership.fill = GridBagConstraints.BOTH;
-        gbcMembership.gridx = 1;
-        gbcMembership.gridy = 1;
+        gbcMembership.gridx = 0;
+        gbcMembership.gridy = 2;
         contentPane.add(scanMembership, gbcMembership);
-        
-        JButton doNotBag = new JButton("Do not bag item");
-        doNotBag.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            	
-                
-           }
-        });
-        GridBagConstraints gbcNoBag = new GridBagConstraints();
-        gbcNoBag.fill = GridBagConstraints.BOTH;
-        gbcNoBag.gridx = 0;
-        gbcNoBag.gridy = 2;
-        contentPane.add(doNotBag, gbcNoBag);
-        
-        
-        JButton addOwnBag = new JButton("Use own bag");
-        addOwnBag.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            	
-                
-           }
-        });
-        GridBagConstraints gbcAddOwnBag = new GridBagConstraints();
-        gbcAddOwnBag.fill = GridBagConstraints.BOTH;
-        gbcAddOwnBag.gridx = 1;
-        gbcAddOwnBag.gridy = 2;
-        contentPane.add(addOwnBag, gbcAddOwnBag);
         
         
         JButton input5Bill = new JButton("Input 5$ Bill");
@@ -167,14 +162,6 @@ public class CustomerEventSimulator extends JFrame {
         gbcInput5Bill.fill = GridBagConstraints.BOTH;
         gbcInput5Bill.gridx = 0;
         gbcInput5Bill.gridy = 3;
-        contentPane.add(input5Bill, gbcInput5Bill);
-        
-        
-
-       
-            	
-                
-        
-        
+        contentPane.add(input5Bill, gbcInput5Bill);  
     }
 }

@@ -198,10 +198,8 @@ public class CustomerOperationPane extends JPanel {
 
 		HashMap<Product, Number[]> orderItems = cioc.getCart();
 //		System.out.println("\n\n" + orderItems.entrySet());
-		System.out.println(cioc.getMainController().getOrder());
 		for (Map.Entry<Product, Number[]> entry : orderItems.entrySet()) {
 			Product product = entry.getKey();
-			System.out.println("refresh loop product: " + product);
 			if (product instanceof PLUCodedProduct pluProduct) {
 				updateGrid(model, entry, pluProduct.getDescription(), pluProduct.getPrice());
 			} else if (product instanceof BarcodedProduct barcodeProduct) {
@@ -230,8 +228,6 @@ public class CustomerOperationPane extends JPanel {
 	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description, BigDecimal price) {
 		Number[] quantities = entry.getValue();
 		Number quantity = quantities[0];
-//		System.out.println(description);
-//		System.out.println(Arrays.toString(quantities));
 
 		model.addRow(new Object[]{description, price, quantity});
 
@@ -259,7 +255,6 @@ public class CustomerOperationPane extends JPanel {
 //			totalCost = totalCost.add(itemPrice);
 //		}
 
-		//System.out.println(cioc.getCart());
 		totalCostLabel.setText("Total Cost: $" + cioc.getMainController().getCost().toString());
 	}
 
@@ -364,7 +359,6 @@ public class CustomerOperationPane extends JPanel {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// Code to run when the JOptionPane is closed
-				System.out.println("JOptionPane closed");
 			}
 		});
 
@@ -644,7 +638,6 @@ public class CustomerOperationPane extends JPanel {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// Code to run when the JOptionPane is closed
-				System.out.println("JOptionPane closed");
 				cioc.cancelAddOwnBags();
 			}
 		});
@@ -724,11 +717,6 @@ public class CustomerOperationPane extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// System.out.println("Do not bag this item pressed");
 				cioc.selectDoNotBag();
-
-				Window window1 = SwingUtilities.getWindowAncestor(doNotBagButton);
-				if (window1 != null) {
-					window1.dispose();
-				}
 			}
 		});
 
@@ -771,5 +759,9 @@ public class CustomerOperationPane extends JPanel {
 	 */
 	public int optionDialogPopup(JPanel panel, String header) {
 		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, header, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+	}
+	
+	public void notifyNoBagApproved() {
+		baggingGlassPane.setVisible(false);
 	}
 }

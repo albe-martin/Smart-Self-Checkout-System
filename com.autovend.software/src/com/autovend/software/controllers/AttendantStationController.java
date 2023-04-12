@@ -246,10 +246,6 @@ public class AttendantStationController {
 	public void registerUser(String username, String password) {
 		if(!credentials.containsKey(username)) {
 			credentials.put(username, password);
-			System.out.println("SUCCESS: User added.");
-		}
-		else {
-			System.out.println("ERROR: Username already exists.");
 		}
 		return;
 	}

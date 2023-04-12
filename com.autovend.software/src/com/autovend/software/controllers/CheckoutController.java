@@ -390,6 +390,9 @@ public class CheckoutController {
 				this.baggingItemLock = false;
 				// todo: this is a bad way to handle this
 			}
+			for (DeviceController customerIOController : registeredControllers.get("CustomerIOController")) {
+				((CustomerIOController) customerIOController).notifyNoBagApproved();
+			}
 		}
 	}
 
@@ -819,7 +822,7 @@ public class CheckoutController {
 	 */
 	public void notifyAttendantNoBagRequest() {
 		baggingItemLock = true;
-		for(DeviceController io: this.registeredControllers.get("attendantIOController")) {
+		for(DeviceController io: this.registeredControllers.get("AttendantIOController")) {
 			((AttendantIOController) io).notifyNoBagRequest(this);
 		}
 	}
