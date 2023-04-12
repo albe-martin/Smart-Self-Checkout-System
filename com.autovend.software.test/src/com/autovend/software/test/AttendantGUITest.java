@@ -56,6 +56,7 @@ public class AttendantGUITest {
 	CustomerIOController cioc;
 	AttendantLoginPaneTest attendantPane;
 	PLUCodedProduct pluCodedProduct1;
+	BarcodedProduct bcproduct1;
 
 	boolean enabledEventOccurred = false;
 	boolean disabledEventOccurred = false;
@@ -134,11 +135,10 @@ public class AttendantGUITest {
 					} else {
 						searchAlreadyAttempted = true;
 					}
-	                System.out.println(button.getText());
 	                break;
 	            }
 	            
-			} else if (header == "Remove Item") {
+			} else if (header == Language.translate(language, "Remove Item")) {
 	            for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
 	                AbstractButton button = buttons.nextElement();
                     button.setSelected(true);
@@ -155,7 +155,7 @@ public class AttendantGUITest {
 		}
 		
 		public void setItemSearch() {
-			searchField.setText("b");
+			searchField.setText("");
 		}
 	}
 	
@@ -228,17 +228,11 @@ public class AttendantGUITest {
 		aioc = (AttendantIOController) asc.getAttendantIOControllers().iterator().next();
 		attendantPane = new AttendantLoginPaneTest(aioc);
 		attendantScreen.setContentPane(attendantPane);
-		
-
-		System.out.println(asc.getAttendantIOControllers().size());
-
-
-
 
 		// Add valid username and password.
 		asc.registerUser("abc", "123");
 		
-		attendantScreen.setVisible(true);
+//		attendantScreen.setVisible(true);
 		
 		// Create list of checkout stations
 		int num_stations = 2;
@@ -262,7 +256,7 @@ public class AttendantGUITest {
 			ciocs.add(cioc);
 			
 			customerScreen.setContentPane(new CustomerStartPane(cioc));
-			customerScreen.setVisible(true);
+//			customerScreen.setVisible(true);
 			
 			// Register customer to attendant
 			asc.registerController(cioc);
@@ -272,7 +266,7 @@ public class AttendantGUITest {
 		ciocs.get(1).getMainController().shutDown();
 		
 		// Create demo products.
-		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",
+		bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",
 				BigDecimal.valueOf(83.29), 359.0);
 		BarcodedProduct bcproduct2 = new BarcodedProduct(new Barcode(Numeral.four, Numeral.five), "screwdriver",
 				BigDecimal.valueOf(42), 60.0);
@@ -284,7 +278,7 @@ public class AttendantGUITest {
 		pluCodedProduct1 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four), "apple" , BigDecimal.valueOf(0.89));
 		PLUCodedProduct pluCodedProduct2 = new PLUCodedProduct(new PriceLookUpCode(Numeral.four, Numeral.three, Numeral.two, Numeral.one), "banana" , BigDecimal.valueOf(0.82));
 		PLUCodedProduct pluCodedProduct3 = new PLUCodedProduct(new PriceLookUpCode(Numeral.one, Numeral.one, Numeral.one, Numeral.one), "bunch of jabuticaba" , BigDecimal.valueOf(17.38));
-
+		
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct1.getPLUCode(), pluCodedProduct1);
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct2.getPLUCode(), pluCodedProduct2);
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCodedProduct3.getPLUCode(), pluCodedProduct3);
@@ -828,7 +822,12 @@ public class AttendantGUITest {
 
 		frame.setContentPane(aop);
 		
-		aop.createTextSearchPopup(cioc.getMainController()); // Add an item by PLU code
-		aop.createRemoveItemPopup(cioc.getMainController()); // Remove the item
+//		aop.createTextSearchPopup(cioc.getMainController()); 
+		
+		aioc.getCart(cioc.getMainController()).put(bcproduct1, new Number[] {10, 10}); // Add barcoded item and PLU item
+		aioc.getCart(cioc.getMainController()).put(pluCodedProduct1, new Number[] {10, 10});
+		aop.createRemoveItemPopup(cioc.getMainController()); // Remove the items
+		aop.createRemoveItemPopup(cioc.getMainController());
+
 	}
 }

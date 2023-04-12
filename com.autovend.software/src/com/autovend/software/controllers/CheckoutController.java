@@ -48,7 +48,7 @@ public class CheckoutController {
 	// Supervisor Station ID. 0 = not supervised
 	private int supervisorID = 0;
 
-	private SelfCheckoutStation checkoutStation;
+	public SelfCheckoutStation checkoutStation;
 	private boolean requireAdjustment;
 
 	/**
@@ -206,6 +206,7 @@ public class CheckoutController {
 		}
 		if (controllerSet.contains(controller)) {
 			controllerSet.remove(controller);
+
 		}
 	}
 
@@ -484,10 +485,13 @@ public class CheckoutController {
 
 	public boolean needPrinterRefill = false;
 
-	void printerOutOfResources() {
+	void printerOutOfResources(StringBuilder receipt) {
 		this.needPrinterRefill = true;
-		if (this.order.size() > 0){
-			alertAttendant("Printing Error at station, receipt contents:\n" + this.order.toString());
+		AttendantIOController aioc = (AttendantIOController) this.registeredControllers.get("AttendantIOController").get(0);
+		if (receipt.isEmpty()){
+			alertAttendant("Printer low on resources");
+		}else if (this.order.size() > 0){
+			aioc.notifyRePrintReceipt(this, receipt);
 		}
 		else {
 			alertAttendant("Printing Error at station, no receipt contents");
@@ -545,6 +549,9 @@ public class CheckoutController {
 	}
 
 	void dispenseChange() {
+		if (!payingChangeLock) {
+			return;
+		}
 		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
 
 			printReceipt();
