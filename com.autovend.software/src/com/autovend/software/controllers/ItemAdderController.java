@@ -24,7 +24,7 @@ abstract class ItemAdderController<D extends AbstractDevice<O>, O extends Abstra
 		extends DeviceController<D, O> {
 
 
-	final String getTypeName(){
+	public final String getTypeName(){
 		return "ItemAdderController";
 	}
 

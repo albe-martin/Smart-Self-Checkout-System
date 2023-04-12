@@ -51,6 +51,7 @@ public class AddingOwnBagsTest {
         cioc=null;
     }
 
+
     @Test
     public void testAddBagsSuccessful(){
         cioc.addOwnBags();

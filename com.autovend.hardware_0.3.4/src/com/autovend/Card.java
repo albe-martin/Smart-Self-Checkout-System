@@ -102,11 +102,11 @@ public abstract class Card implements Serializable, IBarcoded {
 	}
 
 	protected static final ThreadLocalRandom random = ThreadLocalRandom.current();
-	private static final double PROBABILITY_OF_MAGNETIC_STRIPE_FAILURE = 0.01;
-	private static final double PROBABILITY_OF_TAP_FAILURE = 0.005;
-	private static final double PROBABILITY_OF_INSERT_FAILURE = 0.001;
-	private static final double PROBABILITY_OF_MAGNETIC_STRIPE_CORRUPTION = 0.001;
-	protected static final double PROBABILITY_OF_CHIP_CORRUPTION = 0.00001;
+	private static final double PROBABILITY_OF_MAGNETIC_STRIPE_FAILURE = 0;
+	private static final double PROBABILITY_OF_TAP_FAILURE = 0;
+	private static final double PROBABILITY_OF_INSERT_FAILURE = 0;
+	private static final double PROBABILITY_OF_MAGNETIC_STRIPE_CORRUPTION = 0;
+	protected static final double PROBABILITY_OF_CHIP_CORRUPTION = 0;
 
 	@Override
 	public final Barcode getBarcode() throws UnsupportedOperationException {
