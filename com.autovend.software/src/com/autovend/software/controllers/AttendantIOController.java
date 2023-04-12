@@ -22,6 +22,10 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
 	
     public AttendantIOController(TouchScreen newDevice) {
         super(newDevice);
+        // Set GUI to login screen.
+        getDevice().getFrame().setContentPane(new AttendantLoginPane(this));
+        getDevice().getFrame().revalidate();
+        getDevice().getFrame().repaint();
     }
 
     // mainController changed to AttendantStatioNController instead.
