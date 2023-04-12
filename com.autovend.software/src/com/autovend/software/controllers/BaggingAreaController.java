@@ -59,7 +59,7 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 		return orderValidated;
 	}
 
-	void setBaggingValid(boolean validation) {
+	public void setBaggingValid(boolean validation) {
 		this.orderValidated = validation;
 	}
 
