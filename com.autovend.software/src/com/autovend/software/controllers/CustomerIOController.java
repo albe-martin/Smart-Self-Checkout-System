@@ -115,6 +115,7 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
         this.getMainController().payByGiftCard();
     }
 
+    public void cancelPayment(){this.getMainController().disableCardReader();}
     public void finalizeOrder() {
     	completePaymentErrorEnum e = this.getMainController().completePayment();
     	//while (this.getMainController().checkoutStation.billInput.removeDanglingBill() != null);

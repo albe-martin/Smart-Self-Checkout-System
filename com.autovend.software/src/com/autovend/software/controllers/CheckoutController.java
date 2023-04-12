@@ -2,7 +2,6 @@ package com.autovend.software.controllers;
 
 import com.autovend.Bill;
 import com.autovend.Coin;
-import com.autovend.Numeral;
 import com.autovend.devices.OverloadException;
 import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.devices.SelfCheckoutStation;
@@ -10,8 +9,7 @@ import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.utils.BarcodeUtils;
-import com.autovend.software.utils.MembershipDatabases;
+import com.autovend.software.utils.CardIssuerDatabases;
 import com.autovend.software.utils.MiscProductsDatabase;
 
 import java.math.BigDecimal;
@@ -724,7 +722,7 @@ public class CheckoutController {
 
 
 	public void validateMembership(String number){
-		boolean isValid = MembershipDatabases.MEMBERSHIP_DATABASE.containsKey(number);
+		boolean isValid = CardIssuerDatabases.MEMBERSHIP_DATABASE.containsKey(number);
 
 		if (isValid) {
 			for (DeviceController cardReaderController : registeredControllers.get("ValidPaymentControllers")) {
@@ -879,5 +877,15 @@ public class CheckoutController {
 	 */
 	public boolean isShutdown() {
 		return isShutdown;
+	}
+
+	public void disableCardReader(){
+		ArrayList<DeviceController> controllers = this.registeredControllers.get("PaymentController");
+		for (DeviceController controller : controllers) {
+			if (controller instanceof CardReaderController) {
+				((CardReaderController) controller).setState(CardReaderControllerState.NOTINUSE);
+			}
+		}
+
 	}
 }

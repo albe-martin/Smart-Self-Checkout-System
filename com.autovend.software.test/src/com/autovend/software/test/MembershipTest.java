@@ -11,7 +11,7 @@ import com.autovend.devices.BarcodeScanner;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
-import com.autovend.software.utils.MembershipDatabases;
+import com.autovend.software.utils.CardIssuerDatabases;
 import com.autovend.software.controllers.CardReaderController;
 import com.autovend.devices.CardReader;
 import com.autovend.devices.TouchScreen;
@@ -72,7 +72,7 @@ public class MembershipTest {
 	@Test
 	public void TestvalidateMembership() {
 		membershipID = "123456789";
-		MembershipDatabases.MEMBERSHIP_DATABASE.put(membershipID, "some member");
+		CardIssuerDatabases.MEMBERSHIP_DATABASE.put(membershipID, "some member");
 		checkoutController.validateMembership(membershipID);
 	    assertNotNull(cardReaderController.state);
 		assertTrue(barcodeScannerController.getScanningItems());
