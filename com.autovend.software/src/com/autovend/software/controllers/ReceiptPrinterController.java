@@ -20,8 +20,6 @@ package com.autovend.software.controllers;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
-import javax.lang.model.util.ElementScanner14;
-
 import com.autovend.devices.EmptyException;
 import com.autovend.devices.OverloadException;
 import com.autovend.devices.ReceiptPrinter;
@@ -184,22 +182,21 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 				System.out.println("The receipt is too long.");
 			} catch (EmptyException e) {
 				System.out.println("The printer is out of paper or ink.");
-				this.getMainController().printerOutOfResources();
+				this.getMainController().printerOutOfResources(receipt);
 			}
 		}
 
 		else if (lowInk() && !lowPaper()) {
 			// Inform the I/O for attendant from the error message about low ink
 			inkLow = true;
-			this.getMainController().printerOutOfResources();
+			this.getMainController().printerOutOfResources(new StringBuilder());
 
 		} 
 		else if (!lowInk() && lowPaper()) {
 
 			// Inform the I/O for attendant from the error message about low paper
 			paperLow = true;
-			this.getMainController().printerOutOfResources();
-
+			this.getMainController().printerOutOfResources(new StringBuilder());
 
 		}
 		else if (lowInk() && lowPaper()) {
@@ -207,7 +204,7 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 			//inform the I/O for attendant from the error message about low ink and paper
 			inkLow = true;
 			paperLow = true;
-			this.getMainController().printerOutOfResources();
+			this.getMainController().printerOutOfResources(new StringBuilder());
 
 		}
 		lowInk();
@@ -217,15 +214,15 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	@Override
 	public void reactToOutOfPaperEvent(ReceiptPrinter printer) {
 		estimatedPaper = 0;
-		this.getMainController().printerOutOfResources();
+		this.getMainController().printerOutOfResources(new StringBuilder());
 	}
 
 	@Override
 	public void reactToOutOfInkEvent(ReceiptPrinter printer) {
 		estimatedInk = 0;
-		this.getMainController().printerOutOfResources();
+		this.getMainController().printerOutOfResources(new StringBuilder());
 	}
-	final String getTypeName(){
+	public final String getTypeName(){
 		return "ReceiptPrinterController";
 	}
 

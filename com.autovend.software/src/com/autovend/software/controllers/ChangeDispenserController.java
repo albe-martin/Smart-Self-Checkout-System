@@ -32,7 +32,7 @@ abstract public class ChangeDispenserController<D extends AbstractDevice<O>, O e
 		return (this.getDenom().compareTo(o.getDenom()));
 	}
 
-	final String getTypeName(){
+	public final String getTypeName(){
 		return "ChangeDispenserController";
 	}
 

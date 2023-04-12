@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.Map.Entry;
 
 
@@ -17,7 +16,6 @@ import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 
@@ -38,7 +36,7 @@ CustomerIOController extends DeviceController<TouchScreen, TouchScreenObserver> 
     public CustomerIOController(TouchScreen newDevice) {
         super(newDevice);
     }
-    final String getTypeName(){
+    public final String getTypeName(){
         return "CustomerIOController";
     }
 

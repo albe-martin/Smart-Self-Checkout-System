@@ -206,6 +206,7 @@ public class CheckoutController {
 		}
 		if (controllerSet.contains(controller)) {
 			controllerSet.remove(controller);
+
 		}
 	}
 
@@ -477,10 +478,13 @@ public class CheckoutController {
 
 	public boolean needPrinterRefill = false;
 
-	void printerOutOfResources() {
+	void printerOutOfResources(StringBuilder receipt) {
 		this.needPrinterRefill = true;
-		if (this.order.size() > 0){
-			alertAttendant("Printing Error at station, receipt contents:\n" + this.order.toString());
+		AttendantIOController aioc = (AttendantIOController) this.registeredControllers.get("AttendantIOController").get(0);
+		if (receipt.isEmpty()){
+			alertAttendant("Printer low on resources");
+		}else if (this.order.size() > 0){
+			aioc.notifyRePrintReceipt(this, receipt);
 		}
 		else {
 			alertAttendant("Printing Error at station, no receipt contents");

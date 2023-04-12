@@ -26,7 +26,7 @@ abstract public class ChangeSlotController<D extends AbstractDevice<O>, O extend
 		super(newDevice);
 	}
 
-	final String getTypeName(){
+	public final String getTypeName(){
 		return "ChangeSlotController";
 	}
 }
