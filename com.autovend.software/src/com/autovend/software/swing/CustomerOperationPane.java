@@ -1,13 +1,6 @@
 package com.autovend.software.swing;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -16,12 +9,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.List;
+import java.util.function.Consumer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
+import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
@@ -31,6 +27,7 @@ import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CheckoutController.completePaymentErrorEnum;
 
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.utils.CardIssuerDatabases;
 import com.autovend.software.utils.MiscProductsDatabase;
 
 import static com.autovend.external.ProductDatabases.BARCODED_PRODUCT_DATABASE;
@@ -47,8 +44,10 @@ public class CustomerOperationPane extends JPanel {
 
 	public JButton logoutButton;
 	private JTable orderItemsTable;
+
 	public JLabel totalCostLabel, amountPaidLabel;
-	//public JLabel totalCostLabel;
+
+
 	public JButton languageSelectButton;
 	private JPanel glassPane;
 	private JPanel cashGlassPane;
@@ -61,6 +60,11 @@ public class CustomerOperationPane extends JPanel {
 	public JPanel PluCodePanel;
 	public JTextField pluCodeTextField;
 	public JButton PLUenterButton;
+
+
+	public JTextField bankTextField;
+	public JTextField amountTextField;
+	public JButton debitEnterButton;
 	
 	public JButton purchaseBagsButton;
 	public JPanel purchaseBagsPanel;
@@ -115,34 +119,63 @@ public class CustomerOperationPane extends JPanel {
 		initializeHeader();
 
 		// TODO: Create cart functionalities
+
 		initializeCartItemsGrid();
 
 		initializeTotalCostLabel();
 		initializeAmountPaidLabel();
 
-		initializeAddItemByPLUCodeButton();
-
-		initializeAddItemByLookupCodeButton();
-
-		initializePurchaseBagsButton();
-
-		initializeAddOwnBagsButton();
-
-		initializePayForItemsButton();
-
-		initializeEnterMembershipNumberButton();
-
-		initializeLanguageSelectButton();
-
 		// initializeCallAttendantButton();
 
+
+		String[] buttonText = {
+				"Enter Membership \nNumber",
+				"Add Item by PLU Code",
+				"Add Item by Lookup",
+				"Purchase Bags",
+				"Add Own Bags",
+				"Complete Payment",
+				"Select Language",
+				"Pay By Debit",
+				"Pay By Credit",
+				/*
+			"Pay By Gift-Card",
+		 */
+
+		};
+		Runnable[] initButtonFuncs = {
+				()->{cioc.beginSignInAsMember();},
+				()->{showAddItemByPLUCodePane();},
+				()->{showAddItemByLookup();},
+				()->{showPurchaseBagsPane();},
+				()->{cioc.addOwnBags();showAddOwnBagsPane();},
+				()->{cioc.finalizeOrder();},
+				()->{createLangSelectPane();},
+				()->{payByDebitPane();},
+				()->{payByCreditPane();},
+		};
+		int[][] buttonDims = {
+				{370, 663, 188, 76},
+				{589, 112, 173, 60},
+				{388, 112, 173, 60},
+				{589, 230, 173, 60},
+				{388, 230, 173, 60},
+				{490, 351, 173, 60},
+				{589, 663, 173, 76},
+				{589, 430, 173, 60},
+				{388, 430, 173, 60},
+		};
+		for (int ii=0;ii<buttonText.length;ii++){
+			JButton newButton = new JButton(buttonText[ii]);
+			int finalIi = ii;
+			newButton.addActionListener(e -> initButtonFuncs[finalIi].run());
+			newButton.setBounds(buttonDims[ii][0], buttonDims[ii][1], buttonDims[ii][2], buttonDims[ii][3]);
+			add(newButton);
+		}
+
 		// initializeLanguageSelectButton();
-
-
 		// TODO: Should have a confirmation popup (see the one I made for attendant notifyshutdownstationinuse).
-
 		// initializeExitButton();
-
 		refreshOrderGrid();
 
 	}
@@ -260,204 +293,41 @@ public class CustomerOperationPane extends JPanel {
 
 	public void updateAmountPaid() {
 		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())));
+		cioc.cancelPayment();
 	}
 
-	private void initializeEnterMembershipNumberButton() {
-		enterMembershipNumberButton = new JButton("Enter Membership \nNumber");
-		enterMembershipNumberButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.beginSignInAsMember();
-			}
-		});
-		enterMembershipNumberButton.setBounds(370, 663, 188, 76);
-		add(enterMembershipNumberButton);
-	}
+	private void createLangSelectPane() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-	private void initializeAddItemByPLUCodeButton() {
-		addItemByPluCodeButton = new JButton("Add Item by PLU Code");
-		addItemByPluCodeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				showAddItemByPLUCodePane();
-			}
-		});
-		addItemByPluCodeButton.setBounds(589, 112, 173, 60);
-		add(addItemByPluCodeButton);
-	}
 
-	private void initializeAddItemByLookupCodeButton() {
-		addItemByLookupButton = new JButton("Add Item by Lookup");
-		addItemByLookupButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				showAddItemByLookup();
-			}
-		});
-		addItemByLookupButton.setBounds(388, 112, 173, 60);
-		add(addItemByLookupButton);
-	}
+		// Create a label for the language selection
+		JLabel label = new JLabel("Select a language:");
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(label);
 
-	private void initializePurchaseBagsButton() {
-		purchaseBagsButton = new JButton("Purchase Bags");
-		purchaseBagsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				showPurchaseBagsPane();
-			}
-		});
-		purchaseBagsButton.setBounds(589, 230, 173, 60);
-		add(purchaseBagsButton);
-	}
+		// Create a group of radio buttons for the available languages
+		group = new ButtonGroup();
+		for (String language : languages) {
+			JRadioButton radioButton = new JRadioButton(language);
+			radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+			group.add(radioButton);
+			panel.add(radioButton);
+		}
 
-	private void initializeAddOwnBagsButton() {
-		addOwnBagsButton = new JButton("Add Own Bags");
-		addOwnBagsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.addOwnBags();
-				showAddOwnBagsPane();
-			}
-		});
-		addOwnBagsButton.setBounds(388, 230, 173, 60);
-		add(addOwnBagsButton);
-	}
-
-	private void initializePayForItemsButton() {
-		// Create pay with cash button.
-		cashButton = new JButton("Complete Payment");
-		cashButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.finalizeOrder();
-				//showPayWithCashPane();
-			}
-		});
-		cashButton.setBounds(490, 351, 173, 60);
-		add(cashButton);
-	}
-//	public void showPayWithCashPane() {
-//		JPanel panel = new JPanel(new GridBagLayout());
-//		GridBagConstraints gbc = new GridBagConstraints();
-//
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		gbc.insets = new Insets(5, 5, 5, 5);
-//		panel.add(new JLabel("Please insert cash into the machine."), gbc);
-//
-//		JButton finishedButton = new JButton("Finished");
-//		finishedButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
-//				if (window1 != null) {
-//					window1.dispose();
-//				}
-//			}
-//		});
-//
-//		gbc.gridx = 0;
-//		gbc.gridy = 1;
-//		gbc.gridwidth = 1;
-//		panel.add(finishedButton, gbc);
-//
-//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
-//
-//		dialog.addWindowListener(new WindowAdapter() {
-//			@Override
-//			public void windowClosing(WindowEvent e) {
-//				// Code to run when the JOptionPane is closed
-//			}
-//		});
-//
-//		dialog.setVisible(true);
-//
-//
-//		JButton finishedButton = new JButton("OK");
-//		finishedButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				Window window1 = SwingUtilities.getWindowAncestor(finishedButton);
-//				if (window1 != null) {
-//					window1.dispose();
-//				}
-//			}
-//		});
-//
-//		gbc.gridx = 0;
-//		gbc.gridy = 1;
-//		gbc.gridwidth = 1;
-//		panel.add(finishedButton, gbc);
-//
-//		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-//		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Pay with Cash");
-//
-//		dialog.addWindowListener(new WindowAdapter() {
-//			@Override
-//			public void windowClosing(WindowEvent e) {
-//				// Code to run when the JOptionPane is closed
-//			}
-//		});
-//
-//		dialog.setVisible(true);
-//	}
-
-//	private void initializeCallAttendantButton() {
-//		JButton callAttendantButton = new JButton("Call For Attendant");
-//		callAttendantButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//
-//			}
-//		});
-//		callAttendantButton.setBounds(83, 671, 173, 60);
-//		add(callAttendantButton);
-//	}
-
-	private void initializeLanguageSelectButton() {
-
-		languageSelectButton = new JButton("Select Language");
-		languageSelectButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JPanel panel = new JPanel();
-				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-				panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-				// Create a label for the language selection
-				JLabel label = new JLabel("Select a language:");
-				label.setAlignmentX(Component.CENTER_ALIGNMENT);
-				panel.add(label);
-
-				// Create a group of radio buttons for the available languages
-				group = new ButtonGroup();
-				for (String language : languages) {
-					JRadioButton radioButton = new JRadioButton(language);
-					radioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-					group.add(radioButton);
-					panel.add(radioButton);
-				}
-
-				// Show the language selection dialog and get the selected language
-				if (showPopup(panel, "Language Selection") == JOptionPane.OK_OPTION) {
-					String newLanguage = null;
-					// Determine selected button's text
-					for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements(); ) {
-						AbstractButton button = buttons.nextElement();
-						if (button.isSelected()) {
-							newLanguage = button.getText();
-							break;
-						}
-					}
-
-//					if (newLanguage != null) {
-//						// Update the language variable
-//						language = newLanguage;
-//
-//						// Update texts to new language
-//						notificationsLabel.setText(Language.translate(language, "Station Notifications:"));
-//						manageEnabledLabel.setText(Language.translate(language, "Manage Enabled Stations:"));
-//						manageDisabledLabel.setText(Language.translate(language, "Manage Disabled Stations:"));
-//						logoutButton.setText(Language.translate(language, "Log Out"));
-//						languageSelectButton.setText(Language.translate(language, "Change Language"));
-//						populateManagementPanes();
-//					}
+		// Show the language selection dialog and get the selected language
+		if (showPopup(panel, "Language Selection") == JOptionPane.OK_OPTION) {
+			String newLanguage = null;
+			// Determine selected button's text
+			for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements(); ) {
+				AbstractButton button = buttons.nextElement();
+				if (button.isSelected()) {
+					newLanguage = button.getText();
+					break;
 				}
 			}
-		});
-		languageSelectButton.setBounds(589, 663, 173, 76);
-		add(languageSelectButton);
+		}
 	}
 
 	public void initializeTransparentPane() {
@@ -494,6 +364,108 @@ public class CustomerOperationPane extends JPanel {
 			}
 		});
 
+	}
+	private void payByCreditPane() {
+		JPanel debitPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 10, 5);
+		debitPanel.add(new JLabel("Credit Source Name:"), gbc);
+		bankTextField=new JTextField(12);
+		amountTextField = new JTextField(12);
+		gbc.gridx = 1;
+		debitPanel.add(bankTextField, gbc);
+		gbc.gridy=1;
+		gbc.gridx=0;
+		debitPanel.add(new JLabel("Amount: "), gbc);
+		gbc.gridx = 1;
+		debitPanel.add(amountTextField, gbc);
+
+
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		int opt = optionDialogPopup(debitPanel, "Payment");
+		if (opt==JOptionPane.OK_OPTION){
+			String bankName = bankTextField.getText();
+			String amount = amountTextField.getText();
+			if (CardIssuerDatabases.ISSUER_DATABASE.get(bankName) == null) {
+				showErrorMessage("Bank Not Recognized");
+				//JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			double amntDbl = 0;
+			try {
+				amntDbl = Double.parseDouble(amount);
+			} catch (Exception ex) {
+				showErrorMessage("Amount Not Recognized as a number.");
+				return;
+			}
+
+			if (cioc.getMainController().getRemainingAmount().compareTo(BigDecimal.valueOf(amntDbl)) < 0) {
+				showErrorMessage("You cannot pay more than the remaining amount for the order!");
+				return;
+			}
+			cioc.choosePayByBankCard(
+					CardReaderControllerState.PAYINGBYDEBIT,
+					CardIssuerDatabases.ISSUER_DATABASE.get(bankName),
+					BigDecimal.valueOf(amntDbl)
+			);
+		}
+	}
+
+	private void payByDebitPane() {
+		JPanel debitPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		debitPanel.add(new JLabel("Bank Name:"), gbc);
+		bankTextField=new JTextField(12);
+		amountTextField = new JTextField(12);
+		gbc.gridx = 1;
+		debitPanel.add(bankTextField, gbc);
+		gbc.gridy=1;
+		gbc.gridx=0;
+		debitPanel.add(new JLabel("Amount: "), gbc);
+		gbc.gridx = 1;
+		debitPanel.add(amountTextField, gbc);
+
+
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		int opt = optionDialogPopup(debitPanel, "Payment");
+
+		if (opt==JOptionPane.OK_OPTION){
+			System.out.println("Paid");
+			String bankName = bankTextField.getText();
+			String amount = amountTextField.getText();
+			if (CardIssuerDatabases.ISSUER_DATABASE.get(bankName) == null) {
+				showErrorMessage("Bank Not Recognized");
+				//JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			double amntDbl = 0;
+			try {
+				amntDbl = Double.parseDouble(amount);
+			} catch (Exception ex) {
+				showErrorMessage("Amount Not Recognized as a number.");
+				return;
+			}
+
+			if (cioc.getMainController().getRemainingAmount().compareTo(BigDecimal.valueOf(amntDbl)) < 0) {
+				showErrorMessage("You cannot pay more than the remaining amount for the order!");
+				return;
+			}
+			cioc.choosePayByBankCard(
+					CardReaderControllerState.PAYINGBYDEBIT,
+					CardIssuerDatabases.ISSUER_DATABASE.get(bankName),
+					BigDecimal.valueOf(amntDbl)
+			);
+		}
 	}
 
 	private void showAddItemByPLUCodePane() {
@@ -589,11 +561,6 @@ public class CustomerOperationPane extends JPanel {
 		}
 	}
 
-
-
-	public void showMessageDialog(JScrollPane scrollPane, String header) {
-		JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, header, JOptionPane.PLAIN_MESSAGE);
-	}
 
 	private void showPurchaseBagsPane() {
 		purchaseBagsPanel = new JPanel(new GridBagLayout());
@@ -719,9 +686,9 @@ public class CustomerOperationPane extends JPanel {
 		baggingGlassPane.setVisible(true);
 	}
 
+
 	public void initializeCashPromptGlassPane() {
 		cashGlassPane = new JPanel(new GridBagLayout()) {
-			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected void paintComponent(Graphics g) {
@@ -758,8 +725,6 @@ public class CustomerOperationPane extends JPanel {
 	
 	public void initializeBaggingPromptGlassPane() {
 		baggingGlassPane = new JPanel(new GridBagLayout()) {
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			protected void paintComponent(Graphics g) {
 				g.setColor(new Color(0, 0, 0, 0)); // transparent
@@ -853,22 +818,22 @@ public class CustomerOperationPane extends JPanel {
 	public void BaggingWeightProblemDialog(JPanel panel, String header) {
 		optionDialogPopup(panel, Language.translate(language, header));
 	}
-	
+
 	/**
 	 * Simple pop-up.
 	 */
 	public int optionDialogPopup(JPanel panel, String header) {
 		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, header, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
-	
+
 	public void notifyNoBagApproved() {
 		baggingGlassPane.setVisible(false);
 	}
-	
+
 	public void notifyItemRemoved() {
 		refreshOrderGrid();
 	}
-	
+
 	public int showPopup(JPanel panel, String header) {
 		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), panel, header, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 	}
@@ -876,7 +841,6 @@ public class CustomerOperationPane extends JPanel {
 	public int optionDialog(JPanel panel, String header) {
 		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), purchaseBagsPanel, "Purchase Bags", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
-	
 	public void showErrorMessage(String message) {
 		JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}

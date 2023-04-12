@@ -2,7 +2,6 @@ package com.autovend.software.controllers;
 
 import com.autovend.Bill;
 import com.autovend.Coin;
-import com.autovend.Numeral;
 import com.autovend.devices.OverloadException;
 import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.devices.SelfCheckoutStation;
@@ -10,8 +9,7 @@ import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.utils.BarcodeUtils;
-import com.autovend.software.utils.MembershipDatabases;
+import com.autovend.software.utils.CardIssuerDatabases;
 import com.autovend.software.utils.MiscProductsDatabase;
 
 import java.math.BigDecimal;
@@ -355,6 +353,11 @@ public class CheckoutController {
 			} catch (IndexOutOfBoundsException e) {
 				weight = 0;
 			}
+
+			if (weight <= 0) {
+				return;
+			}
+
 			// adding the recorded weight on the current scale to the current item
 			// information
 			currentItemInfo[0] = ((BigDecimal) currentItemInfo[0]).add(BigDecimal.valueOf(weight));
@@ -417,7 +420,6 @@ public class CheckoutController {
 		}
 		baggingItemLock = !unlockStation;
 		System.out.println(unlockStation);
-		System.out.println("Your a moron Arie");
 	}
 
 	void baggedItemsInvalid() {
@@ -560,7 +562,7 @@ public class CheckoutController {
 		if (!payingChangeLock) {
 			return;
 		}
-		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock == true) {
+		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock) {
 
 			printReceipt();
 
@@ -719,7 +721,7 @@ public class CheckoutController {
 
 
 	public void validateMembership(String number){
-		boolean isValid = MembershipDatabases.MEMBERSHIP_DATABASE.containsKey(number);
+		boolean isValid = CardIssuerDatabases.MEMBERSHIP_DATABASE.containsKey(number);
 
 		if (isValid) {
 			for (DeviceController cardReaderController : registeredControllers.get("ValidPaymentControllers")) {
@@ -874,5 +876,15 @@ public class CheckoutController {
 	 */
 	public boolean isShutdown() {
 		return isShutdown;
+	}
+
+	public void disableCardReader(){
+		ArrayList<DeviceController> controllers = this.registeredControllers.get("PaymentController");
+		for (DeviceController controller : controllers) {
+			if (controller instanceof CardReaderController) {
+				((CardReaderController) controller).setState(CardReaderControllerState.NOTINUSE);
+			}
+		}
+
 	}
 }
