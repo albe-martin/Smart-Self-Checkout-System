@@ -293,7 +293,6 @@ public class CheckoutController {
 	 * A method called by attendant I/O when they have approved adding bags
 	 */
 	public void approveAddingBags() {
-		if (addingBagsLock) {
 			ArrayList<DeviceController> baggingControllers = this.registeredControllers.get("BaggingAreaController");
 			for (DeviceController baggingController : baggingControllers) {
 				BaggingScaleController scale = (BaggingScaleController) baggingController;
@@ -301,7 +300,6 @@ public class CheckoutController {
 			}
 			addingBagsLock = false;
 			baggingItemLock = false;
-		}
 	}
 
 	/*
@@ -421,10 +419,14 @@ public class CheckoutController {
 	}
 
 	void baggedItemsInvalid(boolean weightReduced) {
-		this.baggingItemLock = true;
-		((CustomerIOController) registeredControllers.get("CustomerIOController").get(0))
-				.displayWeightDiscrepancyMessage();
-		if (!weightReduced) {alertAttendant("Weight discrepancy at station " + this.getID());}
+		if (!addingBagsLock) {
+			this.baggingItemLock = true;
+			((CustomerIOController) registeredControllers.get("CustomerIOController").get(0))
+					.displayWeightDiscrepancyMessage();
+			if (!weightReduced) {
+				alertAttendant("Weight discrepancy at station " + this.getID());
+			}
+		}
 	}
 
 	void baggingAreaError() {

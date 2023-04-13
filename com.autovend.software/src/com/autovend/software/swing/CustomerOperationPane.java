@@ -631,14 +631,12 @@ public class CustomerOperationPane extends JPanel {
 		addOwnBagsPanel.add(new JLabel("Please add your own bags to the bagging area, and press \"Finished\" when you are done."), gbc);
 
 		finishedAddOwnBagsButton = new JButton("Finished");
-		finishedAddOwnBagsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cioc.notifyAttendantBagsAdded();
+		finishedAddOwnBagsButton.addActionListener(e -> {
+			cioc.notifyAttendantBagsAdded();
 
-				Window window1 = SwingUtilities.getWindowAncestor(finishedAddOwnBagsButton);
-				if (window1 != null) {
-					window1.dispose();
-				}
+			Window window1 = SwingUtilities.getWindowAncestor(finishedAddOwnBagsButton);
+			if (window1 != null) {
+				window1.dispose();
 			}
 		});
 
@@ -646,7 +644,6 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridy = 1;
 		gbc.gridwidth = 2;
 		addOwnBagsPanel.add(finishedAddOwnBagsButton, gbc);
-		
 		addOwnBagsOptionPane(addOwnBagsPanel);
 
 //		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
@@ -664,8 +661,10 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	public void addOwnBagsOptionPane(JPanel panel) {
-		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+		JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
 		JDialog dialog = optionPane.createDialog(cioc.getDevice().getFrame(), "Add Own Bags");
+		dialog.setModal(false);
+		cioc.getDevice().getFrame().setAlwaysOnTop(false);
 		dialog.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -675,6 +674,7 @@ public class CustomerOperationPane extends JPanel {
 		});
 
 		dialog.setVisible(true);
+
 	}
 
 	public void enableStation() {
