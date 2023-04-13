@@ -51,7 +51,7 @@ public class CustomerEventSimulator extends JFrame {
         cibc.addCardData("123", "Bob", calendar, "111", BigDecimal.valueOf(200));
 
         MembershipCard testMembershipCard = new MembershipCard("Membership", "4678", "Bob", false);
-        CardIssuerDatabases.MEMBERSHIP_DATABASE.put("foursixseveneight", "Bob");
+        CardIssuerDatabases.MEMBERSHIP_DATABASE.put("4678", "Bob");
 
 
         setTitle("Customer # 1 Event Simulator");
