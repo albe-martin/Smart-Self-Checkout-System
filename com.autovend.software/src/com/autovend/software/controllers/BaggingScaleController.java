@@ -42,6 +42,9 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 			this.expectedWeight += weightInGrams;
 		} else {
 			this.expectedWeight -= weightInGrams;
+			if (this.expectedWeight!=this.currentWeight){
+				this.getMainController().baggedItemsInvalid(true);
+			}
 		}
 		this.setBaggingValid(false);
 		// TODO: Figure out how changes smaller than sensitivity would be handled
@@ -65,7 +68,8 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 
 		}
 		else {
-			this.getMainController().baggedItemsInvalid();
+			System.out.println("inval");
+			this.getMainController().baggedItemsInvalid(false);
 			this.setBaggingValid(false);
 		}
 		System.out.println(currentWeight);

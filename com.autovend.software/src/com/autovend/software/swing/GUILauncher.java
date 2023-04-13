@@ -2,22 +2,16 @@ package com.autovend.software.swing;
 
 import java.math.BigDecimal;
 
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
 import javax.swing.JFrame;
 
-import com.autovend.Barcode;
-import com.autovend.Bill;
-import com.autovend.Coin;
-import com.autovend.Numeral;
-import com.autovend.PriceLookUpCode;
+import com.autovend.*;
 import com.autovend.devices.OverloadException;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SimulationException;
 import com.autovend.devices.SupervisionStation;
+import com.autovend.external.CardIssuer;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
@@ -25,6 +19,7 @@ import com.autovend.software.controllers.AttendantIOController;
 import com.autovend.software.controllers.AttendantStationController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.CustomerIOController;
+import com.autovend.software.utils.CardIssuerDatabases;
 
 /**
  * Launches the customer and attendant GUIs.
@@ -79,16 +74,19 @@ public class GUILauncher {
 		asc.registerController(aioc);
 		
 		// Add valid username and password.
-		asc.registerUser("a", "a");
+		asc.registerUser("", "");
 		
 		attendantScreen.setVisible(true);
-		
+
+
+
+
 		// Create list of checkout stations
 		int num_stations = 2;
 		ArrayList<CustomerIOController> ciocs = new ArrayList<>();
 		for (int i = 0; i < num_stations; i++) {
 			SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
-					new int[] {5}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
+					new int[] {5}, new BigDecimal[] {new BigDecimal(0.25)}, 1000, 1);
 			
 			for (int j = 0; j < SelfCheckoutStation.BILL_DISPENSER_CAPACITY-1; j++) {
 				try {
@@ -128,10 +126,7 @@ public class GUILauncher {
 			asc.registerController(cioc);
 			cioc.getMainController().registerController("AttendantIOController", aioc);
 		}
-		
-		// Shut down one station.
-		ciocs.get(1).getMainController().shutDown();
-		ciocs.get(0).getMainController().shutDown();
+		for (int ii=0;ii<num_stations;ii++) {ciocs.get(ii).getMainController().shutDown();}
 		
 		// Create demo products.
 		BarcodedProduct bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",

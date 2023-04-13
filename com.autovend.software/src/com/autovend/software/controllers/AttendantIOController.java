@@ -254,6 +254,14 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
         return mainController.getDisabledStationControllers();
     }
 
+
+    public void updateAttendantGUI(){
+        ((AttendantOperationPane)screen.getContentPane()).populateManagementPanes();
+
+    }
+
+
+
     /**
      * Called when an attendant approves the customer's added bags. Unlocks the
      * machine, terminates the attendant signal, and zeros the scale.
@@ -340,7 +348,6 @@ public class AttendantIOController extends DeviceController<TouchScreen, TouchSc
      * 			Message to be sent.
      */
     void displayMessage(String message) {
-      System.out.println(screen.getContentPane().toString());
     	((AttendantOperationPane) screen.getContentPane()).receiveMessage(message);
     }
     

@@ -39,10 +39,6 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
         return "CustomerIOController";
     }
 
-
-    //todo: add methods which let this controller modify the GUI on the screen
-
-
     /**
      *
      * @param pluCode
@@ -91,16 +87,15 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
         this.getMainController().signingInAsMember();
         //todo: Stuff with the GUI
     }
-    void attemptSignIn(String number){
+    public void attemptSignIn(String number){
         this.getMainController().validateMembership(number);
     }
-    void signedIn(){
-        //todo: display stuff here for the GUI (and do whatever membership actually does)
+    void signedIn(String name){
+        ((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyAsMember(name);
     }
 
     public void cancelSignInAsMember(){
         this.getMainController().cancelSigningInAsMember();
-        //todo: GUI
     }
 
     /**
@@ -115,29 +110,22 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
         this.getMainController().payByGiftCard();
     }
 
+    public void cancelPayment(){this.getMainController().disableCardReader();}
     public void finalizeOrder() {
     	completePaymentErrorEnum e = this.getMainController().completePayment();
-    	//while (this.getMainController().checkoutStation.billInput.removeDanglingBill() != null);
-		//((CustomerOperationPane)getDevice().getFrame().getContentPane()).showPaymentErrorPane(e);
-    	//((CustomerOperationPane)getDevice().getFrame().getContentPane()).updateAmountPaid();
     }
 
     public void purchaseBags(int amountOfBagsToAdd) {
-        //TODO: Add the specified number of bags to the order
-        // technically, the GUI can get away with only knowing the amount of bags for the order elsewhere,
-        // so that bag products don't actually have to be in the order, if that is easier
         this.getMainController().purchaseBags(amountOfBagsToAdd);
     }
 
     public void addOwnBags(){this.getMainController().setAddingBagsLock();}
-    //todo: gui stuff
     public void cancelAddOwnBags(){this.getMainController().cancelAddingBagsLock();}
 
     /**
      * Called in response to the customer selecting the 'finished adding bags' option.
      */
     public void notifyAttendantBagsAdded(){this.getMainController().notifyAddBags();}
-    //todo: more substance
 
     /**
      * Same thing as above with no product param, as the gui does not have the current product added when
@@ -145,7 +133,6 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
      */
     public void selectDoNotBag() {
         this.getMainController().notifyAttendantNoBagRequest();
-        // todo: either make this work or tell Colton how it is meant to work with a product param
     }
 
     
@@ -230,7 +217,6 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
      */
     void notifyDisabled() {
 		disablePanel((JPanel) getDevice().getFrame().getContentPane());
-
     }
     
     /**
@@ -257,9 +243,6 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
         getDevice().getFrame().setContentPane(new CustomerStartPane(this));
         getDevice().getFrame().revalidate();
         getDevice().getFrame().repaint();
-        disablePanel((JPanel) getDevice().getFrame().getContentPane());
-        enablePanel((JPanel) getDevice().getFrame().getContentPane());
-
     }
 
     /**
@@ -287,7 +270,11 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
     }
 
     //this method is used to display that there is a bagging discrepancy
-    void displayWeightDiscrepancyMessage() {}
+    void displayWeightDiscrepancyMessage() {
+        if (getMainController().isInUse()) {
+            ((CustomerOperationPane)getDevice().getFrame().getContentPane()).createBaggingWeightProblemPopup();
+        }
+    }
 
     //method used to display there is a danger to the station due to weight
     //potentially damaging the bagging area
@@ -310,13 +297,7 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
     public LinkedHashMap<Product, Number[]> getCart() {
     	return this.getMainController().getOrder();
     }
-    
-    /**
-     * Method that will notify that the station is out of order
-     */
-    void notifyOutOfOrder() {
 
-    }
 
     void selectLanguage () {
         HashMap<String, HashMap<String, String>> language = new HashMap<>();
