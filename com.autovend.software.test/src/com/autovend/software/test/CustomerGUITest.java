@@ -370,20 +370,24 @@ public class CustomerGUITest {
  		frame.setContentPane(cop);
  		
  		cop.refreshOrderGrid();
- 		
- 		DefaultTableModel model = cop.model;
+		cioc.getMainController().checkoutStation.scale.add(new PriceLookUpCodedUnit(new PriceLookUpCode(Numeral.one,Numeral.two,Numeral.three,Numeral.four), 10.0));
+		JButton addItemByPLUCodeButton = getButton("Add Item by PLU Code", cop);
+		addItemByPLUCodeButton.doClick();
+
+		DefaultTableModel model = cop.model;
  		String actualDescription = (String) model.getValueAt(0, 0);
  		BigDecimal actualPrice = (BigDecimal) model.getValueAt(0, 1);
  		Number actualQuantity = (Number) model.getValueAt(0, 2);
- 		
+
  		String expDescription = "apple";
- 		BigDecimal expPrice = BigDecimal.valueOf(0.89);
- 		Number expQuantity = (Number) 1.0;
- 		
+		BigDecimal expPrice = BigDecimal.valueOf(8.90);
+		BigDecimal expQuantity = BigDecimal.valueOf(10.0);
+
+		//assertEquals(expDescription, actualDescription);
+		assertEquals(expPrice, actualPrice.stripTrailingZeros());
+		assertEquals(expQuantity, actualQuantity);
+
  		assertEquals(expDescription, actualDescription);
- 		assertEquals(expPrice, actualPrice);
- 		assertEquals(expQuantity, actualQuantity);
- 		
  	}
  	
  	@Test
