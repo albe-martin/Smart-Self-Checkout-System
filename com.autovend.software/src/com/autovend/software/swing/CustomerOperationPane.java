@@ -129,7 +129,7 @@ public class CustomerOperationPane extends JPanel {
 
 
 		String[] buttonText = {
-				"Enter Membership \nNumber",
+				"Enter \nMembership \nNumber",
 				"Add Item by PLU Code",
 				"Add Item by Lookup",
 				"Purchase Bags",
@@ -155,15 +155,15 @@ public class CustomerOperationPane extends JPanel {
 				()->{payByCreditPane();},
 		};
 		int[][] buttonDims = {
-				{370, 663, 188, 76},
-				{589, 112, 173, 60},
-				{388, 112, 173, 60},
-				{589, 230, 173, 60},
-				{388, 230, 173, 60},
-				{490, 351, 173, 60},
-				{589, 663, 173, 76},
-				{589, 430, 173, 60},
-				{388, 430, 173, 60},
+				{388, 240, 190, 60},
+				{589, 100, 190, 60},
+				{388, 100, 190, 60},
+				{589, 170, 190, 60},
+				{388, 170, 190, 60},
+				{589, 240, 190, 60},
+				{589, 350, 190, 60},
+				{589, 430, 190, 60},
+				{388, 430, 190, 60},
 		};
 		for (int ii=0;ii<buttonText.length;ii++){
 			JButton newButton = new JButton(buttonText[ii]);
@@ -248,6 +248,7 @@ public class CustomerOperationPane extends JPanel {
 //		}
 
 		updateTotalCost();
+		updateAmountPaid();
 	}
 
 	private void updateGrid(DefaultTableModel model, Map.Entry<Product, Number[]> entry, String description) {
@@ -284,15 +285,15 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 	private void initializeAmountPaidLabel() {
-		amountPaidLabel = new JLabel("Amount Paid: $0.00");
+		amountPaidLabel = new JLabel("Remaining Amount: $0.00");
 		amountPaidLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-		amountPaidLabel.setBounds(83, 676, 188, 30);
+		amountPaidLabel.setBounds(300, 576, 400, 30);
 		amountPaidLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		add(amountPaidLabel);
 	}
 
 	public void updateAmountPaid() {
-		amountPaidLabel.setText("Amount Paid: $" + (cioc.getMainController().getCost().subtract(cioc.getMainController().getRemainingAmount())));
+		amountPaidLabel.setText("Remaining Amount: $" + (cioc.getMainController().getRemainingAmount()));
 		cioc.cancelPayment();
 	}
 
@@ -413,6 +414,10 @@ public class CustomerOperationPane extends JPanel {
 					BigDecimal.valueOf(amntDbl)
 			);
 		}
+	}
+	
+	public void showMessageDialog(JScrollPane scrollPane, String header) {
+		JOptionPane.showMessageDialog(cioc.getDevice().getFrame(), scrollPane, header, JOptionPane.PLAIN_MESSAGE);
 	}
 
 	private void payByDebitPane() {
@@ -844,4 +849,6 @@ public class CustomerOperationPane extends JPanel {
 	public void showErrorMessage(String message) {
 		JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
+
+
 }

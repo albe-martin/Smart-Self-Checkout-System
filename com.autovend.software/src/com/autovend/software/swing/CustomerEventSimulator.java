@@ -93,7 +93,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcScan2.gridy = 0;
         contentPane.add(scanItem2, gbcScan2);
 
-        JButton addBagging = new JButton("Add item to bagging area");
+        JButton addBagging = new JButton("Add scanned item to bagging area");
         addBagging.addActionListener(e -> {
             if (numbAdded[0]>0) {
                 checkout.scale.remove(latestUnit[0]);
@@ -103,6 +103,10 @@ public class CustomerEventSimulator extends JFrame {
             latestUnit[0] = null;
             numbAdded[0] = 0;
         });
+
+
+
+
         GridBagConstraints gbcaddBagging = new GridBagConstraints();
         gbcaddBagging.fill = GridBagConstraints.BOTH;
         gbcaddBagging.gridx = 0;
@@ -125,6 +129,51 @@ public class CustomerEventSimulator extends JFrame {
         gbcaddScale.gridy = 1;
         contentPane.add(addScale, gbcaddScale);
 
+
+        JButton addItem1Direct = new JButton("Directly add Item #1 to bagging area");
+        addItem1Direct.addActionListener(e -> {
+            BarcodedUnit bcItem1 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.seven), 3.0);
+            orderItems.add(bcItem1);
+            checkout.baggingArea.add(bcItem1);
+            try {
+                System.out.println(checkout.baggingArea.getCurrentWeight());
+            } catch (OverloadException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            latestUnit[0] = null;
+            numbAdded[0] = 0;
+        });
+        GridBagConstraints gbcAddDir1 = new GridBagConstraints();
+        gbcAddDir1.fill = GridBagConstraints.BOTH;
+        gbcAddDir1.gridx = 0;
+        gbcAddDir1.gridy = 2;
+        contentPane.add(addItem1Direct, gbcAddDir1);
+
+
+        JButton addItem2Direct = new JButton("Directly add Item #2 to bagging area");
+        addItem2Direct.addActionListener(e -> {
+            BarcodedUnit bcItem2 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.eight), 10.0);
+            orderItems.add(bcItem2);
+            checkout.baggingArea.add(bcItem2);
+
+            latestUnit[0] = null;
+            numbAdded[0] = 0;
+        });
+        GridBagConstraints gbcAddDir2 = new GridBagConstraints();
+        gbcAddDir2.fill = GridBagConstraints.BOTH;
+        gbcAddDir2.gridx = 1;
+        gbcAddDir2.gridy = 2;
+        contentPane.add(addItem2Direct, gbcAddDir2);
+
+
+
+
+
+
+
+
+
         JButton scanMembership = new JButton("Scan membership");
         scanMembership.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -134,7 +183,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcMembership = new GridBagConstraints();
         gbcMembership.fill = GridBagConstraints.BOTH;
         gbcMembership.gridx = 0;
-        gbcMembership.gridy = 2;
+        gbcMembership.gridy = 3;
         contentPane.add(scanMembership, gbcMembership);
 
 
@@ -151,7 +200,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcInputBill = new GridBagConstraints();
         gbcInputBill.fill = GridBagConstraints.BOTH;
         gbcInputBill.gridx = 0;
-        gbcInputBill.gridy = 3;
+        gbcInputBill.gridy = 4;
         contentPane.add(input5Bill, gbcInputBill);
 
 
@@ -168,7 +217,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcInputCoin = new GridBagConstraints();
         gbcInputCoin.fill = GridBagConstraints.BOTH;
         gbcInputCoin.gridx = 1;
-        gbcInputCoin.gridy = 3;
+        gbcInputCoin.gridy = 4;
         contentPane.add(inputCoin, gbcInputCoin);
 
 
@@ -185,7 +234,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcTapCard = new GridBagConstraints();
         gbcTapCard.fill = GridBagConstraints.BOTH;
         gbcTapCard.gridx = 0;
-        gbcTapCard.gridy = 4;
+        gbcTapCard.gridy = 5;
         contentPane.add(tapCard, gbcTapCard);
 
         JButton removeItems = new JButton("Remove Items from Bagging Area");
@@ -201,7 +250,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcRemoveItemsFromBaggingArea = new GridBagConstraints();
         gbcRemoveItemsFromBaggingArea.fill = GridBagConstraints.BOTH;
         gbcRemoveItemsFromBaggingArea.gridx = 0;
-        gbcRemoveItemsFromBaggingArea.gridy = 5;
+        gbcRemoveItemsFromBaggingArea.gridy = 7;
         contentPane.add(removeItems, gbcRemoveItemsFromBaggingArea);
 
 
@@ -209,7 +258,10 @@ public class CustomerEventSimulator extends JFrame {
         JButton removeChange = new JButton("Remove Change");
         removeChange.addActionListener(e -> {
             try {
-                while (checkout.billOutput.removeDanglingBill()!=null);
+                while (checkout.billOutput.removeDanglingBill()!=null) {
+                    System.out.println("Bill Removed");
+                }
+                checkout.coinTray.collectCoins();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -217,7 +269,24 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcremoveChange = new GridBagConstraints();
         gbcremoveChange.fill = GridBagConstraints.BOTH;
         gbcremoveChange.gridx = 1;
-        gbcremoveChange.gridy = 5;
+        gbcremoveChange.gridy = 7;
         contentPane.add(removeChange, gbcremoveChange);
+
+        JButton removeReceipt = new JButton("Remove Receipt");
+        removeReceipt.addActionListener(e -> {
+            System.out.println(checkout.printer.removeReceipt());
+        });
+        GridBagConstraints gbcremoveReceipt = new GridBagConstraints();
+        gbcremoveReceipt.fill = GridBagConstraints.BOTH;
+        gbcremoveReceipt.gridx = 1;
+        gbcremoveReceipt.gridy = 8;
+        contentPane.add(removeReceipt, gbcremoveReceipt);
+
+
+
     }
+
+
+
+
 }
