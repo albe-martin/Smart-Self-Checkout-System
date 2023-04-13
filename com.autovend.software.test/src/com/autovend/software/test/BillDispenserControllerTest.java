@@ -1,19 +1,32 @@
 /*
-SENG 300 Project Iteration 2
-Group 7
-Niran Malla 30086877
-Saksham Puri 30140617
-Fatema Chowdhury 30141268
-Janet Tesgazeab 30141335
-Fabiha Fairuzz Subha 30148674
-Ryan Janiszewski 30148838
-Umesh Oad 30152293
-Manvi Juneja 30153525
-Daniel Boettcher 30153811
-Zainab Bari 30154224
-Arie Goud 30163410
-Amasil Rahim Zihad 30164830
-*/
+ * SENG 300 Project Iteration 3 - Group P3-2
+ * Braedon Haensel -         UCID: 30144363
+ * Umar Ahmed -             UCID: 30145076
+ * Bartu Okan -             UCID: 30150180
+ * Arie Goud -                 UCID: 20163410
+ * Abdul Biderkab -         UCID: 30156693
+ * Hamza Khan -             UCID: 30157097
+ * James Hayward -             UCID: 30149513
+ * Christian Salvador -     UCID: 30089672
+ * Fatema Chowdhury -         UCID: 30141268
+ * Sankalp Bartwal -         UCID: 30132025
+ * Avani Sharma -             UCID: 30125040
+ * Albe Martin -             UCID: 30161964 
+ * Omar Khan -                 UCID: 30143707
+ * Samantha Liu -             UCID: 30123255
+ * Alex Chen -                 UCID: 30140184
+ * Auric Adubofour-Poku -     UCID: 30143774
+ * Grant Tkachyk -             UCID: 30077137
+ * Amandeep Kaur -             UCID: 30153923
+ * Tashi Labowka-Poulin -     UCID: 30140749
+ * Daniel Chang -             UCID: 30110252
+ * Jacob Braun -             UCID: 30124507
+ * Omar Ragab -             UCID: 30148549
+ * Artemy Gavrilov -         UCID: 30143698
+ * Colton Gowans -             UCID: 30143979
+ * Hada Rahadhi Hafiyyan -     UCID: 30186484
+ * 
+ */
 
 package com.autovend.software.test;
 
@@ -29,6 +42,7 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.BillDispenserController;
 import com.autovend.software.controllers.BillPaymentController;
+import com.autovend.software.controllers.ChangeDispenserController;
 import com.autovend.software.controllers.CheckoutController;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +54,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BillDispenserControllerTest {
     SelfCheckoutStation selfCheckoutStation;
@@ -48,6 +63,7 @@ public class BillDispenserControllerTest {
     int[] billDenominations;
     BigDecimal[] coinDenominations;
     LinkedHashMap<Product, Number[]> order;
+    private boolean result;
 
     @Before
     public void setup() {
@@ -87,6 +103,8 @@ public class BillDispenserControllerTest {
                 throw new RuntimeException(e);
             }
         }
+        
+        result = false;
     }
 
     @Test
@@ -160,5 +178,43 @@ public class BillDispenserControllerTest {
                 entry.getValue().load(new Bill(value, Currency.getInstance("CAD")));
             }
         }
+    }
+    
+    @Test
+    public void testReactBillsFull() {
+        BillDispenserController billDispenserController = new BillDispenserController(selfCheckoutStation.billDispensers.get(10), new BigDecimal(10));
+        billDispenserController.reactToBillsFullEvent(null);
+    }
+    
+    @Test
+    public void testReactBillsLoaded() {
+        BillDispenserController billDispenserController = new BillDispenserController(selfCheckoutStation.billDispensers.get(10), new BigDecimal(10));
+        billDispenserController.reactToBillsLoadedEvent(null);
+    }
+    
+    @Test
+    public void testReactBillsAdded() {
+        BillDispenserController billDispenserController = new BillDispenserController(selfCheckoutStation.billDispensers.get(10), new BigDecimal(10));
+        billDispenserController.reactToBillAddedEvent(null, null);
+    }
+    
+    @Test
+    public void testReactBillsUnloaded() {
+        BillDispenserController billDispenserController = new BillDispenserController(selfCheckoutStation.billDispensers.get(10), new BigDecimal(10));
+        billDispenserController.reactToBillsUnloadedEvent(null);
+    }
+    
+    @Test
+    public void testEmitEmpty() {
+        BillDispenser bd = new BillDispenser(1);
+        BillDispenserController billDispenserController = new BillDispenserController(bd, BigDecimal.ONE);
+        billDispenserController.setMainController(new CheckoutController() {
+        	@Override
+        	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
+        		result = true;
+        	}
+        });
+        billDispenserController.emitChange();
+        assertTrue(result);
     }
 }

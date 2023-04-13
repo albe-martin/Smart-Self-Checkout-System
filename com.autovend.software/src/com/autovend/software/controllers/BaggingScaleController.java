@@ -1,19 +1,32 @@
 /*
-SENG 300 Project Iteration 2
-Group 7
-Niran Malla 30086877
-Saksham Puri 30140617
-Fatema Chowdhury 30141268
-Janet Tesgazeab 30141335
-Fabiha Fairuzz Subha 30148674
-Ryan Janiszewski 30148838
-Umesh Oad 30152293
-Manvi Juneja 30153525
-Daniel Boettcher 30153811
-Zainab Bari 30154224
-Arie Goud 30163410
-Amasil Rahim Zihad 30164830
-*/
+ * SENG 300 Project Iteration 3 - Group P3-2
+ * Braedon Haensel -         UCID: 30144363
+ * Umar Ahmed -             UCID: 30145076
+ * Bartu Okan -             UCID: 30150180
+ * Arie Goud -                 UCID: 20163410
+ * Abdul Biderkab -         UCID: 30156693
+ * Hamza Khan -             UCID: 30157097
+ * James Hayward -             UCID: 30149513
+ * Christian Salvador -     UCID: 30089672
+ * Fatema Chowdhury -         UCID: 30141268
+ * Sankalp Bartwal -         UCID: 30132025
+ * Avani Sharma -             UCID: 30125040
+ * Albe Martin -             UCID: 30161964
+ * Omar Khan -                 UCID: 30143707
+ * Samantha Liu -             UCID: 30123255
+ * Alex Chen -                 UCID: 30140184
+ * Auric Adubofour-Poku -     UCID: 30143774
+ * Grant Tkachyk -             UCID: 30077137
+ * Amandeep Kaur -             UCID: 30153923
+ * Tashi Labowka-Poulin -     UCID: 30140749
+ * Daniel Chang -             UCID: 30110252
+ * Jacob Braun -             UCID: 30124507
+ * Omar Ragab -             UCID: 30148549
+ * Artemy Gavrilov -         UCID: 30143698
+ * Colton Gowans -             UCID: 30143979
+ * Hada Rahadhi Hafiyyan -     UCID: 30186484
+ *
+ */
 
 package com.autovend.software.controllers;
 
@@ -25,9 +38,6 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		implements ElectronicScaleObserver {
 	private double currentWeight;
 	private double expectedWeight;
-	private boolean addingBags;
-
-	private boolean AttendantApproval;
 
 	public BaggingScaleController(ElectronicScale newDevice) {
 		super(newDevice);
@@ -45,6 +55,9 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 			this.expectedWeight += weightInGrams;
 		} else {
 			this.expectedWeight -= weightInGrams;
+			if (this.expectedWeight!=this.currentWeight){
+				this.getMainController().baggedItemsInvalid(true);
+			}
 		}
 		this.setBaggingValid(false);
 		// TODO: Figure out how changes smaller than sensitivity would be handled
@@ -58,92 +71,40 @@ public class BaggingScaleController extends BaggingAreaController<ElectronicScal
 		this.currentWeight = 0;
 		this.expectedWeight = 0;
 	}
-	
-	public void attendantInput(boolean approval) {
-		AttendantApproval = approval;
-		return;
-	}
-
 	@Override
 	public void reactToWeightChangedEvent(ElectronicScale scale, double weightInGrams) {
-		if (scale != this.getDevice()) {
-			return;
-		}
-		;
+		if (scale != this.getDevice()) {return;}
 		this.currentWeight = weightInGrams;
-		// if the customer is adding their own bags, no need to check the expected
-		// weight as there is not one yet
-		if (addingBags) {
-			return;
-		}
 		if (this.currentWeight == this.expectedWeight) {
+			this.setBaggingValid(true);
 			this.getMainController().baggedItemsValid();
+
 		}
-		// case of weight discrepancy
 		else {
-			
-
-			// boolean value resolveDisrepancy:
-			// true if discrepancy is resolved by:
-			// -a do not bag request from customer IO
-			// -attendant approval
-			boolean resolveDiscrepancy = false;
-
-			// system blocks checkout from further interaction
-			this.getMainController().baggingItemLock = true;
-
-			// discrepancy resolved if customer signals a dnb request or attendant approves
-			if (AttendantApproval)
-				resolveDiscrepancy = true;
-
-			// validates bagging if the discrepancy was resolved
-			if (resolveDiscrepancy) {
-				this.getMainController().baggedItemsValid();
-				this.getMainController().baggingItemLock = false;
-			}
-			else {
-			this.getMainController().baggedItemsInvalid("The items in the bagging area don't have the correct weight.");
-			}
-
+			System.out.println("inval");
+			this.getMainController().baggedItemsInvalid(false);
+			this.setBaggingValid(false);
 		}
+		System.out.println(currentWeight);
+		System.out.println(expectedWeight);
 	}
-
 	@Override
 	public void reactToOverloadEvent(ElectronicScale scale) {
-		if (scale != this.getDevice()) {
-			return;
-		}
-		;
-		this.getMainController().baggingAreaError("The scale is currently overloaded, please take items off it to avoid damaging the system.");
+		if (scale != this.getDevice()) {return;}
+		this.getMainController().baggingAreaError();
 	}
-
 	@Override
 	public void reactToOutOfOverloadEvent(ElectronicScale scale) {
-		if (scale != this.getDevice()) {
-			return;
-		}
-		;
-		this.getMainController().baggingAreaErrorEnded("The scale is no longer overloaded.");
+		if (scale != this.getDevice()) {return;}
+		this.getMainController().baggingAreaErrorEnded();
 	}
-
 	public double getCurrentWeight() {
 		return currentWeight;
 	}
-
-	public void updateWithBagWeight(double weight) {
-		this.expectedWeight += weight;
-	}
-
-	public void setAddingBags(boolean value) {
-		this.addingBags = value;
-	}
-
 	public double getExpectedWeight() {
 		return this.expectedWeight;
 	}
-
-	public boolean getAddingBags() {
-		return this.addingBags;
+	public void setExpectedWeight(double newWeight) {
+		this.expectedWeight = newWeight;
 	}
-
 }

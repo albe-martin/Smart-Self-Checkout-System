@@ -1,19 +1,32 @@
 /*
-SENG 300 Project Iteration 2
-Group 7
-Niran Malla 30086877
-Saksham Puri 30140617
-Fatema Chowdhury 30141268
-Janet Tesgazeab 30141335
-Fabiha Fairuzz Subha 30148674
-Ryan Janiszewski 30148838
-Umesh Oad 30152293
-Manvi Juneja 30153525
-Daniel Boettcher 30153811
-Zainab Bari 30154224
-Arie Goud 30163410
-Amasil Rahim Zihad 30164830
-*/
+ * SENG 300 Project Iteration 3 - Group P3-2
+ * Braedon Haensel -         UCID: 30144363
+ * Umar Ahmed -             UCID: 30145076
+ * Bartu Okan -             UCID: 30150180
+ * Arie Goud -                 UCID: 20163410
+ * Abdul Biderkab -         UCID: 30156693
+ * Hamza Khan -             UCID: 30157097
+ * James Hayward -             UCID: 30149513
+ * Christian Salvador -     UCID: 30089672
+ * Fatema Chowdhury -         UCID: 30141268
+ * Sankalp Bartwal -         UCID: 30132025
+ * Avani Sharma -             UCID: 30125040
+ * Albe Martin -             UCID: 30161964 
+ * Omar Khan -                 UCID: 30143707
+ * Samantha Liu -             UCID: 30123255
+ * Alex Chen -                 UCID: 30140184
+ * Auric Adubofour-Poku -     UCID: 30143774
+ * Grant Tkachyk -             UCID: 30077137
+ * Amandeep Kaur -             UCID: 30153923
+ * Tashi Labowka-Poulin -     UCID: 30140749
+ * Daniel Chang -             UCID: 30110252
+ * Jacob Braun -             UCID: 30124507
+ * Omar Ragab -             UCID: 30148549
+ * Artemy Gavrilov -         UCID: 30143698
+ * Colton Gowans -             UCID: 30143979
+ * Hada Rahadhi Hafiyyan -     UCID: 30186484
+ * 
+ */
 
 package com.autovend.software.test;
 
@@ -42,13 +55,14 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.BillPaymentController;
 import com.autovend.software.controllers.CheckoutController;
 
-public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> {
+public class BillPaymentControllerTest {
 	SelfCheckoutStation selfCheckoutStation;
 	CheckoutController checkoutControllerStub;
 	BillPaymentController billPaymentControllerStub;
 	int[] billDenominations;
 	BigDecimal[] coinDenominations;
 	LinkedHashMap<Product, Number[]> order;
+	private boolean result;
 	
 
 	@Before
@@ -77,6 +91,29 @@ public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> 
 		barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.four), "test item 4",
 				BigDecimal.valueOf(9.99), 26.75);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcodedProduct.getBarcode(), barcodedProduct);
+		barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.five), "test item 5",
+				BigDecimal.valueOf(10.00), 30.00);
+		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcodedProduct.getBarcode(), barcodedProduct);
+		
+		result = false;
+	}
+	
+	@Test
+	public void standardPaymentTest() {
+		BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(new Barcode(Numeral.one, Numeral.five));
+		order = new LinkedHashMap<>();
+		order.put(product, new Number[1]);
+
+		checkoutControllerStub.setOrder(order);
+
+		try {
+			selfCheckoutStation.billInput.accept(new Bill(10, Currency.getInstance("CAD")));
+		} catch (Exception ex) {
+			System.out.printf("Exception " + ex.getMessage());
+		}
+		double amountRemaining = checkoutControllerStub.getRemainingAmount().doubleValue();
+		double expectedAmount = new BigDecimal(0).doubleValue();
+		assertEquals(expectedAmount, amountRemaining, 0);
 	}
 	
 
@@ -97,12 +134,6 @@ public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> 
 		double amountRemaining = checkoutControllerStub.getRemainingAmount().doubleValue();
 		double expextedAmount = new BigDecimal(19.99).doubleValue();
 		assertEquals(amountRemaining, expextedAmount, 0);
-//
-//
-//		billPaymentControllerStub.reactToValidBillDetectedEvent(billValidatorStub, Currency.getInstance("CAD"), 10);
-//		remainingAmount = checkoutControllerStub.getRemainingAmount();
-//		actualRemainingAmount = BigDecimal.valueOf(40.0);
-//		assertEquals(actualRemainingAmount, remainingAmount);
 	}
 
 	@Test
@@ -146,6 +177,8 @@ public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> 
 
 		checkoutControllerStub.setOrder(order);
 
+
+
 		try {
 			selfCheckoutStation.billInput.accept(new Bill(15, Currency.getInstance("CAD")));
 			selfCheckoutStation.billInput.removeDanglingBill();
@@ -153,5 +186,27 @@ public class BillPaymentControllerTest extends AbstractDevice<BillSlotObserver> 
 		} catch (OverloadException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Test
+    public void reactToInvalidBill() {
+        BillValidator bb = new BillValidator(Currency.getInstance("CAD"),billDenominations);
+        bb.disable();
+        BillPaymentController b = new BillPaymentController(bb);    
+    }
+	
+	@Test
+	public void reactToValidBill() {
+        BillValidator bb = new BillValidator(Currency.getInstance("CAD"),billDenominations);
+        bb.disable();
+        BillPaymentController b = new BillPaymentController(bb); 
+        b.setMainController(new CheckoutController() {
+        	@Override
+        	public void addToAmountPaid(BigDecimal value) {
+        		result = true;
+        	}
+        });
+        b.reactToValidBillDetectedEvent(bb, null, 0);
+        assertTrue(result);
 	}
 }	

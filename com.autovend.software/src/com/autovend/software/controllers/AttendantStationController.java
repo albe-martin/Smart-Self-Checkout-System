@@ -1,3 +1,32 @@
+/*
+ * SENG 300 Project Iteration 3 - Group P3-2
+ * Braedon Haensel -         UCID: 30144363
+ * Umar Ahmed -             UCID: 30145076
+ * Bartu Okan -             UCID: 30150180
+ * Arie Goud -                 UCID: 20163410
+ * Abdul Biderkab -         UCID: 30156693
+ * Hamza Khan -             UCID: 30157097
+ * James Hayward -             UCID: 30149513
+ * Christian Salvador -     UCID: 30089672
+ * Fatema Chowdhury -         UCID: 30141268
+ * Sankalp Bartwal -         UCID: 30132025
+ * Avani Sharma -             UCID: 30125040
+ * Albe Martin -             UCID: 30161964
+ * Omar Khan -                 UCID: 30143707
+ * Samantha Liu -             UCID: 30123255
+ * Alex Chen -                 UCID: 30140184
+ * Auric Adubofour-Poku -     UCID: 30143774
+ * Grant Tkachyk -             UCID: 30077137
+ * Amandeep Kaur -             UCID: 30153923
+ * Tashi Labowka-Poulin -     UCID: 30140749
+ * Daniel Chang -             UCID: 30110252
+ * Jacob Braun -             UCID: 30124507
+ * Omar Ragab -             UCID: 30148549
+ * Artemy Gavrilov -         UCID: 30143698
+ * Colton Gowans -             UCID: 30143979
+ * Hada Rahadhi Hafiyyan -     UCID: 30186484
+ *
+ */
 package com.autovend.software.controllers;
 
 import java.util.ArrayList;
@@ -54,7 +83,7 @@ public class AttendantStationController {
 	
 	/**
 	 * Constructor to assign this controller a station.
-	 * @param tation
+	 * @param station
 	 * 		The supervision station to assign this controller to.
 	 * 		
 	 */
@@ -62,13 +91,11 @@ public class AttendantStationController {
 		initControllers();
 		attendantStation = station;
 		
-		Set<DeviceController> attendantIOControllers = registeredIOControllers.get("AttendantIOController");
-		
+
 		//Creates IO controller for attendant and adds it to the list
 		AttendantIOController controller = new AttendantIOController(attendantStation.screen);
 		controller.setMainAttendantController(this);
-		
-		attendantIOControllers.add(controller);
+		registerController(controller);
 		
 		//Ensure logged out
 		logout();
@@ -83,6 +110,7 @@ public class AttendantStationController {
 		registeredIOControllers = new HashMap<String, Set<DeviceController>>();
 		registeredIOControllers.put("AttendantIOController", new HashSet<DeviceController>());
 		registeredIOControllers.put("CustomerIOController", new HashSet<DeviceController>());
+		registeredIOControllers.put("ReceiptPrinterController", new HashSet<DeviceController>());
 	}
 	
 	/**
@@ -108,12 +136,15 @@ public class AttendantStationController {
 			if(!attendantIOControllers.contains(controller))
 				attendantIOControllers.add(controller);
 		} 
-		else if(!controller.getTypeName().equals("CustomerIOController")) {
+		else if(controller.getTypeName().equals("CustomerIOController")) {
 			Set<DeviceController> customerIoControllers = registeredIOControllers.get("CustomerIOController");
-			if(!customerIoControllers.contains(controller))
+			if (!customerIoControllers.contains(controller))
 				customerIoControllers.add(controller);
+		}	else if(controller.getTypeName().equals("ReceiptPrinterController")) {
+			Set<DeviceController> receiptPrinter = registeredIOControllers.get("ReceiptPrinterController");
+			if (!receiptPrinter.contains(controller))
+				receiptPrinter.add(controller);
 		}
-		
 		return;
 	}
 	
@@ -160,6 +191,7 @@ public class AttendantStationController {
 		}
 		return;
 	}
+
 	
 	/**
 	 * A simple method to remove  a station to this attendant station's list of stations along with its controller.
@@ -200,21 +232,19 @@ public class AttendantStationController {
 				loggedIn = true;
 				currentUser = username;
 				//Signals AttendantIOController of success
+
 				for(DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
 					((AttendantIOController) io).loginValidity(true, username);
 				}
 				return;
 			}
 		}
-			
-		logout();
 		
 		//Signals AttendantIOController of failure
 		for(DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
 			((AttendantIOController) io).loginValidity(false, "");
+			System.out.println(io);
 		}
-		
-		return;
 	}
 	
 	/**
@@ -223,6 +253,12 @@ public class AttendantStationController {
 	public void logout() {
 		loggedIn = false;
 		currentUser = "";
+		
+		// Signal AttendantIOController of successful logout
+		for (DeviceController io : this.registeredIOControllers.get("AttendantIOController")) {
+			((AttendantIOController) io).loggedOut(currentUser);
+		}
+		
 		return;
 	}
 	
@@ -242,10 +278,6 @@ public class AttendantStationController {
 	public void registerUser(String username, String password) {
 		if(!credentials.containsKey(username)) {
 			credentials.put(username, password);
-			System.out.println("SUCCESS: User added.");
-		}
-		else {
-			System.out.println("ERROR: Username already exists.");
 		}
 		return;
 	}
@@ -278,12 +310,12 @@ public class AttendantStationController {
 	 * 		immutable list  of checkout stations.
 	 * 		Returns null if not logged in
 	 */
-	public List<CustomerIOController> getAllStationsIOControllers() {
-		List<CustomerIOController> controllers = new ArrayList<>();
+	public List<CheckoutController> getAllStationControllers() {
+		List<CheckoutController> controllers = new ArrayList<>();
 		if(loggedIn) {
 			//Loop through Customer IO Controllers and add
 			for(DeviceController io : this.registeredIOControllers.get("CustomerIOController")) {
-				controllers.add((CustomerIOController) io);
+				controllers.add(((CustomerIOController) io).getMainController());
 			}
 			return controllers;
 		}
@@ -296,17 +328,17 @@ public class AttendantStationController {
 	 * A simple method that will return a list of disabled stations monitored by this attendant station.
 	 * 
 	 * @return 
-	 * 		List of disabled checkout station IO controllers.
+	 * 		List of disabled checkout station controllers.
 	 * 		Returns null if not logged in.
 	 */
-	public List<CustomerIOController> getDisabledStationsIOControllers() {
-		List<CustomerIOController> disabledControllers = new ArrayList<>();
+	public List<CheckoutController> getDisabledStationControllers() {
+		List<CheckoutController> disabledControllers = new ArrayList<>();
 		if(loggedIn) {
 			//Loop through Customer IO Controllers
 			//If main controller of that io controller is disabled, add io controller to disabled controllers
 			for(DeviceController io : this.registeredIOControllers.get("CustomerIOController")) {
 				if(((CustomerIOController)io).getMainController().isDisabled()) {
-					disabledControllers.add((CustomerIOController) io);
+					disabledControllers.add(((CustomerIOController) io).getMainController());
 				}
 			}
 			return disabledControllers;
@@ -314,6 +346,16 @@ public class AttendantStationController {
 		else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Returns the set of registered AttendantIOControllers.
+	 * 
+	 * @return
+	 * 		Set of registered AttendantIOControllers.
+	 */
+	public Set<DeviceController> getAttendantIOControllers() {
+		return registeredIOControllers.get("AttendantIOController");
 	}
 	
 	/**
@@ -330,5 +372,28 @@ public class AttendantStationController {
 	 */
 	public boolean isLoggedIn() {
 		return loggedIn;
+	}
+
+
+	/**
+	 * Methods for printing receipt in the case that the checkout station is low on ink or paper
+	 */
+	public void printReceipt(StringBuilder receipt) {
+//		ReceiptPrinterController printerController = (ReceiptPrinterController) this.registeredIOControllers.get("ReceiptPrinterController").iterator().next();
+//		printerController.printReceipt(receipt);
+		// TODO We don't have a ReceiptPrinter at the AttendantStation
+		System.out.println("In ASOC");
+		System.out.println(receipt.toString());
+	}
+
+	
+	/**
+	 * Getter for getting all users in credentials hash map
+	 * @return
+	 * 		usernames of all credentials in station
+	 */
+	public HashMap getUsers() {
+		return credentials;
+
 	}
 }
