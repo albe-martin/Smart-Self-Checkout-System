@@ -86,6 +86,7 @@ public class CoinPaymentTest {
 		
 		customerController = new CustomerIOController(stubDevice);
 		customerController.setMainController(checkoutControllerStub);
+		customerController.startPressed();
 
 		BarcodedProduct barcodedProduct;
 		barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.one), "test item 1",
@@ -266,7 +267,7 @@ public class CoinPaymentTest {
 	public void testCompletePaymentBaggingItemLock() {
 		BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(new Barcode(Numeral.one, Numeral.six));
 		order = new LinkedHashMap<>();
-		order.put(product, new Number[1]);
+		order.put(product, new Number[2]);
 
 		checkoutControllerStub.setOrder(order);
 
