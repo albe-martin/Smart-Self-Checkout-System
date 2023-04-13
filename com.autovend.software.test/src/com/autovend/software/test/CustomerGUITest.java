@@ -79,8 +79,11 @@ import com.autovend.software.controllers.AttendantIOController;
  import com.autovend.software.controllers.CheckoutController;
  import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.DeviceController;
+import com.autovend.software.controllers.ReceiptPrinterController;
 import com.autovend.software.controllers.ReusableBagDispenserController;
+import com.autovend.software.swing.AttendantEventSimulator;
 import com.autovend.software.swing.AttendantLoginPane;
+import com.autovend.software.swing.CustomerEventSimulator;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
  import com.autovend.software.swing.Language;
@@ -93,11 +96,19 @@ public class CustomerGUITest {
  	private TouchScreen screen;
  	private boolean enabledEventOccurred = false;
  	private boolean disabledEventOccurred = false;
- 	private CustomerIOController cioc;
+
  	private CustomerStartPaneTest customerPane;
  	private JFrame customerScreen;
 	private PLUCodedProduct pluCodedProduct1;
 	private BarcodedProduct bcproduct1;
+	
+	CustomerIOController cioc;
+	SupervisionStation attendantStation = new SupervisionStation();
+	AttendantStationController asc = new AttendantStationController(attendantStation);
+	AttendantIOController aioc = (AttendantIOController) asc.getAttendantIOControllers().iterator().next();
+
+	ArrayList<CustomerIOController> ciocs = new ArrayList<>();
+	
 	
 	private boolean invalidPLUDetected = false;
 	private boolean PLUNotFound = false;
@@ -662,6 +673,47 @@ public class CustomerGUITest {
  		cop.createBaggingWeightProblemPopup();
  		assertTrue(weightDiscrepancy);
  	}
+ 	
+	/**
+	 * Tests the functionality of each button in CustomerEventSimulator
+	 */
+	@Test
+	public void eventSimulatorTest() {
+		
+		ciocs.add(cioc);
+		CustomerEventSimulator cesframe = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController().checkoutStation);
+		cesframe.setVisible(true);
+		cesframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		try {
+			
+			cesframe.scanItem.doClick();
+			cesframe.scanItem2.doClick();
+			cesframe.addBagging.doClick();
+			cesframe.addScale.doClick();
+			cesframe.addItem1Direct.doClick();
+			cesframe.addItem2Direct.doClick();
+			cesframe.scanMembership.doClick();
+			cesframe.addPurchasedBags.doClick();
+			cesframe.input5Bill.doClick();
+			cesframe.inputCoin.doClick();
+			cesframe.tapCard.doClick();
+			cesframe.swipeCard.doClick();
+			cesframe.rightPinCardInsert.doClick();
+			cesframe.wrongPinCardInsert.doClick();
+			cesframe.removeItems.doClick();
+			cesframe.removeLatestFromBaggingArea.doClick();
+			cesframe.giftCardPay.doClick();
+			cesframe.removeChange.doClick();
+			cesframe.removeReceipt.doClick();
+			
+		} catch (Exception e) {
+			return;
+		}
+		
+		fail("No exception expected");
+
+	}
 
  	@After
  	public void tearDown() {
