@@ -683,8 +683,11 @@ public class CheckoutController {
 	// to be ready to scan a membership card.
 	public void signingInAsMember() {
 		for (DeviceController cardReaderController : registeredControllers.get("ValidPaymentControllers")) {
+			if (cardReaderController instanceof  CardReaderController){
 			((CardReaderController) cardReaderController).setState(CardReaderControllerState.REGISTERINGMEMBERS);
+			}
 		}
+
 		for (DeviceController barcodeScannerController : registeredControllers.get("ItemAdderController")) {
 			((BarcodeScannerController) barcodeScannerController).setScanningItems(false);
 		}
@@ -692,16 +695,20 @@ public class CheckoutController {
 
 
 	public void validateMembership(String number){
+		System.out.println(number);
 		boolean isValid = CardIssuerDatabases.MEMBERSHIP_DATABASE.containsKey(number);
 
 		if (isValid) {
 			for (DeviceController cardReaderController : registeredControllers.get("ValidPaymentControllers")) {
-				((CardReaderController) cardReaderController).setState(CardReaderControllerState.NOTINUSE);
+				if (cardReaderController instanceof  CardReaderController) {
+
+					((CardReaderController) cardReaderController).setState(CardReaderControllerState.NOTINUSE);
+				}
 			}
 			for (DeviceController barcodeScannerController : registeredControllers.get("ItemAdderController")) {
 				((BarcodeScannerController) barcodeScannerController).setScanningItems(true);
 			}
-			((CustomerIOController) registeredControllers.get("CustomerIOController").get(0)).signedIn();
+			((CustomerIOController) registeredControllers.get("CustomerIOController").get(0)).signedIn(CardIssuerDatabases.MEMBERSHIP_DATABASE.get(number));
 		} else {
 			// todo: GUI methods to notify failed sign-in
 		}

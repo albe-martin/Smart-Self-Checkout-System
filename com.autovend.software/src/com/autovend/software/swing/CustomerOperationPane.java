@@ -129,7 +129,7 @@ public class CustomerOperationPane extends JPanel {
 
 
 		String[] buttonText = {
-				"Enter \nMembership \nNumber",
+				"Enter Membership",
 				"Add Item by PLU Code",
 				"Add Item by Lookup",
 				"Purchase Bags",
@@ -138,13 +138,10 @@ public class CustomerOperationPane extends JPanel {
 				"Select Language",
 				"Pay By Debit",
 				"Pay By Credit",
-				/*
-			"Pay By Gift-Card",
-		 */
-
+				"Pay By Gift-Card",
 		};
 		Runnable[] initButtonFuncs = {
-				()->{cioc.beginSignInAsMember();},
+				()->{showMembershipPane();cioc.beginSignInAsMember();},
 				()->{showAddItemByPLUCodePane();},
 				()->{showAddItemByLookup();},
 				()->{showPurchaseBagsPane();},
@@ -153,6 +150,7 @@ public class CustomerOperationPane extends JPanel {
 				()->{createLangSelectPane();},
 				()->{payByDebitPane();},
 				()->{payByCreditPane();},
+				()->cioc.choosePayByGiftCard(),
 		};
 		int[][] buttonDims = {
 				{388, 240, 190, 60},
@@ -164,6 +162,7 @@ public class CustomerOperationPane extends JPanel {
 				{589, 350, 190, 60},
 				{589, 430, 190, 60},
 				{388, 430, 190, 60},
+				{388, 350, 190, 60},
 		};
 		for (int ii=0;ii<buttonText.length;ii++){
 			JButton newButton = new JButton(buttonText[ii]);
@@ -393,7 +392,6 @@ public class CustomerOperationPane extends JPanel {
 			String amount = amountTextField.getText();
 			if (CardIssuerDatabases.ISSUER_DATABASE.get(bankName) == null) {
 				showErrorMessage("Bank Not Recognized");
-				//JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			double amntDbl = 0;
@@ -450,7 +448,6 @@ public class CustomerOperationPane extends JPanel {
 			String amount = amountTextField.getText();
 			if (CardIssuerDatabases.ISSUER_DATABASE.get(bankName) == null) {
 				showErrorMessage("Bank Not Recognized");
-				//JOptionPane.showMessageDialog(null, "PLU codes are only 4 or 5 numbers long! Please enter a valid PLU code.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			double amntDbl = 0;
@@ -527,6 +524,39 @@ public class CustomerOperationPane extends JPanel {
 		showPopup(PluCodePanel, "Add Item by PLU Code");
 		//JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), PluCodePanel, "Add Item by PLU Code", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
 	}
+
+
+	private void showMembershipPane() {
+
+		PluCodePanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		PluCodePanel.add(new JLabel("Please enter membership number:"), gbc);
+
+		pluCodeTextField = new JTextField(10);
+		gbc.gridx = 1;
+		PluCodePanel.add(pluCodeTextField, gbc);
+
+		PLUenterButton = new JButton("Enter");
+		PLUenterButton.addActionListener(e -> {
+			String code = pluCodeTextField.getText();
+			cioc.attemptSignIn(code);
+		});
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		PluCodePanel.add(PLUenterButton, gbc);
+
+		int num = JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), PluCodePanel, "Enter Membership Numb", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+		if (num==JOptionPane.DEFAULT_OPTION){
+			cioc.cancelSignInAsMember();
+		}
+	}
+
 
 	private void showAddItemByLookup() {
 		// Create a list to hold all products
@@ -851,4 +881,19 @@ public class CustomerOperationPane extends JPanel {
 	}
 
 
+	public void notifyAsMember(String name) {
+		// Create panel for the pop-up.
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		// Create a label indicating no items found.
+		JLabel label = new JLabel(Language.translate(language, "Hello "+name));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(label);
+
+		// Show pop-up.
+		BaggingWeightProblemDialog(panel, "Membership Verified");
+		//optionDialogPopup(panel, Language.translate(language, "Bagging Area Weight Discrepancy"));
+	}
 }

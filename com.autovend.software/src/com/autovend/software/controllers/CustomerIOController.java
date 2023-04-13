@@ -85,19 +85,17 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
      */
     public void beginSignInAsMember(){
         this.getMainController().signingInAsMember();
-
         //todo: Stuff with the GUI
     }
-    void attemptSignIn(String number){
+    public void attemptSignIn(String number){
         this.getMainController().validateMembership(number);
     }
-    void signedIn(){
-        //todo: display stuff here for the GUI (and do whatever membership actually does)
+    void signedIn(String name){
+        ((CustomerOperationPane)getDevice().getFrame().getContentPane()).notifyAsMember(name);
     }
 
     public void cancelSignInAsMember(){
         this.getMainController().cancelSigningInAsMember();
-        //todo: GUI
     }
 
     /**
