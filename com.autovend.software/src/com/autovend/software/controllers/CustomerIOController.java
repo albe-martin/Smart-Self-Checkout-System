@@ -272,7 +272,11 @@ public class CustomerIOController extends DeviceController<TouchScreen, TouchScr
     }
 
     //this method is used to display that there is a bagging discrepancy
-    void displayWeightDiscrepancyMessage() {}
+    void displayWeightDiscrepancyMessage() {
+        if (getMainController().isInUse()) {
+            ((CustomerOperationPane)getDevice().getFrame().getContentPane()).createBaggingWeightProblemPopup();
+        }
+    }
 
     //method used to display there is a danger to the station due to weight
     //potentially damaging the bagging area

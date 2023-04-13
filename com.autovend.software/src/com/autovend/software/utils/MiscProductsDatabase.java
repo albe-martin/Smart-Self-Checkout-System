@@ -16,7 +16,7 @@ public class MiscProductsDatabase {
     public static Numeral[] bagNumb = BarcodeUtils.stringToNumeralArray("000000000000");
 
     public static class Bag extends BarcodedProduct {
-        private double expectedWeight = 0.008;
+        private double expectedWeight = 5.0;
         //average plastic bag is 8 grams so this checks out
         /**
          * Create a product instance.

@@ -5,15 +5,19 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.autovend.ReusableBag;
 import com.autovend.devices.OverloadException;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.ReceiptPrinterController;
+import com.autovend.software.controllers.ReusableBagDispenserController;
 
 /**
  * GUI used to simulate events related to the Attendant.
@@ -323,5 +327,43 @@ public class AttendantEventSimulator extends JFrame {
 		gbcreprint2.gridx = 1;
 		gbcreprint2.gridy = 9;
 		contentPane.add(reprint2, gbcreprint2);
+
+
+		// Resolve low bags events.
+		JButton fillBagsResolve1 = new JButton("Resolve Low Bags Issue (1)");
+		lowinkResolve1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					List<ReusableBag> bags = Collections.nCopies(20, new ReusableBag());
+					checkout1.checkoutStation.bagDispenser.load(bags.toArray(new ReusableBag[0]));
+				} catch (OverloadException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+		});
+		GridBagConstraints gbcFillBagsResolve1= new GridBagConstraints();
+		gbcFillBagsResolve1.fill = GridBagConstraints.BOTH;
+		gbcFillBagsResolve1.gridx = 0;
+		gbcFillBagsResolve1.gridy = 10;
+		contentPane.add(fillBagsResolve1, gbcFillBagsResolve1);
+
+		JButton fillBagsResolve2 = new JButton("Resolve Low Bags Issue (2)");
+		lowinkResolve1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					List<ReusableBag> bags = Collections.nCopies(20, new ReusableBag());
+					checkout2.checkoutStation.bagDispenser.load(bags.toArray(new ReusableBag[0]));
+				} catch (OverloadException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+		});
+		GridBagConstraints gbcFillBagsResolve2= new GridBagConstraints();
+		gbcFillBagsResolve2.fill = GridBagConstraints.BOTH;
+		gbcFillBagsResolve2.gridx = 1;
+		gbcFillBagsResolve2.gridy = 10;
+		contentPane.add(fillBagsResolve2, gbcFillBagsResolve2);
+
+
 	}
 }

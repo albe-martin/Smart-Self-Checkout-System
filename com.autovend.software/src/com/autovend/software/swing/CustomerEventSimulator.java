@@ -40,7 +40,7 @@ public class CustomerEventSimulator extends JFrame {
 
         final int[] numbAdded = {0};
         final SellableUnit[] latestUnit = {null};
-        ArrayList<SellableUnit> orderItems = new ArrayList<>();
+        LinkedList<SellableUnit> orderItems = new LinkedList<>();
 
         CardIssuer cibc = new CardIssuer("CIBC");
         CardIssuerDatabases.ISSUER_DATABASE.put("CIBC", cibc);
@@ -187,6 +187,23 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(scanMembership, gbcMembership);
 
 
+        JButton addPurchasedBags = new JButton("Add reusable bags");
+        addPurchasedBags.addActionListener(e -> {
+            ReusableBag newBag = new ReusableBag();
+            orderItems.add(newBag);
+            checkout.baggingArea.add(newBag);
+            latestUnit[0] = null;
+            numbAdded[0] = 0;
+        });
+        GridBagConstraints gbcAddBag = new GridBagConstraints();
+        gbcAddBag.fill = GridBagConstraints.BOTH;
+        gbcAddBag.gridx = 1;
+        gbcAddBag.gridy = 3;
+        contentPane.add(addPurchasedBags, gbcAddBag);
+
+
+
+
         JButton input5Bill = new JButton("Input 5$ Bill");
         input5Bill.addActionListener(e -> {
             try {
@@ -225,7 +242,6 @@ public class CustomerEventSimulator extends JFrame {
         tapCard.addActionListener(e -> {
             try {
                 checkout.cardReader.tap(testCard);
-                System.out.println("IN");
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -236,6 +252,60 @@ public class CustomerEventSimulator extends JFrame {
         gbcTapCard.gridx = 0;
         gbcTapCard.gridy = 5;
         contentPane.add(tapCard, gbcTapCard);
+
+        JButton swipeCard = new JButton("Swipe Card");
+        swipeCard.addActionListener(e -> {
+            try {
+                checkout.cardReader.swipe(testCard,null);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
+        });
+        GridBagConstraints gbcSwipeCard = new GridBagConstraints();
+        gbcSwipeCard.fill = GridBagConstraints.BOTH;
+        gbcSwipeCard.gridx = 1;
+        gbcSwipeCard.gridy = 5;
+        contentPane.add(swipeCard, gbcSwipeCard);
+
+        JButton rightPinCardInsert = new JButton("Insert Card with correct PIN");
+        rightPinCardInsert.addActionListener(e -> {
+            try {
+                checkout.cardReader.insert(testCard, "1337");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            checkout.cardReader.remove();
+
+            ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
+        });
+        GridBagConstraints gbcCorrectInsertCard = new GridBagConstraints();
+        gbcCorrectInsertCard.fill = GridBagConstraints.BOTH;//
+        gbcCorrectInsertCard.gridx = 0;
+        gbcCorrectInsertCard.gridy = 6;
+        contentPane.add(rightPinCardInsert, gbcCorrectInsertCard);
+
+        JButton wrongPinCardInsert = new JButton("Insert Card with incorrect PIN");
+        wrongPinCardInsert.addActionListener(e -> {
+            try {
+                checkout.cardReader.insert(testCard, "69420");
+                System.out.println("IN");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+            checkout.cardReader.remove();
+            ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
+        });
+        GridBagConstraints gbcIncorrectInsertCard = new GridBagConstraints();
+        gbcIncorrectInsertCard.fill = GridBagConstraints.BOTH;
+        gbcIncorrectInsertCard.gridx = 1;
+        gbcIncorrectInsertCard.gridy = 6;
+        contentPane.add(wrongPinCardInsert, gbcIncorrectInsertCard);
+
+
+
+
 
         JButton removeItems = new JButton("Remove Items from Bagging Area");
         removeItems.addActionListener(e -> {
@@ -253,6 +323,21 @@ public class CustomerEventSimulator extends JFrame {
         gbcRemoveItemsFromBaggingArea.gridy = 7;
         contentPane.add(removeItems, gbcRemoveItemsFromBaggingArea);
 
+        JButton removeLatestFromBaggingArea = new JButton("Remove Latest Item");
+        removeLatestFromBaggingArea.addActionListener(e -> {
+            try {
+                checkout.baggingArea.remove(orderItems.getLast());
+                orderItems.removeLast();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
+        GridBagConstraints gbcRemoveLatestFromBaggingArea = new GridBagConstraints();
+        gbcRemoveLatestFromBaggingArea.fill = GridBagConstraints.BOTH;
+        gbcRemoveLatestFromBaggingArea.gridx = 1;
+        gbcRemoveLatestFromBaggingArea.gridy = 7;
+        contentPane.add(removeLatestFromBaggingArea, gbcRemoveLatestFromBaggingArea);
+
 
 
         JButton removeChange = new JButton("Remove Change");
@@ -268,8 +353,8 @@ public class CustomerEventSimulator extends JFrame {
         });
         GridBagConstraints gbcremoveChange = new GridBagConstraints();
         gbcremoveChange.fill = GridBagConstraints.BOTH;
-        gbcremoveChange.gridx = 1;
-        gbcremoveChange.gridy = 7;
+        gbcremoveChange.gridx = 0;
+        gbcremoveChange.gridy = 9;
         contentPane.add(removeChange, gbcremoveChange);
 
         JButton removeReceipt = new JButton("Remove Receipt");
@@ -279,14 +364,7 @@ public class CustomerEventSimulator extends JFrame {
         GridBagConstraints gbcremoveReceipt = new GridBagConstraints();
         gbcremoveReceipt.fill = GridBagConstraints.BOTH;
         gbcremoveReceipt.gridx = 1;
-        gbcremoveReceipt.gridy = 8;
+        gbcremoveReceipt.gridy = 9;
         contentPane.add(removeReceipt, gbcremoveReceipt);
-
-
-
     }
-
-
-
-
 }

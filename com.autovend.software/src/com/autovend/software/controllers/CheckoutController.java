@@ -420,15 +420,11 @@ public class CheckoutController {
 		baggingItemLock = !unlockStation;
 	}
 
-	void baggedItemsInvalid() {
-		// inform the I/O for both customer and attendant from the error message, this
-		// is a placeholder currently.
-		if (!addingBagsLock) {
-			this.baggingItemLock = true;
-			((CustomerIOController) registeredControllers.get("CustomerIOController").get(0))
-					.displayWeightDiscrepancyMessage();
-			alertAttendant("Weight discrepancy at station " + this.getID());
-		}
+	void baggedItemsInvalid(boolean weightReduced) {
+		this.baggingItemLock = true;
+		((CustomerIOController) registeredControllers.get("CustomerIOController").get(0))
+				.displayWeightDiscrepancyMessage();
+		if (!weightReduced) {alertAttendant("Weight discrepancy at station " + this.getID());}
 	}
 
 	void baggingAreaError() {
@@ -672,9 +668,11 @@ public class CheckoutController {
 			for (DeviceController baggingController : registeredControllers.get("BaggingAreaController")) {
 				((BaggingAreaController) baggingController).updateExpectedBaggingArea(item, weight, false);
 			}
+
 			for (DeviceController cioc : registeredControllers.get("CustomerIOController")) {
 				((CustomerIOController) cioc).notifyItemRemoved();
 			}
+
 
 		}
 	}
