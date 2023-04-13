@@ -58,7 +58,6 @@ public class ScanningScaleController extends DeviceController<ElectronicScale, E
     public void reactToWeightChangedEvent(ElectronicScale scale, double weightInGrams) {
 		if (scale != this.getDevice()) {return;}
 		this.currentWeight = weightInGrams;
-        System.out.println(this.currentWeight);
     }
 
     @Override
