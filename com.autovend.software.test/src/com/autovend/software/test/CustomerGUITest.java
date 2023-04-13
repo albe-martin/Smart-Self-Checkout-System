@@ -155,13 +155,11 @@ public class CustomerGUITest {
  			weightDiscrepancy = true;
  		}
  		
- 		@Override
- 		public int membershipDialog() {
- 			pluCodeTextField.setText("12345");;
- 			PLUenterButton.doClick();
-			return 0;
- 			
- 		}
+// 		@Override
+// 		public int membershipDialog() {
+// 			
+// 			
+// 		}
  	}
  	@Before
  	public void setup() {
@@ -570,6 +568,8 @@ public class CustomerGUITest {
  		JButton enterMembershipNumberButton = getButton("Enter Membership", cop);
  		enterMembershipNumberButton.doClick();
  		
+ 		cop.pluCodeTextField.setText("12345");;
+ 		cop.PLUenterButton.doClick();
  		
  	}
  	
