@@ -551,13 +551,15 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridwidth = 2;
 		PluCodePanel.add(PLUenterButton, gbc);
 
-		int num = JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), PluCodePanel, "Enter Membership Numb", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+		int num = membershipDialog();
 		if (num==JOptionPane.DEFAULT_OPTION){
 			cioc.cancelSignInAsMember();
 		}
 	}
 
-
+	public int membershipDialog() {
+		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), PluCodePanel, "Enter Membership Numb", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+	}
 	private void showAddItemByLookup() {
 		// Create a list to hold all products
 		List<Product> allProducts = new ArrayList<>();
