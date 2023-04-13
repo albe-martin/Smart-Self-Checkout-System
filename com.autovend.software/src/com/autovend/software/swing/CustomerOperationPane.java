@@ -70,9 +70,7 @@ public class CustomerOperationPane extends JPanel {
 	public JPanel purchaseBagsPanel;
 	public JTextField bagQuantityTextField;
 	public JButton purchaseBagsEnterButton;
-	
-	public JButton enterMembershipNumberButton;
-	
+
 	public JButton addItemByLookupButton;
 	public DefaultListModel<String> listModel;
 	public JList<String> productList;
@@ -551,10 +549,19 @@ public class CustomerOperationPane extends JPanel {
 		gbc.gridwidth = 2;
 		PluCodePanel.add(PLUenterButton, gbc);
 
-		int num = membershipDialog();
-		if (num==JOptionPane.DEFAULT_OPTION){
-			cioc.cancelSignInAsMember();
-		}
+		JOptionPane optPane = new JOptionPane(PluCodePanel,JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
+
+		JDialog dialog = optPane.createDialog(cioc.getDevice().getFrame(), "Enter Membership Numb");
+		dialog.setModal(false);
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Code to run when the JOptionPane is closed
+				cioc.cancelSignInAsMember();
+			}
+		});
+
+		dialog.setVisible(true);
 	}
 
 	public int membershipDialog() {
