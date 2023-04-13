@@ -371,7 +371,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		cioc.purchaseBags(2);
+ 		cioc.purchaseBags(1);
  		cop.refreshOrderGrid();
  		
  		DefaultTableModel model = cop.model;
@@ -553,7 +553,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton enterMembershipNumberButton = getButton("Enter Membership \nNumber", cop);
+ 		JButton enterMembershipNumberButton = getButton("Enter \nMembership \nNumber", cop);
  		enterMembershipNumberButton.doClick();
  	}
  	
