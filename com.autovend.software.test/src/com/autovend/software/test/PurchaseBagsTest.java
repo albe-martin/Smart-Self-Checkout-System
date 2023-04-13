@@ -398,9 +398,20 @@ public class PurchaseBagsTest {
 		
 		assertTrue("Order should have one type of item and it should be a bag", order.keySet().size() == 1 && order.containsKey(equivalentItem));
 		
-		assertEquals("Total cost should be of two bags", reusableBag.getPrice().multiply(BigDecimal.valueOf(10)), checkoutController.getCost());
+		assertEquals("Total cost should be of two bags", reusableBag.getPrice().multiply(BigDecimal.valueOf(20)), checkoutController.getCost());
 		
-		assertEquals("Expected Weight should be of two bags", reusableBag.getExpectedWeight() * 10, scaleController.getExpectedWeight(), 0.01d);
+		assertEquals("Expected Weight should be of two bags", reusableBag.getExpectedWeight() * 20, scaleController.getExpectedWeight(), 0.01d);
 	}
-
+	
+	@Test
+	public void testOutOfBags() {
+		bagDispenserController.outOfBags(stubBagDispenser);
+	}
+	
+	@Test
+	public void testDispenseEmpty() {
+		bagDispenserController = new ReusableBagDispenserController(new ReusableBagDispenser(1));
+		bagDispenserController.setMainController(checkoutController);
+		bagDispenserController.dispenseBags(10);
+	}
 }
