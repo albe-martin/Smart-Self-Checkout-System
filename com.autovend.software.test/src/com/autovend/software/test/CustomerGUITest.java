@@ -394,7 +394,18 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton addItemByPLUCodeButton = cop.addItemByPluCodeButton;
+ 		JButton addItemByPLUCodeButton = null; 		
+ 		for (int i = 0; i<cop.getComponentCount(); i++) {
+ 			Object comp = cop.getComponent(i);
+ 			if (comp.getClass() == JButton.class) {
+ 				JButton button = (JButton) comp;
+ 				if (button.getText().equals("Purchase Bags")) {
+ 					addItemByPLUCodeButton = button;
+ 					break;
+ 				}
+ 			}
+ 		}
+
  		addItemByPLUCodeButton.doClick();
  		
  		JPanel PluCodePanel = cop.PluCodePanel;
@@ -424,7 +435,18 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton addItemByPLUCodeButton = cop.addItemByPluCodeButton;
+ 		JButton addItemByPLUCodeButton = null; 		
+ 		for (int i = 0; i<cop.getComponentCount(); i++) {
+ 			Object comp = cop.getComponent(i);
+ 			if (comp.getClass() == JButton.class) {
+ 				JButton button = (JButton) comp;
+ 				if (button.getText().equals("Purchase Bags")) {
+ 					addItemByPLUCodeButton = button;
+ 					break;
+ 				}
+ 			}
+ 		}
+
  		addItemByPLUCodeButton.doClick();
  		
  		JPanel PluCodePanel = cop.PluCodePanel;
@@ -462,7 +484,16 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton purchaseBagsButton = cop.purchaseBagsButton;
+ 		JButton purchaseBagsButton = null;
+ 		for (int i = 0; i<cop.getComponentCount(); i++) {
+ 			Object comp = cop.getComponent(i);
+ 			if (comp.getClass() == JButton.class) {
+ 				JButton button = (JButton) comp;
+ 				if (button.getText().equals("Purchase Bags")) {
+ 					purchaseBagsButton = button;
+ 				}
+ 			}
+ 		}
  		purchaseBagsButton.doClick();
  		
  		JPanel purchaseBagsPanel = cop.purchaseBagsPanel;
