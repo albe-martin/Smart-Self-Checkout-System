@@ -49,6 +49,7 @@ public class BillPaymentControllerTest {
 	int[] billDenominations;
 	BigDecimal[] coinDenominations;
 	LinkedHashMap<Product, Number[]> order;
+	private boolean result;
 	
 
 	@Before
@@ -80,6 +81,8 @@ public class BillPaymentControllerTest {
 		barcodedProduct = new BarcodedProduct(new Barcode(Numeral.one, Numeral.five), "test item 5",
 				BigDecimal.valueOf(10.00), 30.00);
 		ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcodedProduct.getBarcode(), barcodedProduct);
+		
+		result = false;
 	}
 	
 	@Test
@@ -168,5 +171,27 @@ public class BillPaymentControllerTest {
 		} catch (OverloadException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Test
+    public void reactToInvalidBill() {
+        BillValidator bb = new BillValidator(Currency.getInstance("CAD"),billDenominations);
+        bb.disable();
+        BillPaymentController b = new BillPaymentController(bb);    
+    }
+	
+	@Test
+	public void reactToValidBill() {
+        BillValidator bb = new BillValidator(Currency.getInstance("CAD"),billDenominations);
+        bb.disable();
+        BillPaymentController b = new BillPaymentController(bb); 
+        b.setMainController(new CheckoutController() {
+        	@Override
+        	public void addToAmountPaid(BigDecimal value) {
+        		result = true;
+        	}
+        });
+        b.reactToValidBillDetectedEvent(bb, null, 0);
+        assertTrue(result);
 	}
 }	
