@@ -54,6 +54,7 @@ import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
  import com.autovend.software.swing.Language;
 import com.autovend.software.utils.MiscProductsDatabase.Bag;
+import com.autovend.software.utils.CardIssuerDatabases;
 
 
  @SuppressWarnings("serial")
@@ -153,6 +154,12 @@ public class CustomerGUITest {
  		public void BaggingWeightProblemDialog(JPanel panel, String header) {
  			weightDiscrepancy = true;
  		}
+ 		
+// 		@Override
+// 		public int membershipDialog() {
+// 			
+// 			
+// 		}
  	}
  	@Before
  	public void setup() {
@@ -185,15 +192,17 @@ public class CustomerGUITest {
  		customerScreen.setSize(800, 800);
  		customerScreen.setUndecorated(false);
  		customerScreen.setResizable(false);
+ 		CardIssuerDatabases.MEMBERSHIP_DATABASE.put("12345", "Bob");
  		
- 		SupervisionStation supStation = new SupervisionStation();
- 		AttendantStationController attendantController = new AttendantStationController(supStation);
+ 		
  		AttendantIOController aioc = new AttendantIOController(screen);
- 		aioc.setMainAttendantController(attendantController);
- 		
  		cioc = new CustomerIOController(customerStation.screen);
  		CheckoutController checkoutController = new CheckoutController(customerStation);
  		cioc.setMainController(checkoutController);
+ 		SupervisionStation supStation = new SupervisionStation();
+ 		AttendantStationController attendantController = new AttendantStationController(supStation);
+ 		attendantController.addStation(customerStation, cioc);
+ 		aioc.setMainAttendantController(attendantController);
  		checkoutController.setSupervisor(attendantController.getID());
 
  		customerPane = new CustomerStartPaneTest(cioc);
@@ -556,8 +565,12 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton enterMembershipNumberButton = getButton("Enter \nMembership \nNumber", cop);
+ 		JButton enterMembershipNumberButton = getButton("Enter Membership", cop);
  		enterMembershipNumberButton.doClick();
+ 		
+ 		cop.pluCodeTextField.setText("12345");;
+ 		cop.PLUenterButton.doClick();
+ 		
  	}
  	
  	@Test
