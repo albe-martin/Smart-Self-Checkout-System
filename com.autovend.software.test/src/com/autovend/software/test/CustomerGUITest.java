@@ -208,7 +208,10 @@ public class CustomerGUITest {
 
  		customerPane = new CustomerStartPaneTest(cioc);
  		customerScreen.setContentPane(customerPane);
- 		
+
+
+		 attendantController.registerUser("Test", "Test");
+		 attendantController.login("Test","Test");
  	// Create demo products.
  	bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",
  	BigDecimal.valueOf(83.29), 359.0);
