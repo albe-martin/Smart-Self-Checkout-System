@@ -551,6 +551,16 @@ public class CustomerGUITest {
  	}
  	
  	@Test
+ 	public void MembershipButton() {
+ 		JFrame frame = screen.getFrame();
+ 		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
+ 		frame.setContentPane(cop);
+ 		
+ 		JButton enterMembershipNumberButton = getButton("Enter \nMembership \nNumber", cop);
+ 		enterMembershipNumberButton.doClick();
+ 	}
+ 	
+ 	@Test
  	public void AddItemByLookup() {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
@@ -577,8 +587,8 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton purchaseBagsButton = getButton("Purchase Bags", cop);
- 		purchaseBagsButton.doClick();
+ 		JButton addOwnBagsButton = getButton("Add Own Bags", cop);
+ 		addOwnBagsButton.doClick();
  	}
  	
  	@Test
