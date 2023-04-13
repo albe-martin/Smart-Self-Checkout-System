@@ -51,10 +51,6 @@ import com.autovend.software.controllers.ReusableBagDispenserController;
 /**
  * GUI used to simulate events related to the Attendant.
  * Used for the project demonstration.
- * 
- * TODO: Remove for final submission after demonstration is complete.
- * 
- * Should not be tested.
  */
 public class AttendantEventSimulator extends JFrame {
 
