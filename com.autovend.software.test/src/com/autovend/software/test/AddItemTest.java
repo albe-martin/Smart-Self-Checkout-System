@@ -857,4 +857,49 @@ public class AddItemTest {
 		scannerController.setScanningItems(false);
 		scannerController.reactToBarcodeScannedEvent(scannerController.getDevice(), new Barcode(Numeral.one));
 	}
+	
+	/**
+	 * A method to test that more than one of the same item is added correctly
+	 */
+	@Test
+	public void testDoNotBagLatest() {
+
+		// Stores the item information
+		HashMap<Product, Number[]> order = checkoutController.getOrder();
+
+		// Add the same bag to the order
+		checkoutController.addItem(databaseItem1);
+
+		// Adds the cost of the first item to the total
+		BigDecimal total = databaseItem1.getPrice();
+
+		// Check that the item number and cost in the order were updated correctly
+		assertEquals(1, order.get(databaseItem1)[0]);
+		assertEquals(total, checkoutController.getCost());
+
+		checkoutController.doNotBagLatest();
+	}
+	
+	/**
+	 * A method to test that more than one of the same item is added correctly
+	 */
+	@Test
+	public void testDoNotBagLatestNotBlocked() {
+
+		// Stores the item information
+		HashMap<Product, Number[]> order = checkoutController.getOrder();
+
+		// Add the same bag to the order
+		checkoutController.addItem(databaseItem1);
+
+		// Adds the cost of the first item to the total
+		BigDecimal total = databaseItem1.getPrice();
+
+		// Check that the item number and cost in the order were updated correctly
+		assertEquals(1, order.get(databaseItem1)[0]);
+		assertEquals(total, checkoutController.getCost());
+
+		checkoutController.baggingItemLock = false;
+		checkoutController.doNotBagLatest();
+	}
 }

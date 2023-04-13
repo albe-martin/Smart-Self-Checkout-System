@@ -378,7 +378,7 @@ public class CheckoutController {
 		baggingItemLock = true;
 	}
 
-	void doNotBagLatest() {
+	public void doNotBagLatest() {
 		if (this.latestItem.size() == 0) {
 			return;
 		}
