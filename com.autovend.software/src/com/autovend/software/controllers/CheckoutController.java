@@ -550,8 +550,10 @@ public class CheckoutController {
 	 */
 	public void addToAmountPaid(BigDecimal val) {
 		amountPaid = amountPaid.add(val);
-		CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
-		((CustomerOperationPane) (cioc.getDevice().getFrame().getContentPane())).updateAmountPaid();
+		if (this.registeredControllers.get("CustomerIOController").size()>0) {
+			CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
+			((CustomerOperationPane) (cioc.getDevice().getFrame().getContentPane())).updateAmountPaid();
+		}
 	}
 
 	public BigDecimal getRemainingAmount() {
@@ -725,7 +727,6 @@ public class CheckoutController {
 
 
 	public void validateMembership(String number){
-		System.out.println(number);
 		boolean isValid = CardIssuerDatabases.MEMBERSHIP_DATABASE.containsKey(number);
 
 		if (isValid) {

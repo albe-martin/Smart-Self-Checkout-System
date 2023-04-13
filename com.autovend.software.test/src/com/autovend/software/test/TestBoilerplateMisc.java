@@ -37,6 +37,7 @@ public class TestBoilerplateMisc {
         acontrol.registerUser("T", "P");
         aioc.login("T","P");
 
+        cioc.startPressed();
 
         Bill bill1 = new Bill(5, Currency.getInstance("USD"));
         Coin coin1 = new Coin(BigDecimal.ONE, Currency.getInstance("USD"));

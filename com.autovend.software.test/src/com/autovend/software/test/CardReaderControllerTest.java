@@ -95,14 +95,18 @@ public class CardReaderControllerTest {
     CardReader reader;
     TestBank bankStub;
     CreditCard creditCard;
+    GiftCard giftCard;
     CardReaderController testController;
+    Currency currency;
 
     @Before
     public void setup(){
         checkoutController = new CheckoutController();
         reader = new CardReader();
         bankStub = new TestBank("TestBank");
+        currency = Currency.getInstance("CAD");
         creditCard = new CreditCard("Credit Card", "12345", "Steve", "987", "1337", true, true);
+        giftCard = new GiftCard("Gift Card", "12345", "1337", currency, BigDecimal.ONE);
         testController = new CardReaderController(reader);
         testController.setMainController(checkoutController);
         checkoutController.registerController("CardReaderController", testController);
@@ -120,7 +124,9 @@ public class CardReaderControllerTest {
         reader = null;
         bankStub = null;
         creditCard = null;
+        giftCard = null;
         testController = null;
+        currency = null;
     }
 
     @Test
@@ -142,7 +148,6 @@ public class CardReaderControllerTest {
 
     @Test
     public void reactToBankCardReadTest() throws InvalidPINException {
-        // Can't get by line 118 in reactToBankCardRead
         bankStub.holdAuthorized = true;
         bankStub.canPostTransaction = true;
         testController.setState(CardReaderControllerState.PAYINGBYDEBIT, BigDecimal.valueOf(10));
@@ -154,7 +159,10 @@ public class CardReaderControllerTest {
     public void reactCardDataReadWrongDevice() {
     	testController.reactToCardDataReadEvent(new CardReader(), null);
     }
-    
-    
 
+    @Test
+    public void reactToGiftCardDataReadTest() throws InvalidPINException {
+        testController.setState(CardReaderControllerState.PAYINGBYGIFTCARD, BigDecimal.valueOf(10));
+        testController.reactToCardDataReadEvent(reader, giftCard.createCardInsertData("1337"));
+    }
 }

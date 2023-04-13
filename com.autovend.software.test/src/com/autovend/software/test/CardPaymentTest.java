@@ -28,10 +28,7 @@ import com.autovend.devices.CardReader;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
-import com.autovend.software.controllers.BillPaymentController;
-import com.autovend.software.controllers.CardReaderController;
-import com.autovend.software.controllers.CardReaderControllerState;
-import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,6 +107,7 @@ public class CardPaymentTest {
         
 		station = new SelfCheckoutStation(currency, billDenominations, coinDenominations, 200, 1);
         checkout = new CheckoutController(station);
+        ((CustomerIOController)checkout.getControllersByType("CustomerIOController").get(0)).startPressed();
         
         success = false;
     }
@@ -128,6 +126,7 @@ public class CardPaymentTest {
         		// Randomly failed insert
         		continue;
             } catch (Exception ex){
+                ex.printStackTrace();
                 fail("Exception incorrectly thrown");
             }
         	success = true;
@@ -279,10 +278,13 @@ public class CardPaymentTest {
         	try {
         		checkout.payByGiftCard();
                 station.cardReader.insert(giftCard, "1337");
+                station.cardReader.remove();
         	} catch (ChipFailureException ex) {
         		// Randomly failed insert
         		continue;
             } catch (Exception ex){
+                ex.printStackTrace();
+
                 fail("Exception incorrectly thrown");
             }
         	success = true;

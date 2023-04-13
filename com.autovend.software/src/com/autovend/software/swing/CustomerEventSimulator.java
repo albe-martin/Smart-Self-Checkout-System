@@ -26,6 +26,27 @@ public class CustomerEventSimulator extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
 
+	public JButton scanItem;
+	public JButton scanItem2;
+	public JButton addBagging;
+	public JButton addScale;
+	public JButton addItem1Direct;
+	public JButton addItem2Direct;
+	public JButton scanMembership;
+	public JButton addPurchasedBags;
+	public JButton input5Bill;
+	public JButton inputCoin;
+	public JButton tapCard;
+	public JButton swipeCard;
+	public JButton rightPinCardInsert;
+	public JButton wrongPinCardInsert;
+	public JButton removeItems;
+	public JButton removeLatestFromBaggingArea;
+	public JButton giftCardPay;
+	public JButton removeChange;
+	public JButton removeReceipt;
+
+
 
 	public CustomerEventSimulator(JFrame attendantFrame, SelfCheckoutStation checkout) {
 
@@ -68,7 +89,7 @@ public class CustomerEventSimulator extends JFrame {
         si1_contentPane.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         si1_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         contentPane.setLayout(si1_contentPane);
-        JButton scanItem = new JButton("Scan Item #1");
+        scanItem = new JButton("Scan Item #1");
         scanItem.addActionListener(e -> {
             BarcodedUnit bcItem1 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.seven), 3.0);
             checkout.mainScanner.scan(bcItem1);
@@ -81,7 +102,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcScan.gridy = 0;
         contentPane.add(scanItem, gbcScan);
 
-        JButton scanItem2 = new JButton("Scan Item #2");
+        scanItem2 = new JButton("Scan Item #2");
         scanItem2.addActionListener(e -> {
             BarcodedUnit bcItem2 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.eight), 10.0);
             checkout.mainScanner.scan(bcItem2);
@@ -96,7 +117,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcScan2.gridy = 0;
         contentPane.add(scanItem2, gbcScan2);
 
-        JButton addBagging = new JButton("Add scanned item to bagging area");
+        addBagging = new JButton("Add scanned item to bagging area");
         addBagging.addActionListener(e -> {
             if (numbAdded[0]>0) {
                 checkout.scale.remove(latestUnit[0]);
@@ -116,7 +137,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcaddBagging.gridy = 1;
         contentPane.add(addBagging, gbcaddBagging);
 
-        JButton addScale = new JButton("Add Weight To Weighing Scale");
+        addScale = new JButton("Add Weight To Weighing Scale");
         addScale.addActionListener(e -> {
             if (numbAdded[0] > 0) {
                 checkout.scale.remove(latestUnit[0]);
@@ -133,7 +154,7 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(addScale, gbcaddScale);
 
 
-        JButton addItem1Direct = new JButton("Directly add Item #1 to bagging area");
+        addItem1Direct = new JButton("Directly add Item #1 to bagging area");
         addItem1Direct.addActionListener(e -> {
             BarcodedUnit bcItem1 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.seven), 3.0);
             orderItems.add(bcItem1);
@@ -154,7 +175,7 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(addItem1Direct, gbcAddDir1);
 
 
-        JButton addItem2Direct = new JButton("Directly add Item #2 to bagging area");
+        addItem2Direct = new JButton("Directly add Item #2 to bagging area");
         addItem2Direct.addActionListener(e -> {
             BarcodedUnit bcItem2 = new BarcodedUnit(new Barcode(Numeral.five, Numeral.eight), 10.0);
             orderItems.add(bcItem2);
@@ -177,7 +198,7 @@ public class CustomerEventSimulator extends JFrame {
 
 
 
-        JButton scanMembership = new JButton("Scan membership");
+        scanMembership = new JButton("Scan membership");
         scanMembership.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 checkout.handheldScanner.scan(testMembershipCard);
@@ -190,7 +211,7 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(scanMembership, gbcMembership);
 
 
-        JButton addPurchasedBags = new JButton("Add reusable bags");
+        addPurchasedBags = new JButton("Add reusable bags");
         addPurchasedBags.addActionListener(e -> {
             ReusableBag newBag = new ReusableBag();
             orderItems.add(newBag);
@@ -207,7 +228,7 @@ public class CustomerEventSimulator extends JFrame {
 
 
 
-        JButton input5Bill = new JButton("Input 5$ Bill");
+        input5Bill = new JButton("Input 5$ Bill");
         input5Bill.addActionListener(e -> {
             try {
                 checkout.billInput.accept(new Bill(5, Currency.getInstance(Locale.CANADA)));
@@ -224,7 +245,7 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(input5Bill, gbcInputBill);
 
 
-        JButton inputCoin = new JButton("Input 0.25$ Coin");
+        inputCoin = new JButton("Input 0.25$ Coin");
         inputCoin.addActionListener(e -> {
             try {
                 checkout.coinSlot.accept(new Coin(BigDecimal.valueOf(0.25), Currency.getInstance(Locale.CANADA)));
@@ -241,7 +262,7 @@ public class CustomerEventSimulator extends JFrame {
         contentPane.add(inputCoin, gbcInputCoin);
 
 
-        JButton tapCard = new JButton("Tap Card");
+        tapCard = new JButton("Tap Card");
         tapCard.addActionListener(e -> {
             try {
                 checkout.cardReader.tap(testCard);
@@ -256,7 +277,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcTapCard.gridy = 5;
         contentPane.add(tapCard, gbcTapCard);
 
-        JButton swipeCard = new JButton("Swipe Card");
+        swipeCard = new JButton("Swipe Card");
         swipeCard.addActionListener(e -> {
             try {
                 checkout.cardReader.swipe(testCard,null);
@@ -271,7 +292,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcSwipeCard.gridy = 5;
         contentPane.add(swipeCard, gbcSwipeCard);
 
-        JButton rightPinCardInsert = new JButton("Insert Card with correct PIN");
+        rightPinCardInsert = new JButton("Insert Card with correct PIN");
         rightPinCardInsert.addActionListener(e -> {
             try {
                 checkout.cardReader.insert(testCard, "1337");
@@ -288,7 +309,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcCorrectInsertCard.gridy = 6;
         contentPane.add(rightPinCardInsert, gbcCorrectInsertCard);
 
-        JButton wrongPinCardInsert = new JButton("Insert Card with incorrect PIN");
+        wrongPinCardInsert = new JButton("Insert Card with incorrect PIN");
         wrongPinCardInsert.addActionListener(e -> {
             try {
                 checkout.cardReader.insert(testCard, "69420");
@@ -312,7 +333,7 @@ public class CustomerEventSimulator extends JFrame {
 
 
 
-        JButton removeItems = new JButton("Remove Items from Bagging Area");
+        removeItems = new JButton("Remove Items from Bagging Area");
         removeItems.addActionListener(e -> {
             try {
                 for (SellableUnit unit : orderItems) {
@@ -328,7 +349,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcRemoveItemsFromBaggingArea.gridy = 7;
         contentPane.add(removeItems, gbcRemoveItemsFromBaggingArea);
 
-        JButton removeLatestFromBaggingArea = new JButton("Remove Latest Item");
+        removeLatestFromBaggingArea = new JButton("Remove Latest Item");
         removeLatestFromBaggingArea.addActionListener(e -> {
             try {
                 checkout.baggingArea.remove(orderItems.getLast());
@@ -345,7 +366,7 @@ public class CustomerEventSimulator extends JFrame {
 
         GiftCard testGiftCard = new GiftCard("GiftCard","400","3456",Currency.getInstance(Locale.CANADA),BigDecimal.valueOf(25));
 
-        JButton giftCardPay = new JButton("Pay Gift Card");
+        giftCardPay = new JButton("Pay Gift Card");
         giftCardPay.addActionListener(e -> {
             try {
                 checkout.cardReader.insert(testGiftCard,"3456");
@@ -363,7 +384,7 @@ public class CustomerEventSimulator extends JFrame {
 
 
 
-        JButton removeChange = new JButton("Remove Change");
+        removeChange = new JButton("Remove Change");
         removeChange.addActionListener(e -> {
             try {
                 while (checkout.billOutput.removeDanglingBill()!=null) {
@@ -380,7 +401,7 @@ public class CustomerEventSimulator extends JFrame {
         gbcremoveChange.gridy = 9;
         contentPane.add(removeChange, gbcremoveChange);
 
-        JButton removeReceipt = new JButton("Remove Receipt");
+        removeReceipt = new JButton("Remove Receipt");
         removeReceipt.addActionListener(e -> {
             System.out.println(checkout.printer.removeReceipt());
         });

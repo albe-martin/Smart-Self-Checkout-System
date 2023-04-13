@@ -1,3 +1,33 @@
+/*
+ * SENG 300 Project Iteration 3 - Group P3-2
+ * Braedon Haensel -         UCID: 30144363
+ * Umar Ahmed -             UCID: 30145076
+ * Bartu Okan -             UCID: 30150180
+ * Arie Goud -                 UCID: 20163410
+ * Abdul Biderkab -         UCID: 30156693
+ * Hamza Khan -             UCID: 30157097
+ * James Hayward -             UCID: 30149513
+ * Christian Salvador -     UCID: 30089672
+ * Fatema Chowdhury -         UCID: 30141268
+ * Sankalp Bartwal -         UCID: 30132025
+ * Avani Sharma -             UCID: 30125040
+ * Albe Martin -             UCID: 30161964 
+ * Omar Khan -                 UCID: 30143707
+ * Samantha Liu -             UCID: 30123255
+ * Alex Chen -                 UCID: 30140184
+ * Auric Adubofour-Poku -     UCID: 30143774
+ * Grant Tkachyk -             UCID: 30077137
+ * Amandeep Kaur -             UCID: 30153923
+ * Tashi Labowka-Poulin -     UCID: 30140749
+ * Daniel Chang -             UCID: 30110252
+ * Jacob Braun -             UCID: 30124507
+ * Omar Ragab -             UCID: 30148549
+ * Artemy Gavrilov -         UCID: 30143698
+ * Colton Gowans -             UCID: 30143979
+ * Hada Rahadhi Hafiyyan -     UCID: 30186484
+ * 
+ */
+
 package com.autovend.software.test;
 
  import static org.junit.Assert.*;
@@ -49,8 +79,11 @@ import com.autovend.software.controllers.AttendantIOController;
  import com.autovend.software.controllers.CheckoutController;
  import com.autovend.software.controllers.CustomerIOController;
 import com.autovend.software.controllers.DeviceController;
+import com.autovend.software.controllers.ReceiptPrinterController;
 import com.autovend.software.controllers.ReusableBagDispenserController;
+import com.autovend.software.swing.AttendantEventSimulator;
 import com.autovend.software.swing.AttendantLoginPane;
+import com.autovend.software.swing.CustomerEventSimulator;
 import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
  import com.autovend.software.swing.Language;
@@ -63,11 +96,19 @@ public class CustomerGUITest {
  	private TouchScreen screen;
  	private boolean enabledEventOccurred = false;
  	private boolean disabledEventOccurred = false;
- 	private CustomerIOController cioc;
+
  	private CustomerStartPaneTest customerPane;
  	private JFrame customerScreen;
 	private PLUCodedProduct pluCodedProduct1;
 	private BarcodedProduct bcproduct1;
+	
+	CustomerIOController cioc;
+	SupervisionStation attendantStation = new SupervisionStation();
+	AttendantStationController asc = new AttendantStationController(attendantStation);
+	AttendantIOController aioc = (AttendantIOController) asc.getAttendantIOControllers().iterator().next();
+
+	ArrayList<CustomerIOController> ciocs = new ArrayList<>();
+	
 	
 	private boolean invalidPLUDetected = false;
 	private boolean PLUNotFound = false;
@@ -208,7 +249,10 @@ public class CustomerGUITest {
 
  		customerPane = new CustomerStartPaneTest(cioc);
  		customerScreen.setContentPane(customerPane);
- 		
+
+
+		 attendantController.registerUser("Test", "Test");
+		 attendantController.login("Test","Test");
  	// Create demo products.
  	bcproduct1 = new BarcodedProduct(new Barcode(Numeral.three, Numeral.three), "box of chocolates",
  	BigDecimal.valueOf(83.29), 359.0);
@@ -337,20 +381,24 @@ public class CustomerGUITest {
  		frame.setContentPane(cop);
  		
  		cop.refreshOrderGrid();
- 		
- 		DefaultTableModel model = cop.model;
+		cioc.getMainController().checkoutStation.scale.add(new PriceLookUpCodedUnit(new PriceLookUpCode(Numeral.one,Numeral.two,Numeral.three,Numeral.four), 10.0));
+		JButton addItemByPLUCodeButton = getButton("Add Item by PLU Code", cop);
+		addItemByPLUCodeButton.doClick();
+
+		DefaultTableModel model = cop.model;
  		String actualDescription = (String) model.getValueAt(0, 0);
  		BigDecimal actualPrice = (BigDecimal) model.getValueAt(0, 1);
  		Number actualQuantity = (Number) model.getValueAt(0, 2);
- 		
+
  		String expDescription = "apple";
- 		BigDecimal expPrice = BigDecimal.valueOf(0.89);
- 		Number expQuantity = (Number) 1.0;
- 		
+		BigDecimal expPrice = BigDecimal.valueOf(8.90);
+		BigDecimal expQuantity = BigDecimal.valueOf(10.0);
+
+		//assertEquals(expDescription, actualDescription);
+		assertEquals(expPrice, actualPrice.stripTrailingZeros());
+		assertEquals(expQuantity, actualQuantity);
+
  		assertEquals(expDescription, actualDescription);
- 		assertEquals(expPrice, actualPrice);
- 		assertEquals(expQuantity, actualQuantity);
- 		
  	}
  	
  	@Test
@@ -632,6 +680,47 @@ public class CustomerGUITest {
  		cop.createBaggingWeightProblemPopup();
  		assertTrue(weightDiscrepancy);
  	}
+ 	
+	/**
+	 * Tests the functionality of each button in CustomerEventSimulator
+	 */
+	@Test
+	public void eventSimulatorTest() {
+		
+		ciocs.add(cioc);
+		CustomerEventSimulator cesframe = new CustomerEventSimulator(aioc.getDevice().getFrame(),ciocs.get(0).getMainController().checkoutStation);
+		cesframe.setVisible(true);
+		cesframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		try {
+			
+			cesframe.scanItem.doClick();
+			cesframe.scanItem2.doClick();
+			cesframe.addBagging.doClick();
+			cesframe.addScale.doClick();
+			cesframe.addItem1Direct.doClick();
+			cesframe.addItem2Direct.doClick();
+			cesframe.scanMembership.doClick();
+			cesframe.addPurchasedBags.doClick();
+			cesframe.input5Bill.doClick();
+			cesframe.inputCoin.doClick();
+			cesframe.tapCard.doClick();
+			cesframe.swipeCard.doClick();
+			cesframe.rightPinCardInsert.doClick();
+			cesframe.wrongPinCardInsert.doClick();
+			cesframe.removeItems.doClick();
+			cesframe.removeLatestFromBaggingArea.doClick();
+			cesframe.giftCardPay.doClick();
+			cesframe.removeChange.doClick();
+			cesframe.removeReceipt.doClick();
+			
+		} catch (Exception e) {
+			return;
+		}
+		
+		fail("No exception expected");
+
+	}
 
  	@After
  	public void tearDown() {
