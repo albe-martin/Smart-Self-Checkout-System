@@ -64,8 +64,6 @@ public class CoinDispenserController extends ChangeDispenserController<CoinDispe
 			}
 		} catch (EmptyException ex) {
 			this.getMainController().changeDispenseFailed(this, this.getDenom());
-		} catch (OverloadException ex) {
-			System.out.println("This can't physically happen, something went wrong.");
-		}
+		} catch (OverloadException ex) {}
 	}
 }
