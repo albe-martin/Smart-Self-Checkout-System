@@ -26,7 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import org.junit.After;
+ import com.autovend.PriceLookUpCodedUnit;
+ import org.junit.After;
  import org.junit.Before;
  import org.junit.Test;
 
@@ -423,15 +424,14 @@ public class CustomerGUITest {
  		JFrame frame = screen.getFrame();
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
+
+		 cioc.getMainController().checkoutStation.scale.add(new PriceLookUpCodedUnit(new PriceLookUpCode(Numeral.one,Numeral.two,Numeral.three,Numeral.four), 10.0));
  		
  		JButton addItemByPLUCodeButton = getButton("Add Item by PLU Code", cop);
-
  		addItemByPLUCodeButton.doClick();
- 		
  		JPanel PluCodePanel = cop.PluCodePanel;
  		JTextField pluCodeTextField = cop.pluCodeTextField;
  		JButton PLUenterButton = cop.PLUenterButton;
- 		
  		pluCodeTextField.setText("1234");
  		PLUenterButton.doClick();
  		
@@ -442,11 +442,11 @@ public class CustomerGUITest {
  		Number actualQuantity = (Number) model.getValueAt(0, 2);
  		
  		String expDescription = "apple";
- 		BigDecimal expPrice = BigDecimal.valueOf(0.89);
- 		Number expQuantity = (Number) 1.0;
+ 		BigDecimal expPrice = BigDecimal.valueOf(8.90);
+ 		BigDecimal expQuantity = BigDecimal.valueOf(10.0);
  		
  		//assertEquals(expDescription, actualDescription);
- 		assertEquals(expPrice, actualPrice);
+ 		assertEquals(expPrice, actualPrice.stripTrailingZeros());
  		assertEquals(expQuantity, actualQuantity);
  	}
  	
