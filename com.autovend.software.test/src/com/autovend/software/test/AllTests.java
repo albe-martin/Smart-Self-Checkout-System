@@ -3,7 +3,7 @@
  * Braedon Haensel -         UCID: 30144363
  * Umar Ahmed -             UCID: 30145076
  * Bartu Okan -             UCID: 30150180
- * Arie Goud -                 UCID: 20163410
+ * Arie Goud -                 UCID: 30163410
  * Abdul Biderkab -         UCID: 30156693
  * Hamza Khan -             UCID: 30157097
  * James Hayward -             UCID: 30149513
