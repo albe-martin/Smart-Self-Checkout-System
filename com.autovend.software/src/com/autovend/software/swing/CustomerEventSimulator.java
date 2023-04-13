@@ -47,8 +47,11 @@ public class CustomerEventSimulator extends JFrame {
         Calendar calendar = new GregorianCalendar();
         calendar.add(Calendar.YEAR, 100);
 
-        DebitCard testCard = new DebitCard("Test", "123", "Bob", "111", "1337", true, true);
+        DebitCard testCard = new DebitCard("Debit", "123", "Bob", "111", "1337", true, true);
         cibc.addCardData("123", "Bob", calendar, "111", BigDecimal.valueOf(200));
+
+        MembershipCard testMembershipCard = new MembershipCard("Membership", "4678", "Bob", false);
+        CardIssuerDatabases.MEMBERSHIP_DATABASE.put("foursixseveneight", "Bob");
 
 
         setTitle("Customer # 1 Event Simulator");
@@ -177,7 +180,7 @@ public class CustomerEventSimulator extends JFrame {
         JButton scanMembership = new JButton("Scan membership");
         scanMembership.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                checkout.handheldScanner.scan(testMembershipCard);
             }
         });
         GridBagConstraints gbcMembership = new GridBagConstraints();
@@ -307,6 +310,8 @@ public class CustomerEventSimulator extends JFrame {
 
 
 
+
+
         JButton removeItems = new JButton("Remove Items from Bagging Area");
         removeItems.addActionListener(e -> {
             try {
@@ -337,6 +342,24 @@ public class CustomerEventSimulator extends JFrame {
         gbcRemoveLatestFromBaggingArea.gridx = 1;
         gbcRemoveLatestFromBaggingArea.gridy = 7;
         contentPane.add(removeLatestFromBaggingArea, gbcRemoveLatestFromBaggingArea);
+
+        GiftCard testGiftCard = new GiftCard("GiftCard","400","3456",Currency.getInstance(Locale.CANADA),BigDecimal.valueOf(25));
+
+        JButton giftCardPay = new JButton("Pay Gift Card");
+        giftCardPay.addActionListener(e -> {
+            try {
+                checkout.cardReader.insert(testGiftCard,"3456");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            ((CustomerOperationPane) (checkout.screen.getFrame().getContentPane())).updateAmountPaid();
+        });
+        GridBagConstraints gbcGiftCard = new GridBagConstraints();
+        gbcGiftCard.fill = GridBagConstraints.BOTH;
+        gbcGiftCard.gridx = 0;
+        gbcGiftCard.gridy = 8;
+        contentPane.add(giftCardPay, gbcGiftCard);
+
 
 
 
