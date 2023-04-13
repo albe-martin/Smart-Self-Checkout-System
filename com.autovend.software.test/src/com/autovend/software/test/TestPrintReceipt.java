@@ -1,19 +1,32 @@
 /*
-SENG 300 Project Iteration 2
-Group 7
-Niran Malla 30086877
-Saksham Puri 30140617
-Fatema Chowdhury 30141268
-Janet Tesgazeab 30141335
-Fabiha Fairuzz Subha 30148674
-Ryan Janiszewski 30148838
-Umesh Oad 30152293
-Manvi Juneja 30153525
-Daniel Boettcher 30153811
-Zainab Bari 30154224
-Arie Goud 30163410
-Amasil Rahim Zihad 30164830
-*/
+ * SENG 300 Project Iteration 3 - Group P3-2
+ * Braedon Haensel -         UCID: 30144363
+ * Umar Ahmed -             UCID: 30145076
+ * Bartu Okan -             UCID: 30150180
+ * Arie Goud -                 UCID: 20163410
+ * Abdul Biderkab -         UCID: 30156693
+ * Hamza Khan -             UCID: 30157097
+ * James Hayward -             UCID: 30149513
+ * Christian Salvador -     UCID: 30089672
+ * Fatema Chowdhury -         UCID: 30141268
+ * Sankalp Bartwal -         UCID: 30132025
+ * Avani Sharma -             UCID: 30125040
+ * Albe Martin -             UCID: 30161964 
+ * Omar Khan -                 UCID: 30143707
+ * Samantha Liu -             UCID: 30123255
+ * Alex Chen -                 UCID: 30140184
+ * Auric Adubofour-Poku -     UCID: 30143774
+ * Grant Tkachyk -             UCID: 30077137
+ * Amandeep Kaur -             UCID: 30153923
+ * Tashi Labowka-Poulin -     UCID: 30140749
+ * Daniel Chang -             UCID: 30110252
+ * Jacob Braun -             UCID: 30124507
+ * Omar Ragab -             UCID: 30148549
+ * Artemy Gavrilov -         UCID: 30143698
+ * Colton Gowans -             UCID: 30143979
+ * Hada Rahadhi Hafiyyan -     UCID: 30186484
+ * 
+ */
 
 package com.autovend.software.test;
 
@@ -53,6 +66,9 @@ public class TestPrintReceipt {
 	BarcodedProduct testItem2;
 	BarcodedProduct testItem3;
 	BarcodedProduct testItem4;
+	StubBarcodedProduct testItem5;
+	StubBarcodedProduct testItem6;
+	StubBarcodedProduct testItem7;
 
 	StringBuilder receipt;
 	TouchScreen stubDevice;
@@ -156,6 +172,50 @@ public class TestPrintReceipt {
 			fail("Exception incorrectly thrown");
 		}
 	}
+	
+	@Test
+	public void testPrintKgItems() {
+		// Creating first parameter HashMap<Product, Number[]> in printReceipt()
+		Number[] quantityItem5 = { 2, (2 * 83.29) };
+		Number[] quantityItem6 = { 3, (3 * 9.29) };
+		Number[] quantityItem7 = { 1, (32.79) };
+		
+		testItem5 = new StubBarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 5",
+				BigDecimal.valueOf(83.29), 359.0, false);
+		testItem6 = new StubBarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 6",
+				BigDecimal.valueOf(83.29), 359.0, false);
+		testItem6 = new StubBarcodedProduct(new Barcode(Numeral.three, Numeral.three), "test item 7",
+				BigDecimal.valueOf(83.29), 359.0, false);
+		
+		order.put(testItem5, quantityItem5);
+		order.put(testItem6, quantityItem6);
+		order.put(testItem7, quantityItem7);
+		
+		totalCost = BigDecimal.valueOf((2 * 83.29 + 3 * 9.29 + 32.79)/359.0);
+		
+		String expectedOutput = "Purchase Details:\n" + "1 $166.58 2kg StubBarcodedProduct\n"
+				+ "2 $27.87 3kg StubBarcodedProduct\n" + "3 $32.79 1kg StubBarcodedProduct\n" + "Total: $227.24\n";
+		
+		try {
+			// Add ink and paper into printer
+			testPrinter.addInk(1000);
+			testPrinter.addPaper(1000);
+			testReceiptPrinterController.addedInk(1000);
+			testReceiptPrinterController.addedPaper(1000);
+
+			// Call printReceipt()
+			receipt = testReceiptPrinterController.createReceipt(order, totalCost);
+			//print the receipt
+			testReceiptPrinterController.printReceipt(receipt);
+			// Cut the paper to finalize the output string
+			String result = testPrinter.removeReceipt();
+			System.out.println(result);
+			assertEquals(expectedOutput, result);
+		} catch (Exception ex) {
+			fail("Exception incorrectly thrown");
+		}
+	}
+		
 
 	/**
 	 * Ensures a no paper/ink message is received when the printer has ink but no
