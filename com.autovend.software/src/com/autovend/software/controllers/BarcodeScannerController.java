@@ -54,7 +54,7 @@ public class BarcodeScannerController extends ItemAdderController<BarcodeScanner
 				this.getMainController().addItem(product);
 			}
 		} else {
-			this.getMainController().validateMembership(String.join("",barcode.digits().stream().map(i->i.toString()).collect(Collectors.toList())));
+			this.getMainController().validateMembership(String.join("",barcode.digits().stream().map(i->(Byte.valueOf(i.getValue())).toString()).collect(Collectors.toList())));
 		}
 	}
 }

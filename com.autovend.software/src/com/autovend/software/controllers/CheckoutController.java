@@ -717,8 +717,9 @@ public class CheckoutController {
 
 	public void cancelSigningInAsMember(){
 		for (DeviceController cardReaderController : registeredControllers.get("ValidPaymentControllers")) {
-
-			((CardReaderController) cardReaderController).setState(CardReaderControllerState.NOTINUSE);
+			if (cardReaderController instanceof CardReaderController) {
+				((CardReaderController) cardReaderController).setState(CardReaderControllerState.NOTINUSE);
+			}
 		}
 		for (DeviceController barcodeScannerController : registeredControllers.get("ItemAdderController")) {
 			((BarcodeScannerController) barcodeScannerController).setScanningItems(true);
