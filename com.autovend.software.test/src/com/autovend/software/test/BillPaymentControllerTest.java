@@ -164,6 +164,8 @@ public class BillPaymentControllerTest {
 
 		checkoutControllerStub.setOrder(order);
 
+
+
 		try {
 			selfCheckoutStation.billInput.accept(new Bill(15, Currency.getInstance("CAD")));
 			selfCheckoutStation.billInput.removeDanglingBill();
