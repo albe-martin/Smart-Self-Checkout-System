@@ -196,14 +196,15 @@ public class CustomerGUITest {
  		customerScreen.setResizable(false);
  		CardIssuerDatabases.MEMBERSHIP_DATABASE.put("12345", "Bob");
  		
- 		SupervisionStation supStation = new SupervisionStation();
- 		AttendantStationController attendantController = new AttendantStationController(supStation);
- 		AttendantIOController aioc = new AttendantIOController(screen);
- 		aioc.setMainAttendantController(attendantController);
  		
+ 		AttendantIOController aioc = new AttendantIOController(screen);
  		cioc = new CustomerIOController(customerStation.screen);
  		CheckoutController checkoutController = new CheckoutController(customerStation);
  		cioc.setMainController(checkoutController);
+ 		SupervisionStation supStation = new SupervisionStation();
+ 		AttendantStationController attendantController = new AttendantStationController(supStation);
+ 		attendantController.addStation(customerStation, cioc);
+ 		aioc.setMainAttendantController(attendantController);
  		checkoutController.setSupervisor(attendantController.getID());
 
  		customerPane = new CustomerStartPaneTest(cioc);
