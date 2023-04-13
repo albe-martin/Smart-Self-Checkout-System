@@ -279,10 +279,13 @@ public class CardPaymentTest {
         	try {
         		checkout.payByGiftCard();
                 station.cardReader.insert(giftCard, "1337");
+                station.cardReader.remove();
         	} catch (ChipFailureException ex) {
         		// Randomly failed insert
         		continue;
             } catch (Exception ex){
+                ex.printStackTrace();
+
                 fail("Exception incorrectly thrown");
             }
         	success = true;
