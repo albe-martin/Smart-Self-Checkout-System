@@ -9,6 +9,7 @@ import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.utils.CardIssuerDatabases;
 import com.autovend.software.utils.MiscProductsDatabase;
 
@@ -276,10 +277,8 @@ public class CheckoutController {
 	public void setAddingBagsLock() {
 		this.addingBagsLock = true;
 		this.baggingItemLock = true;
-		// todo: stuff with GUIs
 	}
 
-	// TODO: COMPLETE THIS METHOD!!!!!!
 	public void alertAttendant(String message) {
 		ArrayList<DeviceController> io = registeredControllers.get("AttendantIOController");
 		((AttendantIOController) io.get(0)).displayMessage(message);
@@ -419,7 +418,6 @@ public class CheckoutController {
 			}
 		}
 		baggingItemLock = !unlockStation;
-		System.out.println(unlockStation);
 	}
 
 	void baggedItemsInvalid() {
@@ -443,7 +441,6 @@ public class CheckoutController {
 	void baggingAreaErrorEnded() {
 		this.systemProtectionLock = false;
 		alertAttendant("Overload for scale at station " + this.getID() + " has ended.");
-		// todo: stuff for customer GUI
 	}
 
 	void attendantOverrideBaggingLock() {
@@ -464,8 +461,6 @@ public class CheckoutController {
 			StringBuilder receipt = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0)).createReceipt(this.order, this.cost);
 			// call print receipt method in the ReceiptPrinterController class with the
 			// order details and cost
-			System.out.println(receipt.toString());
-
 
 			//check ink and paper level after printing
 			boolean lowInk = ((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0)).lowInk();
@@ -476,7 +471,6 @@ public class CheckoutController {
 					((AttendantIOController) io).disableStation(this);
 					((AttendantIOController) io).rePrintReceipt(this, receipt);
 				}
-
 			}
 			else {
 				((ReceiptPrinterController) this.registeredControllers.get("ReceiptPrinterController").get(0)).printReceipt(receipt);
@@ -486,7 +480,7 @@ public class CheckoutController {
 		}
 		clearOrder();
 		CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
-		cioc.startMenu();
+		if (!isDisabled) {cioc.startMenu();} else {cioc.notifyStartup();}
 	}
 
 	public boolean needPrinterRefill = false;
@@ -528,6 +522,8 @@ public class CheckoutController {
 	 */
 	public void addToAmountPaid(BigDecimal val) {
 		amountPaid = amountPaid.add(val);
+		CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
+		((CustomerOperationPane) (cioc.getDevice().getFrame().getContentPane())).updateAmountPaid();
 	}
 
 	public BigDecimal getRemainingAmount() {
@@ -562,6 +558,8 @@ public class CheckoutController {
 		if (!payingChangeLock) {
 			return;
 		}
+		CustomerIOController cioc = (CustomerIOController) this.registeredControllers.get("CustomerIOController").get(0);
+		((CustomerOperationPane) (cioc.getDevice().getFrame().getContentPane())).updateAmountPaid();
 		if ((getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) && payingChangeLock) {
 
 			printReceipt();
@@ -576,7 +574,6 @@ public class CheckoutController {
 				if ((getRemainingAmount().negate()).compareTo(dispenser.getDenom()) >= 0) {
 					amountPaid = amountPaid.subtract((dispenser.getDenom()));
 					dispenser.emitChange();
-					System.out.println(amountPaid);
 					break;
 				} else {
 					if (controllers.lower(dispenser) != null) {
@@ -592,7 +589,7 @@ public class CheckoutController {
 	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
 		changeDenomLow(controller, denom);
 		alertAttendant("Out of Change!!!!!");
-		// todo: you know the drill... (GUIIIII)
+		disableStation();
 		if (controller instanceof BillDispenserController) {
 			System.out.println(String.format("Bill dispenser with denomination %s out of bills.", denom.toString()));
 		} else {
@@ -614,32 +611,6 @@ public class CheckoutController {
 			}
 		}
 		this.requireAdjustment = true;
-	}
-
-	// load bills into dispenser (done by attendant) after they're notified that the
-	// bill dispenser is low
-	public void loadBillDenomination(BillDispenserController controller, Bill[] bills) {
-		try {
-			controller.getDevice().load(bills);
-			for (DeviceController io : this.registeredControllers.get("AttendantIOController")) {
-				((AttendantIOController) io).enableStation(this);
-			}
-		} catch (SimulationException | OverloadException e) {
-			e.printStackTrace();
-		}
-	}
-
-	// load coins into dispenser (done by attendant) after they're notified that the
-	// coin dispenser is low
-	public void loadCoinDenomination(CoinDispenserController controller, Coin[] coins) {
-		try {
-			controller.getDevice().load(coins);
-			for (DeviceController io : this.registeredControllers.get("AttendantIOController")) {
-				((AttendantIOController) io).enableStation(this);
-			}
-		} catch (SimulationException | OverloadException e) {
-			e.printStackTrace();
-		}
 	}
 
 	// generic method used to control how payment by credit/debit card is handled.
@@ -815,7 +786,7 @@ public class CheckoutController {
 
 	public void disableStation() {
 
-		if (!isShutdown && !inUse) {
+		if (!isShutdown) {
 			clearOrder();
 			this.isDisabled = true;
 			inUse = false;
@@ -825,6 +796,9 @@ public class CheckoutController {
 				((CustomerIOController) io).notifyDisabled();
 			}
 			disableAllDevices();
+			for (DeviceController io : registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).updateAttendantGUI();
+			}
 		} else {
 		}
 	}
@@ -838,6 +812,9 @@ public class CheckoutController {
 			// Notify customerIO
 			for (DeviceController io : registeredControllers.get("CustomerIOController")) {
 				((CustomerIOController) io).notifyEnabled();
+			}
+			for (DeviceController io : registeredControllers.get("AttendantIOController")) {
+				((AttendantIOController) io).updateAttendantGUI();
 			}
 		}
 	}
