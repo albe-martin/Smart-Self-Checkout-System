@@ -1,0 +1,4233 @@
+commit a342698f1fe0313e701972a1a6ad97afcaf7b228
+Merge: 6cba825 7dd6505
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 23:36:56 2023 -0600
+
+    Merge pull request #122 from KittenInAMitten/main
+    
+    Merge pull request #121 from KittenInAMitten/gui-branch
+
+commit 7dd650546ad83b1b259a4ddbef5c7893dafd4246
+Merge: 2596213 6cba825
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 23:33:42 2023 -0600
+
+    Merge pull request #121 from KittenInAMitten/gui-branch
+    
+    Gui branch
+
+commit 6cba825073ec55f71c68b500a508fb91142ca3b6
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 23:32:00 2023 -0600
+
+    names ucid top every file
+
+commit 1a8ce3d1c20e7c30738a86e38b00b9e77eeac548
+Merge: ae8ced2 0f5f98d
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 23:18:45 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit ae8ced2810f3de9bf1498d566a33ea1d17acc652
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 23:18:31 2023 -0600
+
+    delete useless file
+
+commit 0f5f98d2abce7df15a3d81ad14eeb502514f5c5b
+Merge: 5a09ea5 7cddb1b
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 23:15:36 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 5a09ea5fd8fd7630bcd9846a32ff513219bfb12b
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 23:15:27 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    final tests.
+
+commit 7cddb1b7b8f07d96f8409bd02b887e1712973150
+Merge: 7e36f85 bc40580
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 23:14:29 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into dev
+
+commit 7e36f85cbf1477fef60f164c0872693e59614660
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 23:14:12 2023 -0600
+
+    Fixed some tests
+
+commit bc40580589fb89edf9ef67327664ecfbee8c386a
+Merge: c7b32f6 bd625c6
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 23:13:15 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit c7b32f618aa13a11c50daba0499ba3e237533ede
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 23:13:02 2023 -0600
+
+    Customer Event Simulation Tests
+
+commit bd625c63d8a4dc953f9e4d689486dd9752637b1e
+Merge: 676f950 dd92377
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Wed Apr 12 23:11:23 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 676f950890a30fc58ef5823f93a720517c6b185e
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Wed Apr 12 23:11:13 2023 -0600
+
+    Minor additions to CardReaderControllerTest.
+
+commit dd9237790bf0491689be66e0d502d93fede97a99
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 23:06:41 2023 -0600
+
+    Fixed Coin Payment Tests
+
+commit 02f7116b4a491b286fd5cbacae82b0e05631e02d
+Merge: b303e7f 15a8cc0
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 22:53:48 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into dev
+
+commit b303e7fdb06953071b3a35104ca14270ee1a052a
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 22:53:09 2023 -0600
+
+    Fixing more tests
+
+commit 15a8cc0d6c9e54f95e35c62ce2f483f1ff52051b
+Merge: e6e9b43 22986fd
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 22:53:03 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit e6e9b43145077548d5b27ff7501b1f8c7d77d658
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 22:52:45 2023 -0600
+
+    Attendant Event Simulator Test
+
+commit 22986fda9c63805a0e0c60a9f09d9b13db152bee
+Merge: 8d46f96 be7040a
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 22:48:34 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 8d46f96c2efa1025784ceae83f46ec61e1d09285
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 22:48:30 2023 -0600
+
+    card reader tests.
+
+commit be7040ae8444b5196cfbab21431b5757ab181b8b
+Merge: b015ef2 cbe1c1d
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 22:48:18 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into dev
+
+commit b015ef22b37547b401abcf028cd116628c10d72b
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 22:48:00 2023 -0600
+
+    Fixed CustomerGUI Test
+
+commit cbe1c1d68281dd70c8d6e3ca31105e7811b21aa5
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 22:37:26 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Cleaned stuff
+
+commit 81f6b1663144039d4c2c43e3ed845d658273da14
+Merge: 19d7372 6abcc2d
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Wed Apr 12 22:30:25 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 19d73728801abde6db325e92599a3cf7bce51520
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Wed Apr 12 22:29:45 2023 -0600
+
+    Added CardReaderControllerTest class.
+
+commit 6abcc2db12a3809420cd5e8bb88549308297973d
+Merge: 1365e37 68907ce
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 22:29:42 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 1365e3782e0ed30c6bd7597dc4c8a2d1c34f268e
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 22:29:38 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Added a bunch of tests.
+
+commit 68907ce1aa4850813a4c91b8126f7a53642ad13a
+Merge: eb31526 440ff2e
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 22:25:57 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit eb31526f7ce162e0e5f070bfdd9ac95900592c26
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 22:25:50 2023 -0600
+
+    Update CustomerGUITest.java
+
+commit 440ff2e2e1e9c1d335db48cf560e52fef231ae6b
+Merge: c138974 1217105
+Author: samanthaaliu <samantha.liu10@gmail.com>
+Date:   Wed Apr 12 22:11:29 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit c1389747c9a632287bf87cbfcf8f19698cadd895
+Author: samanthaaliu <samantha.liu10@gmail.com>
+Date:   Wed Apr 12 22:11:16 2023 -0600
+
+    more coverage for receipt printer
+
+commit 1217105b7a308df2687ad8be3fa66b6cc7b06fc7
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 22:09:22 2023 -0600
+
+    Added Our UCIDs as headers for all files
+
+commit ef2ccc773fea6550dba8444c75784e1694f3c963
+Merge: b58bd28 1b64f36
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 22:01:44 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit b58bd2851afa1473eb7c4b361ceabf290529f5b0
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 22:01:37 2023 -0600
+
+    tried adding addOwnBags test
+
+commit 1bc5d35cf4a71e360f3891e13a73248fe73c502c
+Merge: ff765d6 2c2f963
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 22:01:25 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 1b64f365458605f18558adf706c87c5e6adab406
+Merge: 2019672 2c2f963
+Author: Tashi Labowka-Poulin <65480653+tashi-lp@users.noreply.github.com>
+Date:   Wed Apr 12 22:01:25 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit ff765d6aa07eafe84a0893e4098ee2ffd69b0ce4
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 22:01:19 2023 -0600
+
+    small change
+
+commit 20196725ff28f393bd7165a31d00180d0c492b52
+Author: Tashi Labowka-Poulin <65480653+tashi-lp@users.noreply.github.com>
+Date:   Wed Apr 12 22:01:18 2023 -0600
+
+    More header comments
+
+commit 2c2f963f3224506a6356b69ccf1ea29cff921bec
+Merge: e26c13f 828ae9c
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 22:00:51 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit e26c13faa2f7d8a830dc83b788714cab6aa7f46f
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 22:00:41 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Coin tests committed behalf of Avani.
+
+commit 828ae9cf68eefbc9566f4e3a8a2b195c4de7c154
+Merge: 5e512a8 772c36e
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 21:59:52 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into dev
+    
+    # Conflicts:
+    #       com.autovend.software/src/com/autovend/software/swing/CustomerOperationPane.java
+
+commit 5e512a84ccc3511ee833c2bd39aa1f7687c91c6b
+Merge: bf4e484 85e6be4
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 21:58:31 2023 -0600
+
+    Merge remote-tracking branch 'origin/gui-branch' into dev
+
+commit 772c36eb405070db43178f5d797ef811d95dfa83
+Merge: 468a8ba b21ab18
+Author: Tashi Labowka-Poulin <65480653+tashi-lp@users.noreply.github.com>
+Date:   Wed Apr 12 21:58:17 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 468a8ba268c9539e2fa220841f8031c1b266ee2d
+Author: Tashi Labowka-Poulin <65480653+tashi-lp@users.noreply.github.com>
+Date:   Wed Apr 12 21:57:59 2023 -0600
+
+    Adding file header comment
+
+commit bf4e4841040ff376ed895321812e3051eb13e376
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 21:57:13 2023 -0600
+
+    Fixed Memberships
+
+commit b21ab18b694e6ca88ab9fa5ce74014c15dc2d4b6
+Merge: 1d6df0e fb0611d
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 21:44:06 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 1d6df0ebf55eab02a88266c30dbcf01422ee3a99
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 21:43:59 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    scanner tests
+
+commit fb0611de08fbdf262341d21ad8c4bcc93301df60
+Merge: beb8027 85e6be4
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 21:42:11 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit beb80270ce5e05836e73d8b1c8d10361ef061c2b
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 21:42:03 2023 -0600
+
+    added test for membership
+
+commit 85e6be42a88dd153745efa83ffb9950e2568632b
+Merge: 8463713 c66da71
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 21:28:27 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 8463713bf1c96e7be08f06d76ba45e3a42ed5e9c
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 21:28:19 2023 -0600
+
+    Updated AllTests.java
+
+commit c66da716412b8216fc16a7130d34d506e9cf3c13
+Merge: 39bd3f5 a58b830
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 21:25:47 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 39bd3f5888112ce10dd4134c095b9a05cc97fc94
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 21:25:38 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    bag tests
+
+commit 3aee996c44bd5389a5269ba62609b0e639c50b47
+Merge: 40d590e a58b830
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 21:17:44 2023 -0600
+
+    Merge pull request #120 from KittenInAMitten/gui-branch
+    
+    Gui branch
+
+commit a58b830b29f47487995b071ae1c889af681eafaa
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 21:12:22 2023 -0600
+
+    Gift Card Sim Working
+
+commit d48247798b6159ba218536e9991c8f942f616e18
+Merge: e136dc3 858c2d6
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 21:09:33 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit e136dc343bde34028d8cd0140886d3719128cc0b
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 21:09:24 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    More tests.
+
+commit 858c2d6fa1dd66318514b269463755e120fe3c9f
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 21:03:13 2023 -0600
+
+    Update CustomerGUITest.java
+
+commit 917ac4eb3e8853acd41498743519605615f0270e
+Merge: c8ba6c6 9f1a87d
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 20:52:26 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit c8ba6c60c93a35c5194059610c0569e5737c0c18
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 20:52:24 2023 -0600
+
+    Update CustomerGUITest.java
+
+commit 9f1a87d3a62e54f53e08f5060704211f35c0fcbd
+Merge: ea27f4e fa666ab
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 20:47:36 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit ea27f4e6197c4deffbf08dcb5dcaec7ffde8d330
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 20:47:28 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Added tests
+
+commit fa666ab0b9dbd8ea57559747709b386488587156
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 20:32:21 2023 -0600
+
+    Add Own Bags Done
+
+commit 9c51611ddc7bf1c2aa05da59edda826297eef78e
+Merge: 75d03fa 231e547
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 20:18:22 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 75d03fac853f8448d7a0acf4bf21b0b1b7eccfce
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 20:18:11 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Coin payment controller tests.
+
+commit 231e547f46b1fca08dff7110b527549600564c1b
+Merge: 067ed9b e19c53a
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 20:01:11 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 067ed9bda77e1da288a317a8d2ede75a86345a91
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 20:00:55 2023 -0600
+
+    Update CustomerGUITest.java
+
+commit e19c53acd53f9f9cd2b1ebe1ab75e10f5446affc
+Merge: acedda7 7281182
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 19:54:59 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit acedda763d5662a1ac1e6d4f1bb8e615eb7aa94d
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 19:54:35 2023 -0600
+
+    Coin tray controller test.
+
+commit 72811821a09ee6dc9f0794fb10aea8423cf51c25
+Merge: afc48fa 7bbe40f
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 19:46:30 2023 -0600
+
+    Merge remote-tracking branch 'origin/gui-branch' into gui-branch
+
+commit afc48fa9f489ef44ec20b6475d2e6d65c675eaad
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 19:46:15 2023 -0600
+
+    More Use cases down
+
+commit 7bbe40f14427f656aed1357a9ecf5bce1bbf68f9
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 19:38:17 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Language tests
+
+commit 65d55253fe9b1c0e1054b2cf467b50385a3a5014
+Merge: dd4d376 fe66786
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 19:21:55 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit dd4d376050dd90386aa054b558196af654356887
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 19:21:46 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    BarcodeUtils test
+
+commit fe66786902f8b9a6d06ca434daa5dbb2adacfb4c
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 19:21:06 2023 -0600
+
+    Update CustomerGUITest.java
+
+commit bb2638ae3323dcb8f12b36e450c9032428cbf28f
+Merge: 80276ec c45aef0
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 19:19:22 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 80276ec1bfb55c3440dd6d3f36d3d073fb0042c8
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 19:19:19 2023 -0600
+
+    Update CustomerGUITest.java
+
+commit 2b30dcd3df41f9ca23ae32a6240bde7f1e20c0c3
+Merge: abc7613 c45aef0
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 18:57:32 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit abc7613d63c6e232d4ce6fb2f6e15439731e6874
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 12 18:57:27 2023 -0600
+
+    class files want to be committed, possible issue
+
+commit c45aef037fd441227a61bc6450d7285b7d8c9e9e
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 18:40:53 2023 -0600
+
+    All ways to add items are now supported.
+
+commit dc2023adc9e685c14c457349714c2c9f16e16a26
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 18:39:08 2023 -0600
+
+    Update CustomerGUITest.java
+
+commit 47bd2fba9b3b8cf8f9bfe94b750ac91fac9779f0
+Merge: ecee01f 40d590e
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Wed Apr 12 18:21:10 2023 -0600
+
+    Merge pull request #119 from KittenInAMitten/dev
+    
+    Dev to gui
+
+commit ecee01fc6b1c6bcca7b93d95d0c957d4af715d6c
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 17:56:50 2023 -0600
+
+    added the popup method
+
+commit ef6ea7c4a22fd7145ff4d7912a21308c76680d6e
+Merge: dcc64e4 938fb9f
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 17:36:41 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit dcc64e4832716dfaa656c1fcb27da18cf8751bf5
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 17:36:37 2023 -0600
+
+    update alltests.java
+
+commit 938fb9f44cc401f88758674a6e8b5d9c51c7a2dd
+Merge: 10193ce 5caf531
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Wed Apr 12 17:34:19 2023 -0600
+
+    Merge pull request #118 from KittenInAMitten/Jacob-CustomerGUITest
+    
+    Jacob customer g UI test
+
+commit 5caf531686562550baca714bd31d4c6aa433d4cd
+Merge: f683e4f 10193ce
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Wed Apr 12 17:34:11 2023 -0600
+
+    Merge branch 'gui-branch' into Jacob-CustomerGUITest
+
+commit 10193cee16abb4d85a155146ed7ff9a605c356a9
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 17:09:59 2023 -0600
+
+    Added Credit and Fixed some Bugs and remove change now works.
+
+commit f683e4f44837f5a96d1677b6f3b89b878441496a
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 16:10:14 2023 -0600
+
+    Update CustomerGUITest.java
+
+commit c2864b6a62f28b923b70ca46e20451bcf2f659c9
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 15:59:37 2023 -0600
+
+    Pushed Debit Payments to GUI Branch
+
+commit 4305e75653576038ebce4e7e1d98a966d79b3df3
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 15:50:41 2023 -0600
+
+    changes to test setup
+
+commit 2e4a6fe467a9672e36715b82172aff1c7072a48d
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 15:08:05 2023 -0600
+
+    Added tests for bagging
+
+commit 40d590eadc1106a3bf62c7b24466f16de993c70f
+Merge: e8a91d7 6000e12
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 14:28:51 2023 -0600
+
+    Merge pull request #115 from KittenInAMitten/ucid-comment-on-tests-i-made-christian
+    
+    Added some UCID comments to tests I made
+
+commit 6000e121d16b4a67ce90344f0c1fb64251ee258b
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 14:27:12 2023 -0600
+
+    Added UCID comments
+
+commit e8a91d7b8d8b0f1556ba5e1cce678bbe4d557108
+Merge: cf0003e 41a5ee2
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 14:18:12 2023 -0600
+
+    Merge pull request #114 from KittenInAMitten/tests-simulating-placing-item-fix
+    
+    Fixed AddItemTest and RemoveItemTest to simulate item placement correctly
+
+commit 41a5ee2a9d1c311ad6834fd0d98cfb633a9dc7b2
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 14:16:13 2023 -0600
+
+    Updated AddItemTest and RemoveItemTest to simulate item placement Correctly.
+    
+    CoinPaymentTest was missing CustomerIOController causing null pointer exceptions.
+
+commit 2474c57d2582fa923a2ae6d28465bfec98e95d63
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 13:08:03 2023 -0600
+
+    added membership add item by lookup tests
+
+commit cf0003ee900b1dc6e777a3d9ac2d7c25e2bc4245
+Merge: d943f78 3e3aae5
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 12:04:23 2023 -0600
+
+    Merge pull request #113 from KittenInAMitten/gui-branch
+
+commit 3e3aae58e5ee2077ddaf57e9dab4468ac03d8c72
+Merge: 487c299 734967b
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 10:30:31 2023 -0600
+
+    Merge remote-tracking branch 'origin/gui-branch' into gui-branch
+
+commit 734967bd1c4ef8d1282591d64e1a060e37af05b4
+Merge: 228665e d943f78
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Wed Apr 12 10:29:33 2023 -0600
+
+    Merge branch 'dev' into gui-branch
+
+commit 487c29945f40079a811afeea6c002a1a39ea5dbd
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 10:26:13 2023 -0600
+
+    minor bugfix
+
+commit 520b56dcd939a1ce6d95da9528e941ae949f5e06
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 05:02:07 2023 -0600
+
+    Update CustomerOperationPane.java
+
+commit 06f0bdc28a0cdc576406533fde670b690df90893
+Merge: 59eb3d5 228665e
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 04:57:36 2023 -0600
+
+    Merge pull request #112 from KittenInAMitten/gui-branch
+    
+    Bringing in changes from GUI branch
+
+commit 228665e3ccfa9f8bef8e0719ae09266ea2c5cd15
+Merge: 62b4ab1 59eb3d5
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 04:56:30 2023 -0600
+
+    Merge branch 'Jacob-CustomerGUITest' into gui-branch
+
+commit 62b4ab1de90c0c4ad50d4b44681d472577d74a54
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 04:47:23 2023 -0600
+
+    GOT THE SIM TO ADD TO THE ORDER PROPERLY!!!!!
+
+commit 59eb3d5c72ceaa6a0c96afda803e311451e0b0fd
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 04:47:01 2023 -0600
+
+    finished purchase bags tests
+
+commit d8a6b325ec4ff23eadabd6d3e0620ad7c913e0a6
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 04:30:42 2023 -0600
+
+    added purchase bags tests
+
+commit b4dca3ee2b5846636d7cedb796e3ba43c6e506e0
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 04:02:52 2023 -0600
+
+    Fixing the sim and GUI for bagging area
+
+commit f0e3aa9720c73621c25dad528cfea5838a6f7ef9
+Merge: 572bf8b 4cf05e2
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 04:01:54 2023 -0600
+
+    Merge remote-tracking branch 'origin/james_conflicty_gui_branch' into gui-branch
+    
+    # Conflicts:
+    #       com.autovend.software/src/com/autovend/software/swing/CustomerEventSimulator.java
+
+commit 4cf05e265232a52f3062abbb52973b0fd1be2969
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 03:55:57 2023 -0600
+
+    Bug fixes with regards to Pay with Cash
+
+commit 572bf8b732afcfba5cd81b5b704e1b761fa5ecb7
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 12 03:55:50 2023 -0600
+
+    Fixed maybe
+
+commit 1e1b1261effc6d6b49730a731f5480a245b6caa7
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 12 03:55:07 2023 -0600
+
+    Fixing my merge
+
+commit 872f3d68459223b3f5e55f4743185bb57bb09f52
+Merge: f35338b ed22060
+Author: Colton Gowans <100043529+ColtG5@users.noreply.github.com>
+Date:   Wed Apr 12 03:46:54 2023 -0600
+
+    Merge branch 'grabbibg-aries-code' into gui-branch
+
+commit f35338b8321b9e099e5d0a9591d5803ddd49e1db
+Merge: 2eb1906 3fa4d02
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 12 03:35:29 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 2eb19062b6628bdacab0cb365ae19c2a536daff0
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 12 03:35:27 2023 -0600
+
+    AddItemByLookup now works i think i hope its good right? ? ?
+
+commit 93676cdca4dce90dbf93e6c9571215a2bb477df3
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 03:21:58 2023 -0600
+
+    Added tests for updating total cost, and for using PLU button
+
+commit ed22060b4301e9784af55a7785bbc705d8d122e1
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 03:10:52 2023 -0600
+
+    Fixing the sim and GUI for bagging area
+
+commit 3fa4d020d5e4ba6681235ea78b06ed1848546622
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 03:07:14 2023 -0600
+
+    Working on PayWithCash
+
+commit dd32f08ae3851f6e6a828318a226ca006c636615
+Merge: 867cb4f 4f8c7b5
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 03:05:59 2023 -0600
+
+    Merge remote-tracking branch 'origin/gui-branch' into gui-branch
+    
+    # Conflicts:
+    #       com.autovend.software/src/com/autovend/software/controllers/CheckoutController.java
+    #       com.autovend.software/src/com/autovend/software/swing/CustomerEventSimulator.java
+    #       com.autovend.software/src/com/autovend/software/swing/CustomerOperationPane.java
+
+commit 867cb4f2ef28e9cbfe3e30f3029426291319c025
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 03:04:38 2023 -0600
+
+    Fixing the sim and GUI for bagging area
+
+commit d943f787b31500b4704167dda81ad3546cc2a84d
+Merge: 022110e bbabc06
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 02:28:43 2023 -0600
+
+    Merge pull request #109 from KittenInAMitten/do-not-bag-test
+    
+    added tests for place no item in bagging area
+
+commit bbabc061d91bd6f4461bfdcabf30a487bd9a5d1a
+Merge: 406b749 022110e
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Wed Apr 12 02:22:47 2023 -0600
+
+    Merge branch 'dev' into do-not-bag-test
+
+commit 406b749f387eafd0a2e0a1654244b4e5337cdc86
+Author: Sankalp Bartwal <sankalp.bartwal@gmail.com>
+Date:   Wed Apr 12 02:21:27 2023 -0600
+
+    added tests for place no item in bagging area
+
+commit 4f8c7b5f3c25ca310281ce36e9e115293d42ac7d
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 12 02:11:02 2023 -0600
+
+    Switched to a pane
+
+commit d20f4ea878495a1003121ea471186b99b09b158c
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 02:03:52 2023 -0600
+
+    added refreshOrderGrid tests
+
+commit f7bed8e1479c33a99c6d0ea2f4e5237506de7ddd
+Merge: 85d6709 845ef00
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 01:54:43 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3.git into gui-branch
+
+commit 85d6709301e7a30daa98e4ace60a763873a79e6c
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 01:54:29 2023 -0600
+
+    Finally added functionality to insert 1$ bill event simulation
+
+commit 845ef0018baef504dc997c9e53ef63ff4e4839a9
+Merge: ec9dc08 38909a7
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 12 01:43:43 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit ec9dc082ccf91fe3b309afd7fa42596ffd35280e
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 12 01:43:40 2023 -0600
+
+    Some fixes for refreshGrid and updateTotalCost
+
+commit 38909a7a791a534d0c5b00dfec571aa0d0e9f451
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 01:22:43 2023 -0600
+
+    Insert bill with billInput
+
+commit 2bcc90c489863621c1c5dcb8063e734ea8daa6f7
+Merge: aa16015 79a4519
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 00:56:54 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3.git into gui-branch
+
+commit aa1601522eec38b4849a3507167f79daaaacc00d
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 00:56:39 2023 -0600
+
+    Added amount paid label to customer gui
+
+commit 79a4519bec40592445eb60f1d0e76fe5be360d55
+Merge: b8e9580 022110e
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 00:48:39 2023 -0600
+
+    Merge pull request #108 from KittenInAMitten/dev
+    
+    Dev
+
+commit 022110e987b271664ff98c8a17f2051a1bf44469
+Merge: 73bda6a b8e9580
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 00:48:34 2023 -0600
+
+    Merge branch 'gui-branch' into dev
+
+commit 73bda6a4cd731f22c2b8c3391e4beb3f3c0561c7
+Merge: 3b06257 5ae4af9
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 00:46:03 2023 -0600
+
+    Merge pull request #107 from KittenInAMitten/Arie_Fix_Tests_Branch
+    
+    Arie fix tests branch
+
+commit 5ae4af9c68b11a6818b312c061739ebe41ef086a
+Merge: a38831b 3b06257
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 12 00:45:50 2023 -0600
+
+    Merge branch 'dev' into Arie_Fix_Tests_Branch
+
+commit b8e9580abc7d74ba77c832b6be6f50e229e7d2da
+Merge: 40c014a bfa4a43
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 00:37:48 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3.git into gui-branch
+
+commit 40c014a4f6cd202382261ff8fe0f73ec65ee3464
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 12 00:37:43 2023 -0600
+
+    Added functionality to inserting bill in CustomerEventSimulator
+
+commit a38831b9a416a19630d0853466fb1481cf4806fd
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Wed Apr 12 00:34:17 2023 -0600
+
+    Doing more stuff and slowly losing my mind
+
+commit 3b062574fcac0cddd16d01adcabcbadb08cafb82
+Merge: bf65e65 5d366f1
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Wed Apr 12 00:24:40 2023 -0600
+
+    Merge pull request #106 from KittenInAMitten/adding-own-bags-test
+    
+    Added some more AddOwnBag tests for more coverage
+
+commit 5d366f1b08ffcc66abeeb9261cbf17ccb6919b10
+Merge: bca9a5b 4d1a936
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Wed Apr 12 00:21:44 2023 -0600
+
+    Merge branch 'adding-own-bags-test' of https://github.com/KittenInAMitten/SENG300-iteration-3 into adding-own-bags-test
+
+commit bca9a5bdcf1160c698730ce56a546cf117eb2c3a
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Wed Apr 12 00:21:35 2023 -0600
+
+    Deleted old AddOwnBags test
+
+commit 4d1a936be65b47e2ccf42804bf2b34b0a4d12be9
+Merge: 49ac72b bf65e65
+Author: Alex Chen <83100991+alexchchen@users.noreply.github.com>
+Date:   Wed Apr 12 00:20:08 2023 -0600
+
+    Merge branch 'dev' into adding-own-bags-test
+
+commit 49ac72b29675d55af47ca9158bad062a442fbba7
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Wed Apr 12 00:19:41 2023 -0600
+
+    Added some more AddOwnBag tests for more coverage
+
+commit bf65e6567b54e35385f8567828fb33b0d5e544f3
+Merge: 4c31172 ad9c45b
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Wed Apr 12 00:19:15 2023 -0600
+
+    Merge pull request #104 from KittenInAMitten/gui-launch-test
+    
+    Added test for GUILauncher
+
+commit ad9c45b9e337f53b3015444258e466304161dcff
+Merge: d4da0a2 4c31172
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Wed Apr 12 00:12:33 2023 -0600
+
+    Merge branch 'dev' into gui-launch-test
+
+commit 2fd976f832aa457172abd73f404e6f5059ec9a8e
+Merge: 1218684 bfa4a43
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 00:12:11 2023 -0600
+
+    Merge pull request #103 from KittenInAMitten/gui-branch
+    
+    Getting updates from Gui branch
+
+commit bfa4a435dd3325ba9eda3367f56768b82aa3d164
+Merge: 4ff353e 1218684
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Wed Apr 12 00:11:56 2023 -0600
+
+    Merge branch 'Jacob-CustomerGUITest' into gui-branch
+
+commit d4da0a2f048695ca737358c61aa7c247762a46e3
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 12 00:11:20 2023 -0600
+
+    Added test for GUILauncher
+
+commit 1218684e178a9fd2dd509a73f296fbbeac9d950d
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Tue Apr 11 23:58:25 2023 -0600
+
+    finished tests for start pane
+
+commit f62573f2261ef60518c5b34d3bb2b595cd4a7c89
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Tue Apr 11 23:35:17 2023 -0600
+
+    More tests added
+
+commit 4c31172495b8c340401ad74db8e538bd237e06dc
+Merge: f212d7c a94fc4d
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Tue Apr 11 23:27:18 2023 -0600
+
+    Merge pull request #102 from KittenInAMitten/omar-improve-test
+    
+    Omar improve test
+
+commit a94fc4d8fecc3be77212a9c2944db0d8ceed41f7
+Merge: c276bce f212d7c
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 23:26:00 2023 -0600
+
+    Merge branch 'dev' into omar-improve-test
+
+commit f212d7ce8328a7a1b70ec936e8bdb50082be212a
+Merge: d521ca5 2815a6b
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 23:25:39 2023 -0600
+
+    Merge pull request #101 from KittenInAMitten/purchaseBagsTestRework
+    
+    Purchase bags test rework
+
+commit 2815a6b37a0e3dc85688a87ba0c308cac737ab96
+Merge: d2264a5 d521ca5
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Tue Apr 11 23:17:30 2023 -0600
+
+    Merge branch 'dev' into purchaseBagsTestRework
+
+commit d2264a5fcaae773ce328f97068fc654cde81df28
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Tue Apr 11 23:16:47 2023 -0600
+
+    Updated and cleaned up PurchaseBagsTest
+
+commit c276bcea2b5faee77b13c8c3af773132ca476733
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 23:15:29 2023 -0600
+
+    improved AttendantGUITest
+
+commit 2415f23456331843c389fa153164e37df11a87a5
+Merge: 0f83322 c7d58e5
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 11 22:51:08 2023 -0600
+
+    Merge branch 'Arie_Fix_Tests_Branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into dev
+
+commit 3e8e4f1a26b775c0986d3d4d68c55ccb0a259d3c
+Merge: 1beee37 d521ca5
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 22:40:22 2023 -0600
+
+    Merge branch 'dev' of https://github.com/KittenInAMitten/SENG300-iteration-3 into dev
+
+commit 1beee37178e850564470f86027c4fbe1736782c4
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 22:39:58 2023 -0600
+
+    Fixed flashing screens on AttendantGUITest
+
+commit d521ca51a550d2c8dc2826cbefbf1517c646dcc4
+Merge: 5829e93 4ff353e
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 22:14:39 2023 -0600
+
+    Merge pull request #100 from KittenInAMitten/gui-branch
+    
+    Fixed attendantgui startup
+
+commit 4ff353ea7b4926adf03a57169f9aeb52b87af665
+Merge: 425882a 5829e93
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 22:14:04 2023 -0600
+
+    Merge branch 'dev' into gui-branch
+
+commit 425882aee7bb821449d7963be4c0a2734a06942b
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 22:13:18 2023 -0600
+
+    Fixed attendantgui startup
+
+commit 5829e939ecfa1b70c20fc612d69d33dc10c7cd76
+Merge: 1936bd0 7255f6c
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 22:08:19 2023 -0600
+
+    Merge pull request #99 from KittenInAMitten/gui-branch
+    
+    Gui branch to dev
+
+commit 7255f6c1803f79882eb23e3f4267a31eb868426c
+Merge: 82ce280 1936bd0
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 22:05:54 2023 -0600
+
+    Merge pull request #98 from KittenInAMitten/dev
+    
+    Dev to gui branch
+
+commit 82ce280b6f6077434c16f633437db28e29968dce
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 22:03:34 2023 -0600
+
+    Attendant final cleanup.
+
+commit 540dd0fd4f708188cc585a2b322926db101ed93c
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Tue Apr 11 22:02:55 2023 -0600
+
+    Small modifications to customerOperationPane
+
+commit 47735d510d3a00f737c2b9a6c79dafac7426303a
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 21:58:37 2023 -0600
+
+    Bug fixes and event improvements.
+
+commit 0f8332241c0c448ebc5a307d523b3f313ec87994
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 11 21:52:04 2023 -0600
+
+    Fixed More Stuff
+
+commit 1853364f3f509717e863284545376c361eab7e69
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 21:48:24 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Added plu scale, fixed nobag
+
+commit 9e45a00022aad9a43f55588056277b46b367c819
+Merge: 918a77c 1936bd0
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Tue Apr 11 21:31:05 2023 -0600
+
+    Merge pull request #97 from KittenInAMitten/dev
+    
+    Dev
+
+commit 1936bd0ef82ec2dd2066bec1c44aa5b3a22b9445
+Merge: 26c5166 c7d58e5
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 21:19:47 2023 -0600
+
+    Merge pull request #96 from KittenInAMitten/Arie_Fix_Tests_Branch
+    
+    Arie fix tests branch
+
+commit 5f6813bf6bd6cf5e2e60260bb994380384a09b64
+Merge: ca47cf2 77c8b20
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 21:19:27 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 5a7d681d981d996e77d86905e9977f35bff9998b
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Tue Apr 11 21:18:57 2023 -0600
+
+    Create CustomerGUITest.java
+
+commit c7d58e51bfc456107cf12b7bf78342d48235283a
+Merge: 82b95ae 26c5166
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 21:18:16 2023 -0600
+
+    Merge branch 'dev' into Arie_Fix_Tests_Branch
+
+commit ca47cf26c951d3adced43573b20c2d6edd8dd097
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 21:16:47 2023 -0600
+
+    Bagging Weight Discrepancy Popup
+
+commit 77c8b20fcc97a981f4fb570891f4708b7597afa1
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 21:07:42 2023 -0600
+
+    Removed broken functionality for Input 5$ bill event simulation
+
+commit 3b5f100212bea42196e09891011e718749d5cbbf
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 21:06:53 2023 -0600
+
+    Added JOptionPane for paying with cash
+
+commit 82b95aeec105727fa4b0b6e11a2dbc17a27d4a8b
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 11 20:58:46 2023 -0600
+
+    Fixed a bunch of tests.
+
+commit c12995e664a7c06797afa077138b46c0d08fd026
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 19:54:26 2023 -0600
+
+    Adding multiple items, and bagging area fix.
+
+commit 93d91dcc1424a5b760a8548d4b6d7ef9eff398b1
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 19:37:32 2023 -0600
+
+    Two customer event simulators.
+
+commit 7757cf4ea2b71b30d50946ae419ed9e2c79e75d8
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 19:29:42 2023 -0600
+
+    bagging notification
+
+commit c3233466bd2d3021e33a03f441ed84606ffe0efb
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 19:27:54 2023 -0600
+
+    bug fix
+
+commit fe9f22c002ae0c5481c9c76177d85f2775e5483d
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 19:20:52 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Item scanning.
+
+commit 64cbcd88926397224fbe356a8c68774a9e3e4b04
+Merge: 5d290eb e75c6e9
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 19:20:36 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 5d290ebb959ac7958ba4c010f09c11eda833a189
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 19:19:42 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Scan Item Event
+
+commit e75c6e9ab966cb4a5683d9b7f1600a92ccb62a62
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 19:03:12 2023 -0600
+
+    CustomerEventSimulator to simulate adding an item to bagging area
+
+commit e874f455f33c52d9a35c321a4caf5fb6f5260e97
+Merge: e5aca2d a0d2b72
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 18:45:42 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3.git into gui-branch
+
+commit 26c5166c979b69d515e2696b56b2e9516dbee79e
+Merge: 2a4f427 a0d2b72
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 18:21:35 2023 -0600
+
+    Merge pull request #95 from KittenInAMitten/gui-branch
+    
+    Gui branch to dev (again)
+
+commit a0d2b728c179a759e8bc20a75a50ef82aae44adf
+Merge: be39915 2a4f427
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 18:20:21 2023 -0600
+
+    Merge branch 'dev' into gui-branch
+
+commit be3991519bc67907297d765a60c3d21681491ddf
+Merge: 0c68678 fd87f8f
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 18:09:57 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 0c68678aa2abf751ffe8f8daa0ca1817b073bb5b
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 18:09:34 2023 -0600
+
+    Made attendant go to start screen on initialization.
+
+commit 2a4f4276a72036d0fe4258738bd81467d9b4438f
+Merge: d23fc47 fd87f8f
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 18:07:56 2023 -0600
+
+    Merge pull request #94 from KittenInAMitten/gui-branch
+    
+    Gui branch to dev
+
+commit e5aca2dfd03867043e3b6206d4fac7486b055ac7
+Merge: 214b1e1 fd87f8f
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 18:07:24 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3.git into gui-branch
+
+commit fd87f8f67e7c9a9ba703abfa8e37acfc8f44464c
+Merge: d7a4530 d23fc47
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 18:06:32 2023 -0600
+
+    Merge branch 'dev' into gui-branch
+
+commit 214b1e1b6a6c41f14c1f976add7ba29b1c64180e
+Merge: 8d37c74 d7a4530
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 18:06:16 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3.git into gui-branch
+
+commit 8d37c74036c5352d4811a9b42e8e9e8c4a3d45f3
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 18:06:11 2023 -0600
+
+    Organized imports in CustomerOperationPane
+
+commit 6fd6410923e7ccd2a32a6941a180af541644067b
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 18:04:47 2023 -0600
+
+    Added event for inputting a 5$ bill to CustomerEventSimulator
+
+commit d7a453080c7608fd168cc3fbce92081fc70ce659
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 18:04:40 2023 -0600
+
+    Added login checks to attendantiocontroller
+
+commit ca20cb5955e2754bb8d6e271e8aac30339e0a5ad
+Merge: e2c79ae d23fc47
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 11 17:06:54 2023 -0600
+
+    Merge remote-tracking branch 'origin/dev' into dev
+    
+    # Conflicts:
+    #       com.autovend.software/src/com/autovend/software/controllers/CheckoutController.java
+
+commit d23fc47d15f78003f87a6b3f9862175a7213818d
+Merge: 0b248cd 76f12f7
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 16:57:20 2023 -0600
+
+    Merge pull request #93 from KittenInAMitten/print-receipt-fix
+    
+    some fixes for printreceipt
+
+commit 76f12f7df9bb3c845972259d65e422770c18fe9a
+Merge: a2aaea8 0b248cd
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 16:56:09 2023 -0600
+
+    Merge branch 'dev' into print-receipt-fix
+
+commit a2aaea8e36a1d48935ef408bbe2412105a798206
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 16:55:46 2023 -0600
+
+    some fixes for printreceipt
+
+commit 0b248cda7601e0f28475cce1649b09c034852465
+Merge: d1b0308 918a77c
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 16:54:07 2023 -0600
+
+    Merge pull request #92 from KittenInAMitten/purchaseBagsTestRework
+    
+    Added tests to test one and multiple bag purchases showing in the ord…
+
+commit 918a77c8d36c155281cc8aea5dc59b382cace894
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Tue Apr 11 16:51:24 2023 -0600
+
+    Added tests to test one and multiple bag purchases showing in the order list. And fixed bug in CheckoutController where amount did not effect expectedWeight
+
+commit f90e364eab99ef051e17f4ff6721b5e129e90c02
+Merge: a21f5ca d1b0308
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 16:04:58 2023 -0600
+
+    Merge pull request #91 from KittenInAMitten/dev
+    
+    Dev to gui branch (updated receipt printer test case)
+
+commit d1b030820093dc8d4de72b2f4e812345fe008f1f
+Merge: 7ac2561 e3a5574
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 16:03:10 2023 -0600
+
+    Merge pull request #90 from KittenInAMitten/print-test-merge
+    
+    copy-pasted amandeep's print receipt test case
+
+commit e3a55744200c3fc585f1547b3cfe4c1c5206fda0
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 16:01:41 2023 -0600
+
+    copy-pasted amandeep's print receipt test case
+
+commit 7ac25613f05bef12ca98cf37d3a6e2997c1c21f1
+Merge: c191126 a21f5ca
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 15:53:19 2023 -0600
+
+    Merge pull request #89 from KittenInAMitten/gui-branch
+    
+    Gui branch to dev
+
+commit a21f5caa3292da4c14b3c05e3807abe1da17b640
+Merge: 9005470 c191126
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 15:44:58 2023 -0600
+
+    Merge branch 'dev' into gui-branch
+
+commit c19112658097ce96dd1485898e5569ef9355a22a
+Merge: 6183e71 8c031aa
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Tue Apr 11 15:43:31 2023 -0600
+
+    Merge pull request #88 from KittenInAMitten/omarkhan03-patch-1
+    
+    update .classpath
+
+commit 90054704c04d8d50d673ec68aa1d422d52c83a5f
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 15:41:42 2023 -0600
+
+    updated AllTests.java
+
+commit 8c031aae7ac4bb937d0da48e9189ebd2f31938e6
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 15:38:26 2023 -0600
+
+    update .classpath
+
+commit fd7f225c83e5008d07bffd6c413f32f3ee340467
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Tue Apr 11 13:02:51 2023 -0600
+
+    Added some functionality to pay with credit/debit buttons
+
+commit 7664c761e132d25bbdaa9b9a730e3bde140d930e
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 06:24:03 2023 -0600
+
+    90.3% test coverage on AttendantOperationPane
+
+commit b8a9253ef8092c2ed9dfabf040e7e05a20949f73
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 05:57:42 2023 -0600
+
+    85.4% coverage on AttendantOperationPane
+
+commit 7dc8f7ade54764bfc212f3702aa7c444f1e4e55c
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 05:39:40 2023 -0600
+
+    75.7% test coverage on AttendantOperationPane
+
+commit fea5e65a3d48073ba3a5a012ebb54224baf18eb8
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 03:56:21 2023 -0600
+
+    65.1% test coverage on AttendantOperationPane
+
+commit 995ae2ddda6299431d7ea45a6dd9762491c67993
+Merge: 46e81a1 172c027
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 03:46:10 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 46e81a1dfb2eb5f8ec14ded243452283c89e51c5
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 03:46:03 2023 -0600
+
+    55.4% test coverage on AttendantOperationPane
+
+commit 172c0272033b9c1f71e68562f6ed66b425ef98a1
+Merge: 06bed55 fb31bc4
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Tue Apr 11 03:05:27 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 06bed55ba93bf0875769a1b646df5dea60fb87af
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Tue Apr 11 03:05:19 2023 -0600
+
+    Changed some language logic, started translating customerOperationPane stuff
+
+commit fb31bc49061ccd97141909253372b25f1479f756
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 02:42:12 2023 -0600
+
+    More tests for AttendantOperationPane
+
+commit eaf89e5c94641fdc1eaf5badf235114a7bf41e87
+Author: amandeep.kaur8 <amandeep.kaur8@ucalgary.ca>
+Date:   Tue Apr 11 02:17:22 2023 -0600
+
+    Updated TestPrintReceipt. Please do not merge with dev.
+
+commit 7f18d5c539adfc8261cabe3bc6db1ae3fa650c80
+Merge: 7c9154b e3a0658
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Tue Apr 11 02:07:14 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 7c9154b723bdd6cb01c9f7abdb59271b03a8eb6e
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Tue Apr 11 02:07:06 2023 -0600
+
+    Popups for add item to bagging area, other organization
+
+commit e3a06586ec8c7a850933cfc9473db0296841bda4
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 01:49:19 2023 -0600
+
+    Fixed errors in AttendantGUITest
+
+commit 8cc76375b4b8ef91f1b8cd0440a93e130f46ecf9
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Tue Apr 11 01:39:42 2023 -0600
+
+    Added add own bags use case
+
+commit 1e7494ca910f1212f5698b8337a88c2db5c09891
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 00:54:01 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+
+commit 5d03161c0a8ef35f697de4ce7e770009cca8ea55
+Merge: 7db4f23 701e9d6
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 00:38:54 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 7db4f234c68d8b8f79967dbe74197fe5cba7de90
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Tue Apr 11 00:38:41 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Station enable/disable fix.
+
+commit 701e9d607ebd9b4d87d288278ed7b35f25b698b0
+Merge: c8781ef 74c2c5e
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Tue Apr 11 00:29:57 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit c8781ef266bb93876268972cb02505abe4d16898
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Tue Apr 11 00:29:55 2023 -0600
+
+    Starting to finish the select language stuff
+
+commit 74c2c5ec596b4fc44f6ab45b44d48df7c868db31
+Merge: 8c43d71 6183e71
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Tue Apr 11 00:10:57 2023 -0600
+
+    Merge pull request #86 from KittenInAMitten/dev
+    
+    New hardware project to gui-branch
+
+commit 8c43d7138267482b361383669d19e19171491980
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 00:10:35 2023 -0600
+
+    update hardware 0.3.4
+
+commit 6183e715196bc43576890b9f8840f6950b126fc0
+Merge: 0dde151 c4534bd
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Tue Apr 11 00:05:01 2023 -0600
+
+    Merge pull request #85 from KittenInAMitten/hardware-0.3.4
+    
+    Hardware update 0.3.4
+
+commit c4534bd26f624d67970c23c1e5de6c25b12c9c28
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Tue Apr 11 00:01:00 2023 -0600
+
+    Hardware update 0.3.4
+
+commit ddb1c93c6f49f5002664c63cd5efde387045e483
+Merge: cdc2f62 e5932fb
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 23:37:41 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit cdc2f6262951fd28ed22ec390fc45af6910833fa
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 23:37:06 2023 -0600
+
+    Fix for error in backend with bagdispensers
+
+commit e5932fb6e69183926bb71f6b5aff3e5afba704ea
+Merge: bc618d6 e64142e
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 23:11:06 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit bc618d6221373f556684decad6b4a673266bd776
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 23:09:23 2023 -0600
+
+    Receipt Reprint.
+
+commit e64142ec1626daf0fca0ba70923fc29d348114d2
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Mon Apr 10 22:56:30 2023 -0600
+
+    finishing up customer event simulator
+
+commit 2401f3dbe0181f247c069c50ee8eb1d067636153
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 22:54:13 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    Refactor Done?
+
+commit 8ccd8f7e2946823e1cd42a0497ccefdd01202b82
+Merge: f67e1d7 d62c311
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 22:53:09 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit f67e1d750a389ce88ba0033b9daf79a23da16c9f
+Merge: 002442a 09a9020
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 22:52:17 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+    
+    HUGE REFACTOR
+
+commit d62c311ede6a4e972a2980030b1fdefd5a83f53b
+Merge: 487c8cf 09a9020
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 22:41:22 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 487c8cf6222e163fba31ce8f0cedbfae28c07107
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 22:37:02 2023 -0600
+
+    small changes
+
+commit 21f698f834e597aad9798d7b00acbfb4e0932bb5
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 22:33:40 2023 -0600
+
+    Continued with AttendantOperationPane tests
+
+commit 002442a5b2b00e1ae116fac6216ae95cd4224db8
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 22:32:41 2023 -0600
+
+    More refactoring.
+
+commit 09a90204428ad564496e17f49caf2955db4df331
+Merge: eb82188 0dde151
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:29:28 2023 -0600
+
+    Merge pull request #84 from KittenInAMitten/dev
+    
+    Updating gui branch with current dev
+
+commit 0dde151b1343398e4cf49f4143e3f42c594568a3
+Merge: 9e5de26 eb82188
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:29:22 2023 -0600
+
+    Merge branch 'gui-branch' into dev
+
+commit 9e5de26fa0dabb3aa53cc6010ef482dd617129b4
+Merge: 4da1103 92b693e
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:27:02 2023 -0600
+
+    Merge pull request #83 from KittenInAMitten/dev-recent-changes-fix
+    
+    Dev recent changes fix
+
+commit 92b693e2ae68ae0df1132164cdbaec76f8a03362
+Merge: b343c98 4da1103
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:26:54 2023 -0600
+
+    Merge branch 'dev' into dev-recent-changes-fix
+
+commit b343c9857df66e7791f25c5a268be1bfede61d66
+Merge: c0c5e90 363ea9a
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:25:56 2023 -0600
+
+    Merge branch 'dev-recent-changes-fix' of https://github.com/KittenInAMitten/SENG300-iteration-3 into dev-recent-changes-fix
+
+commit c0c5e90db3f8e24d3b31cfec6fa9f37b2b2c164a
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:25:50 2023 -0600
+
+    Erased IO controllers
+
+commit 78182606bd1d06baeeb2111e442c971785f4f3f6
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 22:25:04 2023 -0600
+
+    Refactor part 1.
+
+commit eb82188dcb850e6b171275a4ed061975bc66ddc3
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Mon Apr 10 22:22:32 2023 -0600
+
+    update
+
+commit 4da1103c20e0cb6740094920b80c833d226a494c
+Merge: 4a2f13d 363ea9a
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:22:14 2023 -0600
+
+    Merge pull request #82 from KittenInAMitten/dev-recent-changes-fix
+    
+    Added methods to get all station controllers in AttendantStationController and AttendantIO
+
+commit 363ea9ad20c91e0c04c68f33ef63815453e382f0
+Merge: bb73c38 4a2f13d
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:21:51 2023 -0600
+
+    Merge branch 'dev' into dev-recent-changes-fix
+
+commit a9f0ed5740ad284adb44c381d67c0fe64a8e5c4b
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Mon Apr 10 22:21:28 2023 -0600
+
+    update gui launcher with customer event simulator constructor
+
+commit bb73c38be33db3a60eeb7f841fe1948a4a2360cd
+Merge: 476d529 15e504a
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:20:49 2023 -0600
+
+    Merge branch 'dev-recent-changes-fix' of https://github.com/KittenInAMitten/SENG300-iteration-3 into dev-recent-changes-fix
+
+commit 476d52926352b99ba9deda5e866a3c90061f8187
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:20:41 2023 -0600
+
+    Added methods to get all and disabled checkout station controllers in AttendantIO and AttendantStationController
+
+commit 4a2f13defbe98913c1de4064afe3f7ff1b152677
+Merge: 0e989dd 15e504a
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 22:08:49 2023 -0600
+
+    Merge pull request #81 from KittenInAMitten/dev-recent-changes-fix
+    
+    Fixed LowInk/paper tests using wrong method names, paper/inkAdded methods should NOT be adding paper/ink "physically" and fixed dispenseChange's receipt printing
+
+commit 15e504ae7a1f9a388d88235dcfe99a2f9c027521
+Merge: c4cf47e 0e989dd
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:06:40 2023 -0600
+
+    Merge branch 'dev' into dev-recent-changes-fix
+
+commit c4cf47ec17c18bdf6de4a0cb6bf865e7e4282137
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 22:04:17 2023 -0600
+
+    Some fixes
+
+commit c24374df179c6219c01000da1f6e4a2629a54915
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 21:55:04 2023 -0600
+
+    Weight discrepancy simulator.
+
+commit 3d78c29c79f10efc15f953eb766f1cefc7c1bee2
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 21:49:33 2023 -0600
+
+    Weight discrepancy approval.
+
+commit f584bbeeae20957a0bf4434a6a767e4ac26c311e
+Merge: 61f6e94 7b1cd87
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 21:38:11 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 61f6e940f425eebe42ab0defa3d98605f7c00bd4
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 21:37:55 2023 -0600
+
+    Restored deleted low denoms.
+
+commit 0e989dd09f658c2575cbe2287fd06329a18ee050
+Merge: 735f3ae 2541e65
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 21:37:54 2023 -0600
+
+    Merge pull request #78 from KittenInAMitten/startup/shutdown-station-test
+    
+    finished startup/shutdown station tests
+
+commit 2541e6504fe1496728300daee2d6aaa72efd2967
+Merge: 06542e2 735f3ae
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 21:37:16 2023 -0600
+
+    Merge branch 'dev' into startup/shutdown-station-test
+
+commit 735f3ae4896b21c1f81569f0746dbb4b713b13ce
+Merge: 4ac70f8 779499d
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 21:36:19 2023 -0600
+
+    Merge pull request #80 from KittenInAMitten/dev-recent-changes-fix
+    
+    Fixed incorrect method usage from recent lowink/paper use case code
+
+commit 779499d6fe2a5ae229d5bdd03e0cd68e702ca792
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 21:34:43 2023 -0600
+
+    Fixed incorrect method usage from recent lowink/paper use case code
+
+commit 7b1cd875e0c1d3087d0eefb6f4e9bff2d2a9845b
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Mon Apr 10 21:33:44 2023 -0600
+
+    work continued on customer event simulator
+
+commit 264f4d525a1f23631827d7c615c33c100172ec54
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 21:28:43 2023 -0600
+
+    no bag request
+
+commit e5d2b85dd4c8a7ecef7562c6ff6656fa5bc646e4
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 21:26:21 2023 -0600
+
+    Resolved some errors from the merge
+
+commit 06542e2e2ec2086cd0ed642dbedcd48e15d4bbc9
+Author: samanthaaliu <samantha.liu10@gmail.com>
+Date:   Mon Apr 10 21:22:30 2023 -0600
+
+    finished startup/shutdownstation tests
+
+commit ca97cad7ee2515f1a31352ddd321d9c9d933c701
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 21:13:02 2023 -0600
+
+    small changes
+
+commit 4f0c64c5ab43dafe704f0ee9230422b60ad19dc3
+Merge: 5ec309a 38e436d
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 21:10:27 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 4ac70f81c225f8c0accd9542ed38c90b1dbe5043
+Merge: bde0b20 c1171f6
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Mon Apr 10 21:10:03 2023 -0600
+
+    Merge pull request #77 from KittenInAMitten/Hada
+    
+    Hada tests (low ink, low paper, select language)
+
+commit 5ec309a0ae3316e4cc1aab19af8e87d569b37d5f
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 21:10:01 2023 -0600
+
+    Updated remove item attendant screen
+    
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+
+commit c1171f691a6a6e91f859efa5757e00218e285e4f
+Merge: 0f76459 bde0b20
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 21:06:51 2023 -0600
+
+    Merge branch 'dev' into Hada
+
+commit 0f764596ae6684f4a3451b05316a49c91457f244
+Author: hrahadhi <hada.hafiyyan@ucalgary.ca>
+Date:   Mon Apr 10 20:56:56 2023 -0600
+
+    fixes
+
+commit 04afa7e7362c1c0e613c496561eaac4ef65ab824
+Merge: 6ee5b65 bde0b20
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Mon Apr 10 19:37:32 2023 -0600
+
+    Merge pull request #76 from KittenInAMitten/dev
+    
+    Dev
+
+commit 38e436d5d964bf06e09569d14e87e25439f40c67
+Merge: aca17c6 bde0b20
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:36:41 2023 -0600
+
+    Merge pull request #75 from KittenInAMitten/dev
+    
+    Updating gui-branch with new dev changes
+
+commit bde0b2008e165245f19c781eba0bbe1d400177eb
+Merge: ff7d8fd aca17c6
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:36:35 2023 -0600
+
+    Merge branch 'gui-branch' into dev
+
+commit c6a2b1da2ff7f3dfd8d293a9620560e482b77133
+Merge: b829f31 ff7d8fd
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:33:05 2023 -0600
+
+    Merge pull request #74 from KittenInAMitten/dev
+    
+    Dev
+
+commit ff7d8fd08468a3ceaf908e4e54db631e5a7de8d8
+Merge: 1653e80 b829f31
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:32:56 2023 -0600
+
+    Merge branch 'Albe-rest-of-do-not-bag-code' into dev
+
+commit b829f31b758daf438393d0f65ae277da32b76195
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:32:25 2023 -0600
+
+    Cleanup use case for dev
+
+commit 046fd0aba8311f1543a18fc08a822d1510081611
+Author: samanthaaliu <samantha.liu10@gmail.com>
+Date:   Mon Apr 10 19:31:56 2023 -0600
+
+    startup/shutdown test (not done)
+
+commit 1653e800b059487531c591c5bdfe61ee6a75bcb2
+Merge: 85dafd2 d9ea0d9
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:29:02 2023 -0600
+
+    Merge pull request #73 from KittenInAMitten/addItemsTestCleanUp
+    
+    Add items test clean up and fixing scaleController
+
+commit d9ea0d9bfdb8ffc81f12e0c67309d84463736a16
+Merge: 4fc2917 948007c
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:27:40 2023 -0600
+
+    Merge branch 'addItemsTestCleanUp' of https://github.com/KittenInAMitten/SENG300-iteration-3 into addItemsTestCleanUp
+
+commit 4fc29177aa1cc8fcb8086fcf49df535aeebc7511
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:27:28 2023 -0600
+
+    Updated AddItemTest and fixed ScanningScaleController's getWeight function
+
+commit aca17c62868696072c287573955470ec75826623
+Merge: e7a98fc fe2b66b
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 19:26:38 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit e7a98fcf86d40c8198aa063e4ea6ab344f92aad4
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 19:26:30 2023 -0600
+
+    Update GUILauncher.java
+
+commit fe2b66bc81beb01039da602b6791188e4a0d6f55
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Mon Apr 10 19:12:43 2023 -0600
+
+    working on customer event simulator
+
+commit 948007ce20415d566a1f31371eda1ae605076ba9
+Merge: fc6c6d5 85dafd2
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:02:47 2023 -0600
+
+    Merge pull request #72 from KittenInAMitten/dev
+    
+    Dev
+
+commit 85dafd2eca1d35f621685dbd2d73238e74bd9213
+Merge: 9c357e9 fc6c6d5
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:02:36 2023 -0600
+
+    Merge branch 'addItemsTestCleanUp' into dev
+
+commit fc6c6d5c17b6b1a30fda9f826854f6ff71c93b1c
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 19:01:59 2023 -0600
+
+    Adding current add items test work before updating branch
+
+commit 1e2bb904a902a38887b79d1a0c09d94797d93c53
+Merge: 9afe9fa 17c7e67
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 18:49:02 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 17c7e675d3d41783bcb2fb40c69b23d5b65266a0
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 18:37:00 2023 -0600
+
+    Only allow PLU codes between 4 and 5 numbers long
+
+commit 430de71871df5b44b4d4fbb26f1d1088a3852ff6
+Merge: 914f41c 9c357e9
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 18:10:17 2023 -0600
+
+    Merge pull request #71 from KittenInAMitten/dev
+    
+    Merge pull request #70 from KittenInAMitten/gui-branch
+
+commit 9c357e9eb336f7bfc52941822049b817d9fa2663
+Merge: 62efd0c 914f41c
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Mon Apr 10 18:09:12 2023 -0600
+
+    Merge pull request #70 from KittenInAMitten/gui-branch
+    
+    Gui branch to dev
+
+commit 914f41c33e3ea037859660658b4d8b92ccf774e4
+Merge: a92fefc 62efd0c
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 18:04:52 2023 -0600
+
+    Merge branch 'dev' into gui-branch
+
+commit 62efd0c4bb64e06de0b0a2b9d675a48f910b0bf6
+Merge: bc12d17 768c3b7
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 17:51:12 2023 -0600
+
+    Merge pull request #69 from KittenInAMitten/umar-test-branch
+    
+    fixed checkoutcontroller for multiple items and finished testing for …
+
+commit 768c3b774d3b5f3d08f206c3aeb5da85afe7bb58
+Merge: 805f760 bc12d17
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Mon Apr 10 17:50:25 2023 -0600
+
+    Merge branch 'dev' into umar-test-branch
+
+commit 805f76000fb4c40992a6d542b25c03eebc361bbe
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Mon Apr 10 17:48:25 2023 -0600
+
+    fixed checkoutcontroller for multiple items and finished testing for removeItem
+    
+    ready to merge into dev
+
+commit a92fefc7977a7aa304b1d3f56d06c08e7b5f9abf
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 17:23:52 2023 -0600
+
+    Yes :+1:
+
+commit ce02f3307a1fb6bd30123fd652fcac676c1dcf8c
+Merge: bbccac1 6f55ad6
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 17:12:08 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit bbccac1ce00de132ad550bd90764868c9f5f6d5f
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 17:12:05 2023 -0600
+
+    Trying to figure out why order items are not added properly
+
+commit 6f55ad620d2e71c86461180384c36a3ea4df75d5
+Merge: e6a5bec 96547f8
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 16:49:11 2023 -0600
+
+    Merge pull request #67 from KittenInAMitten/test-attendant-gui
+    
+    Test attendant gui to gui branch
+
+commit 96547f80a5a9578c02c02fd363a09c48233f9930
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 16:47:07 2023 -0600
+
+    Tests for AttendantOperationPane (52.6% coverage)
+
+commit e6a5bec5b55f508b2a50ffa2a97797e8ab149fe3
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 16:43:48 2023 -0600
+
+    Removed CustomerPayPane import from CIOController
+
+commit 5b27389731658ea6f9d23c643efb8da9b77d4de3
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 16:41:06 2023 -0600
+
+    Deleted CustomerPayPane
+
+commit bc12d1710964cdfd6a29fcf44ea600b666db021d
+Merge: f798215 9824611
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 16:36:02 2023 -0600
+
+    Merge pull request #66 from KittenInAMitten/abdulTest
+    
+    Abdul test to dev (emitChange tests)
+
+commit 9af4843536fdfd060bff821a6790626bb3ba32f1
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 16:34:03 2023 -0600
+
+    Removed methods related to the old CustomerPayPane
+
+commit ac53980bf40917c60cb0c0ebc4debd0f4b0de0c2
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 16:32:30 2023 -0600
+
+    Deprecated CustomerPayPane, moved pay buttons onto CustomerOperationPane
+
+commit 9824611bbf88daa138cace5f274bceaffa192137
+Merge: 822c96b f798215
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 16:31:52 2023 -0600
+
+    Merge branch 'dev' into abdulTest
+
+commit 822c96b644237196551ea7dbebc611d06dc734cf
+Author: AbdulBid <100547811+AbdulBid@users.noreply.github.com>
+Date:   Mon Apr 10 16:25:54 2023 -0600
+
+    Fixed all tests now all pass
+
+commit f4586250f9b085ec50ca83b3cf4bd377790201d4
+Merge: 167e509 bd38b87
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 16:19:08 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3.git into gui-branch
+
+commit bd38b87fd66b40706d61914a68396bb48acde382
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 16:09:33 2023 -0600
+
+    Fixed popups not closing
+
+commit 52bc5f22d29bd68caae9d75c5e17f10991fca9b4
+Author: AbdulBid <100547811+AbdulBid@users.noreply.github.com>
+Date:   Mon Apr 10 16:07:48 2023 -0600
+
+    made some changes
+
+commit f7982158a19269582831fd045769ae059dc9c280
+Merge: 9d63f1a f670829
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Mon Apr 10 16:01:51 2023 -0600
+
+    Merge pull request #65 from KittenInAMitten/samantha's-test-branch
+    
+    login/logout tests added
+
+commit f670829232cf7b77fc3151883469af48450360a6
+Author: samanthaaliu <samantha.liu10@gmail.com>
+Date:   Mon Apr 10 15:59:41 2023 -0600
+
+    login/logout test cases
+
+commit 78371d5322502c9acea095a3de604c7603e7a08f
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 15:53:56 2023 -0600
+
+    Small changes
+
+commit e72ca6db92ff5fbaca17463fd258d54988600868
+Author: albe <albe.martin@ucalgary.ca>
+Date:   Mon Apr 10 15:53:42 2023 -0600
+
+    comment seperated commit
+
+commit e2a85d9a2a967b36fea9a9b22327c38943cd611d
+Author: albe <albe.martin@ucalgary.ca>
+Date:   Mon Apr 10 15:53:00 2023 -0600
+
+    commit with the functions removed
+
+commit 6ee5b65499144a5ef456d93a88d9ee5693b6050c
+Merge: 2596213 9d63f1a
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Mon Apr 10 15:48:03 2023 -0600
+
+    Merge pull request #64 from KittenInAMitten/dev
+    
+    Dev
+
+commit 058f360a3bd899eaac3bb2c96555e9c7450eb3e6
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 15:43:33 2023 -0600
+
+    Columns for order grid are nicer
+
+commit e32e2de2c3d25b13082a40d758268318de7ee0ff
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 15:36:57 2023 -0600
+
+    Added quantity to the viewing of an order
+
+commit 4d86eb6f1453558e4ccf7303e022951a0edc29de
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 15:32:06 2023 -0600
+
+    Working on displaying quantity in the order grid
+
+commit e2c79ae831a170440f07656f23f4efbb95ef5246
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Mon Apr 10 15:29:52 2023 -0600
+
+    Fixing memberships
+
+commit 9d63f1aca6a67694ab417490b4075025cab5872d
+Merge: b38d363 c4f9ad1
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 15:25:52 2023 -0600
+
+    Merge pull request #60 from KittenInAMitten/Arie_Temp_Branch
+    
+    Minor bugfixes.
+
+commit c4f9ad1cb69060467cdd2b1de22334835952cf98
+Merge: 67cafe1 b38d363
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 15:25:37 2023 -0600
+
+    Merge branch 'dev' into Arie_Temp_Branch
+
+commit 67cafe11e1ad22c09f031501c2dcbaf5e3c32f8c
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Mon Apr 10 15:22:09 2023 -0600
+
+    Minor bugfixes.
+
+commit b38d36323551159a0f9eb5b01083426ac6c94b70
+Merge: 9b3dc0c 297f0f5
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 15:16:48 2023 -0600
+
+    Merge pull request #58 from KittenInAMitten/test-prevent-station-use
+    
+    Tests for prevent station use done
+
+commit 297f0f5249e34e02e0559ee3767fd4d40bbf9ff4
+Merge: 61103fc 9b3dc0c
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 15:14:17 2023 -0600
+
+    Merge branch 'dev' into test-prevent-station-use
+
+commit 9b3dc0c1df66bb214d9849cea8d1289ef6feeb96
+Merge: fc8837e e6d9821
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 15:14:03 2023 -0600
+
+    Merge pull request #59 from KittenInAMitten/membershipTest-Fatema
+    
+    Membership test fatema
+
+commit e6d98213cb546cfbbf436eff095a8c262352aec1
+Merge: 9ffe1e3 fc8837e
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 15:13:24 2023 -0600
+
+    Merge branch 'dev' into membershipTest-Fatema
+
+commit 61103fc928a169d8680df7ad2e702d5b7b593f0b
+Merge: 5298563 fc8837e
+Author: Alex Chen <83100991+alexchchen@users.noreply.github.com>
+Date:   Mon Apr 10 15:09:39 2023 -0600
+
+    Merge branch 'dev' into test-prevent-station-use
+
+commit 5298563a25b6284a74a15c14a463e8082aee86a1
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Mon Apr 10 15:08:07 2023 -0600
+
+    Add prevent station use test by purchasing bags
+
+commit 11e32dca1da28a990ece4ab9b03cd4f2bdd90972
+Merge: 16fefb3 4becea1
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 15:06:53 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 16fefb357795160c728f91e8615feea012bec753
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 15:05:30 2023 -0600
+
+    Fixed AttendantIOController and reverted AttendantOperationPane
+
+commit 9ffe1e3e306e36c5a3d692fa23495c89b1e7be78
+Author: Fatema-Ch <115423993+Fatema-Ch@users.noreply.github.com>
+Date:   Mon Apr 10 15:05:19 2023 -0600
+
+    Tests for membership
+
+commit 4becea18e5658c550286a3e3b521bf3755606c9d
+Merge: 11e5c86 1d40f21
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 15:05:15 2023 -0600
+
+    Merge pull request #57 from KittenInAMitten/test-attendant-gui
+    
+    Test attendant gui to gui branch
+
+commit 1d40f21c7719164dae6519a571d1a3df12fbf3e0
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 15:03:11 2023 -0600
+
+    recovered lost test cases
+
+commit b6c4f9f9180a6421790a9574fc028ccbaa8b964e
+Merge: 66e06bc 11e5c86
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 15:00:31 2023 -0600
+
+    Merge pull request #56 from KittenInAMitten/gui-branch
+    
+    Gui branch to test attendant gui
+
+commit 8e635840f6a1998dd0272a408f79d2dbf82a3a0a
+Author: Fatema-Ch <115423993+Fatema-Ch@users.noreply.github.com>
+Date:   Mon Apr 10 14:57:52 2023 -0600
+
+    Fixed bugs in method
+
+commit fc8837ee5c9dea7ada3e8e8c3cc3c723955cd3c6
+Merge: 9d6d9c1 efa77b9
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 14:54:31 2023 -0600
+
+    Merge pull request #55 from KittenInAMitten/Sankalp-test
+    
+    Sankalp test
+
+commit efa77b9bb0b097e3697c2aab5a26ec9babfa49b3
+Merge: 716fc7d 9d6d9c1
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 14:54:26 2023 -0600
+
+    Merge branch 'dev' into Sankalp-test
+
+commit 952a12b5b80483898cc4f1872603e43037a1bb57
+Author: Fatema-Ch <115423993+Fatema-Ch@users.noreply.github.com>
+Date:   Mon Apr 10 14:52:54 2023 -0600
+
+    Edited database hashmap
+
+commit 24068e80e4a09994bd14571bb3d482d733f89763
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Mon Apr 10 14:50:20 2023 -0600
+
+    Updated a prevent station use test
+
+commit 8fb33de7830eb830b4cda37f223ed81adead0795
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Mon Apr 10 14:50:04 2023 -0600
+
+    Fixed small typo that caused NullPointerException when deregistering stations
+
+commit 17c57322600d9c786ca498fb96c128e88d5fb813
+Merge: e6a69e0 9d6d9c1
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Mon Apr 10 14:47:17 2023 -0600
+
+    Merge branch 'dev' into test-prevent-station-use
+
+commit a1c3165c897398d68bcba80ce31b13f86734b409
+Merge: 5ac321a ae07e75
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 14:43:55 2023 -0600
+
+    On i2-abdul-christian-umar: !!GitHub_Desktop<i2-abdul-christian-umar>
+
+commit ae07e7568c591527da81a9831d88af59ef81f6f2
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 14:43:55 2023 -0600
+
+    index on i2-abdul-christian-umar: 5ac321a Initial commit
+
+commit 9afe9fa44608af5d8c109feb3b93997c774cf5fa
+Merge: d5e52c9 11e5c86
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 14:42:30 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit d5e52c9986d14b8688b8f66689cdb4526a79b0b2
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Mon Apr 10 14:42:24 2023 -0600
+
+    Classpath fix.
+
+commit 0ca9f81bf88f648dc7496465984c258d85d4abf2
+Author: AbdulBid <100547811+AbdulBid@users.noreply.github.com>
+Date:   Mon Apr 10 14:37:37 2023 -0600
+
+    Changed emitChange() to be public
+
+commit b09c62e04e6c141d35bafed3f084117dd23b9d05
+Author: AbdulBid <100547811+AbdulBid@users.noreply.github.com>
+Date:   Mon Apr 10 14:35:56 2023 -0600
+
+    Created coinDispenserTest to test emit change for coin
+
+commit 9d6d9c1aaf28d7755b2c0e79b4a9e3192d143d8f
+Merge: 1d51cf0 4f6f3cf
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 14:34:52 2023 -0600
+
+    Merge pull request #52 from KittenInAMitten/test-pay
+    
+    Payment testing done
+
+commit 716fc7d41689baf4ea4d07259d06007b842ab413
+Author: Sankalp Bartwal <sankalp.bartwal@gmail.com>
+Date:   Mon Apr 10 14:31:26 2023 -0600
+
+    added all the tests. testPLUAddItem not working
+
+commit 4f6f3cff6fda2384126e8be3a7548e4f44dd475f
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Mon Apr 10 14:24:49 2023 -0600
+
+    Added tests to AllTests; fixed a coin payment test bug
+    
+    Added an additional coin payment test
+
+commit 167e5091f5c7ecc8aa0d5c36af18428779b77278
+Merge: 6a66a88 11e5c86
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 14:18:51 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 20badbc8856679989ae7c6a7a2df7ecb8ed2d4b0
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Mon Apr 10 14:13:29 2023 -0600
+
+    Revamped existing card tests; added paying with gift card tests
+    
+    Changed CardReaderControllerState to public visibility and moved to its own file for testing.
+
+commit 6a66a887ddccf34dd3aed73bf0eeca6f2d4341cb
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 14:06:59 2023 -0600
+
+    Added pay buttons to the customer operation pane
+
+commit d3594c94146f6ae0d0bb68118bed2e905e7e7db7
+Author: samanthaaliu <samantha.liu10@gmail.com>
+Date:   Mon Apr 10 14:02:51 2023 -0600
+
+    added tests for attendant IO
+
+commit 11e5c86a88ebefb673c81f105c60061ace8889b1
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 13:54:55 2023 -0600
+
+    Update CustomerOperationPane.java
+
+commit 03fe252c8a7602fac28a89aec76db06a8e82cb2f
+Merge: 8b92219 c4c402b
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 13:52:32 2023 -0600
+
+    Merge pull request #50 from KittenInAMitten/dev-to-gui
+    
+    Dev
+
+commit c4c402b91552b05fdac8fb6cf001efec1b05a2a5
+Merge: 1d51cf0 8b92219
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Mon Apr 10 13:51:58 2023 -0600
+
+    Merge branch 'gui-branch' into dev-to-gui
+
+commit 8b92219f1b4d330b7753f4e9ceb0e93fec7cd2bf
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 13:01:11 2023 -0600
+
+    Fixed more attendant files
+
+commit 571660f2c919aa605833aea44983f1b63937682d
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 12:59:05 2023 -0600
+
+    Brought files back from the dead and reverted AttendantOperationPane
+
+commit 0eabed1cd6e75a03c98016f437a10c812585934a
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 12:53:59 2023 -0600
+
+    Fixed CustomerOperationPane
+
+commit 6b74ce57cfcdfb17d71b10e03a7c50031da842bf
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 12:49:46 2023 -0600
+
+    Fixed StartPane
+
+commit 120bf8ca32ba2f0b60ef08111fb68bc4bf28355b
+Author: Fatema-Ch <115423993+Fatema-Ch@users.noreply.github.com>
+Date:   Mon Apr 10 12:48:38 2023 -0600
+
+    Imports
+
+commit 68ca0384a13539a660a3dfa726795cf61a4acd27
+Author: Fatema-Ch <115423993+Fatema-Ch@users.noreply.github.com>
+Date:   Mon Apr 10 12:46:31 2023 -0600
+
+    Commented out tests
+
+commit b4ca11c83dee5229a5171289d94686119a65299c
+Author: Fatema-Ch <115423993+Fatema-Ch@users.noreply.github.com>
+Date:   Mon Apr 10 12:43:38 2023 -0600
+
+    Created tests and commented out certain lines of code
+
+commit 8084c73bcc8b302fcd724b1c004b52e7090d45e5
+Merge: d2bb07c 1d51cf0
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Mon Apr 10 12:37:02 2023 -0600
+
+    Merge branch 'dev' into test-pay
+
+commit a547d4dd8df93d592bc2b0bce2293fa29922f727
+Author: Fatema-Ch <115423993+Fatema-Ch@users.noreply.github.com>
+Date:   Mon Apr 10 11:50:34 2023 -0600
+
+    Make getter public for testing
+
+commit 1d62ca95cd9decd0f08962e370f4d17d9bdbfab2
+Author: Fatema-Ch <115423993+Fatema-Ch@users.noreply.github.com>
+Date:   Mon Apr 10 11:50:04 2023 -0600
+
+    Test Membership sign in method
+
+commit a9891b66b6c4559609a89ae78acb1e7daea02994
+Merge: f291d2a ae4c10c
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 11:41:36 2023 -0600
+
+    Resolved conflict in CustomerIOController
+
+commit f0560c98dd6255a5c04a731d5c788cf30befa323
+Author: hrahadhi <hada.hafiyyan@ucalgary.ca>
+Date:   Mon Apr 10 11:38:04 2023 -0600
+
+    Update CustomerIOController.java
+
+commit 1d51cf0f1ee8d9acad5fba8198ead55d4c38fb4a
+Merge: 516069d 62a1688
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 05:24:59 2023 -0600
+
+    Merge pull request #49 from KittenInAMitten/Arie_Temp_Branch
+    
+    Arie temp branch
+
+commit 62a1688ae447000be83bbaac6c6a1bf3beb2f5dc
+Merge: 952341a 516069d
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Mon Apr 10 03:54:40 2023 -0600
+
+    Merge remote-tracking branch 'origin/dev' into dev
+    
+    # Conflicts:
+    #       com.autovend.software/src/com/autovend/software/controllers/AttendantIOController.java
+    #       com.autovend.software/src/com/autovend/software/swing/AttendantOperationPane.java
+
+commit 952341a944bff3e46a2c878362e41f6e7d5bd083
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Mon Apr 10 03:54:06 2023 -0600
+
+    Did a big sweep to make sure almost all of the use cases are implemented in a clean and efficient manner.
+
+commit ae4c10c167a3d5ff675922cd83e5c0fd66ea6027
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 03:05:37 2023 -0600
+
+    CustomerOperationPane also gets disable now too !
+
+commit 52e2b06e5a1bca6a8176d21af0dcc612afcb4b22
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 02:53:57 2023 -0600
+
+    Disabling stations works AMAZINGLY
+
+commit c784c5c2742497f4b07b8940414732b9e255f967
+Merge: 274d691 66e06bc
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 02:21:31 2023 -0600
+
+    Merge pull request #48 from KittenInAMitten/test-attendant-gui
+    
+    Attendant GUI tests merge to GUI branch
+
+commit 66e06bc2d473a86c0cc21892d33bb17086113e64
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 02:17:54 2023 -0600
+
+    Wrote some tests for AttendantOperationPane
+
+commit f291d2a91263f31e3fde457965ba3a9291717c24
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Mon Apr 10 02:02:42 2023 -0600
+
+    Created (empty) pay screen for customer pay use cases
+
+commit bac31e418de70a55490d39b3b942c95932b19839
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 01:33:12 2023 -0600
+
+    Added tests for attendant login (GUI)
+
+commit 274d691d7d14f99cd0ab543e1ff4a8c95debcddb
+Merge: 20410c3 c070265
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 00:24:53 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 20410c3a498c0b6af09b1ed29f192893f9ede4a6
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 00:24:46 2023 -0600
+
+    Shutdown and startup of customer GUI's is working (it seems)
+
+commit c070265061b533bee359af286e81af590d1e371f
+Merge: 22b40a3 0878a83
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 00:22:35 2023 -0600
+
+    Merge pull request #45 from KittenInAMitten/Jacob-testCustomerGUI
+    
+    Finished Customer start pane tests, small modifications to CustomerSt…
+
+commit d2bb07c0db34d91fdd1f2c3fe94bf01a1fb8dc0d
+Merge: e21f638 f22fe52
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 00:17:14 2023 -0600
+
+    fixing merge conflict
+
+commit e21f638c5c61adcbc2a125daa9d22ea09fc04029
+Merge: 516069d bc61053
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Mon Apr 10 00:12:54 2023 -0600
+
+    attempting to resolve merge conflict
+
+commit f22fe52e194cb68b2f3e9fbf2b46f62f58f4ef1a
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 10 00:09:11 2023 -0600
+
+    Trying to resolve merge conflict for pay-test branch
+
+commit 22b40a3adb4942199f42435970b3c7931ab829b3
+Merge: 459ee86 381a26c
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 00:00:40 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 459ee860562be8b2b6b217683dd28d699511ee4c
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Mon Apr 10 00:00:37 2023 -0600
+
+    Fixed PLU code, other slight adjustments
+
+commit 3a072dcffa224dfc4c8b561cc6c57c57150637b9
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 23:58:19 2023 -0600
+
+    Manual Merge Lets Gooooo
+
+commit 2467243016b62fdba8dba31a91b41ff24e95e368
+Author: hrahadhi <hada.hafiyyan@ucalgary.ca>
+Date:   Sun Apr 9 23:57:25 2023 -0600
+
+    lowInkPaper
+
+commit 03a08c73e87565bc6948e9565cb926b9861c6c10
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 23:55:42 2023 -0600
+
+    Test commit
+
+commit e6a69e0fe1f5ed2abd03163d0e13989c1a3c7804
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Sun Apr 9 23:48:12 2023 -0600
+
+    Added another test for attendant locking and unlocking station
+
+commit 307709e98b752a6e452c3175597fe4f85210be73
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Sun Apr 9 23:36:55 2023 -0600
+
+    Added tests for preventing station use
+
+commit 381a26c95de68d8dda93b79ec5b15a1cf40f32b9
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 23:34:36 2023 -0600
+
+    Removed duplicate low ink/paper.
+
+commit 516069ddce447b99f2ed20f8590a61dcbf47490c
+Merge: 5b80b53 a462944
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 23:33:20 2023 -0600
+
+    Merge pull request #43 from KittenInAMitten/revert-23-Arie's-Working-Branch
+    
+    Revert "Arie's working branch" temporarily
+
+commit 07c56ea20e6e24f41fad6b65723c76cc7723966a
+Merge: d79d49f 1702143
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 23:33:07 2023 -0600
+
+    Merge branch 'gui-branch' of
+    https://github.com/KittenInAMitten/SENG300-iteration-3 into
+    gui-local-branch
+
+commit a462944f868f40853519ecd24cbdf419ddf7fb78
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 23:32:15 2023 -0600
+
+    Revert "Arie's working branch"
+
+commit 63c7a80c6bf59fff89bdc74dacffacbb061427c0
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Fri Apr 7 17:38:19 2023 -0600
+
+    Improved Bag Dispensing (mostly done the fix to that) and implemented enabling/disabling stations for Maintenance from I/O for attendants.
+
+commit 5b80b53012d9ac39c85bf25f77076d5e1c385644
+Merge: 1694769 dea6977
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 23:27:44 2023 -0600
+
+    Merge pull request #23 from KittenInAMitten/Arie's-Working-Branch
+    
+    Arie's working branch
+
+commit dea697798e7ac54b2132a3e40ae7b21ff6501c03
+Merge: 40ee359 1694769
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 23:24:23 2023 -0600
+
+    Merge branch 'dev' into Arie's-Working-Branch
+
+commit d79d49f55fbd1a4cd1d7d3e465ad7abe3b41201a
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 23:20:19 2023 -0600
+
+    GitIgnore issue fix.
+
+commit a9b7c06138b38c2fa3154efeebe0ff6a33057eef
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 23:18:25 2023 -0600
+
+    gitIgnore local fix.
+
+commit 1cc11d166d2be5b06228cc976674d403322d1b48
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 23:17:31 2023 -0600
+
+    Reverted gitIgnore change
+
+commit 8d37c88a36d20513b95c4c41c3c7b8fe4ff0533e
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 23:16:39 2023 -0600
+
+    Updated gitignore.
+
+commit 6beaace282a28fd0ea8dce5e36626b0926055aa2
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 23:07:42 2023 -0600
+
+    Updated low X events.
+
+commit 40ee359e1205e0ba0b4aa1c2949bfe19151f2dc1
+Merge: dfb1620 2596213
+Author: ArieGoud <128561258+ArieGoud@users.noreply.github.com>
+Date:   Sun Apr 9 22:56:22 2023 -0600
+
+    Merge pull request #42 from KittenInAMitten/main
+    
+    Merge pull request #15 from KittenInAMitten/dev
+
+commit 3421fdc2d361977c3986e3f2f94d2820d79185fb
+Merge: 2596213 1694769
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Sun Apr 9 22:41:17 2023 -0600
+
+    Merge pull request #41 from KittenInAMitten/dev
+    
+    Dev
+
+commit 16947696bfbcc262aef94933453812aacaac6c04
+Merge: 458f56c 1702143
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Sun Apr 9 22:38:52 2023 -0600
+
+    Merge pull request #40 from KittenInAMitten/gui-branch
+    
+    Gui branch to dev
+
+commit 17021438cc555241d530b73bcd020cf6683aeae0
+Merge: eff0979 458f56c
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sun Apr 9 22:35:37 2023 -0600
+
+    Merge pull request #39 from KittenInAMitten/dev
+    
+    dev to Gui branch
+
+commit 362790014bef152d1f3222ebb8c14a13e10fea16
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Sun Apr 9 22:33:19 2023 -0600
+
+    Added getter for testing; fixed imports
+
+commit bc61053676382e50dd984ab6443b2440ff2bce43
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Sun Apr 9 22:17:19 2023 -0600
+
+    Added a test to bill payment
+
+commit 98bddb0ea411e46f1408fdccaf52081675f299f3
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Sun Apr 9 22:17:02 2023 -0600
+
+    Added testing for coin payment; changed visibility on some fields for testing
+
+commit 0042d8113b9777ec47f730626c9ee95b57bf3666
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Sun Apr 9 22:16:19 2023 -0600
+
+    Fixed up and added tests for card payment
+
+commit eff09799b71eb3ca65005376e854d82d8c639c0d
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 22:10:38 2023 -0600
+
+    Low Paper/Ink GUI and Simulator.
+
+commit 0878a83f48fcc46d21b6bea8b6c586dc1b3efa28
+Author: jacobraun1 <93465300+jacobraun1@users.noreply.github.com>
+Date:   Sun Apr 9 21:09:29 2023 -0600
+
+    Finished Customer start pane tests, small modifications to CustomerStartPane
+
+commit aa0a90bf976bab85fccd271bcbb43055e8804c40
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Sun Apr 9 20:00:16 2023 -0600
+
+    Minor fix in purchaseBags approveAddedBags, and selectBagsAdded. Updated selectPurchaseBags.
+
+commit dfb162025656d448160a4415f3f5bda991447d6e
+Merge: 1070c08 458f56c
+Author: ArieGoud <128561258+ArieGoud@users.noreply.github.com>
+Date:   Sun Apr 9 19:51:56 2023 -0600
+
+    Merge branch 'dev' into Arie's-Working-Branch
+
+commit 458f56c41dd02418f5acfac067a1c5ea9b44133c
+Merge: 54ba2bd 8b35429
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 19:23:29 2023 -0600
+
+    Merge pull request #36 from KittenInAMitten/dev-missing-signals
+    
+    Added signals for removeItemFromOrder, lowInk/Paper and getCart
+
+commit 1d1e30332023692baaddd424740726c1fd8ef84e
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Sun Apr 9 19:17:46 2023 -0600
+
+    Minor fix in purchaseBags.
+
+commit 8b354290eeff8c9843f173757559c70448e4f7bc
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 19:16:46 2023 -0600
+
+    Added signals for removeItemFromOrder, lowInk/Paper and getCart
+
+commit 92ea16c6200c2958dd26a6c8ee6700f6be17f6e6
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Sun Apr 9 19:13:57 2023 -0600
+
+    Updated selectPurchaseBags in CustomerIOController.
+
+commit c66c5cc50b268f19e1634b047073378de91109e0
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 19:05:30 2023 -0600
+
+    Started low paper and ink.
+
+commit cefbf67e0f5c6a112cfc2d7ebccd4f49bf562e31
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 19:00:57 2023 -0600
+
+    Testing stuff
+
+commit 53e40f5f3d20ead8e6c3e2cbdffe3d887b5818c5
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 18:48:33 2023 -0600
+
+    Attendant Event Simulator additions.
+
+commit 1070c08069f50fafacef583c73750ae3afc5a02c
+Merge: ed1dadf c6f6c1f
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:24:03 2023 -0600
+
+    Merge pull request #35 from KittenInAMitten/dev-arie-update-test-branch
+    
+    One more attempt to update Arie's Branch with dev
+
+commit c6f6c1fd4f08a7c70ed77eb5d4b6d63d7ce58414
+Merge: 54ba2bd ed1dadf
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:23:48 2023 -0600
+
+    Merge branch 'Arie's-Working-Branch' into dev-arie-update-test-branch
+
+commit ed1dadfd81e7c4c954ba7e52c606c8aaaae670fa
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:22:34 2023 -0600
+
+    Manual conflict update
+
+commit 0d2f03de4f656cf375c7cf1a6dc90484641797c9
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:21:29 2023 -0600
+
+    Attempting another manual merge conflict update
+
+commit b805765b707e9bd7824f5bbbf8cadfc09b9b66c5
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Sun Apr 9 18:19:45 2023 -0600
+
+    Removed a problematic semicolon
+    
+    The semicolon basically made the if body always execute, even when this.bank is null
+
+commit d1724f7dc42d18fedd1edea2486f23c151867ebe
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:19:33 2023 -0600
+
+    One more manual conflict update
+
+commit 668e4083d394bff59e08fbb47df2c196d9b22d8b
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:17:56 2023 -0600
+
+    Another Manual conflict update
+
+commit 54ba2bd421fba7417f748c8edb9156e53f4c1816
+Merge: cfdaf88 3d71115
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Sun Apr 9 18:16:10 2023 -0600
+
+    Merge pull request #33 from KittenInAMitten/Attendant-Customer-test-finished-Auric
+    
+    Added remaining tests for addItemByTextSearch and addItemByBrowsing and merged dev into this branch
+
+commit 3d71115be2396901361d7d5e36b8e6087386fca6
+Merge: 18f69b0 cfdaf88
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Sun Apr 9 18:15:47 2023 -0600
+
+    Merge branch 'dev' into Attendant-Customer-test-finished-Auric
+
+commit 55dede13276779f96d06ae2f9c2afe7789b602a7
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:15:07 2023 -0600
+
+    Another manual conflict update
+
+commit 78471d86801b6f73cb467e5c1bd11cf91d9bc201
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:14:14 2023 -0600
+
+    Manually update one more conflict
+
+commit cfdaf88d0567bbd12fc5602e13f2fc21d6da2723
+Merge: efda929 20daff1
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Sun Apr 9 18:13:44 2023 -0600
+
+    Merge pull request #32 from KittenInAMitten/samantha's-test-branch
+    
+    update printer to print kg test
+
+commit 0a7b907938b1daeed7c976318fe7e8f1a171cc54
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 18:13:07 2023 -0600
+
+    Attempt to manually update conflicts to merge automatically
+
+commit 18f69b0f087f8c31ff3d92b1b41c81e0c1f39db4
+Merge: 5b24866 efda929
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sun Apr 9 18:09:50 2023 -0600
+
+    Merge branch 'dev' into Attendant-Customer-test-finished-Auric
+
+commit 20daff17024a5b542acb4251a911df2bf093bb23
+Merge: a0b504f efda929
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sun Apr 9 18:06:20 2023 -0600
+
+    Merge branch 'dev' into samantha's-test-branch
+
+commit a0b504f04777f38643e6b74a8739e83031845f46
+Author: samanthaaliu <samantha.liu10@gmail.com>
+Date:   Sun Apr 9 18:04:01 2023 -0600
+
+    added update printer test
+
+commit 4569c81ba9dd57d561628aa8627466a2b7871985
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 18:03:23 2023 -0600
+
+    Fixed pup-up centering. Started on attendant event simulator.
+
+commit 1610d439bf695a3f9498a601d9dd88dec2b473b5
+Merge: 6eedb7e efda929
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sun Apr 9 17:41:26 2023 -0600
+
+    Merge pull request #30 from KittenInAMitten/dev
+    
+    Dev to gui branch (membership card)
+
+commit 6eedb7e160802845fbffa00bdc029f4ff66a4211
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 17:39:55 2023 -0600
+
+    Removed redundant print
+
+commit efda9298520e900f3b0fa496cd31b7883e39e418
+Merge: a159693 36910ed
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 17:37:42 2023 -0600
+
+    Merge pull request #28 from KittenInAMitten/Membership_card
+    
+    Implemented membership card swiping and scanning
+
+commit 77cef3d40c416dcc8726808fb0f2511670bb3f94
+Merge: c97f62c 9081f8d
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 17:37:26 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit c97f62c57924117f6149ae9d5bea1150d6d82936
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 17:37:19 2023 -0600
+
+    Centered optionPanes to the center of the gui
+
+commit 9081f8d1375e3b206315afe280dfbb0e110b9d04
+Merge: d42139c a159693
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sun Apr 9 17:37:17 2023 -0600
+
+    Merge pull request #29 from KittenInAMitten/dev
+    
+    Dev to gui branch
+
+commit 36910edbc79ced69a8880675451099d151046534
+Merge: 3acf838 a159693
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sun Apr 9 17:36:59 2023 -0600
+
+    Merge branch 'dev' into Membership_card
+
+commit a159693d632f2a734342aac6e65c1399036db523
+Merge: 8e2114e ddb0b33
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Sun Apr 9 17:33:18 2023 -0600
+
+    Merge pull request #24 from KittenInAMitten/tashi-pay-giftcard
+    
+    Tashi pay giftcard
+
+commit ddb0b338d24a160ec0cdbd4bb07a75cfc263f92e
+Merge: c3dc82b 8e2114e
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Sun Apr 9 17:32:55 2023 -0600
+
+    Merge branch 'dev' into tashi-pay-giftcard
+
+commit 8e2114e5d535f56f5f38ad0b44eb543b96d6024e
+Merge: 603eb5d d42139c
+Author: Sankalp Bartwal <49696326+Sankalp-Bartwal@users.noreply.github.com>
+Date:   Sun Apr 9 17:32:35 2023 -0600
+
+    Merge pull request #27 from KittenInAMitten/gui-branch
+    
+     Gui branch to dev
+
+commit e58cec54768a84fedfaee61c54c17f760b5e49eb
+Author: Alex Chen <alexcaihaochen@gmail.com>
+Date:   Sun Apr 9 17:23:36 2023 -0600
+
+    Initial setup of testing prevent station use
+    
+    Not functional at all yet, need to figure out how to access AttendantIO inside of a station
+
+commit d42139c90a2835e955a20863c9e5c36d2fec975a
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 17:14:56 2023 -0600
+
+    Added purchase bags GUI elements, updated how items are put to order grid, and how total cost is calculated
+
+commit 09744b1d4e2461f11466deed1a60499f71dc73e9
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Sun Apr 9 16:49:44 2023 -0600
+
+    Bug fix in addOwnBagsRevised, selectBagsAdded, and approveBags found by Braedon.
+
+commit caa6a27b3d474cbdf1514c47eab1b536dce9375a
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 16:26:13 2023 -0600
+
+    refreshing order grid should now show item descriptions
+
+commit ef4cd6dd6ce22da1fa33769eae6b5cdc2a52ec76
+Author: samanthaaliu <samantha.liu10@gmail.com>
+Date:   Sun Apr 9 16:15:50 2023 -0600
+
+    added test case for update print
+
+commit 5b24866707122bce05d72189d29704d475666dc2
+Author: ajkami <auricpoku@gmail.com>
+Date:   Sun Apr 9 16:07:43 2023 -0600
+
+    Added remaining tests for addItemByTextSearch and addItemByBrowsing
+
+commit d7644614d97691003ce25e45648cfd458d6da8fa
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Sun Apr 9 15:16:49 2023 -0600
+
+    Updated addOwnBagsRevised, selectBagsAdded, and approveBags methods with improvements from Braedon.
+
+commit 951632e4005de8860b39aedf256871eb6bfb9083
+Merge: 52d2d1f f223fa3
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 15:01:26 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 52d2d1fe7ecff0195634185350e7b0293e25eb65
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 15:01:19 2023 -0600
+
+    Added id's to customer checkout stations, and a way to refresh the order on screen
+
+commit f223fa32794c27025eaa0e0b39a0ab33b6191b76
+Merge: 3c0c6f2 e0eefd0
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sun Apr 9 14:59:02 2023 -0600
+
+    Merge pull request #26 from KittenInAMitten/test-attendant-gui
+    
+    Test attendant gui
+
+commit 3c0c6f27148b99991c780eee7ab18da5ab4e5a5b
+Merge: acc9eee 257e073
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 14:47:06 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit acc9eee16ef2f9aa764c6579752c6d33044df1bb
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 14:46:59 2023 -0600
+
+    Small changes
+
+commit 257e073f264dc7868cddd784519bf3119ffcd31c
+Merge: f6ed373 b337ef8
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 14:46:02 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit f6ed37300592be7cf44f6d7d1d5bc9f7d8d1dad2
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 14:44:50 2023 -0600
+
+    Finished bag approval notification.
+
+commit 3acf8384284f076f61694df1c70e99f35dc7e57f
+Author: Artematix <66647267+Artematix@users.noreply.github.com>
+Date:   Sun Apr 9 14:43:05 2023 -0600
+
+    Implemented membership card swiping and scanning
+    
+    (needs to be taken a look at, as membership validation is weird, line 670)
+
+commit e0eefd0df8edf11beb42273bd4cc8f8aa49ea441
+Merge: bdd6ee9 b337ef8
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sun Apr 9 14:40:23 2023 -0600
+
+    Merge pull request #25 from KittenInAMitten/gui-branch
+    
+    Pulling from Gui branch to test-attendant-gui
+
+commit bdd6ee93607dbf5f4d5607176b8afd36b1cb9b1a
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Sun Apr 9 14:36:46 2023 -0600
+
+    Created more tests for attendantGUI and modified the code to make testing possible
+
+commit b337ef8c139d4f7b62853655cce6a1aca06fd2c5
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 14:31:24 2023 -0600
+
+    PLU coded products can be added by customer
+
+commit 6fbfd0d022c2e3c01401e0a12f4ad349cc21471a
+Merge: b75ffe6 43cc477
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 14:17:48 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit b75ffe645aea1d23e76ea078cdfd4bb5aca803fe
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 14:17:10 2023 -0600
+
+    Added bags confirmation.
+
+commit 4070af4e27bd18d34c6ee95aca69f286c7c2b9ac
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 13:43:40 2023 -0600
+
+    Updated attendant notifications screen.
+
+commit c3dc82b28eaaa4bce048ba02b75faa651a14939d
+Author: Tashi Labowka-Poulin <65480653+tashi-lp@users.noreply.github.com>
+Date:   Sun Apr 9 13:25:14 2023 -0600
+
+    Added check for card type corruption
+
+commit d58293970151d6626bd191dbf66a535bd726135e
+Author: Tashi Labowka-Poulin <65480653+tashi-lp@users.noreply.github.com>
+Date:   Sun Apr 9 13:20:48 2023 -0600
+
+    Implemented GiftCard payment
+
+commit 43cc477a8c20a7495e7c02e06d21315d6e74674f
+Merge: 3642804 91d960a
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 11:54:45 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit 3642804b1e3768d063e1143dff02466261b9f1cb
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 11:54:38 2023 -0600
+
+    Separated button initializing
+
+commit 91d960a5e2a1996134c1300ebe5f75d79485333e
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 11:53:14 2023 -0600
+
+    Revised shutdown/startup/enable/disable.
+
+commit 60461c9aa7ac9738c9d131724eccf1c2fb839abd
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sun Apr 9 11:04:52 2023 -0600
+
+    Made cart uneditable.
+
+commit e04e9b211fe97000bd1b4a087bed8a16487bd723
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Sun Apr 9 09:22:27 2023 -0600
+
+    Added notifyAddBags method to AttendantIOController.
+
+commit fde56e0ae58b959f42c24f1b6271f95843978ea1
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 02:16:04 2023 -0600
+
+    Language select just needs to update texts of all the buttons
+
+commit d54ad86eb898d6e51b7870685eb16ace30315d41
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 02:05:06 2023 -0600
+
+    Basic layout for the customer GUI
+
+commit 02e85aaaf9f0e769878f27f5753c07ac428f7edc
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sun Apr 9 01:18:50 2023 -0600
+
+    Basic order grid
+
+commit 298c366edbcfdf7a5fb6b7b786a90d6b11f269c3
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 23:37:04 2023 -0600
+
+    Attendant GUI updates.
+
+commit 2e71f72ef3ca4cd9f99cf08fef55a27701f6c094
+Merge: 62235e0 70bb6db
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 22:31:28 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit 62235e012c3d45ae0b5310a3a32a4999d4daab2b
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 22:31:04 2023 -0600
+
+    Attendant updates.
+
+commit cb85a6ce505a07bb1e62d202023d949c31e3bf97
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 22:28:54 2023 -0600
+
+    Attendant GUI updates.
+
+commit 3f778128e75b9242ee862f6d8003f6ca3c4c5129
+Merge: 6024680 e2119d6
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Sat Apr 8 22:27:43 2023 -0600
+
+    Merge branch 'arie-working-branch-update-0.3.2' of https://github.com/KittenInAMitten/SENG300-iteration-3 into arie-working-branch-update-0.3.2
+    
+     Conflicts:
+    	com.autovend.software/src/com/autovend/software/controllers/AttendantIOController.java
+
+commit 60246802002764683e50e47ae1ec34cef7403df1
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Sat Apr 8 22:23:07 2023 -0600
+
+    Revised approveAddedBags to access the BaggingScaleController via the CustomerIOController.
+
+commit 70bb6dbb6cce9b116b6280b9dd913b9c77563b13
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Sat Apr 8 22:10:45 2023 -0600
+
+    Deleted extra hardware project
+
+commit 520dba1fddeb98fd7ccb644bc9e25e6825f1b71f
+Merge: 3aa25b9 603eb5d
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Sat Apr 8 22:07:49 2023 -0600
+
+    Merge remote-tracking branch 'origin/dev' into dev
+    
+    # Conflicts:
+    #       com.autovend.software/src/com/autovend/software/controllers/AttendantIOController.java
+    #       com.autovend.software/src/com/autovend/software/controllers/CheckoutController.java
+
+commit c07fa3067bed11679c84dec200d8a14c0af16e01
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 21:41:17 2023 -0600
+
+    Bug fix.
+
+commit eb3c5d6e3592b9b7921d8d2fbc072237a6a1a70d
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 21:39:24 2023 -0600
+
+    Added attendant PLU adding.
+
+commit 94cac0a1242b4558c81dcb053f1ec302c398b754
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Sat Apr 8 20:05:10 2023 -0600
+
+    Created some initial tests for attendantGUI
+
+commit 603eb5d65e69c22276fc45aca797f3bccdd00478
+Merge: 6b6ea55 fc5d23d
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 8 18:01:56 2023 -0600
+
+    Merge pull request #22 from KittenInAMitten/gui-branch
+    
+    Pull gui branch to dev
+
+commit fc5d23d2877ad407a053ca10abd1a07d3514990c
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 8 18:00:19 2023 -0600
+
+    Removed .project from hardware sim .gitignore
+
+commit 72056c7b320498d0efea78bdb066127162d29123
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 8 17:59:16 2023 -0600
+
+    Removed .project from .gitignore
+
+commit b5f38424c745b5312e4144614a616a19ebae7008
+Merge: 5fc2c9f 6b6ea55
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sat Apr 8 17:53:13 2023 -0600
+
+    Merge branch 'dev' into gui-branch
+
+commit 5fc2c9f1ffd7b60fed663dbf6416aabe9f242008
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 17:50:25 2023 -0600
+
+    Attendant updates.
+
+commit d84886f0b8d08eefc56e71ba6f95447b25aba43a
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 17:34:22 2023 -0600
+
+    Attendant Languages update.
+
+commit 644a6ac238675c1d9ce7381cb1b7f51488e54e80
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 17:11:45 2023 -0600
+
+    Bug fixes.
+
+commit 6b6ea555e057b27126e6c10c9506a07285476165
+Merge: ac52446 e3b6f9c
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Sat Apr 8 16:20:04 2023 -0600
+
+    Merge pull request #21 from KittenInAMitten/adjust-coins/bills-for-change
+    
+    Adjust coins/bills for change
+
+commit 94e9c705ea5930fe6c171927002992c9693d82ef
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 16:17:29 2023 -0600
+
+    Bug fix.
+
+commit 3007dc38363842c8c46f52c656f1a26f0607cffc
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 16:16:49 2023 -0600
+
+    Structure improvements.
+
+commit 6aee97ae011ddab360cf208c7308c7fc00b93356
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 16:09:58 2023 -0600
+
+    AttendantIO improvements.
+
+commit 2ffee800ea8704e22715a95edaebe0aa28a8c3d5
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 15:25:54 2023 -0600
+
+    Attendant updates.
+
+commit e0d997f447135ad2b610e8f669ea56520806b322
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 15:22:09 2023 -0600
+
+    Attendant updates.
+
+commit e3b6f9c0e39a24a24c83ed5ef18376ded80801fb
+Merge: 0d29cfc ac52446
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Sat Apr 8 15:18:26 2023 -0600
+
+    Merge branch 'dev' into adjust-coins/bills-for-change
+
+commit 0e79dc1297d94b33f5e054935348a1e8f535c040
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 14:51:05 2023 -0600
+
+    Station management progress.
+
+commit 0d29cfc9cafcbb4ba4d81aa619901b263b071063
+Author: omarmsragab <omarmsragab2003@gmail.com>
+Date:   Sat Apr 8 14:46:19 2023 -0600
+
+    Added more specific comments inside AttendantIO methods
+
+commit cb845ee8aa2f68a139a856d968907cf5d7c07d61
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 13:51:34 2023 -0600
+
+    Added individual GUI launchers, removed old files.
+
+commit eaf359e82ac2506a94772aedf6f1c964429fc76d
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 13:18:54 2023 -0600
+
+    Updated screen size.
+
+commit 4846035ebd4c908595cd753377f80b4803729665
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 12:29:48 2023 -0600
+
+    Bug fix.
+
+commit 5667ec0610407b238b4da14b0f62a38b86878875
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 12:24:48 2023 -0600
+
+    Added language back in.
+
+commit df32699d68d5ed3ca4ba88bd9cbf4719d9c475ad
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 11:04:26 2023 -0600
+
+    Added login error message.
+
+commit 7375f7c7695d2c49f41900c119acb34aa26a83f8
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Sat Apr 8 10:47:09 2023 -0600
+
+    Better refactor of attendant and customer GUI.
+
+commit ac52446aeb4dbd61bc32ef61856dfe84edc97d40
+Merge: d798214 bb9e5c8
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 8 00:02:02 2023 -0600
+
+    Merge pull request #19 from KittenInAMitten/addItem
+    
+    Merge 'addItem' branch into 'dev'
+
+commit f34b423b62dc6a72d113d901c7736a4b10affc1c
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Fri Apr 7 23:22:08 2023 -0600
+
+    Refactored CustomerGUI into CustomerGUIUtils.
+
+commit 0fb1227700915955c6cd1bcfc0ca88bdbdc3697e
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Fri Apr 7 22:43:33 2023 -0600
+
+    Refactored AttendantGUI into AttendantGUIUtils.
+
+commit bb9e5c8ebd2e3217a75eed292018957538c14bd1
+Merge: ff6ad9d d798214
+Author: BartuO <77813709+BartuO@users.noreply.github.com>
+Date:   Fri Apr 7 22:14:54 2023 -0600
+
+    Merge branch 'dev' into addItem
+
+commit ef091ec5c174d93cbc5d594443408ab9e5ad74ac
+Merge: 8d86d64 d798214
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Fri Apr 7 19:04:45 2023 -0600
+
+    Updated gui-branch using current dev branch
+    
+    Dev
+
+commit d79821440451f0bfdea471c84ebf2466360194f1
+Merge: fecfc7c 8d86d64
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Fri Apr 7 19:04:14 2023 -0600
+
+    Merge branch 'gui-branch' into dev
+
+commit 8d86d64c3e9d50d570dbe17f318032ecf26d068b
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Fri Apr 7 18:58:52 2023 -0600
+
+    final languageselector popup for customer
+
+commit 5196c6efa4ca2ca69bd85144385ce2c95b64366f
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Fri Apr 7 18:42:32 2023 -0600
+
+    language selector
+
+commit c57fafc8a1086b1bc4870dca52fd92af1c86e91f
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Fri Apr 7 18:27:32 2023 -0600
+
+    language selector popup
+
+commit ff6ad9dab3716de3895ddddb2c45498bf8714dba
+Author: BartuO <bartuokan1@gmail.com>
+Date:   Fri Apr 7 18:03:15 2023 -0600
+
+    addItemMethods
+    
+    added addItemByTextSearch and addItemByBrowsing
+
+commit 3aa25b967f733014dac62acdc990c7babe9d5cb2
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Fri Apr 7 17:38:19 2023 -0600
+
+    Improved Bag Dispensing (mostly done the fix to that) and implemented enabling/disabling stations for Maintenance from I/O for attendants.
+
+commit e2119d6c9d2b78b9b79024adf82868410abeb631
+Merge: d3b82de fecfc7c
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Fri Apr 7 16:43:44 2023 -0600
+
+    Merge pull request #17 from KittenInAMitten/dev
+    
+    Dev
+
+commit fecfc7c86ee94e1daa26e57b6e1c85097f7965ad
+Merge: a07df93 d3b82de
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Fri Apr 7 16:43:20 2023 -0600
+
+    Merge branch 'arie-working-branch-update-0.3.2' into dev
+
+commit d3b82de70c1d0a7f068ad0dfd3110ad0a1a60610
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Fri Apr 7 16:38:31 2023 -0600
+
+    Added ReusableBagDispenserController.
+
+commit a07df9376fac408881f0cd736954f1a2143c9250
+Merge: 3512f32 64bc672
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Fri Apr 7 14:05:55 2023 -0600
+
+    Merge pull request #16 from KittenInAMitten/Arie's_Working_Branch
+    
+    Merge pull request #14 from KittenInAMitten/main
+
+commit 64bc672f099a107b7a57cbb9141d93c162656e2b
+Merge: 06d5b2a 3512f32
+Author: ArieGoud <128561258+ArieGoud@users.noreply.github.com>
+Date:   Fri Apr 7 13:56:18 2023 -0600
+
+    Merge branch 'dev' into Arie's_Working_Branch
+
+commit 2596213288fe08d5e1e9bbcbeea3f1269d3b96c8
+Merge: 3648924 3512f32
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Fri Apr 7 13:50:05 2023 -0600
+
+    Merge pull request #15 from KittenInAMitten/dev
+    
+    (STILL NEEDS TESTING IN DEV BRANCH) Merging Dev to Main due to significant hardware/software changes
+
+commit 3512f3228a2c9a2d76f9000da07708e2a0279e70
+Merge: fe817bd c3558da
+Author: ArieGoud <128561258+ArieGoud@users.noreply.github.com>
+Date:   Fri Apr 7 13:37:37 2023 -0600
+
+    Merge pull request #13 from KittenInAMitten/christian-attendant-station-use-case-implementations
+    
+    AttendantStationController Implementation, Login/Logout/ShutDown/Startup Use Cases ready for testing
+
+commit 06d5b2a4124a6cbf4690a5f24e26414f0c665858
+Merge: 9f69390 3648924
+Author: ArieGoud <128561258+ArieGoud@users.noreply.github.com>
+Date:   Fri Apr 7 13:27:18 2023 -0600
+
+    Merge pull request #14 from KittenInAMitten/main
+    
+    Merging main commits to working branch
+
+commit 62a99d6e0340d09752dee3e084dcc09ba410d1e0
+Author: omarmsragab <omarmsragab2003@gmail.com>
+Date:   Fri Apr 7 12:11:32 2023 -0600
+
+    new branch for adjustCoins/BillsForChange Use Cases
+
+commit d40da269f100ebbd24a3794afd99ed3d012bb30b
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Fri Apr 7 04:05:43 2023 -0600
+
+    gui branch
+
+commit 722c8f00eac3121e5f88fa59f4b2bb3f1d7db65f
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Thu Apr 6 20:41:11 2023 -0600
+
+    Updated purchaseBags to work with hardware 3.3. Added selectPurchaseBags to CustomerIOController. ReusableBagDispenserController is done and will be added once hardware in branch is updated.
+
+commit c3558daa0792d23cd2ad870b98b859500d520697
+Merge: 1d717f8 fe817bd
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Thu Apr 6 20:39:34 2023 -0600
+
+    Merge branch 'dev' into christian-attendant-station-use-case-implementations
+
+commit 1d717f80c078b65e9a495da38add861e09ee8cc5
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Thu Apr 6 20:32:06 2023 -0600
+
+    Updated Hardware code
+
+commit b3d3ee741a6fe12dc2be6ee628eae0e7076e9e8c
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Thu Apr 6 20:28:19 2023 -0600
+
+    Quickly fixed bugs from tests
+    
+    AddItemTest
+    Swapped out a deprecated method
+    
+    Checkout controller
+    Fixed costs not being updated properly depending on scenario
+
+commit fc9a49678e7e6124cfdf55b70151760ec63d528f
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Thu Apr 6 19:11:42 2023 -0600
+
+    Worked on Login/Logout/Shutdown/Startup Use Cases, look in description
+    
+    Created an AttendantStationController to house login, logout methods and gives supervisor stations an ID.
+    
+    AttendantStationController.java
+     - Registers IO controllers. Issue: Is it necessary to have more than one AttendantIO controller?
+     - Adds functionality to add and remove stations, including IO controllers.
+     - Login functionality
+     - Logout functionality
+     - Credentials stored in HashMap
+     - Includes register/deregister user to make accounts for testing.
+    
+    Attendant IO Controller
+     - Added signals
+    
+    CheckoutController
+     - added supervisor id
+     - added getControllers By Type
+     - implemented Enable and disable all devices
+     - Implemented shut down and start up
+    
+    Customer IO Controller
+     - Added notify Startup and shutdown signals.
+     - Added registering and deregistering Attendant
+
+commit fe817bd066ae8ca26a9e6388a5142a0cc43f000a
+Merge: 981f6bc e2e7130
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Thu Apr 6 19:04:38 2023 -0600
+
+    Merge pull request #12 from KittenInAMitten/sankalp-management
+    
+    added pdf that contains the work assigned to everyone (front end needs to updated)
+
+commit e2e71305c57bc74761a98b6f3c36d9a5a9029df6
+Author: Sankalp Bartwal <sankalp.bartwal@gmail.com>
+Date:   Thu Apr 6 19:01:34 2023 -0600
+
+    added pdf that contains the work assigned to everyone (front end needs to be updated)
+
+commit 665514585c76d59693150f43d7e4940728177e47
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Thu Apr 6 17:46:40 2023 -0600
+
+    Updated addOwnBagsRevised, added selectBagsAdded to CustomerIOController, added approveAddedBags to AttendantIOController, added methods for saving weights in BaggingScaleController.
+
+commit 981f6bc278af006a1ae0d93a4a28753b3430bf2f
+Merge: 09c9982 26e46b4
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Thu Apr 6 17:07:14 2023 -0600
+
+    Merge pull request #10 from KittenInAMitten/hardware-0.3.3
+    
+    New hardware project (0.3.3)
+
+commit 26e46b4c87900daa99cf926ab3d5cae3d2510225
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Thu Apr 6 17:03:49 2023 -0600
+
+    Added new hardware project (0.3.3)
+
+commit c60fb12c6374fcc2f837776c0c624283b98e309b
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Thu Apr 6 17:02:35 2023 -0600
+
+    Updated hardware code again (0.3.3)
+
+commit 09c998289591796910a59ebd0febca249f910eb6
+Merge: bb02627 92bf089
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Wed Apr 5 23:35:49 2023 -0600
+
+    Merge pull request #9 from KittenInAMitten/arie-working-branch-update-0.3.2
+    
+    Merging arie's work branch into dev to be up to date as of 2023-04-05 7:30PM
+
+commit 42a0d3833b3a52fdac4b83970f44faee43a08ad4
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 5 22:07:15 2023 -0600
+
+    Updated methodology for adding more languages
+
+commit 25c6b958995a71fe14eb568578db339c42268130
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 5 21:28:17 2023 -0600
+
+    Switched up the attendant gui to use central languageBank
+
+commit 9772c2e062f57a33cbc7a1d52ffe786cfee57ee1
+Merge: f640e50 4361397
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 5 20:55:51 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-branch
+
+commit f640e507a08285af529f058b3705877e8b3db841
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 5 20:54:56 2023 -0600
+
+    Added language button
+
+commit 43613974d0adc0455036516f7ac1366f302b9a83
+Author: hamza-khan3 <127697674+hamza-khan3@users.noreply.github.com>
+Date:   Wed Apr 5 20:49:59 2023 -0600
+
+    testing gui changes
+
+commit a449fc907b12eb1924fd4371d7268497034cf60b
+Merge: 54d0b1e bac4fcb
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 5 20:39:42 2023 -0600
+
+    Merged changes.
+
+commit 54d0b1e82e7e66e135fe7224404990ebae2c62e9
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 5 20:23:04 2023 -0600
+
+    Attendant and Language updates.
+
+commit bac4fcb22d7a772071a12bcf9b7059ce3221dbf7
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 5 20:18:29 2023 -0600
+
+    Commented the code
+
+commit c1a0aef7587aaebb3e92f66b61a949253ea223aa
+Author: ColtG5 <colton.gowans@ucalgary.ca>
+Date:   Wed Apr 5 20:08:31 2023 -0600
+
+    Updated logic for translating text
+
+commit 8cae2c1072ac69ddb4a6851e6ff0c652b3fbc975
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 5 19:40:28 2023 -0600
+
+    Created CustomerGUI class, implemented start button
+
+commit 92bf0894df6e6669c398979e9aabf96a23c1cb00
+Merge: 6c0ee6a bb02627
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 5 19:33:43 2023 -0600
+
+    Merge branch 'dev' into arie-working-branch-update-0.3.2
+
+commit 6c0ee6aae513e7db0e39c838536c7bf0722b70bb
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 5 19:29:22 2023 -0600
+
+    Fixed tests to reflect controller registry and method parameter changes in CheckoutController
+
+commit a8665296fcf29aeb8c8789008f58fa0fc4cb13fc
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Wed Apr 5 19:19:30 2023 -0600
+
+    Quick Hardware Sim Code Update (0.3.1 -> 0.3.2)
+
+commit 0afd5cd7a38ab9396103b31d8ef266de5c75f9df
+Author: james.hayward2 <james.hayward2@ucalgary.ca>
+Date:   Wed Apr 5 18:28:13 2023 -0600
+
+    Changed type of passwordTextField to JPasswordField
+
+commit ed4e746241eae7ef97f750f935b802792d4ce831
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 5 17:06:36 2023 -0600
+
+    Implemented adding languages to Language class.
+
+commit 553b484fc80bb34c6c87cf160ff91f93e0f9ceea
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 5 16:39:34 2023 -0600
+
+    AttendantGUI updates and refactor.
+
+commit b60cafc7d3cd3799eb00e4218b96b059a48d0d22
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 5 15:24:46 2023 -0600
+
+    Language functionality.
+
+commit bb02627bb1cf0aad1516d44cab5a47a936149ca8
+Merge: 53bfab8 0e003dc
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Wed Apr 5 12:44:01 2023 -0600
+
+    Merge pull request #8 from KittenInAMitten/hardware-0.3.2
+    
+    new hardware project (version 0.3.2)
+
+commit 0e003dc50ed611b9ac62d3fddbe2a6f637f2aac9
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 5 12:38:01 2023 -0600
+
+    new hardware folder
+
+commit aaccfbe4ea1ed0441084f757c9c51327f1d28e67
+Author: omarkhan03 <omarahmadkhan2003@gmail.com>
+Date:   Wed Apr 5 12:34:23 2023 -0600
+
+    update to hardware project and reconfigured build path
+
+commit 53bfab89e65eab3e4516408727ea8565752cf5b3
+Merge: 327f32a d50be1f
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Wed Apr 5 11:55:21 2023 -0600
+
+    Merge pull request #7 from KittenInAMitten/gui-branch
+    
+    Pulling Braedon's changes from Gui branch
+
+commit d50be1ff95bef041872b6eea71df0238996161e1
+Merge: b867f51 3648924
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 5 11:39:00 2023 -0600
+
+    Merge branch 'gui-branch' of https://github.com/KittenInAMitten/SENG300-iteration-3 into gui-local-branch
+
+commit b867f51a8b6db10d05a6650f472b7a77774ad5d3
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 5 11:02:13 2023 -0600
+
+    Updated variable names.
+
+commit 2afc81471c0c4b742326e38ddb93433271d13b6d
+Author: Braedon <braedon.haensel@ucalgary.ca>
+Date:   Wed Apr 5 10:31:53 2023 -0600
+
+    Started on AttendantGUI.
+
+commit 9f69390355a91b2acd8a0d04d7a9c7b8da5e55ea
+Merge: a4ecbec efbbf61
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 4 21:42:46 2023 -0600
+
+    Merge branch 'Arie's_Working_Branch' of https://github.com/KittenInAMitten/SENG300-iteration-3
+
+commit a4ecbec89241ba2fb146b28bc3b593ee53afb9ce
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 4 21:41:46 2023 -0600
+
+    Partially Completed Framework for Controllers for device IO, need to decide what to do for keyboards and implement methods for GUI navigation and whatnot, also have the printer now printing whether its in kg or number of units which is good. TODO: keyboard, finish all the unfinished classes and methods.
+
+commit efbbf61bb4a2be730f3c4d3a45998525e6b45a2f
+Author: gtkachyk <126801466+gtkachyk@users.noreply.github.com>
+Date:   Tue Apr 4 21:09:22 2023 -0600
+
+    Added addOwnBagsRevised method to CheckoutController as a concept for addOwnBags.
+
+commit 36489245ca1e72d6abfe6243ad2e8f8bd478f0f6
+Merge: 369b8b3 f1030fd
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Tue Apr 4 20:08:27 2023 -0600
+
+    Merge pull request #6 from KittenInAMitten/jukmifgguggh1337-patch-1
+    
+    Update README.md
+
+commit f1030fdb64882a8c896fad778ab5dc9e3f1c9f67
+Author: jukmifgguggh1337 <51790919+jukmifgguggh1337@users.noreply.github.com>
+Date:   Tue Apr 4 19:23:12 2023 -0600
+
+    Update README.md
+
+commit 3813762a5155b62eb82e6128dd1d71bd9177957a
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 4 18:25:17 2023 -0600
+
+    Renamed IOController
+
+commit 762a49fd018126c4867c85879e66ae114d9848d6
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 4 18:18:25 2023 -0600
+
+    Implemented removal of items partially (remaining part needs to be in the GUI interface part)
+
+commit 82849b7c18a692656a0f587b06ea2423fd6ac331
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 4 18:06:57 2023 -0600
+
+    Implemented removal of items partially (remaining part needs to be in the GUI interface part)
+
+commit b00447bbae9fbe731aa5463539e292d2d45ffe16
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 4 16:46:05 2023 -0600
+
+    Changed to using HashMaps to reduce code redundancy significantly
+
+commit 6cb0bae39c569581a48a0843bf9b048d10943f7d
+Author: Arie Goud <arie.goud@ucalgary.ca>
+Date:   Tue Apr 4 13:33:48 2023 -0600
+
+    Made the code for the addItem method general so all UIs and Scanners could use the same method to make testing easier, and also changed to hardware version 0.3.1 from 0.3.
+
+commit 369b8b3abce4b86d4bbb693830a170857cda8557
+Author: Omar Khan <106503860+omarkhan03@users.noreply.github.com>
+Date:   Mon Apr 3 17:24:11 2023 -0600
+
+    added pdf outlining the organization of use cases
+
+commit a63e8077134ed6aaa592813260fc71d5c1e543aa
+Merge: 6f4c552 327f32a
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 1 23:56:04 2023 -0600
+
+    Merge pull request #5 from KittenInAMitten/dev
+    
+    Iteration 2 code to build off of
+
+commit 327f32a6efaea3a360bba645a3dd358f92e3031e
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 1 20:54:27 2023 -0600
+
+    Updated .classpath to fix some compiling issues
+
+commit 04f7f6fd6320a01b4bd210a380d9b11255e20545
+Merge: b273d0c b60b3c5
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 1 20:42:00 2023 -0600
+
+    Merge pull request #3 from KittenInAMitten/Updated-Arie's-Iteration-2-code-base
+    
+    To pull Arie's iteration 2 code base with the new simulation code into dev
+
+commit b273d0c92aa10b872fb29507b73d41e445063734
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 1 20:40:57 2023 -0600
+
+    Clearing dev branch
+
+commit b60b3c5203e5a2465bb5d21e92ea9b1bc4a1e198
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 1 13:00:53 2023 -0600
+
+    Updated Arie's Iteration 2 Code Base with the new hardware code and removed a few unnecessary .exe files and some .log files
+    
+    The project uses Java SE 18 due to the version 3 hardware code using that
+
+commit 4a2de8a9c4339d4692f21f5abfea47bdf35d7bd7
+Author: ArieGoud <128561258+ArieGoud@users.noreply.github.com>
+Date:   Sat Apr 1 12:01:13 2023 -0600
+
+    Uploaded Iteration 2 Code
+
+commit 6f4c552871b0b36d13224d31b5eda6b6d4b6da05
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 1 01:01:22 2023 -0600
+
+    Added missing members into teams
+
+commit e3f3881dd0db865aba95acf49b899bffeab8072a
+Merge: 5ac321a 66c6ddc
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Sat Apr 1 01:00:23 2023 -0600
+
+    Merge pull request #2 from KittenInAMitten/grouping-info
+    
+    Created initial-groupings.txt
+
+commit 66c6ddcdc51f192cfdb8e83195e3b316e3f54d38
+Author: daniel-c-0 <daniel81632@gmail.com>
+Date:   Sat Apr 1 00:44:03 2023 -0600
+
+    Created initial-groupings.txt
+
+commit 9a41831201a38b1f4f15a0712996db4f586b225c
+Merge: 5ac321a b972351
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Fri Mar 31 22:58:59 2023 -0600
+
+    Merge pull request #1 from KittenInAMitten/i2-umarchristianabdul
+    
+    Merging Iteration 2 code into the dev branch for QA check
+
+commit b97235141d5b3a069bf6fadf67add460b21b9805
+Author: Christian S <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Fri Mar 31 22:57:42 2023 -0600
+
+    Updated hardware simulation code to version 3
+    
+    Successful tests are still successful after update
+
+commit f72dfff704a66488a2b365228f30e4c31ed1d89e
+Author: Umar Ahmed <108314943+umar-ahmed1@users.noreply.github.com>
+Date:   Thu Mar 30 14:23:31 2023 -0600
+
+    iter2
+
+commit 5ac321a9dbb34d70981ef236f6f80830ec9e6b6f
+Author: Christian Salvador <41243724+KittenInAMitten@users.noreply.github.com>
+Date:   Thu Mar 30 13:01:57 2023 -0600
+
+    Initial commit
