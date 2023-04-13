@@ -31,7 +31,29 @@ public class AttendantEventSimulator extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	public JButton bagRequest1;
+	public JButton bagRequest2;
+	public JButton lowChange1;
+	public JButton lowChange2;
+	public JButton lowBill1;
+	public JButton lowBill2;
+	public JButton lowink1;
+	public JButton lowink2;
+	public JButton lowinkResolve1;
+	public JButton lowinkResolve2;
+	public JButton lowPaper1;
+	public JButton lowPaper2;
+	public JButton lowPaperResolve1;
+	public JButton lowPaperResolve2;
+	public JButton noBag1;
+	public JButton noBag2;
+	public JButton weight1;
+	public JButton weight2;
+	public JButton reprint1;
+	public JButton reprint2;
+	public JButton fillBagsResolve1;
+	public JButton fillBagsResolve2;
+	
 	/**
 	 * Create the frame.
 	 */      
@@ -54,7 +76,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
 		
 		// Bag request events
-		JButton bagRequest1 = new JButton("Create Bag Confirmation Request (1)");
+		bagRequest1 = new JButton("Create Bag Confirmation Request (1)");
 		bagRequest1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyConfirmAddedBags(checkout1);
@@ -66,7 +88,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcBag1.gridy = 0;
 		contentPane.add(bagRequest1, gbcBag1);
 		
-		JButton bagRequest2 = new JButton("Create Bag Confirmation Request (2)");
+		bagRequest2 = new JButton("Create Bag Confirmation Request (2)");
 		bagRequest2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyConfirmAddedBags(checkout2);
@@ -79,7 +101,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(bagRequest2, gbcBag2);
 		
 		// Low coins events
-		JButton lowChange1 = new JButton("Create Low Coin Notification (1)");
+		lowChange1 = new JButton("Create Low Coin Notification (1)");
 		lowChange1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(checkout1, new BigDecimal("0.25"));
@@ -91,7 +113,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcChange1.gridy = 1;
 		contentPane.add(lowChange1, gbcChange1);
 		
-		JButton lowChange2 = new JButton("Create Low Coin Notification (2)");
+		lowChange2 = new JButton("Create Low Coin Notification (2)");
 		lowChange2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowCoinDenomination(checkout2, new BigDecimal("0.10"));
@@ -104,7 +126,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(lowChange2, gbcCoin2);
 		
 		// Low bills events
-		JButton lowBill1 = new JButton("Create Low Bill Notification (1)");
+		lowBill1 = new JButton("Create Low Bill Notification (1)");
 		lowBill1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(checkout2, new BigDecimal("5"));
@@ -116,7 +138,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcBill1.gridy = 2;
 		contentPane.add(lowBill1, gbcBill1);
 		
-		JButton lowBill2 = new JButton("Create Low Bill Notification (2)");
+		lowBill2 = new JButton("Create Low Bill Notification (2)");
 		lowBill2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowBillDenomination(checkout2, new BigDecimal("20"));
@@ -129,7 +151,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(lowBill2, gbcBill2);
 		
 		// Low ink events.
-		JButton lowink1 = new JButton("Create Low Ink Notification (1)");
+		lowink1 = new JButton("Create Low Ink Notification (1)");
 		lowink1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInk(checkout1, null);
@@ -141,7 +163,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcink1.gridy = 3;
 		contentPane.add(lowink1, gbcink1);
 		
-		JButton lowink2 = new JButton("Create Low Ink Notification (2)");
+		lowink2 = new JButton("Create Low Ink Notification (2)");
 		lowink2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowInk(checkout2, null);
@@ -154,7 +176,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(lowink2, gbcink2);
 		
 		// Resolve low ink events.
-		JButton lowinkResolve1 = new JButton("Resolve Low Ink Issue (1)");
+		lowinkResolve1 = new JButton("Resolve Low Ink Issue (1)");
 		lowinkResolve1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -172,7 +194,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcinkResolve1.gridy = 4;
 		contentPane.add(lowinkResolve1, gbcinkResolve1);
 		
-		JButton lowinkResolve2 = new JButton("Resolve Low Ink Issue (2)");
+		lowinkResolve2 = new JButton("Resolve Low Ink Issue (2)");
 		lowinkResolve2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -191,7 +213,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(lowinkResolve2, gbcinkResolve2);
 
 		// Low paper events.
-		JButton lowPaper1 = new JButton("Create Low Paper Notification (1)");
+		lowPaper1 = new JButton("Create Low Paper Notification (1)");
 		lowPaper1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaper(checkout1, null);
@@ -203,7 +225,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcpaper1.gridy = 5;
 		contentPane.add(lowPaper1, gbcpaper1);
 		
-		JButton lowPaper2 = new JButton("Create Low Paper Notification (2)");
+		lowPaper2 = new JButton("Create Low Paper Notification (2)");
 		lowPaper2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyLowPaper(checkout2, null);
@@ -216,7 +238,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(lowPaper2, gbcPaper2);
 
 		// Resolve low paper events.
-		JButton lowPaperResolve1 = new JButton("Resolve Low Paper Issue (1)");
+		lowPaperResolve1 = new JButton("Resolve Low Paper Issue (1)");
 		lowPaperResolve1.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -235,7 +257,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcPaperResolve1.gridy = 6;
 		contentPane.add(lowPaperResolve1, gbcPaperResolve1);
 
-		JButton lowPaperResolve2 = new JButton("Resolve Low Paper Issue (2)");
+		lowPaperResolve2 = new JButton("Resolve Low Paper Issue (2)");
 		lowPaperResolve2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -254,7 +276,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(lowPaperResolve2, gbcPaperResolve2);
 		
 		// No bag request events.
-		JButton noBag1 = new JButton("Create No Bag Request (1)");
+		noBag1 = new JButton("Create No Bag Request (1)");
 		noBag1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyNoBag(checkout1);
@@ -266,7 +288,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcnoBag1.gridy = 7;
 		contentPane.add(noBag1, gbcnoBag1);
 		
-		JButton noBag2 = new JButton("Create No Bag Request (2)");
+		noBag2 = new JButton("Create No Bag Request (2)");
 		noBag2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyNoBag(checkout2);
@@ -279,7 +301,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(noBag2, gbcnoBag2);
 		
 		// Weight discrepancy events.
-		JButton weight1 = new JButton("Create Weight Discrepancy (1)");
+		weight1 = new JButton("Create Weight Discrepancy (1)");
 		weight1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyWeightDiscrepancy(checkout1);
@@ -291,7 +313,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcweight1.gridy = 8;
 		contentPane.add(weight1, gbcweight1);
 		
-		JButton weight2 = new JButton("Create Weight Discrepancy (2)");
+		weight2 = new JButton("Create Weight Discrepancy (2)");
 		weight2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyWeightDiscrepancy(checkout2);
@@ -304,7 +326,7 @@ public class AttendantEventSimulator extends JFrame {
 		contentPane.add(weight2, gbcweight2);
 		
 		// Receipt reprint events.
-		JButton reprint1 = new JButton("Create Receipt Reprint Notification (1)");
+		reprint1 = new JButton("Create Receipt Reprint Notification (1)");
 		reprint1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyReceiptRePrint(checkout1, new StringBuilder("receipt"));
@@ -316,7 +338,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcreprint1.gridy = 9;
 		contentPane.add(reprint1, gbcreprint1);
 		
-		JButton reprint2 = new JButton("Create Receipt Reprint Notification (2)");
+		reprint2 = new JButton("Create Receipt Reprint Notification (2)");
 		reprint2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((AttendantOperationPane) attendantFrame.getContentPane()).notifyReceiptRePrint(checkout2, new StringBuilder("receipt"));
@@ -330,7 +352,7 @@ public class AttendantEventSimulator extends JFrame {
 
 
 		// Resolve low bags events.
-		JButton fillBagsResolve1 = new JButton("Resolve Low Bags Issue (1)");
+		fillBagsResolve1 = new JButton("Resolve Low Bags Issue (1)");
 		lowinkResolve1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -347,7 +369,7 @@ public class AttendantEventSimulator extends JFrame {
 		gbcFillBagsResolve1.gridy = 10;
 		contentPane.add(fillBagsResolve1, gbcFillBagsResolve1);
 
-		JButton fillBagsResolve2 = new JButton("Resolve Low Bags Issue (2)");
+		fillBagsResolve2 = new JButton("Resolve Low Bags Issue (2)");
 		lowinkResolve1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
