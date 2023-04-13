@@ -564,7 +564,9 @@ public class CustomerOperationPane extends JPanel {
 		dialog.setVisible(true);
 	}
 
-
+	public int membershipDialog() {
+		return JOptionPane.showOptionDialog(cioc.getDevice().getFrame(), PluCodePanel, "Enter Membership Numb", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+	}
 	private void showAddItemByLookup() {
 		// Create a list to hold all products
 		List<Product> allProducts = new ArrayList<>();
