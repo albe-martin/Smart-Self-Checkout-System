@@ -50,9 +50,7 @@ public class ScanningScaleController extends DeviceController<ElectronicScale, E
         return "ScanningScaleController";
     }
     
-    
     public double getCurrentWeight() {
-    	
         return this.currentWeight;
     }
 
