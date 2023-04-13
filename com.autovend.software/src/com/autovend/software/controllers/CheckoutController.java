@@ -550,7 +550,7 @@ public class CheckoutController {
 		}
 	}
 
-	void dispenseChange() {
+	public void dispenseChange() {
 		if (!payingChangeLock) {
 			return;
 		}

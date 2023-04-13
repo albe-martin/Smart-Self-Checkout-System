@@ -169,6 +169,15 @@ public class CoinDispenserControllerTest {
 	    	
 	    }
 	    
+	    @Test
+	    public void testSetDenom() {
+	    	coinDispenserControllerStub.setDenom(BigDecimal.ONE);
+	    }
+	    
+	    @Test
+	    public void testCompareTo() {
+	    	coinDispenserControllerStub.compareTo(coinDispenserControllerStub);
+	    }
 	}
 
 
