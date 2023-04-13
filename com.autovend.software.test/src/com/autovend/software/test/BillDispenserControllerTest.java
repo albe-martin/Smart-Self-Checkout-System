@@ -29,6 +29,7 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.BillDispenserController;
 import com.autovend.software.controllers.BillPaymentController;
+import com.autovend.software.controllers.ChangeDispenserController;
 import com.autovend.software.controllers.CheckoutController;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +41,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BillDispenserControllerTest {
     SelfCheckoutStation selfCheckoutStation;
@@ -48,6 +50,7 @@ public class BillDispenserControllerTest {
     int[] billDenominations;
     BigDecimal[] coinDenominations;
     LinkedHashMap<Product, Number[]> order;
+    private boolean result;
 
     @Before
     public void setup() {
@@ -87,6 +90,8 @@ public class BillDispenserControllerTest {
                 throw new RuntimeException(e);
             }
         }
+        
+        result = false;
     }
 
     @Test
@@ -160,5 +165,43 @@ public class BillDispenserControllerTest {
                 entry.getValue().load(new Bill(value, Currency.getInstance("CAD")));
             }
         }
+    }
+    
+    @Test
+    public void testReactBillsFull() {
+        BillDispenserController billDispenserController = new BillDispenserController(selfCheckoutStation.billDispensers.get(10), new BigDecimal(10));
+        billDispenserController.reactToBillsFullEvent(null);
+    }
+    
+    @Test
+    public void testReactBillsLoaded() {
+        BillDispenserController billDispenserController = new BillDispenserController(selfCheckoutStation.billDispensers.get(10), new BigDecimal(10));
+        billDispenserController.reactToBillsLoadedEvent(null);
+    }
+    
+    @Test
+    public void testReactBillsAdded() {
+        BillDispenserController billDispenserController = new BillDispenserController(selfCheckoutStation.billDispensers.get(10), new BigDecimal(10));
+        billDispenserController.reactToBillAddedEvent(null, null);
+    }
+    
+    @Test
+    public void testReactBillsUnloaded() {
+        BillDispenserController billDispenserController = new BillDispenserController(selfCheckoutStation.billDispensers.get(10), new BigDecimal(10));
+        billDispenserController.reactToBillsUnloadedEvent(null);
+    }
+    
+    @Test
+    public void testEmitEmpty() {
+        BillDispenser bd = new BillDispenser(1);
+        BillDispenserController billDispenserController = new BillDispenserController(bd, BigDecimal.ONE);
+        billDispenserController.setMainController(new CheckoutController() {
+        	@Override
+        	public void changeDispenseFailed(ChangeDispenserController controller, BigDecimal denom) {
+        		result = true;
+        	}
+        });
+        billDispenserController.emitChange();
+        assertTrue(result);
     }
 }

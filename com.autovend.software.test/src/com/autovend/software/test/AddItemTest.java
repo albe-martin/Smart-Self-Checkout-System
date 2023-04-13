@@ -823,5 +823,20 @@ public class AddItemTest {
 		
 	}
 	
+	@Test
+	public void testReactOverload() {
+		scanningScaleController.reactToOverloadEvent(null);
+	}
+	
+	@Test
+	public void reactToOutOfOverloadEvent() {
+		scanningScaleController.reactToOutOfOverloadEvent(null);
+	}
+	
+	@Test
+	public void reactWeightChangeWrongScale() {
+		scanningScaleController.reactToWeightChangedEvent(new ElectronicScale(5, 1), 0);
+	}
+	
 
 }
