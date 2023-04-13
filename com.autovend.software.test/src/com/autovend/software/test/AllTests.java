@@ -22,12 +22,31 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AddItemPLU.class, AddItemTest.class,AddingOwnBagsTest.class, AttendantGUITest.class,
-	AttendantIOTest.class, BillDispenserControllerTest.class, BillPaymentControllerTest.class, 
-	BillDispenserControllerTest.class, CardPaymentTest.class, CoinDispenserControllerTest.class,
-	CoinPaymentTest.class, CustomerGUITest.class, LoginLogoutTest.class, LowInkPaperTest.class, MembershipTest.class,
-	PurchaseBagsTest.class, RemoveItemTest.class, StartupShutdownStationTest.class,
-	TestPrintReceipt.class, TestBoilerplateMisc.class, CustomerGUITest.class, DoNotPlaceItemTest.class,
-	CustomerIOControllerTest.class, TestGUILaunch.class})
+@SuiteClasses({ 
+	AddItemPLU.class, AddItemTest.class, AddingOwnBagsTest.class, AttendantGUITest.class,
+	AttendantIOTest.class, 
+	
+	BarcodeUtilsTest.class, BillPaymentControllerTest.class, BillDispenserControllerTest.class, 
+	BillChangeSlotControllerTest.class, 
+	
+	CardPaymentTest.class, CoinDispenserControllerTest.class, CustomerIOControllerTest.class,
+	CoinPaymentTest.class, CustomerGUITest.class, CoinTrayControllerTest.class, 
+	CustomerIOControllerTest.class,
+	
+	DoNotPlaceItemTest.class,
+	
+	LanguageTest.class, LoginLogoutTest.class, LowInkPaperTest.class, 
+	
+	MembershipTest.class,
+	
+	PurchaseBagsTest.class, 
+	
+	RemoveItemTest.class, 
+	
+	StartupShutdownStationTest.class,
+	
+	TestPrintReceipt.class, TestBoilerplateMisc.class, TestGUILaunch.class, 
+	
+})
 public class AllTests {
 }
