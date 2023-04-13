@@ -107,6 +107,11 @@ public class CardReaderControllerTest {
         testController.setMainController(checkoutController);
         checkoutController.registerController("CardReaderController", testController);
         testController.bank = bankStub;
+        CustomerIOController customer = new CustomerIOController(new TouchScreen());
+        checkoutController.registerController("CustomerIOController", customer);
+        customer.setMainController(checkoutController);
+        customer.startPressed();
+        
     }
 
     @After
@@ -118,6 +123,10 @@ public class CardReaderControllerTest {
         testController = null;
     }
 
+    @Test
+    public void reactToCartRemovedEvent() {
+    	testController.reactToCardRemovedEvent(reader);
+    }
     @Test
     public void setStateTest(){
         testController.setState(CardReaderControllerState.NOTINUSE, BigDecimal.valueOf(1));
@@ -140,5 +149,12 @@ public class CardReaderControllerTest {
         testController.reactToCardDataReadEvent(reader, creditCard.createCardInsertData("1337"));
         assertEquals(CardReaderControllerState.NOTINUSE, testController.state); // this is just a placeholder
     }
+    
+    @Test
+    public void reactCardDataReadWrongDevice() {
+    	testController.reactToCardDataReadEvent(new CardReader(), null);
+    }
+    
+    
 
 }
