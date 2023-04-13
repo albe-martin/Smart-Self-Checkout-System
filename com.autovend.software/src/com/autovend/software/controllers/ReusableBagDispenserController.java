@@ -1,5 +1,6 @@
 package com.autovend.software.controllers;
 
+import com.autovend.devices.EmptyException;
 import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.devices.observers.ReusableBagDispenserObserver;
 
@@ -34,8 +35,6 @@ public class ReusableBagDispenserController extends DeviceController<ReusableBag
             for (int ii = 0; ii < numBags; ii++) {
                 this.getDevice().dispense();
             }
-        } catch (Exception ex) {
-            //TODO: Inform checkout controller of problem or something
-        }
+        } catch (EmptyException ex) {}
     }
 }
