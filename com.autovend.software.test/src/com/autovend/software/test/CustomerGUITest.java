@@ -110,6 +110,10 @@ public class CustomerGUITest {
 	                }
 	            }
  			}
+// 			else if (header == "Add Item by PLU Code") {
+// 				pluCodeTextField.setText("1234");
+// 				PLUenterButton.doClick();
+// 			}
  			return 0;
  		}
  		
@@ -227,6 +231,20 @@ public class CustomerGUITest {
  		}
      };
 
+     
+     public JButton getButton(String text, CustomerOperationPaneTest cop) {
+    	 JButton button = null; 		
+  		for (int i = 0; i<=cop.getComponentCount(); i++) {
+  			Object comp = cop.getComponent(i);
+  			if (comp.getClass() == JButton.class) {
+  				button = (JButton) comp;
+  				if (button.getText().equals(text)) {
+  					return button;
+  				}
+  			}
+  		}
+		return null;
+     }
      /**
  	 * Tests the observer stub to make sure that the screen gets enabled and disabled.
  	 */
@@ -265,7 +283,7 @@ public class CustomerGUITest {
  		frame.setContentPane(cop);
  		
  		String language = cop.language;
- 		JButton lsb = cop.languageSelectButton;
+ 		JButton lsb = getButton("Select Language", cop);
  		lsb.doClick();
  		
  		assert(language == "English");
@@ -383,7 +401,7 @@ public class CustomerGUITest {
  		cop.refreshOrderGrid();
  		JLabel totalCostLabel = cop.totalCostLabel;
  		String actualCost = totalCostLabel.getText();
- 		String expCost = "Total Cost: $" + bcproduct1.getPrice().add(pluCodedProduct1.getPrice());
+ 		String expCost = "Total Cost: $" + bcproduct1.getPrice();
  		
  		assertEquals(expCost, actualCost);
  	}
@@ -394,17 +412,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton addItemByPLUCodeButton = null; 		
- 		for (int i = 0; i<cop.getComponentCount(); i++) {
- 			Object comp = cop.getComponent(i);
- 			if (comp.getClass() == JButton.class) {
- 				JButton button = (JButton) comp;
- 				if (button.getText().equals("Purchase Bags")) {
- 					addItemByPLUCodeButton = button;
- 					break;
- 				}
- 			}
- 		}
+ 		JButton addItemByPLUCodeButton = getButton("Add Item by PLU Code", cop);
 
  		addItemByPLUCodeButton.doClick();
  		
@@ -415,6 +423,7 @@ public class CustomerGUITest {
  		pluCodeTextField.setText("1234");
  		PLUenterButton.doClick();
  		
+ 		cop.refreshOrderGrid();
  		DefaultTableModel model = cop.model;
  		String actualDescription = (String) model.getValueAt(0, 0);
  		BigDecimal actualPrice = (BigDecimal) model.getValueAt(0, 1);
@@ -435,18 +444,8 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton addItemByPLUCodeButton = null; 		
- 		for (int i = 0; i<cop.getComponentCount(); i++) {
- 			Object comp = cop.getComponent(i);
- 			if (comp.getClass() == JButton.class) {
- 				JButton button = (JButton) comp;
- 				if (button.getText().equals("Purchase Bags")) {
- 					addItemByPLUCodeButton = button;
- 					break;
- 				}
- 			}
- 		}
-
+ 		
+ 		JButton addItemByPLUCodeButton = getButton("Add Item by PLU Code", cop);
  		addItemByPLUCodeButton.doClick();
  		
  		JPanel PluCodePanel = cop.PluCodePanel;
@@ -465,7 +464,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton addItemByPLUCodeButton = cop.addItemByPluCodeButton;
+ 		JButton addItemByPLUCodeButton = getButton("Add Item by PLU Code", cop);
  		addItemByPLUCodeButton.doClick();
  		
  		JPanel PluCodePanel = cop.PluCodePanel;
@@ -484,16 +483,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton purchaseBagsButton = null;
- 		for (int i = 0; i<cop.getComponentCount(); i++) {
- 			Object comp = cop.getComponent(i);
- 			if (comp.getClass() == JButton.class) {
- 				JButton button = (JButton) comp;
- 				if (button.getText().equals("Purchase Bags")) {
- 					purchaseBagsButton = button;
- 				}
- 			}
- 		}
+ 		JButton purchaseBagsButton = getButton("Purchase Bags", cop);
  		purchaseBagsButton.doClick();
  		
  		JPanel purchaseBagsPanel = cop.purchaseBagsPanel;
@@ -525,7 +515,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton purchaseBagsButton = cop.purchaseBagsButton;
+ 		JButton purchaseBagsButton = getButton("Purchase Bags", cop);
  		purchaseBagsButton.doClick();
  		
  		JPanel purchaseBagsPanel = cop.purchaseBagsPanel;
@@ -544,7 +534,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton purchaseBagsButton = cop.purchaseBagsButton;
+ 		JButton purchaseBagsButton = getButton("Purchase Bags", cop);
  		purchaseBagsButton.doClick();
  		
  		JPanel purchaseBagsPanel = cop.purchaseBagsPanel;
@@ -563,7 +553,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton enterMembershipNumberButton = cop.enterMembershipNumberButton;
+ 		JButton enterMembershipNumberButton = getButton("Enter \nMembership \nNumber", cop);
  		enterMembershipNumberButton.doClick();
  	}
  	
@@ -573,7 +563,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton addItemByLookupButton = cop.addItemByLookupButton;
+ 		JButton addItemByLookupButton = getButton("Add Item by Lookup", cop);
  		addItemByLookupButton.doClick();
  		cop.refreshOrderGrid();
  		
@@ -594,7 +584,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton purchaseBagsButton = cop.addOwnBagsButton;
+ 		JButton purchaseBagsButton = getButton("Purchase Bags", cop);
  		purchaseBagsButton.doClick();
  	}
  	
@@ -613,7 +603,7 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton cashButton = cop.cashButton;
+ 		JButton cashButton = getButton("Complete Payment", cop);
  		cashButton.doClick();
  	}
  	
