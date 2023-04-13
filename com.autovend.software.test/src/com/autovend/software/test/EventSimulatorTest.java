@@ -1,33 +1,3 @@
-/*
- * SENG 300 Project Iteration 3 - Group P3-2
- * Braedon Haensel -         UCID: 30144363
- * Umar Ahmed -             UCID: 30145076
- * Bartu Okan -             UCID: 30150180
- * Arie Goud -                 UCID: 20163410
- * Abdul Biderkab -         UCID: 30156693
- * Hamza Khan -             UCID: 30157097
- * James Hayward -             UCID: 30149513
- * Christian Salvador -     UCID: 30089672
- * Fatema Chowdhury -         UCID: 30141268
- * Sankalp Bartwal -         UCID: 30132025
- * Avani Sharma -             UCID: 30125040
- * Albe Martin -             UCID: 30161964 
- * Omar Khan -                 UCID: 30143707
- * Samantha Liu -             UCID: 30123255
- * Alex Chen -                 UCID: 30140184
- * Auric Adubofour-Poku -     UCID: 30143774
- * Grant Tkachyk -             UCID: 30077137
- * Amandeep Kaur -             UCID: 30153923
- * Tashi Labowka-Poulin -     UCID: 30140749
- * Daniel Chang -             UCID: 30110252
- * Jacob Braun -             UCID: 30124507
- * Omar Ragab -             UCID: 30148549
- * Artemy Gavrilov -         UCID: 30143698
- * Colton Gowans -             UCID: 30143979
- * Hada Rahadhi Hafiyyan -     UCID: 30186484
- * 
- */
-
 package com.autovend.software.test;
 
 import static org.junit.Assert.*;
@@ -71,13 +41,12 @@ import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.swing.AttendantEventSimulator;
 import com.autovend.software.swing.AttendantLoginPane;
 import com.autovend.software.swing.AttendantOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
 import com.autovend.software.swing.Language;
 
-public class AttendantGUITest {
+public class EventSimulatorTest {
 
 	TouchScreen screen;
 
@@ -89,13 +58,9 @@ public class AttendantGUITest {
 	PLUCodedProduct pluCodedProduct1;
 	BarcodedProduct bcproduct1;
 
-	SelfCheckoutStation scs = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
-			new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
-	
 	boolean enabledEventOccurred = false;
 	boolean disabledEventOccurred = false;
 	
-	ArrayList<CustomerIOController> ciocs;
 	
 	/**
 	 * Overrides the optionDialogPopup method of the AttendantLoginPane class
@@ -271,7 +236,7 @@ public class AttendantGUITest {
 		
 		// Create list of checkout stations
 		int num_stations = 2;
-		ciocs = new ArrayList<>();
+		ArrayList<CustomerIOController> ciocs = new ArrayList<>();
 		for (int i = 0; i < num_stations; i++) {
 			SelfCheckoutStation customerStation = new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), 
 					new int[] {1}, new BigDecimal[] {new BigDecimal(0.25)}, 100, 1);
@@ -863,62 +828,6 @@ public class AttendantGUITest {
 		aioc.getCart(cioc.getMainController()).put(pluCodedProduct1, new Number[] {10, 10});
 		aop.createRemoveItemPopup(cioc.getMainController()); // Remove the items
 		aop.createRemoveItemPopup(cioc.getMainController());
-
-	}
-	
-
-	/**
-	 * Tests the functionality of each button in AttendantEventSimulator
-	 */
-	@Test
-	public void eventSimulatorTest() {
-		
-        JButton loginButton = attendantPane.loginButton;
-		JTextField usernameTF = attendantPane.usernameTextField;
-		JPasswordField passwordTF = attendantPane.passwordTextField;
-		
-		usernameTF.setText("abc"); // Correct login credentials
-		passwordTF.setText("123");	
-		loginButton.doClick();
-
-		ReceiptPrinterController rpc = new ReceiptPrinterController(scs.printer);
-		CheckoutController cc = new CheckoutController();
-		rpc.setMainController(cc);
-		ciocs.get(0).getMainController().checkoutStation = scs;
-		
-		// Run attendant event simulator.
-		AttendantEventSimulator aesframe = new AttendantEventSimulator(aioc.getDevice().getFrame(), ciocs.get(0).getMainController(), ciocs.get(0).getMainController());
-		aesframe.setVisible(true);
-		aesframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		try {
-			aesframe.bagRequest1.doClick();
-			aesframe.bagRequest2.doClick();
-			aesframe.lowChange1.doClick();
-			aesframe.lowChange2.doClick();
-			aesframe.lowBill1.doClick();
-			aesframe.lowBill2.doClick();
-			aesframe.lowink1.doClick();
-			aesframe.lowink2.doClick();
-			aesframe.lowinkResolve1.doClick();
-			aesframe.lowinkResolve2.doClick();
-			aesframe.lowPaper1.doClick();
-			aesframe.lowPaper2.doClick();
-			aesframe.lowPaperResolve1.doClick();
-			aesframe.lowPaperResolve2.doClick();
-			aesframe.noBag1.doClick();
-			aesframe.noBag2.doClick();
-			aesframe.weight1.doClick();
-			aesframe.weight2.doClick();
-			aesframe.reprint1.doClick();
-			aesframe.reprint2.doClick();
-			aesframe.fillBagsResolve1.doClick();
-			aesframe.fillBagsResolve2.doClick();
-		} catch (Exception e) {
-			return;
-		}
-		
-		fail("No exception expected");
 
 	}
 }
