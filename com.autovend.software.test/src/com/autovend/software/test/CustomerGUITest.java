@@ -54,6 +54,7 @@ import com.autovend.software.swing.CustomerOperationPane;
 import com.autovend.software.swing.CustomerStartPane;
  import com.autovend.software.swing.Language;
 import com.autovend.software.utils.MiscProductsDatabase.Bag;
+import com.autovend.software.utils.CardIssuerDatabases;
 
 
  @SuppressWarnings("serial")
@@ -153,6 +154,14 @@ public class CustomerGUITest {
  		public void BaggingWeightProblemDialog(JPanel panel, String header) {
  			weightDiscrepancy = true;
  		}
+ 		
+ 		@Override
+ 		public int membershipDialog() {
+ 			pluCodeTextField.setText("12345");;
+ 			PLUenterButton.doClick();
+			return 0;
+ 			
+ 		}
  	}
  	@Before
  	public void setup() {
@@ -185,6 +194,7 @@ public class CustomerGUITest {
  		customerScreen.setSize(800, 800);
  		customerScreen.setUndecorated(false);
  		customerScreen.setResizable(false);
+ 		CardIssuerDatabases.MEMBERSHIP_DATABASE.put("12345", "Bob");
  		
  		SupervisionStation supStation = new SupervisionStation();
  		AttendantStationController attendantController = new AttendantStationController(supStation);
@@ -556,8 +566,10 @@ public class CustomerGUITest {
  		CustomerOperationPaneTest cop = new CustomerOperationPaneTest(cioc);
  		frame.setContentPane(cop);
  		
- 		JButton enterMembershipNumberButton = getButton("Enter \nMembership \nNumber", cop);
+ 		JButton enterMembershipNumberButton = getButton("Enter Membership", cop);
  		enterMembershipNumberButton.doClick();
+ 		
+ 		
  	}
  	
  	@Test
